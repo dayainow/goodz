@@ -11,10 +11,11 @@
 
 ## P1 → P2 (디자인 → 개발)
 
-- [ ] Figma 링크 `docs/02-design/FIGMA.md`에 등록
-- [ ] 디자인시스템 컬러·타이포 `@goodz/ui` 매핑표
-- [ ] 쇼핑몰 핵심 3화면 와이어/하이파이 (목록, 상세, 체크아웃)
-- [ ] 어드민 상품 목록 화면 스펙
+- [ ] Claude Design 프로젝트 링크 `docs/02-design/CLAUDE_DESIGN.md` 등록
+- [ ] `/design-sync`로 `@goodz/ui` · Tailwind DS 반영
+- [ ] 쇼핑몰 핵심 4화면 프로토타입 (목록, 상세, 장바구니, 체크아웃)
+- [ ] `DESIGN_SYSTEM.md` Claude Design ↔ 코드 매핑표
+- [ ] 어드민 상품 목록 화면 스펙 (또는 와이어)
 
 ## P2 → P3 (개발 → QA)
 

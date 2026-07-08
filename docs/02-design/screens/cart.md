@@ -4,7 +4,7 @@
 |------|-----|
 | 화면 ID | SCR-WEB-003 |
 | 경로 | `/cart` |
-| Figma | TBD |
+| Claude Design | TBD |
 
 ## 구성
 

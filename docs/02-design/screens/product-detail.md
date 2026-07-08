@@ -4,7 +4,7 @@
 |------|-----|
 | 화면 ID | SCR-WEB-002 |
 | 경로 | `/products/[id]` |
-| Figma | TBD |
+| Claude Design | TBD |
 
 ## 구성
 

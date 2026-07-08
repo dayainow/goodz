@@ -50,13 +50,13 @@ pnpm dev    # api + web-shop + admin 동시 (api 먼저 ^build)
 - `web-shop`은 `dynamic = "force-dynamic"` — **api-server가 떠 있어야** 상품 목록 로드
 - env: `NEXT_PUBLIC_API_URL` / `VITE_API_URL` = `http://localhost:4000`
 
-## Hermes / Cursor 스킬 (단계별)
+## Hermes / Cursor / Claude Code 스킬 (단계별)
 
-| Phase | 스킬 |
-|-------|------|
-| P0 기획 | `skills/goodz-planning/SKILL.md` |
-| P1 디자인 | `skills/goodz-design/SKILL.md` |
-| P2 개발 | `skills/goodz-dev/SKILL.md` |
+| Phase | 스킬 | 도구 |
+|-------|------|------|
+| P0 기획 | `skills/goodz-planning/SKILL.md` | Cursor |
+| P1 디자인 | `skills/goodz-design/SKILL.md` | **Claude Design** + Claude Code `/design-sync` |
+| P2 개발 | `skills/goodz-dev/SKILL.md` | Cursor / Claude Code |
 
 ```bash
 ln -sf "$(pwd)/skills/goodz-planning" ~/.hermes/skills/goodz-planning

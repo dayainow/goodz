@@ -21,17 +21,17 @@
 
 ## 컴포넌트 (`@goodz/ui`)
 
-| Figma | 코드 | 상태 |
-|-------|------|------|
+| Claude Design / 스펙 | 코드 | 상태 |
+|----------------------|------|------|
 | Button/Primary | `Button variant="primary"` | ✅ |
 | Button/Secondary | `Button variant="secondary"` | ✅ |
 | Button/Danger | `Button variant="danger"` | ✅ |
-| Card | `Card` | 🟡 S1 |
-| ProductCard | `ProductCard` (web-shop) | 🟡 S1 |
+| Card | `Card` | ✅ |
+| ProductCard | `ProductGrid` (web-shop) | ✅ |
 
 ## 신규 컴포넌트 추가 절차
 
-1. Figma 컴포넌트 확정
+1. Claude Design 프로토타입에서 컴포넌트 확정
 2. `packages/ui/src/` 구현
-3. 양 앱 `tailwind.config` content 경로 확인
-4. Storybook (선택, P2)
+3. `/design-sync` 재실행 (선택)
+4. `screens/*.md` · `DESIGN_SYSTEM.md` 갱신

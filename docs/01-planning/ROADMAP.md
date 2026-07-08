@@ -6,10 +6,10 @@
 ## 전체 타임라인
 
 ```text
-S0 ✅ 스캐폴드     S1 🟡 P0 Gate + 상세·장바구니     S2 ⚪ 디자인·GA4      S3 ⚪ QA·스테이징
+S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 🟡 Claude Design P1     S3 ⚪ QA·스테이징
 ────────────      ────────────────────────────      ───────────────      ───────────────
-모노레포           기획 확정 · 이슈 등록              Figma · DS 확정       E2E · 릴리스
-3앱 기동           상품 상세 · 장바구니 · 체크아웃     trackEvent harness    프로덕션
+모노레포           기획 확정 · 이슈 등록              Claude Design P1      E2E · 릴리스
+3앱 기동           상품 상세 · 장바구니 · 체크아웃     /design-sync · handoff   프로덕션
 ```
 
 ---
@@ -37,10 +37,10 @@ S0 ✅ 스캐폴드     S1 🟡 P0 Gate + 상세·장바구니     S2 ⚪ 디자
 | D1-1 | 디자인 브리프 확정 | `DESIGN_BRIEF.md` | ✅ |
 | D1-2 | 화면 스펙 5종 | `screens/*.md` | 🟡 |
 | D1-3 | DS 토큰·컴포넌트 매핑 | `DESIGN_SYSTEM.md` | 🟡 |
-| D1-4 | Figma 파일 생성 | `FIGMA.md` 링크 | ⚪ |
-| D1-5 | **P1→P2 Gate** | 3화면 하이파이 + 어드민 스펙 | ⚪ |
+| D1-4 | Claude Design 착수 | [CLAUDE_DESIGN.md](./CLAUDE_DESIGN.md) | 🟡 |
+| D1-5 | **P1→P2 Gate** | 4화면 프로토타입 + DS 매핑 | ⚪ |
 
-**병행:** 코드 스펙(`screens/`)으로 개발 착수 가능. Figma는 S2에서 픽셀 퍼펙트.
+**병행:** 코드 스펙(`screens/`)으로 개발 착수 가능. Figma는 보조 — [FIGMA.md](../02-design/FIGMA.md).
 
 ---
 
@@ -54,7 +54,7 @@ S0 ✅ 스캐폴드     S1 🟡 P0 Gate + 상세·장바구니     S2 ⚪ 디자
 | F-06 | Product API | — | P0 | ✅ |
 | F-03 | 장바구니 | US-010 | P1 | ✅ |
 | F-04 | 체크아웃 mock | US-011 | P1 | ✅ |
-| F-07 | GA4 trackEvent | — | P2 | ⚪ |
+| F-07 | GA4 trackEvent | — | P2 | ✅ |
 
 **S1 목표 (이번 스프린트):** F-02 · F-03 · F-04 완료 → MVP 쇼핑 플로우 end-to-end
 
@@ -98,11 +98,11 @@ Week 1
 - USER_STORIES AC 체크
 - API.md 동기화
 
-### Sprint S2 — 디자인·분석
+### Sprint S2 — Claude Design P1 + 어드민
 
-- Figma 파일 + `@goodz/ui` Card·Input 확장
-- GA4 events.spec.yaml + trackEvent
-- 어드민 상품 등록 (mock POST)
+- Claude Design `/design-sync` + 4화면 프로토타입
+- handoff → web-shop UI polish
+- 어드민 상품 등록 mock API
 
 ### Sprint S3 — QA·배포
 
@@ -136,7 +136,7 @@ flowchart LR
 3. ✅ 상품 상세 페이지 `/products/[id]`
 4. ✅ 장바구니 API + `/cart`
 5. ✅ 체크아웃 mock + `/checkout`
-6. 🟡 S2: Figma (#7) · GA4 harness (#8) · QA
+6. 🟡 S2: Claude Design P1 (#7) · 어드민 · QA
 
 ---
 

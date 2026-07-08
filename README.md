@@ -5,7 +5,7 @@
 [![Turborepo](https://img.shields.io/badge/Turborepo-monorepo-EF4444?style=flat-square&logo=turborepo&logoColor=white)](https://turbo.build/)
 
 Turborepo + pnpm 기반 굿즈 이커머스 풀스택 모노레포입니다.  
-**기획 → 디자인 → 개발 → QA → 배포** 전 과정을 실제 회사 산출물 형식(PRD, Figma, ADR, Phase Gate)으로 관리하는 **풀 프로세스 레퍼런스 프로젝트**입니다.
+**기획 → 디자인 → 개발 → QA → 배포** 전 과정을 실제 회사 산출물 형식(PRD, Claude Design, ADR, Phase Gate)으로 관리하는 **풀 프로세스 레퍼런스 프로젝트**입니다.
 
 👉 **[PROJECT.md](./PROJECT.md)** — Phase 상태 · 워크플로우 허브
 
@@ -48,7 +48,7 @@ goodz/
 ├── docs/
 │   ├── 00-process/            # WORKFLOW · PHASE_GATES
 │   ├── 01-planning/           # PRD · USER_STORIES · GA4_EVENTS
-│   ├── 02-design/             # DESIGN_BRIEF · FIGMA · DESIGN_SYSTEM
+│   ├── 02-design/             # CLAUDE_DESIGN · DESIGN_BRIEF · DESIGN_SYSTEM
 │   ├── 03-engineering/        # ARCHITECTURE · API · ADR
 │   └── 04-qa/                 # TEST_PLAN · RELEASE_CHECKLIST
 ├── skills/                    # goodz-planning · design · dev
@@ -84,9 +84,9 @@ pnpm verify       # build + lint (PR·커밋 전 필수)
 ```text
 P0 기획          P1 디자인         P2 개발           P3 QA            P4 배포
 ────────         ────────         ────────         ────────         ────────
-PRD              Figma            @goodz/types     pnpm verify      CI green
-유저스토리        디자인시스템      api → apps       E2E 시나리오      스테이징
-GA4 명세         화면 스펙         PR + 리뷰        GA harness       프로덕션
+PRD              Claude Design    @goodz/types     pnpm verify      CI green
+유저스토리        /design-sync      api → apps       E2E 시나리오      스테이징
+GA4 명세         화면 프로토타입    PR + 리뷰        GA harness       프로덕션
      │                │                │                │                │
      └────────────────┴────────────────┴────────────────┴────────────────┘
                               Phase Gate (docs/00-process/PHASE_GATES.md)
@@ -94,9 +94,9 @@ GA4 명세         화면 스펙         PR + 리뷰        GA harness       프
 
 | Phase | 상태 | 산출물 |
 |-------|------|--------|
-| **P0 기획** | 🟡 진행 중 | [PRD](./docs/01-planning/PRD.md) · [유저스토리](./docs/01-planning/USER_STORIES.md) · [GA4](./docs/01-planning/GA4_EVENTS.md) |
-| **P1 디자인** | ⚪ 대기 | [디자인 브리프](./docs/02-design/DESIGN_BRIEF.md) · [Figma](./docs/02-design/FIGMA.md) |
-| **P2 개발** | 🟢 스캐폴드 완료 | [아키텍처](./docs/03-engineering/ARCHITECTURE.md) · [API](./docs/03-engineering/API.md) |
+| **P0 기획** | 🟢 Gate 통과 | [PRD](./docs/01-planning/PRD.md) · [유저스토리](./docs/01-planning/USER_STORIES.md) · [GA4](./docs/01-planning/GA4_EVENTS.md) |
+| **P1 디자인** | 🟡 진행 중 | [Claude Design](./docs/02-design/CLAUDE_DESIGN.md) · [디자인 브리프](./docs/02-design/DESIGN_BRIEF.md) |
+| **P2 개발** | 🟢 S1 MVP 완료 | [아키텍처](./docs/03-engineering/ARCHITECTURE.md) · [API](./docs/03-engineering/API.md) |
 | **P3 QA** | ⚪ 대기 | [테스트 플랜](./docs/04-qa/TEST_PLAN.md) |
 | **P4 배포** | ⚪ 대기 | [릴리스 체크리스트](./docs/04-qa/RELEASE_CHECKLIST.md) |
 
@@ -144,7 +144,7 @@ Frontend   Next.js 15 · React 19 · Vite · Tailwind CSS
 Backend    Express · TypeScript
 Shared     @goodz/types (SSOT) · @goodz/ui
 Quality    ESLint · Turbo cache · GitHub Actions
-AI         Cursor Skill/Rule · Hermes Agent
+AI         Cursor · Claude Code + Claude Design · Hermes (선택)
 ```
 
 ---
@@ -155,7 +155,8 @@ AI         Cursor Skill/Rule · Hermes Agent
 |----------|------|
 | [GA Analytics Harness](https://github.com/dayainow/ga-analytics-harness) | GA4 이벤트 명세 → 코드 · MSW · compliance 게이트 |
 | [Frontend Agent Orchestrator Kit](https://github.com/dayainow/frontend-agent-orchestrator-kit) | 기획/디자인 → 구현 → QA 에이전트 오케스트레이션 |
-| [Figma Publish Harness](https://github.com/dayainow/figma-publish) | Figma ↔ 코드 양방향 동기화 (P1 디자인 단계) |
+| [Claude Design](https://claude.ai/design) | **P1 공식** — `/design-sync`로 `@goodz/ui` 반영 · [가이드](./docs/02-design/CLAUDE_DESIGN.md) |
+| [Figma Publish Harness](https://github.com/dayainow/figma-publish) | Figma ↔ 코드 동기화 (보조·선택) |
 
 ---
 

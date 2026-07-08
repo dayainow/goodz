@@ -4,7 +4,7 @@
 |------|-----|
 | 화면 ID | SCR-WEB-004 |
 | 경로 | `/checkout` |
-| Figma | TBD |
+| Claude Design | TBD |
 
 ## 구성
 

@@ -2,7 +2,7 @@
 
 > 굿즈 이커머스 — 기획 → 디자인 → 개발 → QA → 배포 전 과정을 **회사 산출물 형식**으로 관리합니다.
 
-## 현재 스프린트: **S1 — MVP 쇼핑 플로우**
+## 현재 스프린트: **S2 — Claude Design P1**
 
 👉 [ROADMAP](./docs/01-planning/ROADMAP.md) · [유저스토리](./docs/01-planning/USER_STORIES.md)
 
@@ -11,29 +11,28 @@
 | Phase | 상태 | 산출물 |
 |-------|------|--------|
 | **P0 기획** | 🟢 Gate 통과 | [PRD](./docs/01-planning/PRD.md) · [유저스토리](./docs/01-planning/USER_STORIES.md) · [로드맵](./docs/01-planning/ROADMAP.md) |
-| **P1 디자인** | 🟡 진행 중 | [디자인 브리프](./docs/02-design/DESIGN_BRIEF.md) · [화면 스펙](./docs/02-design/screens/) |
+| **P1 디자인** | 🟡 진행 중 | [Claude Design](./docs/02-design/CLAUDE_DESIGN.md) · `/design-sync` |
 | **P2 개발** | 🟢 S1 MVP 플로우 완료 | 상품 상세 · 장바구니 · 체크아웃 ✅ |
 | **P3 QA** | ⚪ 대기 | [테스트 플랜](./docs/04-qa/TEST_PLAN.md) |
 | **P4 배포** | ⚪ 대기 | [릴리스 체크리스트](./docs/04-qa/RELEASE_CHECKLIST.md) |
 
-## S1 이번 주 목표
+## S2 이번 주 목표
 
-- [x] ROADMAP · PRD Approved
-- [x] GitHub Issues 5건+
-- [x] 상품 상세 `/products/[id]`
-- [x] 장바구니 API + `/cart`
-- [x] 체크아웃 mock + `/checkout`
-- [x] `pnpm verify` pass
+- [ ] Claude Design MCP `/design-login`
+- [ ] `/design-sync` (goodz DS)
+- [ ] 4화면 프로토타입 (목록·상세·장바구니·체크아웃)
+- [ ] `CLAUDE_DESIGN.md` 프로젝트 URL 등록
+- [x] GA4 harness (#8) ✅
 
 ## 풀 프로세스 (회사 표준)
 
 ```text
 P0 기획          P1 디자인         P2 개발           P3 QA            P4 배포
 ────────         ────────         ────────         ────────         ────────
-PRD              Figma            @goodz/types     pnpm verify      CI green
-유저스토리        디자인시스템      api → apps       E2E 시나리오      스테이징
-GA4 명세         화면 목록         PR + 리뷰        GA harness       프로덕션
-Notion SSOT      Code Connect?     ADR              회귀 테스트
+PRD              Claude Design    @goodz/types     pnpm verify      CI green
+유저스토리        /design-sync      api → apps       E2E 시나리오      스테이징
+GA4 명세         화면 프로토타입    PR + 리뷰        GA harness       프로덕션
+Notion SSOT      handoff→Code      ADR              회귀 테스트
      │                │                │                │                │
      └────────────────┴────────────────┴────────────────┴────────────────┘
                               Phase Gate (docs/00-process/PHASE_GATES.md)

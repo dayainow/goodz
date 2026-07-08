@@ -7,7 +7,7 @@
 | 역할 | 담당 산출물 | 도구 |
 |------|-------------|------|
 | PM / 기획 | PRD, 유저스토리, GA4 명세 | Notion, `docs/01-planning/` |
-| 디자이너 | Figma, 디자인시스템, 화면 스펙 | Figma, `docs/02-design/` |
+| 디자이너 | Claude Design 프로토타입, 디자인시스템, 화면 스펙 | Claude Design, Claude Code, `docs/02-design/` |
 | FE / BE | 코드, API, ADR | Cursor, Hermes, 모노레포 |
 | QA | 테스트 플랜, 체크리스트 | `pnpm verify`, GA harness |
 | DevOps | CI, 배포 | GitHub Actions |
@@ -21,12 +21,15 @@
 3. GA4 이벤트 표 → Notion export → (선택) `ga-analytics-harness` 연동
 4. **Gate:** PRD 승인 + P1 착수 이슈 생성
 
-### P1 — 디자인
+### P1 — 디자인 (Claude Design)
 
-1. Figma 파일 구조 (`docs/02-design/FIGMA.md`)
-2. `@goodz/ui` 토큰·컴포넌트와 매핑
-3. 화면별 스펙 → `docs/02-design/screens/`
-4. **Gate:** 핵심 퍼널(목록→장바구니→결제) 디자인 리뷰 완료
+1. Claude Code: `claude-design` MCP + `/design-login` ([CLAUDE_DESIGN.md](../02-design/CLAUDE_DESIGN.md))
+2. `/design-sync` — goodz repo → Claude Design DS
+3. [claude.ai/design](https://claude.ai/design) — 4화면 프로토타입
+4. `docs/02-design/screens/` 스펙 정합성 · `DESIGN_SYSTEM.md` 갱신
+5. **Gate:** 핵심 퍼널 프로토타입 + handoff 준비
+
+> Figma는 보조 — [FIGMA.md](../02-design/FIGMA.md)
 
 ### P2 — 개발
 
@@ -52,7 +55,7 @@
 | 단계 | Cursor | Hermes |
 |------|--------|--------|
 | 기획 | Notion MCP, PRD 초안 | `goodz-planning` 스킬 |
-| 디자인 | Figma MCP | `goodz-design` 스킬 |
+| 디자인 | Claude Design + `/design-sync` | `goodz-design` 스킬 |
 | 개발 | `.cursor/rules` | `goodz-dev` + `pnpm verify` |
 | QA | 테스트 실행 | cron으로 nightly verify |
 
