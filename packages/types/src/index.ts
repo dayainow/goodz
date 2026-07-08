@@ -13,6 +13,15 @@ export type ProductListResponse = {
   total: number;
 };
 
+export interface CreateProductRequest {
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+  category: string;
+  stock: number;
+}
+
 export interface CartItem {
   productId: string;
   quantity: number;

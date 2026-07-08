@@ -1,4 +1,4 @@
-import type { Product, ProductListResponse } from "@goodz/types";
+import type { CreateProductRequest, Product, ProductListResponse } from "@goodz/types";
 
 export const mockProducts: Product[] = [
   {
@@ -39,4 +39,47 @@ export function listProducts(): ProductListResponse {
 
 export function getProductById(id: string): Product | undefined {
   return mockProducts.find((p) => p.id === id);
+}
+
+function nextProductId(): string {
+  const max = mockProducts.reduce((acc, product) => {
+    const match = /^gd-(\d+)$/.exec(product.id);
+    if (!match) return acc;
+    return Math.max(acc, Number(match[1]));
+  }, 0);
+
+  return `gd-${String(max + 1).padStart(3, "0")}`;
+}
+
+export function createProduct(input: CreateProductRequest): Product {
+  const name = input.name?.trim();
+  if (!name) {
+    throw new Error("name is required");
+  }
+
+  if (!Number.isFinite(input.price) || input.price <= 0) {
+    throw new Error("price must be greater than 0");
+  }
+
+  if (!Number.isInteger(input.stock) || input.stock < 0) {
+    throw new Error("stock must be a non-negative integer");
+  }
+
+  const category = input.category?.trim();
+  if (!category) {
+    throw new Error("category is required");
+  }
+
+  const product: Product = {
+    id: nextProductId(),
+    name,
+    price: input.price,
+    description: input.description?.trim() ?? "",
+    imageUrl: input.imageUrl?.trim() || "/images/placeholder.png",
+    category,
+    stock: input.stock,
+  };
+
+  mockProducts.push(product);
+  return product;
 }

@@ -4,7 +4,7 @@ Base URL: `http://localhost:4000` (개발)
 
 ## 공통 타입
 
-`@goodz/types` — `Product`, `ProductListResponse`, `Cart`, `CartView`, `CheckoutResult`
+`@goodz/types` — `Product`, `ProductListResponse`, `CreateProductRequest`, `Cart`, `CartView`, `CheckoutResult`
 
 ## Endpoints
 
@@ -22,6 +22,24 @@ Base URL: `http://localhost:4000` (개발)
 
 **Response:** `Product`  
 **404:** `{ "message": "Product not found" }`
+
+### `POST /api/products`
+
+**Body:** `CreateProductRequest`
+
+```json
+{
+  "name": "굿즈 머그컵",
+  "price": 19900,
+  "description": "세라믹 머그컵 350ml",
+  "imageUrl": "/images/mug.png",
+  "category": "living",
+  "stock": 40
+}
+```
+
+**Response:** `201` + `Product` (id는 `gd-004` 형식으로 자동 생성)  
+**400:** `{ "message": "..." }`
 
 ### `GET /api/cart`
 

@@ -3,11 +3,12 @@ import express from "express";
 import type {
   AddCartItemRequest,
   CheckoutRequest,
+  CreateProductRequest,
   ProductListResponse,
 } from "@goodz/types";
 import { addCartItem, buildCartView, getCart } from "./data/cart.js";
 import { checkout } from "./data/checkout.js";
-import { getProductById, listProducts } from "./data/products.js";
+import { createProduct, getProductById, listProducts } from "./data/products.js";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 4000;
@@ -38,6 +39,19 @@ app.get("/api/products/:id", (req, res) => {
     return;
   }
   res.json(product);
+});
+
+app.post("/api/products", (req, res) => {
+  const body = req.body as CreateProductRequest;
+
+  try {
+    const product = createProduct(body);
+    res.status(201).json(product);
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to create product";
+    res.status(400).json({ message });
+  }
 });
 
 app.get("/api/cart", (req, res) => {

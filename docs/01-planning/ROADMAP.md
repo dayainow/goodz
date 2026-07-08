@@ -54,7 +54,7 @@ S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 🟡 Claude Design P1    
 | F-06 | Product API | — | P0 | ✅ |
 | F-03 | 장바구니 | US-010 | P1 | ✅ |
 | F-04 | 체크아웃 mock | US-011 | P1 | ✅ |
-| F-07 | GA4 trackEvent | — | P2 | ✅ |
+| F-08 | 어드민 상품 등록 | US-002+ | P1 | ✅ |
 
 **S1 목표 (이번 스프린트):** F-02 · F-03 · F-04 완료 → MVP 쇼핑 플로우 end-to-end
 

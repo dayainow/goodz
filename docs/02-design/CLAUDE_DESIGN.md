@@ -139,8 +139,9 @@ Cursor에서 이어갈 때:
 
 | 항목 | 값 |
 |------|-----|
-| 프로젝트명 | _Claude Design에서 생성 후 URL 등록_ |
-| 디자인 URL | _TBD — 생성 후 여기에 붙여넣기_ |
+| 프로젝트명 | Goodz — Web Shop MVP |
+| 디자인 URL | _claude.ai/design 프로젝트 생성 후 등록_ |
+| projectId | `5c71eb8f-588d-4c5f-8720-ac761c87b03c` (Design System, `/design-sync` 연결됨) |
 | 동기화 repo | https://github.com/dayainow/goodz |
 | 로컬 경로 | `/Users/dobedub/Documents/source/ax/goodz` |
 
