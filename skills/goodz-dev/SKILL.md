@@ -58,6 +58,13 @@ pnpm --filter @goodz/web-shop dev
 | Tailwind 클래스 안 먹음 | 앱 tailwind `content`에 `packages/ui` 경로 |
 | 타입 불일치 | `@goodz/types`만 SSOT로 사용 |
 | npm install | 루트에서 `pnpm install` |
+| git status가 계속 변함 | 다른 에이전트(Claude Code 등) 동시 작업 의심 → `AGENTS.md` 다중 에이전트 규칙 |
+
+## 5-1. 다중 에이전트 (동시 작업)
+
+- **git 커밋·푸시는 Cursor가 단일 창구.** Claude Code(Claude Design)는 파일 생성만, git은 건드리지 않음.
+- 예상치 못한 변경 발견 시 파괴적 git 명령 전에 동시 작업 여부부터 확인.
+- 자세한 규칙: `AGENTS.md` → "다중 에이전트 협업".
 
 ## 6. Hermes 연동
 

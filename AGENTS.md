@@ -69,8 +69,22 @@ ln -sf "$(pwd)/skills/goodz-dev" ~/.hermes/skills/goodz-dev
 - Conventional Commits, **한국어** 메시지 (예: `feat: 장바구니 API 타입 추가`)
 - 커밋 전 `pnpm verify`
 
+## 다중 에이전트 협업 (동시 작업 규칙)
+
+여러 에이전트(Cursor · Claude Code 등)가 **같은 체크아웃**을 동시에 쓰면 git 충돌·혼선이 발생합니다. 아래 역할을 지킵니다.
+
+| 에이전트 | 역할 | git 권한 |
+|----------|------|----------|
+| **Cursor** | 코드 구현, 커밋·푸시, CI | ✅ `add`/`commit`/`push` 전담 |
+| **Claude Code (Claude Design)** | `/design-sync`, 프로토타입, 디자인 산출물 생성 | ❌ git 건드리지 않음 (파일 생성만) |
+
+- **git 작업은 Cursor가 단일 창구.** Claude Code가 만든 파일(`.design-sync/`, `packages/ui/tailwind*.{css,js}` 등)은 Cursor가 확인 후 커밋한다.
+- 다른 세션이 만든 예상치 못한 변경/커밋을 발견하면, **먼저 동시 작업 여부를 의심**하고 파괴적 명령(reset·checkout·clean) 전에 사용자에게 확인한다.
+- 장시간 병행이 필요하면 별도 worktree(`git worktree add`)로 물리적으로 분리한다.
+
 ## 금지
 
 - `apps/*`에 API 타입 중복 정의
 - `node_modules` 직접 수정
 - turbo 캐시 무시하고 개별 앱만 수동 빌드 후 "완료" 보고
+- 다른 에이전트 작업 중인 파일에 대해 확인 없이 `git reset`/`checkout`/`clean`
