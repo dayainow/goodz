@@ -1,0 +1,42 @@
+# Phase Gate — 단계 전환 기준
+
+각 Phase를 다음 단계로 넘기기 전에 충족해야 할 **최소 기준**입니다.
+
+## P0 → P1 (기획 → 디자인)
+
+- [ ] PRD v0.1 이상 작성 (`docs/01-planning/PRD.md`)
+- [ ] MVP 범위 확정 (상품 목록 · 장바구니 · 결제 · 어드민 상품관리)
+- [ ] 유저스토리 5개 이상 GitHub Issue 등록
+- [ ] GA4 핵심 퍼널 이벤트 초안 (`docs/01-planning/GA4_EVENTS.md`)
+
+## P1 → P2 (디자인 → 개발)
+
+- [ ] Figma 링크 `docs/02-design/FIGMA.md`에 등록
+- [ ] 디자인시스템 컬러·타이포 `@goodz/ui` 매핑표
+- [ ] 쇼핑몰 핵심 3화면 와이어/하이파이 (목록, 상세, 체크아웃)
+- [ ] 어드민 상품 목록 화면 스펙
+
+## P2 → P3 (개발 → QA)
+
+- [ ] `pnpm verify` CI green
+- [ ] API `Product` CRUD (최소 Read + mock)
+- [ ] web-shop 상품 목록 API 연동
+- [ ] admin 상품 테이블 API 연동
+- [ ] PR 1건 이상 merge (develop)
+
+## P3 → P4 (QA → 배포)
+
+- [ ] `docs/04-qa/TEST_PLAN.md` P0 시나리오 전부 pass
+- [ ] `RELEASE_CHECKLIST.md` 스테이징 항목 완료
+- [ ] GA compliance (해당 시)
+
+## 승인
+
+| Gate | 승인자 (예시) |
+|------|----------------|
+| P0→P1 | PM |
+| P1→P2 | PM + Design Lead |
+| P2→P3 | Tech Lead |
+| P3→P4 | PM + QA |
+
+개인 프로젝트에서는 본인이 체크리스트만 충족하면 진행 가능합니다.

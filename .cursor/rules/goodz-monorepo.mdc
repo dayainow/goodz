@@ -1,0 +1,14 @@
+---
+description: Goodz Turborepo 모노레포 개발 규칙 — pnpm, @goodz/types SSOT, turbo 빌드 순서
+globs: apps/**/*.{ts,tsx}, packages/**/*.{ts,tsx}
+alwaysApply: true
+---
+
+## Goodz 모노레포
+
+- 패키지 매니저: **pnpm** (루트에서만 install)
+- 타입 SSOT: `packages/types` → api → frontends 순서
+- UI 공유: `packages/ui`의 `Button` 등 재사용
+- 완료 전: `pnpm verify`
+
+상세: `AGENTS.md`, `skills/goodz-dev/SKILL.md`, `docs/HERMES.md`

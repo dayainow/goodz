@@ -1,0 +1,31 @@
+name: ✨ 기능 (Feature)
+description: P2 개발 — API, UI, 패키지 기능
+title: "[Feature] "
+labels: ["phase:dev"]
+body:
+  - type: input
+    id: user_story
+    attributes:
+      label: 유저스토리 ID
+      placeholder: "US-001"
+  - type: textarea
+    id: description
+    attributes:
+      label: 기능 설명
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: 변경 예상 범위
+      options:
+        - label: packages/types
+        - label: packages/ui
+        - label: apps/api-server
+        - label: apps/web-shop
+        - label: apps/admin-dashboard
+  - type: textarea
+    id: ac
+    attributes:
+      label: 인수 조건 (AC)
+      description: 체크리스트 형태

@@ -1,0 +1,25 @@
+{
+  "name": "goodz",
+  "version": "0.1.0",
+  "private": true,
+  "description": "굿즈 이커머스 풀스택 모노레포 — Turborepo + pnpm",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dayainow/goodz.git"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "verify": "turbo build && turbo lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=20"
+  }
+}

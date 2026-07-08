@@ -1,0 +1,29 @@
+name: 📋 기획 (Planning)
+description: PRD, 유저스토리, GA4 명세 등 기획 산출물
+title: "[Planning] "
+labels: ["phase:planning"]
+body:
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: 산출물 유형
+      options:
+        - PRD
+        - 유저스토리
+        - GA4 이벤트
+        - 기타
+  - type: textarea
+    id: description
+    attributes:
+      label: 내용
+      description: 요구사항, AC, Notion 링크
+    validations:
+      required: true
+  - type: checkboxes
+    id: gate
+    attributes:
+      label: Phase Gate (P0→P1)
+      options:
+        - label: PRD 초안 반영
+        - label: MVP 범위 명시
+        - label: GA4 초안 (해당 시)

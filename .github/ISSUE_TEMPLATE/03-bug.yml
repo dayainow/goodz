@@ -1,0 +1,29 @@
+name: 🐛 버그 (Bug)
+description: 결함 리포트
+title: "[Bug] "
+labels: ["phase:qa", "bug"]
+body:
+  - type: dropdown
+    id: app
+    attributes:
+      label: 앱
+      options:
+        - web-shop
+        - admin-dashboard
+        - api-server
+        - packages/ui
+        - CI
+  - type: textarea
+    id: steps
+    attributes:
+      label: 재현 단계
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대 동작
+  - type: textarea
+    id: actual
+    attributes:
+      label: 실제 동작
