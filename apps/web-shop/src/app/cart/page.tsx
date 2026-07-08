@@ -2,8 +2,10 @@
 
 import type { CartView } from "@goodz/types";
 import { Button } from "@goodz/ui";
+import { trackEvent } from "ga-analytics-harness/trackEvent";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { getApiUrl, getCartId } from "@/lib/cart";
 
 export default function CartPage() {
@@ -32,24 +34,32 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
-        <p className="text-slate-500">불러오는 중…</p>
-      </main>
+      <>
+        <PageViewTracker pagePath="/cart" componentName="CartPage" />
+        <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
+          <p className="text-slate-500">불러오는 중…</p>
+        </main>
+      </>
     );
   }
 
   if (error) {
     return (
-      <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
-        <p className="text-rose-600">{error}</p>
-      </main>
+      <>
+        <PageViewTracker pagePath="/cart" componentName="CartPage" />
+        <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
+          <p className="text-rose-600">{error}</p>
+        </main>
+      </>
     );
   }
 
   const isEmpty = !view || view.lineItems.length === 0;
 
   return (
-    <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
+    <>
+      <PageViewTracker pagePath="/cart" componentName="CartPage" />
+      <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
       <header className="mb-8">
         <Link href="/" className="text-sm text-violet-600 hover:underline">
           ← 쇼핑 계속하기
@@ -95,12 +105,21 @@ export default function CartPage() {
             <p className="text-xl font-bold">
               합계 {view.subtotal.toLocaleString("ko-KR")}원
             </p>
-            <Link href="/checkout">
+            <Link
+              href="/checkout"
+              onClick={() =>
+                trackEvent("proceed_to_checkout_click", {
+                  page_path: "/cart",
+                  component_name: "ProceedToCheckoutButton",
+                })
+              }
+            >
               <Button variant="primary">결제하기</Button>
             </Link>
           </div>
         </>
       )}
-    </main>
+      </main>
+    </>
   );
 }

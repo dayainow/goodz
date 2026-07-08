@@ -1,5 +1,8 @@
+"use client";
+
 import type { Product } from "@goodz/types";
 import { Card } from "@goodz/ui";
+import { trackEvent } from "ga-analytics-harness/trackEvent";
 import Link from "next/link";
 
 export function ProductGrid({ products }: { products: Product[] }) {
@@ -7,7 +10,16 @@ export function ProductGrid({ products }: { products: Product[] }) {
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => (
         <li key={product.id}>
-          <Link href={`/products/${product.id}`} className="block h-full">
+          <Link
+            href={`/products/${product.id}`}
+            className="block h-full"
+            onClick={() =>
+              trackEvent("product_card_click", {
+                page_path: "/",
+                component_name: "ProductCard",
+              })
+            }
+          >
             <Card className="h-full transition-shadow hover:shadow-md">
               <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
                 {product.category}

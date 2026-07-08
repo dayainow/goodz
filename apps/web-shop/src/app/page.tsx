@@ -1,6 +1,7 @@
 import type { ProductListResponse } from "@goodz/types";
 import { Button } from "@goodz/ui";
 import Link from "next/link";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { ProductGrid } from "@/components/ProductGrid";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,7 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-6 py-12">
+      <PageViewTracker pagePath="/" componentName="ProductListPage" />
       <header className="mb-10 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-violet-600">Goodz Shop</p>

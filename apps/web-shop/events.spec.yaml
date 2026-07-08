@@ -1,0 +1,66 @@
+version: 1
+source: goodz-planning
+events:
+  - event_name: page_view
+    trigger: 상품 목록 페이지 진입
+    component_name: ProductListPage
+    parameters:
+      - page_path
+      - component_name
+    page: /
+  - event_name: product_card_click
+    trigger: 상품 카드 클릭
+    component_name: ProductCard
+    parameters:
+      - page_path
+      - component_name
+    page: /
+  - event_name: page_view
+    trigger: 상품 상세 페이지 진입
+    component_name: ProductDetailPage
+    parameters:
+      - page_path
+      - component_name
+    page: /products/[id]
+  - event_name: add_to_cart_click
+    trigger: 장바구니 담기 버튼 클릭
+    component_name: AddToCartButton
+    parameters:
+      - page_path
+      - component_name
+    page: /products/[id]
+  - event_name: page_view
+    trigger: 장바구니 페이지 진입
+    component_name: CartPage
+    parameters:
+      - page_path
+      - component_name
+    page: /cart
+  - event_name: proceed_to_checkout_click
+    trigger: 결제하기 이동
+    component_name: ProceedToCheckoutButton
+    parameters:
+      - page_path
+      - component_name
+    page: /cart
+  - event_name: page_view
+    trigger: 체크아웃 페이지 진입
+    component_name: CheckoutPage
+    parameters:
+      - page_path
+      - component_name
+    page: /checkout
+  - event_name: purchase_click
+    trigger: 결제 버튼 클릭
+    component_name: CheckoutButton
+    parameters:
+      - page_path
+      - component_name
+    page: /checkout
+  - event_name: page_view
+    trigger: 결제 성공 페이지 진입
+    component_name: CheckoutSuccessPage
+    parameters:
+      - page_path
+      - component_name
+    page: /checkout/success

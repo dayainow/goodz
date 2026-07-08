@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@goodz/ui";
+import { trackEvent } from "ga-analytics-harness/trackEvent";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { addToCart } from "@/lib/cart";
@@ -21,6 +22,10 @@ export function AddToCartButton({
     setMessage(null);
     try {
       await addToCart(productId);
+      trackEvent("add_to_cart_click", {
+        page_path: `/products/${productId}`,
+        component_name: "AddToCartButton",
+      });
       setMessage("장바구니에 담았습니다");
       if (redirectToCart) {
         router.push("/cart");

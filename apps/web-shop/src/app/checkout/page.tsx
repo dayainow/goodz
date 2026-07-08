@@ -2,9 +2,11 @@
 
 import type { CartView, CheckoutResult } from "@goodz/types";
 import { Button } from "@goodz/ui";
+import { trackEvent } from "ga-analytics-harness/trackEvent";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { getApiUrl, getCartId } from "@/lib/cart";
 
 export default function CheckoutPage() {
@@ -40,6 +42,11 @@ export default function CheckoutPage() {
     setPaying(true);
     setError(null);
 
+    trackEvent("purchase_click", {
+      page_path: "/checkout",
+      component_name: "CheckoutButton",
+    });
+
     try {
       const res = await fetch(`${getApiUrl()}/api/checkout`, {
         method: "POST",
@@ -63,25 +70,33 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
-        <p className="text-slate-500">불러오는 중…</p>
-      </main>
+      <>
+        <PageViewTracker pagePath="/checkout" componentName="CheckoutPage" />
+        <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
+          <p className="text-slate-500">불러오는 중…</p>
+        </main>
+      </>
     );
   }
 
   if (!view || view.lineItems.length === 0) {
     return (
-      <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
-        <p className="text-slate-600">결제할 상품이 없습니다.</p>
-        <Link href="/cart" className="mt-4 inline-block text-violet-600">
-          ← 장바구니로
-        </Link>
-      </main>
+      <>
+        <PageViewTracker pagePath="/checkout" componentName="CheckoutPage" />
+        <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
+          <p className="text-slate-600">결제할 상품이 없습니다.</p>
+          <Link href="/cart" className="mt-4 inline-block text-violet-600">
+            ← 장바구니로
+          </Link>
+        </main>
+      </>
     );
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
+    <>
+      <PageViewTracker pagePath="/checkout" componentName="CheckoutPage" />
+      <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
       <Link href="/cart" className="text-sm text-violet-600 hover:underline">
         ← 장바구니
       </Link>
@@ -124,6 +139,7 @@ export default function CheckoutPage() {
           {paying ? "결제 처리 중…" : "결제하기 (mock)"}
         </Button>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

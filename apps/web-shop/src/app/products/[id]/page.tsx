@@ -2,6 +2,7 @@ import type { Product } from "@goodz/types";
 import { Button } from "@goodz/ui";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
@@ -42,6 +43,10 @@ export default async function ProductDetailPage({
       </Link>
 
       <article className="mt-8">
+        <PageViewTracker
+          pagePath={`/products/${product.id}`}
+          componentName="ProductDetailPage"
+        />
         <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
           {product.category}
         </p>
