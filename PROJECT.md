@@ -2,15 +2,28 @@
 
 > 굿즈 이커머스 — 기획 → 디자인 → 개발 → QA → 배포 전 과정을 **회사 산출물 형식**으로 관리합니다.
 
+## 현재 스프린트: **S1 — MVP 쇼핑 플로우**
+
+👉 [ROADMAP](./docs/01-planning/ROADMAP.md) · [유저스토리](./docs/01-planning/USER_STORIES.md)
+
 ## 현재 단계
 
 | Phase | 상태 | 산출물 |
 |-------|------|--------|
-| **P0 기획** | 🟡 진행 중 | [PRD](./docs/01-planning/PRD.md) · [유저스토리](./docs/01-planning/USER_STORIES.md) |
-| **P1 디자인** | ⚪ 대기 | [디자인 브리프](./docs/02-design/DESIGN_BRIEF.md) · Figma |
-| **P2 개발** | 🟢 스캐폴드 완료 | 모노레포 · API · 쇼핑몰 · 어드민 |
+| **P0 기획** | 🟢 Gate 통과 | [PRD](./docs/01-planning/PRD.md) · [유저스토리](./docs/01-planning/USER_STORIES.md) · [로드맵](./docs/01-planning/ROADMAP.md) |
+| **P1 디자인** | 🟡 진행 중 | [디자인 브리프](./docs/02-design/DESIGN_BRIEF.md) · [화면 스펙](./docs/02-design/screens/) |
+| **P2 개발** | 🟢 S1 MVP 플로우 완료 | 상품 상세 · 장바구니 · 체크아웃 ✅ |
 | **P3 QA** | ⚪ 대기 | [테스트 플랜](./docs/04-qa/TEST_PLAN.md) |
 | **P4 배포** | ⚪ 대기 | [릴리스 체크리스트](./docs/04-qa/RELEASE_CHECKLIST.md) |
+
+## S1 이번 주 목표
+
+- [x] ROADMAP · PRD Approved
+- [x] GitHub Issues 5건+
+- [x] 상품 상세 `/products/[id]`
+- [x] 장바구니 API + `/cart`
+- [x] 체크아웃 mock + `/checkout`
+- [x] `pnpm verify` pass
 
 ## 풀 프로세스 (회사 표준)
 

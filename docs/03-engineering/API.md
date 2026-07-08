@@ -4,24 +4,7 @@ Base URL: `http://localhost:4000` (개발)
 
 ## 공통 타입
 
-`@goodz/types`:
-
-```typescript
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-  category: string;
-  stock: number;
-}
-
-interface ProductListResponse {
-  products: Product[];
-  total: number;
-}
-```
+`@goodz/types` — `Product`, `ProductListResponse`, `Cart`, `CartView`, `CheckoutResult`
 
 ## Endpoints
 
@@ -40,13 +23,42 @@ interface ProductListResponse {
 **Response:** `Product`  
 **404:** `{ "message": "Product not found" }`
 
-## 향후 (P1+)
+### `GET /api/cart`
 
-| Method | Path | 설명 |
-|--------|------|------|
-| POST | `/api/cart` | 장바구니 담기 |
-| GET | `/api/cart` | 장바구니 조회 |
-| POST | `/api/checkout` | mock 결제 |
+**Query:** `cartId` 또는 헤더 `x-cart-id`
+
+**Response:** `CartView`
+
+### `POST /api/cart/items`
+
+**Headers:** `x-cart-id` (선택 — 없으면 새 장바구니 생성)
+
+**Body:**
+
+```json
+{ "productId": "gd-001", "quantity": 1 }
+```
+
+**Response:** `CartView`
+
+### `POST /api/checkout`
+
+**Body:**
+
+```json
+{ "cartId": "uuid" }
+```
+
+**Response:** `CheckoutResult`
+
+```json
+{
+  "orderId": "ord-123",
+  "total": 23800,
+  "status": "paid",
+  "items": []
+}
+```
 
 ## 변경 절차
 

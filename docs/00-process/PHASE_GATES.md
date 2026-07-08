@@ -4,10 +4,10 @@
 
 ## P0 → P1 (기획 → 디자인)
 
-- [ ] PRD v0.1 이상 작성 (`docs/01-planning/PRD.md`)
-- [ ] MVP 범위 확정 (상품 목록 · 장바구니 · 결제 · 어드민 상품관리)
-- [ ] 유저스토리 5개 이상 GitHub Issue 등록
-- [ ] GA4 핵심 퍼널 이벤트 초안 (`docs/01-planning/GA4_EVENTS.md`)
+- [x] PRD v0.1 이상 작성 (`docs/01-planning/PRD.md`)
+- [x] MVP 범위 확정 (상품 목록 · 장바구니 · 결제 · 어드민 상품관리)
+- [x] 유저스토리 5개 이상 GitHub Issue 등록
+- [x] GA4 핵심 퍼널 이벤트 초안 (`docs/01-planning/GA4_EVENTS.md`)
 
 ## P1 → P2 (디자인 → 개발)
 
@@ -18,10 +18,10 @@
 
 ## P2 → P3 (개발 → QA)
 
-- [ ] `pnpm verify` CI green
-- [ ] API `Product` CRUD (최소 Read + mock)
-- [ ] web-shop 상품 목록 API 연동
-- [ ] admin 상품 테이블 API 연동
+- [x] `pnpm verify` CI green
+- [x] API `Product` CRUD (최소 Read + mock)
+- [x] web-shop 상품 목록 API 연동
+- [x] admin 상품 테이블 API 연동
 - [ ] PR 1건 이상 merge (develop)
 
 ## P3 → P4 (QA → 배포)

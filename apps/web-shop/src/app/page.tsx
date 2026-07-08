@@ -1,5 +1,6 @@
 import type { ProductListResponse } from "@goodz/types";
 import { Button } from "@goodz/ui";
+import Link from "next/link";
 import { ProductGrid } from "@/components/ProductGrid";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +31,9 @@ export default async function HomePage() {
             를 프론트·백엔드가 공유합니다.
           </p>
         </div>
-        <Button variant="primary">장바구니 보기</Button>
+        <Link href="/cart">
+          <Button variant="primary">장바구니 보기</Button>
+        </Link>
       </header>
 
       <p className="mb-6 text-sm text-slate-500">총 {total}개 상품</p>

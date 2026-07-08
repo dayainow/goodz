@@ -28,6 +28,9 @@
 | 화면 | 문서 |
 |------|------|
 | 상품 목록 | [screens/product-list.md](./screens/product-list.md) |
+| 상품 상세 | [screens/product-detail.md](./screens/product-detail.md) |
+| 장바구니 | [screens/cart.md](./screens/cart.md) |
+| 체크아웃 | [screens/checkout.md](./screens/checkout.md) |
 
 ## Figma MCP 워크플로우
 

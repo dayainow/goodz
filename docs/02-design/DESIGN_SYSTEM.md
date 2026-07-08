@@ -26,8 +26,8 @@
 | Button/Primary | `Button variant="primary"` | ✅ |
 | Button/Secondary | `Button variant="secondary"` | ✅ |
 | Button/Danger | `Button variant="danger"` | ✅ |
-| Card | (예정) | P1 |
-| ProductCard | (예정) | P1 |
+| Card | `Card` | 🟡 S1 |
+| ProductCard | `ProductCard` (web-shop) | 🟡 S1 |
 
 ## 신규 컴포넌트 추가 절차
 

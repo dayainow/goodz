@@ -4,7 +4,7 @@
 |------|------|
 | 제품명 | **Goodz** — 굿즈 전문 이커머스 |
 | 버전 | v0.1 (MVP) |
-| 상태 | Draft |
+| 상태 | **Approved** (S1) |
 | 플랫폼 | Web (쇼핑몰) + Admin + API |
 
 ## 1. 문제 정의
@@ -52,13 +52,14 @@
 
 | Sprint | 기간 | 목표 |
 |--------|------|------|
-| S0 | 현재 | 모노레포 스캐폴드 ✅ |
-| S1 | +1주 | P0 기획 Gate + 디자인 착수 |
-| S2 | +2주 | 상품 상세·장바구니 개발 |
-| S3 | +3주 | QA + 스테이징 |
+| S0 | 완료 | 모노레포 스캐폴드 ✅ |
+| **S1** | **현재** | P0 Gate + 상품 상세·장바구니·체크아웃 |
+| S2 | +2주 | Figma · GA4 harness · 어드민 등록 |
+| S3 | +3주 | QA + 스테이징 배포 |
 
 ## 8. 관련 문서
 
 - [USER_STORIES.md](./USER_STORIES.md)
+- [ROADMAP.md](./ROADMAP.md)
 - [GA4_EVENTS.md](./GA4_EVENTS.md)
 - [../02-design/DESIGN_BRIEF.md](../02-design/DESIGN_BRIEF.md)

@@ -27,5 +27,4 @@
 ## 구현 상태
 
 - [x] API 연동
-- [x] ProductGrid
-- [ ] Figma 픽셀 퍼펙트 (P1)
+- [x] ProductGrid + 카드 클릭
