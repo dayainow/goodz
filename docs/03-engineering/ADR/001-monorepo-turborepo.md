@@ -10,15 +10,21 @@ Accepted
 
 ## 결정
 
-- **pnpm workspace** — 디스크 효율, workspace 프로토콜
-- **Turborepo** — `^build` 캐시, 병렬 dev/build
+- **pnpm workspace** — `node-linker=isolated`, 유령 의존성 차단, workspace 프로토콜
+- **Turborepo** — `^build` 태스크 그래프 + computational cache (로컬·CI `.turbo/cache`)
 - **Express** (Nest 대신) — MVP API 경량화
+
+## 검증
+
+- `manypkg check` — 워크스페이스 의존성 일관성
+- `check:deps` (depcheck) — 미선언 import 탐지
+- `pnpm verify` — 위 검사 + `turbo build` + `turbo lint`
 
 ## 결과
 
 - `@goodz/types` 단일 SSOT
 - `pnpm dev` 한 번에 3앱 기동
-- CI `pnpm verify`
+- CI: pnpm 캐시 + Turborepo `.turbo/cache` 복원으로 빌드 스킵
 
 ## 대안
 

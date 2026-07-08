@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalDependencies": ["pnpm-lock.yaml", ".npmrc"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -15,6 +16,10 @@
     },
     "typecheck": {
       "dependsOn": ["^build"]
+    },
+    "check:deps": {
+      "cache": true,
+      "inputs": ["scripts/check-phantom-deps.mjs", "pnpm-lock.yaml"]
     },
     "dev": {
       "dependsOn": ["^build"],

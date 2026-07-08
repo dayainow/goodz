@@ -23,9 +23,9 @@
 
 ## 모노레포
 
-- **pnpm workspace** + **Turborepo**
-- 빌드: `dependsOn: ["^build"]`
-- 검증: `pnpm verify`
+- **pnpm workspace** (`node-linker=isolated`) — 유령 의존성 방지
+- **Turborepo** — `dependsOn: ["^build"]` + 로컬/CI 캐시 (`.turbo/cache`)
+- 검증: `pnpm verify` (workspace · deps · build · lint)
 
 ## 앱별 책임
 
