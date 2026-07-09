@@ -50,6 +50,8 @@
 | CartEmptyState | `CartEmptyState` (web-shop) | ✅ P2 handoff |
 | CheckoutOrderSummary | `CheckoutOrderSummary` (web-shop) | ✅ P2 handoff |
 | OrderSuccessCard | `OrderSuccessCard` (web-shop) | ✅ P2 handoff |
+| AdminLayout | `AdminLayout` (admin) | ✅ P2 handoff |
+| ProductTable | `ProductTable` (admin) | ✅ P2 handoff |
 
 ## 신규 컴포넌트 추가 절차
 

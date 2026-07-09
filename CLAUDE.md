@@ -147,3 +147,40 @@ handoff 코드: acceptEdits 또는 auto (git은 Cursor가 담당하므로 Claude
 ```
 
 공식 문서: https://code.claude.com/docs/en/permissions
+
+---
+
+## Claude Code에 작업 시키는 방법 (복붙용)
+
+goodz 루트에서 `claude` 실행 → **Shift+Tab**으로 `accept edits on` 확인 후 아래 프롬프트 붙여넣기.
+
+### 디자인 수정 (Claude Design)
+
+```text
+Goodz Claude Design 프로젝트를 수정해줘.
+- 프로젝트: https://claude.ai/design/p/2bcbb8f0-f646-49bd-a975-3da8631b71e9
+- 참고: docs/02-design/DESIGN_BRIEF.md, docs/02-design/screens/
+- CTA violet #7C3AED, Sticky Lemon 파스텔 톤 유지
+- git commit/push 하지 마 (CLAUDE.md 규칙)
+- 완료 시 화면별 링크 표로 보고
+```
+
+### 코드 handoff (앱 반영 — Cursor 대신 Claude가 할 때)
+
+```text
+Goodz admin-dashboard에 Claude Design 어드민 UI를 반영해줘.
+- 스펙: docs/02-design/screens/admin-product-list.md, admin-product-create.md
+- 디자인 참고: admin-product-list.dc.html, admin-product-create.dc.html (위 프로젝트)
+- 1280px 사이드바 + 테이블/폼, brand-violet CTA, 파스텔 카테고리 칩
+- apps/admin-dashboard만 수정, @goodz/ui · @goodz/types 사용
+- pnpm verify 통과까지
+- git commit 하지 마 — 완료 보고만
+```
+
+### Cursor에게 시킬 때 (이 채팅)
+
+```text
+어드민 UI handoff 진행해줘 (1280px, 사이드바, 상품목록/등록)
+```
+
+역할 분리: **디자인 산출물 = Claude Code** · **git·문서·코드 커밋 = Cursor**

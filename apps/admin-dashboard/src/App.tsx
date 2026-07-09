@@ -1,20 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import type { CreateProductRequest, Product, ProductListResponse } from "@goodz/types";
+import type { CreateProductRequest, Product } from "@goodz/types";
 import { Button } from "@goodz/ui";
 import { createProduct, fetchProducts } from "./api/products";
-import { ProductCreateForm } from "./components/ProductCreateForm";
+import { AdminLayout } from "./components/layout/AdminLayout";
+import type { AdminView } from "./components/layout/AdminSidebar";
+import { ProductCreateForm } from "./components/products/ProductCreateForm";
+import { ProductTable } from "./components/products/ProductTable";
 
 export default function App() {
+  const [view, setView] = useState<AdminView>("list");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false);
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data: ProductListResponse = await fetchProducts();
+      const data = await fetchProducts();
       setProducts(data.products);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -29,68 +32,49 @@ export default function App() {
 
   async function handleCreate(input: CreateProductRequest) {
     await createProduct(input);
-    setShowForm(false);
     await loadProducts();
+    setView("list");
   }
 
   return (
-    <div className="mx-auto min-h-screen max-w-5xl px-6 py-12">
-      <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-violet-400">Goodz Admin</p>
-          <h1 className="text-2xl font-bold">상품 관리</h1>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="secondary">CSV보내기</Button>
-          <Button
-            variant="primary"
-            onClick={() => setShowForm((open) => !open)}
-          >
-            {showForm ? "등록 닫기" : "상품 등록"}
-          </Button>
-        </div>
-      </header>
-
-      {showForm && (
+    <AdminLayout
+      activeView={view}
+      onNavigate={setView}
+      title={view === "list" ? "상품 목록" : "상품 등록"}
+      description={
+        view === "list"
+          ? `총 ${products.length}개 상품 · API 연동`
+          : "새 굿즈 상품을 등록합니다"
+      }
+      actions={
+        view === "list" ? (
+          <div className="flex gap-2">
+            <Button variant="secondary" disabled>
+              CSV보내기
+            </Button>
+            <Button variant="primary" onClick={() => setView("create")}>
+              + 상품 등록
+            </Button>
+          </div>
+        ) : undefined
+      }
+    >
+      {view === "list" ? (
+        <>
+          {loading && <p className="text-slate-500">불러오는 중…</p>}
+          {error && (
+            <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-rose-600">
+              API 오류: {error}
+            </p>
+          )}
+          {!loading && !error && <ProductTable products={products} />}
+        </>
+      ) : (
         <ProductCreateForm
           onSubmit={handleCreate}
-          onCancel={() => setShowForm(false)}
+          onCancel={() => setView("list")}
         />
       )}
-
-      {loading && <p className="text-slate-400">불러오는 중…</p>}
-      {error && (
-        <p className="rounded-lg bg-rose-950 px-4 py-3 text-rose-200">
-          API 오류: {error}
-        </p>
-      )}
-
-      {!loading && !error && (
-        <table className="w-full overflow-hidden rounded-xl border border-slate-800 text-left text-sm">
-          <thead className="bg-slate-900 text-slate-400">
-            <tr>
-              <th className="px-4 py-3">ID</th>
-              <th className="px-4 py-3">이름</th>
-              <th className="px-4 py-3">카테고리</th>
-              <th className="px-4 py-3">가격</th>
-              <th className="px-4 py-3">재고</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id} className="border-t border-slate-800">
-                <td className="px-4 py-3 font-mono text-xs">{p.id}</td>
-                <td className="px-4 py-3">{p.name}</td>
-                <td className="px-4 py-3 text-slate-400">{p.category}</td>
-                <td className="px-4 py-3">
-                  {p.price.toLocaleString("ko-KR")}원
-                </td>
-                <td className="px-4 py-3">{p.stock}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+    </AdminLayout>
   );
 }
