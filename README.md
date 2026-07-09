@@ -4,39 +4,170 @@
 [![pnpm](https://img.shields.io/badge/pnpm-workspace-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Turborepo](https://img.shields.io/badge/Turborepo-monorepo-EF4444?style=flat-square&logo=turborepo&logoColor=white)](https://turbo.build/)
 
-Turborepo + pnpm 기반 굿즈 이커머스 풀스택 모노레포입니다.  
-**기획 → 디자인 → 개발 → QA → 배포** 전 과정을 실제 회사 산출물 형식(PRD, Claude Design, ADR, Phase Gate)으로 관리하는 **풀 프로세스 레퍼런스 프로젝트**입니다.
+> **코드만 있는 쇼핑몰 데모가 아닙니다.**  
+> Goodz는 **기획 → 디자인 → 개발 → QA → 배포**를 문서·게이트·모노레포·CI로 묶은 **풀 프로세스 모노레포 시스템**이며, 쇼핑몰은 그 시스템을 증명하는 레퍼런스입니다.  
+> (향후 템플릿·라이선스·컨설팅 패키지로 확장 가능)
 
-👉 **[PROJECT.md](./PROJECT.md)** — Phase 상태 · 워크플로우 허브
+👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 프로젝트 존재 이유 (에이전트 필독)  
+👉 **[에이전트 가이드](./docs/00-process/AGENT_GUIDE.md)** — Cursor / Claude Code 작업 절차  
+👉 **[PROJECT.md](./PROJECT.md)** — 현재 Sprint · Phase 상태
 
 ---
 
-## 왜 이 프로젝트인가
+## 이 프로젝트의 핵심 — 풀 프로세스 모노레포 시스템
 
-| 목표 | 설명 |
+Goodz의 **진짜 제품**은 아래입니다. 쇼핑몰 앱은 **데모**입니다.
+
+| 시스템 레이어 | 내용 |
+|---------------|------|
+| **프로세스** | P0–P4, Phase Gate, Sprint ROADMAP |
+| **문서 SSOT** | PRD, 스펙, API, ADR, QA 체크리스트 |
+| **모노레포** | Turborepo + pnpm, `@goodz/types`, 3앱 스캐폴드 |
+| **품질** | `pnpm verify`, CI, GA harness 연동 패턴 |
+| **AI 협업** | Phase별 스킬, Cursor / Claude Code 역할 분리 |
+
+| 원칙 | 설명 |
 |------|------|
-| **풀 프로세스 실습** | P0 기획부터 P4 배포까지 단계별 산출물·게이트를 GitHub에서 추적 |
-| **타입 안전 풀스택** | `@goodz/types` SSOT로 API · 쇼핑몰 · 어드민 E2E 타입 일치 |
-| **AI 협업 표준** | Phase별 Cursor/Hermes 스킬 + 이슈·PR 템플릿으로 에이전트 역할 분리 |
-| **검증 가능한 품질** | `pnpm verify` + GitHub Actions CI, GA4는 [GA Analytics Harness](https://github.com/dayainow/ga-analytics-harness) 연동 예정 |
+| **Phase Gate** | P0→P4 단계마다 산출물·체크리스트를 통과해야 다음 단계로 진행 |
+| **문서 = SSOT** | PRD·유저스토리·API·화면 스펙이 코드보다 먼저, GitHub에서 버전 관리 |
+| **타입 우선 개발** | `@goodz/types` → API → 앱 순서로 E2E 타입 일치 |
+| **검증 가능** | `pnpm verify` + CI로 매 커밋 품질 게이트 |
+| **AI 역할 분리** | Phase별 스킬·에이전트(Cursor / Claude Code)로 협업 규칙 명문화 |
+
+### 5단계 프로세스
+
+```text
+P0 기획          P1 디자인         P2 개발           P3 QA            P4 배포
+────────         ────────         ────────         ────────         ────────
+PRD              Claude Design    @goodz/types     pnpm verify      CI green
+유저스토리        /design-sync      api → apps       E2E 시나리오      스테이징
+GA4 명세         화면 프로토타입    PR + 리뷰        GA harness       프로덕션
+Notion SSOT      handoff→Code      ADR              회귀 테스트
+     │                │                │                │                │
+     └────────────────┴────────────────┴────────────────┴────────────────┘
+                         Phase Gate — docs/00-process/PHASE_GATES.md
+```
+
+| Phase | 역할 | 핵심 산출물 | 문서 |
+|-------|------|-------------|------|
+| **P0 기획** | PM | PRD, 유저스토리, GA4 퍼널 | [PRD](./docs/01-planning/PRD.md) · [USER_STORIES](./docs/01-planning/USER_STORIES.md) |
+| **P1 디자인** | Design | Claude Design 프로토타입, DS, 화면 스펙 | [CLAUDE_DESIGN](./docs/02-design/CLAUDE_DESIGN.md) · [screens/](./docs/02-design/screens/) |
+| **P2 개발** | FE/BE | API, 모노레포 코드, ADR | [ARCHITECTURE](./docs/03-engineering/ARCHITECTURE.md) · [API](./docs/03-engineering/API.md) |
+| **P3 QA** | QA | 테스트 플랜, GA compliance | [TEST_PLAN](./docs/04-qa/TEST_PLAN.md) |
+| **P4 배포** | DevOps | 스테이징·프로덕션 릴리스 | [RELEASE_CHECKLIST](./docs/04-qa/RELEASE_CHECKLIST.md) |
+
+**상세 워크플로우:** [docs/00-process/WORKFLOW.md](./docs/00-process/WORKFLOW.md)
+
+### Sprint 타임라인 (현재)
+
+```text
+S0 ✅ 모노레포 스캐폴드   S1 ✅ MVP 쇼핑 플로우   S2 🟡 Claude Design P1   S3 ⚪ QA·스테이징
+```
+
+| Phase | 현재 상태 |
+|-------|-----------|
+| P0 기획 | 🟢 Gate 통과 |
+| P1 디자인 | 🟡 Claude Design 12화면 (Sticky Lemon 레퍼런스) |
+| P2 개발 | 🟢 MVP + GA4 harness + 어드민 등록 API |
+| P3/P4 | ⚪ 대기 |
+
+로드맵: [docs/01-planning/ROADMAP.md](./docs/01-planning/ROADMAP.md)
+
+### 이슈 → 개발 → 배포 흐름
+
+```text
+GitHub Issue (기획/기능)
+    → feature/* 브랜치
+    → PR (Phase 체크리스트 + Closes #N)
+    → pnpm verify (로컬) + CI (GitHub Actions)
+    → merge → Phase Gate 갱신
+```
 
 ---
 
-## 앱 구성
+## 모노레포 — Turborepo + pnpm
+
+기능은 **3앱 + 2공유 패키지**로 나뉘고, Turborepo가 빌드 순서·캐시를 관리합니다.
+
+```text
+                    ┌─────────────────┐
+                    │ admin-dashboard │  Vite :5173
+                    └────────┬────────┘
+                             │ fetch
+┌──────────────┐             │             ┌──────────────┐
+│   web-shop   │─────────────┼────────────│  api-server  │  Express :4000
+│   Next.js    │             │             └──────┬───────┘
+└──────┬───────┘             │                    │
+       └──────────┬──────────┴──────────┬─────────┘
+                  │                     │
+           ┌──────▼──────┐       ┌──────▼──────┐
+           │ @goodz/types │       │  @goodz/ui  │
+           │   (SSOT)     │       │  components │
+           └─────────────┘       └─────────────┘
+```
 
 | 앱 | 스택 | 포트 | 역할 |
 |----|------|------|------|
-| **web-shop** | Next.js 15 App Router | `:3000` | B2C 쇼핑몰 (상품 목록·상세·장바구니·결제) |
-| **admin-dashboard** | Vite + React | `:5173` | 상품·주문 관리 어드민 |
-| **api-server** | Express + TypeScript | `:4000` | REST API · Mock 데이터 |
-
-### 공유 패키지
+| **web-shop** | Next.js 15 | `:3000` | B2C 쇼핑몰 |
+| **admin-dashboard** | Vite + React | `:5173` | 상품·운영 관리 |
+| **api-server** | Express + TS | `:4000` | REST API · Mock |
 
 | 패키지 | 역할 |
 |--------|------|
-| `@goodz/types` | `Product` 등 도메인 타입 SSOT |
-| `@goodz/ui` | 공유 UI 컴포넌트 · Tailwind preset |
-| `@goodz/tsconfig` | 모노레포 TypeScript 설정 |
+| `@goodz/types` | `Product`, `Cart` 등 도메인 타입 **SSOT** |
+| `@goodz/ui` | Button, Card · Tailwind preset |
+| `@goodz/tsconfig` | 공유 TypeScript 설정 |
+
+### 기능 추가 순서 (P2 규칙)
+
+```text
+① packages/types/src   ← 타입 먼저
+② apps/api-server      ← API
+③ packages/ui          ← 공통 UI (필요 시)
+④ apps/web-shop / admin-dashboard
+⑤ docs/API.md 갱신 + pnpm verify
+```
+
+### 모노레포 품질 게이트
+
+| 검사 | 명령 | 역할 |
+|------|------|------|
+| 워크스페이스 일관성 | `pnpm check:workspace` | manypkg |
+| 유령 의존성 | `pnpm check:deps` | depcheck |
+| 빌드 + 린트 | `turbo build && turbo lint` | Turborepo computational cache |
+| **전체** | **`pnpm verify`** | PR·커밋 전 필수 |
+
+- pnpm `node-linker=isolated` — 유령 의존성 방지
+- CI: `.turbo/cache` 복원 + [ga-analytics-harness](https://github.com/dayainow/ga-analytics-harness) 형제 checkout
+
+ADR: [001 — Turborepo + pnpm 선택](./docs/03-engineering/ADR/001-monorepo-turborepo.md)
+
+---
+
+## AI 에이전트 협업
+
+Phase마다 **다른 도구·스킬**을 쓰고, 동시 작업 시 git은 Cursor가 전담합니다.
+
+| Phase | 도구 | 스킬 |
+|-------|------|------|
+| **시스템** | Cursor | `skills/goodz-system/` |
+| P0 기획 | Notion, Issues | `skills/goodz-planning/` |
+| P1 디자인 | Claude Design + Claude Code | `skills/goodz-design/` |
+| P2 개발 | **Cursor** | `skills/goodz-dev/` |
+| P3 QA | `pnpm verify`, GA harness | — |
+
+| 도구 | 진입 문서 |
+|------|-----------|
+| **Cursor** | [AGENTS.md](./AGENTS.md) · `.cursor/rules/` |
+| **Claude Code** | [CLAUDE.md](./CLAUDE.md) |
+
+| 에이전트 | git |
+|----------|-----|
+| **Cursor** | ✅ add / commit / push 전담 |
+| **Claude Code** | ❌ 파일 생성만 (디자인 산출물) |
+
+- [AGENTS.md](./AGENTS.md) — 에이전트 규칙
+- [Hermes 연동](./docs/HERMES.md) — 선택
 
 ---
 
@@ -44,11 +175,11 @@ Turborepo + pnpm 기반 굿즈 이커머스 풀스택 모노레포입니다.
 
 ```text
 goodz/
-├── PROJECT.md                 # Phase 상태 · 링크 허브
+├── PROJECT.md                 # Phase · Sprint 상태 허브
 ├── docs/
 │   ├── 00-process/            # WORKFLOW · PHASE_GATES
-│   ├── 01-planning/           # PRD · USER_STORIES · GA4_EVENTS
-│   ├── 02-design/             # CLAUDE_DESIGN · DESIGN_BRIEF · DESIGN_SYSTEM
+│   ├── 01-planning/           # PRD · USER_STORIES · ROADMAP · GA4
+│   ├── 02-design/             # CLAUDE_DESIGN · DESIGN_SYSTEM · screens/
 │   ├── 03-engineering/        # ARCHITECTURE · API · ADR
 │   └── 04-qa/                 # TEST_PLAN · RELEASE_CHECKLIST
 ├── skills/                    # goodz-planning · design · dev
@@ -67,7 +198,7 @@ cd goodz
 pnpm install
 pnpm build
 pnpm dev          # API :4000 · Shop :3000 · Admin :5173
-pnpm verify       # build + lint (PR·커밋 전 필수)
+pnpm verify       # workspace + deps + build + lint (PR 전 필수)
 ```
 
 ### 환경 변수
@@ -79,72 +210,26 @@ pnpm verify       # build + lint (PR·커밋 전 필수)
 
 ---
 
-## 풀 프로세스 (Phase)
-
-```text
-P0 기획          P1 디자인         P2 개발           P3 QA            P4 배포
-────────         ────────         ────────         ────────         ────────
-PRD              Claude Design    @goodz/types     pnpm verify      CI green
-유저스토리        /design-sync      api → apps       E2E 시나리오      스테이징
-GA4 명세         화면 프로토타입    PR + 리뷰        GA harness       프로덕션
-     │                │                │                │                │
-     └────────────────┴────────────────┴────────────────┴────────────────┘
-                              Phase Gate (docs/00-process/PHASE_GATES.md)
-```
-
-| Phase | 상태 | 산출물 |
-|-------|------|--------|
-| **P0 기획** | 🟢 Gate 통과 | [PRD](./docs/01-planning/PRD.md) · [유저스토리](./docs/01-planning/USER_STORIES.md) · [GA4](./docs/01-planning/GA4_EVENTS.md) |
-| **P1 디자인** | 🟡 진행 중 | [Claude Design](./docs/02-design/CLAUDE_DESIGN.md) · [디자인 브리프](./docs/02-design/DESIGN_BRIEF.md) |
-| **P2 개발** | 🟢 S1 MVP 완료 | [아키텍처](./docs/03-engineering/ARCHITECTURE.md) · [API](./docs/03-engineering/API.md) |
-| **P3 QA** | ⚪ 대기 | [테스트 플랜](./docs/04-qa/TEST_PLAN.md) |
-| **P4 배포** | ⚪ 대기 | [릴리스 체크리스트](./docs/04-qa/RELEASE_CHECKLIST.md) |
-
-상세 워크플로우: [docs/00-process/WORKFLOW.md](./docs/00-process/WORKFLOW.md)
-
----
-
 ## GitHub 협업
 
 | 항목 | 설명 |
 |------|------|
 | **브랜치** | `main` · `develop` · `feature/*` · `design/*` · `docs/*` |
-| **이슈** | 기획 / 기능 / 버그 템플릿 (`.github/ISSUE_TEMPLATE/`) |
-| **PR** | Phase 체크리스트 + `pnpm verify` 통과 필수 |
-| **CI** | push·PR 시 [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) 자동 실행 |
-
----
-
-## AI 에이전트 (Hermes · Cursor)
-
-| Phase | 스킬 | 경로 |
-|-------|------|------|
-| P0 기획 | `goodz-planning` | `skills/goodz-planning/SKILL.md` |
-| P1 디자인 | `goodz-design` | `skills/goodz-design/SKILL.md` |
-| P2 개발 | `goodz-dev` | `skills/goodz-dev/SKILL.md` |
-
-```bash
-# Hermes 스킬 등록
-cd goodz
-ln -sf "$(pwd)/skills/goodz-planning" ~/.hermes/skills/goodz-planning
-ln -sf "$(pwd)/skills/goodz-design" ~/.hermes/skills/goodz-design
-ln -sf "$(pwd)/skills/goodz-dev" ~/.hermes/skills/goodz-dev
-```
-
-- [Hermes 연동 가이드](./docs/HERMES.md)
-- [AGENTS.md](./AGENTS.md) — 코딩 에이전트 규칙
+| **이슈** | 기획 / 기능 / 버그 템플릿 |
+| **PR** | Phase 체크리스트 + `pnpm verify` + `Closes #이슈` |
+| **CI** | [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) — push·PR 시 자동 |
 
 ---
 
 ## 기술 스택
 
 ```text
-Monorepo   Turborepo · pnpm workspaces
+Process    Phase Gate · PRD · ADR · Claude Design · GitHub Issues/PR
+Monorepo   Turborepo · pnpm workspaces · @goodz/types SSOT
 Frontend   Next.js 15 · React 19 · Vite · Tailwind CSS
 Backend    Express · TypeScript
-Shared     @goodz/types (SSOT) · @goodz/ui
-Quality    ESLint · Turbo cache · GitHub Actions
-AI         Cursor · Claude Code + Claude Design · Hermes (선택)
+Quality    pnpm verify · Turbo cache · GitHub Actions · GA harness
+AI         Cursor (코드) · Claude Code (디자인) · Hermes (선택)
 ```
 
 ---
@@ -153,10 +238,10 @@ AI         Cursor · Claude Code + Claude Design · Hermes (선택)
 
 | 프로젝트 | 연동 |
 |----------|------|
-| [GA Analytics Harness](https://github.com/dayainow/ga-analytics-harness) | GA4 이벤트 명세 → 코드 · MSW · compliance 게이트 |
-| [Frontend Agent Orchestrator Kit](https://github.com/dayainow/frontend-agent-orchestrator-kit) | 기획/디자인 → 구현 → QA 에이전트 오케스트레이션 |
-| [Claude Design](https://claude.ai/design) | **P1 공식** — `/design-sync`로 `@goodz/ui` 반영 · [가이드](./docs/02-design/CLAUDE_DESIGN.md) |
-| [Figma Publish Harness](https://github.com/dayainow/figma-publish) | Figma ↔ 코드 동기화 (보조·선택) |
+| [GA Analytics Harness](https://github.com/dayainow/ga-analytics-harness) | GA4 이벤트 명세 → 코드 · MSW · compliance |
+| [Claude Design](https://claude.ai/design) | P1 디자인 — [가이드](./docs/02-design/CLAUDE_DESIGN.md) |
+| [Frontend Agent Orchestrator Kit](https://github.com/dayainow/frontend-agent-orchestrator-kit) | 기획/디자인 → 구현 → QA 오케스트레이션 |
+| [Figma Publish Harness](https://github.com/dayainow/figma-publish) | Figma ↔ 코드 (보조) |
 
 ---
 

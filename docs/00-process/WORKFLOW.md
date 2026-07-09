@@ -1,5 +1,8 @@
 # Goodz 풀 프로세스 워크플로우
 
+> **전제:** Goodz의 제품은 쇼핑몰이 아니라 이 워크플로우 + 모노레포 + 게이트로 구성된 **시스템**입니다.  
+> [NORTH_STAR.md](./NORTH_STAR.md) · [AGENT_GUIDE.md](./AGENT_GUIDE.md)
+
 실제 제품팀이 쓰는 **기획 → 디자인 → 개발 → QA → 배포** 흐름을 Goodz에 맞게 정의합니다.
 
 ## 역할

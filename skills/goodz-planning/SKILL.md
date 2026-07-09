@@ -7,6 +7,9 @@ description: |
 
 # Goodz Planning Skill
 
+> **맥락:** Goodz는 쇼핑몰 제품이 아니라 **풀 프로세스 모노레포 시스템**. 기획 산출물은 그 시스템의 **P0 레이어**입니다.  
+> `docs/00-process/NORTH_STAR.md` 참고.
+
 ## 산출물 위치
 
 | 문서 | 경로 |

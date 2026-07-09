@@ -11,11 +11,12 @@
 
 ## P1 → P2 (디자인 → 개발)
 
-- [ ] Claude Design 프로젝트 링크 `docs/02-design/CLAUDE_DESIGN.md` 등록
-- [ ] `/design-sync`로 `@goodz/ui` · Tailwind DS 반영
-- [ ] 쇼핑몰 핵심 4화면 프로토타입 (목록, 상세, 장바구니, 체크아웃)
-- [ ] `DESIGN_SYSTEM.md` Claude Design ↔ 코드 매핑표
-- [ ] 어드민 상품 목록 화면 스펙 (또는 와이어)
+- [x] Claude Design 프로젝트 링크 `docs/02-design/CLAUDE_DESIGN.md` 등록 (12화면)
+- [x] `/design-sync`로 `@goodz/ui` · Tailwind DS 반영 (초기)
+- [x] 쇼핑몰 10화면 + 어드민 2화면 프로토타입 (Sticky Lemon 톤)
+- [x] `screens/` 12화면 스펙 인덱스
+- [ ] `DESIGN_SYSTEM.md` Sticky Lemon 카테고리 색 ↔ 코드 매핑 (P2 handoff)
+- [ ] 사용자 미리보기 최종 확인 (12화면·네비게이션)
 
 ## P2 → P3 (개발 → QA)
 

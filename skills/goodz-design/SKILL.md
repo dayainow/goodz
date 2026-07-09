@@ -7,6 +7,9 @@ description: |
 
 # Goodz Design Skill
 
+> **맥락:** 디자인은 **P1 파이프라인**(Claude Design handoff)을 증명하는 시스템 레이어. 화면 수는 데모 도메인을 위한 것.  
+> `docs/00-process/NORTH_STAR.md` · `AGENT_GUIDE.md` 참고.
+
 ## P1 공식 스택
 
 **Claude Design** + **Claude Code** (`/design-sync`, `/design`)

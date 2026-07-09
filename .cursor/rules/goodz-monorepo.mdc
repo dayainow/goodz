@@ -4,11 +4,16 @@ globs: apps/**/*.{ts,tsx}, packages/**/*.{ts,tsx}
 alwaysApply: true
 ---
 
+## 맥락
+
+Goodz는 **풀 프로세스 모노레포 시스템** — 앱 코드는 데모. `docs/00-process/NORTH_STAR.md` 참고.
+
 ## Goodz 모노레포
 
 - 패키지 매니저: **pnpm** (루트에서만 install)
 - 타입 SSOT: `packages/types` → api → frontends 순서
 - UI 공유: `packages/ui`의 `Button` 등 재사용
 - 완료 전: `pnpm verify`
+- API/타입 변경 시: `docs/03-engineering/API.md` 동기화
 
-상세: `AGENTS.md`, `skills/goodz-dev/SKILL.md`, `docs/HERMES.md`
+상세: `AGENTS.md`, `docs/00-process/AGENT_GUIDE.md`, `skills/goodz-dev/SKILL.md`

@@ -2,13 +2,18 @@
 
 ## 컬러 (코드 매핑)
 
-| 토큰 | Tailwind | 용도 |
-|------|----------|------|
-| primary | `violet-600` | CTA, 브랜드 |
+| 토큰 | Tailwind / hex | 용도 |
+|------|----------------|------|
+| primary | `violet-600` / `#7C3AED` | CTA, 브랜드 포인트 |
+| category-stationery | 파스텔 옐로우 | 문구 카테고리 (Claude Design) |
+| category-accessory | 파스텔 핑크 | 액세서리 카테고리 |
+| category-living | 파스텔 민트·피치 | 리빙 카테고리 |
 | surface | `slate-50` | 쇼핑몰 배경 |
 | surface-dark | `slate-950` | 어드민 배경 |
 | text | `slate-900` | 본문 |
 | danger | `rose-600` | 삭제·경고 |
+
+> Sticky Lemon 레퍼런스 톤 — P2 handoff 시 Tailwind 토큰으로 정식화 예정
 
 ## 타이포
 

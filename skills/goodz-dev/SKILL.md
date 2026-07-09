@@ -9,6 +9,9 @@ description: |
 
 # Goodz Dev Skill
 
+> **맥락:** `apps/*` 코드는 **레퍼런스 데모**. 개발 시 `@goodz/types` SSOT · API.md · `pnpm verify` 패턴이 시스템의 핵심 산출물.  
+> `docs/00-process/NORTH_STAR.md` · `AGENT_GUIDE.md` 참고.
+
 Goodz 모노레포에서 기능을 추가·수정할 때의 표준 워크플로우입니다.
 
 ## 1. 작업 시작
@@ -22,6 +25,8 @@ pnpm dev          # 또는 변경 범위에 맞게 개별 앱
 Hermes CLI에서 이 저장소를 작업 디렉터리로 지정하세요.
 
 ## 2. 기능 추가 순서 (타입 우선)
+
+데모 기능 추가 시 **반드시 동반**: `docs/03-engineering/API.md`, 해당 `USER_STORIES` AC, UI 변경 시 `screens/*.md`.
 
 | 단계 | 위치 | 예시 |
 |------|------|------|

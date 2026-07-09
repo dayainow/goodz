@@ -1,64 +1,61 @@
 # Goodz 프로젝트 허브
 
-> 굿즈 이커머스 — 기획 → 디자인 → 개발 → QA → 배포 전 과정을 **회사 산출물 형식**으로 관리합니다.
+> **Goodz는 쇼핑몰이 아니라, 쇼핑몰로 증명하는 풀 프로세스 모노레포 시스템입니다.**
 
-## 현재 스프린트: **S2 — Claude Design P1**
+👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
+👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-👉 [ROADMAP](./docs/01-planning/ROADMAP.md) · [유저스토리](./docs/01-planning/USER_STORIES.md)
+## 현재 스프린트: **S2 — 시스템 v0.2 (P1 디자인 파이프라인)**
+
+| 시스템 레이어 | 이번 Sprint 목표 |
+|---------------|------------------|
+| **P1 디자인 파이프라인** | Claude Design 12화면 + `screens/` 스펙 |
+| **P2 레퍼런스 데모** | MVP 플로우 ✅ · 어드민 등록 API ✅ |
+| **품질 게이트** | `pnpm verify` + CI green ✅ |
 
 ## 현재 단계
 
-| Phase | 상태 | 산출물 |
-|-------|------|--------|
-| **P0 기획** | 🟢 Gate 통과 | [PRD](./docs/01-planning/PRD.md) · [유저스토리](./docs/01-planning/USER_STORIES.md) · [로드맵](./docs/01-planning/ROADMAP.md) |
-| **P1 디자인** | 🟡 진행 중 | [Claude Design](./docs/02-design/CLAUDE_DESIGN.md) · `/design-sync` |
-| **P2 개발** | 🟢 S1 MVP 플로우 완료 | 상품 상세 · 장바구니 · 체크아웃 ✅ |
-| **P3 QA** | ⚪ 대기 | [테스트 플랜](./docs/04-qa/TEST_PLAN.md) |
-| **P4 배포** | ⚪ 대기 | [릴리스 체크리스트](./docs/04-qa/RELEASE_CHECKLIST.md) |
+| Phase | 상태 | 시스템 산출물 (제품) |
+|-------|------|----------------------|
+| **P0 기획** | 🟢 Gate 통과 | PRD · 유저스토리 · GA4 템플릿 |
+| **P1 디자인** | 🟢 12화면 완료 | Claude Design 파이프라인 · 화면 스펙 |
+| **P2 개발** | 🟢 데모 완료 | 모노레포 SSOT · API 패턴 · CI |
+| **P3 QA** | ⚪ 대기 | TEST_PLAN · GA compliance 게이트 |
+| **P4 배포** | ⚪ 대기 | RELEASE_CHECKLIST |
 
-## S2 이번 주 목표
+## 레퍼런스 구현체 (데모 — 최종 제품 아님)
 
-- [ ] Claude Design MCP `/design-login`
-- [ ] `/design-sync` (goodz DS)
-- [ ] 4화면 프로토타입 (목록·상세·장바구니·체크아웃)
-- [ ] `CLAUDE_DESIGN.md` 프로젝트 URL 등록
-- [x] GA4 harness (#8) ✅
-- [x] 어드민 상품 등록 mock API ✅
+| 앱 | 역할 |
+|----|------|
+| web-shop | B2C 퍼널 데모 |
+| admin-dashboard | 운영 UI 데모 |
+| api-server | REST + mock 패턴 |
 
-## 풀 프로세스 (회사 표준)
+## S2 체크리스트
+
+- [x] Claude Design 프로토타입 URL → `CLAUDE_DESIGN.md`
+- [x] `screens/` 12화면 스펙 확장
+- [x] CI + Turbo cache + dep check ✅
+- [x] 어드민 등록 mock (데모 + API.md) ✅
+- [ ] P1→P2 Gate (`PHASE_GATES.md`) — 미리보기 최종 확인·DS 코드 매핑 남음
+
+## 풀 프로세스
 
 ```text
-P0 기획          P1 디자인         P2 개발           P3 QA            P4 배포
-────────         ────────         ────────         ────────         ────────
-PRD              Claude Design    @goodz/types     pnpm verify      CI green
-유저스토리        /design-sync      api → apps       E2E 시나리오      스테이징
-GA4 명세         화면 프로토타입    PR + 리뷰        GA harness       프로덕션
-Notion SSOT      handoff→Code      ADR              회귀 테스트
-     │                │                │                │                │
-     └────────────────┴────────────────┴────────────────┴────────────────┘
-                              Phase Gate (docs/00-process/PHASE_GATES.md)
+P0 기획 → P1 디자인 → P2 개발 → P3 QA → P4 배포
+              ↑
+         Phase Gate (docs/00-process/PHASE_GATES.md)
 ```
 
-## 에이전트 스킬 (단계별)
+## 에이전트 진입점
 
-| Phase | 스킬 | 경로 |
-|-------|------|------|
-| 기획 | `goodz-planning` | `skills/goodz-planning/SKILL.md` |
-| 디자인 | `goodz-design` | `skills/goodz-design/SKILL.md` |
-| 개발 | `goodz-dev` | `skills/goodz-dev/SKILL.md` |
-
-Hermes: `ln -sf $(pwd)/skills/goodz-* ~/.hermes/skills/`
-
-## 빠른 링크
-
-- [전체 워크플로우](./docs/00-process/WORKFLOW.md)
-- [아키텍처](./docs/03-engineering/ARCHITECTURE.md)
-- [API 명세](./docs/03-engineering/API.md)
-- [Hermes 연동](./docs/HERMES.md)
-- [AGENTS.md](./AGENTS.md) — 코딩 에이전트 규칙
+| 도구 | 읽을 파일 |
+|------|-----------|
+| Cursor | `AGENTS.md`, `.cursor/rules/` |
+| Claude Code | `CLAUDE.md` |
+| 공통 | `NORTH_STAR.md`, `AGENT_GUIDE.md` |
 
 ## 저장소
 
 - GitHub: https://github.com/dayainow/goodz
-- 이슈: GitHub Issues (기획/기능/버그 템플릿)
-- PR: `.github/PULL_REQUEST_TEMPLATE.md`
+- 대외 소개: [README.md](./README.md)

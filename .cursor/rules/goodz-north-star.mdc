@@ -1,0 +1,29 @@
+---
+description: Goodz North Star — 풀 프로세스 모노레포 시스템이 진짜 제품임. 쇼핑몰은 데모.
+alwaysApply: true
+---
+
+## Goodz — 무엇을 만드는가
+
+**최종 아웃풋 = 풀 프로세스 모노레포 시스템** (문서·Gate·CI·스킬·스캐폴드).  
+**쇼핑몰 앱 = 레퍼런스 구현체** (시스템 증명용).
+
+작업 전 필독:
+1. `docs/00-process/NORTH_STAR.md`
+2. `docs/00-process/AGENT_GUIDE.md`
+3. `PROJECT.md`
+
+## 작업 우선순위
+
+```text
+시스템·문서·게이트·CI  >  레퍼런스 앱 기능  >  데모 polish
+```
+
+기능 추가 시 함께 갱신: `API.md`, `USER_STORIES` AC, `screens/`(UI), `PHASE_GATES`/`ROADMAP`(마일스톤).
+
+## 에이전트
+
+- **Cursor:** git·문서·코드 전담
+- **Claude Code:** 디자인 산출물만, git 금지 → `CLAUDE.md`
+
+상세: `AGENTS.md`

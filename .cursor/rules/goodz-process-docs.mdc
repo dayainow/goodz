@@ -1,0 +1,17 @@
+---
+description: Goodz 프로세스·문서 작업 규칙 — Phase Gate, ROADMAP, 시스템 가이드
+globs: docs/**/*,skills/**/*,PROJECT.md,README.md,AGENTS.md,CLAUDE.md,.github/**/*
+alwaysApply: false
+---
+
+## 문서 = 시스템의 제품
+
+Goodz의 판매 가능한 가치는 **코드보다 프로세스·문서·게이트**에 있습니다.
+
+문서 수정 시:
+- `NORTH_STAR.md`와 모순 없는지 확인
+- Phase Gate (`PHASE_GATES.md`) 체크리스트 반영
+- `PROJECT.md` · `ROADMAP.md` 상태 동기화
+- 에이전트가 따라 할 수 있게 `AGENT_GUIDE.md`에 절차가 있는지 확인
+
+쇼핑몰 기능 설명만 늘리지 말고, **어떤 Phase·시스템 요소를 강화하는지** 명시.
