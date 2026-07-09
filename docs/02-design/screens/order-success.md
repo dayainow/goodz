@@ -12,4 +12,4 @@
 
 ## 코드 상태
 
-- ✅ mock checkout 후 `/checkout/success` 구현됨 — UI handoff 대기
+- ✅ Sticky Lemon 톤 주문 완료 카드 UI

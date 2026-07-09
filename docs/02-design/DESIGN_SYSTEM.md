@@ -47,6 +47,9 @@
 | ProductCard | `ProductGrid` (web-shop) | ✅ P2 handoff |
 | ShopHeader | `ShopHeader` (web-shop) | ✅ P2 handoff |
 | CategoryCards | `CategoryCards` (web-shop) | ✅ P2 handoff |
+| CartEmptyState | `CartEmptyState` (web-shop) | ✅ P2 handoff |
+| CheckoutOrderSummary | `CheckoutOrderSummary` (web-shop) | ✅ P2 handoff |
+| OrderSuccessCard | `OrderSuccessCard` (web-shop) | ✅ P2 handoff |
 
 ## 신규 컴포넌트 추가 절차
 

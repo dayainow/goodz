@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
+import { CheckoutOrderSummary } from "@/components/checkout/CheckoutOrderSummary";
+import { CheckoutShippingCard } from "@/components/checkout/CheckoutShippingCard";
 import { getApiUrl, getCartId } from "@/lib/cart";
 
 export default function CheckoutPage() {
@@ -96,49 +98,44 @@ export default function CheckoutPage() {
   return (
     <>
       <PageViewTracker pagePath="/checkout" componentName="CheckoutPage" />
-      <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
-      <Link href="/cart" className="text-sm text-brand-violet hover:underline">
-        ← 장바구니
-      </Link>
-      <h1 className="mt-4 text-3xl font-bold">주문 / 결제</h1>
-      <p className="mt-2 text-sm text-slate-500">
-        MVP: 실제 PG 연동 없이 mock 결제입니다.
-      </p>
-
-      <section className="mt-8 rounded-xl border border-slate-200 bg-white p-6">
-        <h2 className="font-semibold">주문 요약</h2>
-        <ul className="mt-4 space-y-2 text-sm">
-          {view.lineItems.map((item) => (
-            <li key={item.product.id} className="flex justify-between gap-4">
-              <span>
-                {item.product.name} × {item.quantity}
-              </span>
-              <span>{item.lineTotal.toLocaleString("ko-KR")}원</span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 border-t border-slate-200 pt-4 text-lg font-bold">
-          총 {view.subtotal.toLocaleString("ko-KR")}원
-        </p>
-      </section>
-
-      <section className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">
-        <p>받는 사람: 홍길동 (mock)</p>
-        <p className="mt-1">연락처: 010-0000-0000 (mock)</p>
-      </section>
-
-      {error && <p className="mt-4 text-rose-600">{error}</p>}
-
-      <div className="mt-8">
-        <Button
-          variant="primary"
-          onClick={handleCheckout}
-          disabled={paying}
-          className="w-full sm:w-auto"
+      <main className="mx-auto min-h-screen max-w-3xl px-6 py-10">
+        <Link
+          href="/cart"
+          className="text-sm font-medium text-brand-violet hover:underline"
         >
-          {paying ? "결제 처리 중…" : "결제하기 (mock)"}
-        </Button>
-      </div>
+          ← 장바구니
+        </Link>
+        <header className="mt-4 mb-8">
+          <h1 className="text-3xl font-bold tracking-tight">주문 / 결제</h1>
+          <p className="mt-2 text-sm text-slate-500">
+            MVP mock 결제 — 실제 PG 연동 없음
+          </p>
+        </header>
+
+        <div className="space-y-6">
+          <CheckoutOrderSummary view={view} />
+          <CheckoutShippingCard />
+        </div>
+
+        {error && (
+          <p className="mt-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">
+            {error}
+          </p>
+        )}
+
+        <div className="mt-8 rounded-2xl border border-brand-violet/20 bg-brand-violet/5 p-6">
+          <p className="text-sm text-slate-600">
+            결제 버튼을 누르면 mock 주문이 완료됩니다.
+          </p>
+          <Button
+            variant="primary"
+            onClick={handleCheckout}
+            disabled={paying}
+            className="mt-4 w-full py-3 text-base sm:w-auto"
+          >
+            {paying ? "결제 처리 중…" : `${view.subtotal.toLocaleString("ko-KR")}원 결제하기`}
+          </Button>
+        </div>
       </main>
     </>
   );

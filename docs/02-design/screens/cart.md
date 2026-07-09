@@ -22,4 +22,4 @@
 ## 구현 상태
 
 - [x] API 연동
-- [x] 빈 상태 UI
+- [x] Sticky Lemon 톤 UI (라인아이템 · 요약 · empty state)

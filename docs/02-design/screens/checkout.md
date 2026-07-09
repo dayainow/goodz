@@ -28,3 +28,4 @@
 
 - [x] mock 결제 API
 - [x] 성공 페이지
+- [x] Sticky Lemon 톤 UI (주문 요약 · 배송 mock · CTA)

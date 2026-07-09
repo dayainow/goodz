@@ -72,3 +72,78 @@ pnpm verify   # PR 전 필수
 - UI 공유: `packages/ui`
 
 전체 규칙: `AGENTS.md`
+
+---
+
+## 권한 모드 — 중간 확인 없이 진행하기
+
+Claude Code가 파일 수정·MCP 호출마다 물어보는 것을 줄이는 방법.
+
+### 1) 세션 중 빠른 전환 (추천)
+
+프롬프트 하단 상태바에서 **Shift+Tab** 으로 모드 순환:
+
+```text
+default (매번 물어봄) → accept edits on → plan mode → …
+```
+
+**`accept edits on`** (`⏵⏵ accept edits on`) — 파일 편집·일반 파일시스템 명령은 **자동 승인**, 셸·위험 작업만 확인.
+
+디자인 업로드처럼 반복 편집이 많을 때 이 모드가 적합합니다.
+
+### 2) 기본 모드 고정 (매 세션 자동)
+
+**사용자 설정** `~/.claude/settings.json` (프로젝트 파일보다 우선):
+
+```json
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "mcp__claude-design__*"
+    ]
+  }
+}
+```
+
+| 모드 | 설명 | 추천 |
+|------|------|------|
+| `acceptEdits` | 편집 자동 승인, 셸은 선택적 확인 | **Goodz 디자인 작업** |
+| `auto` | 안전하다고 판단되는 도구 자동 승인 | 긴 작업·피로 감소 |
+| `bypassPermissions` | 거의 모든 확인 스킵 | **격리 VM/컨테이너만** |
+
+`auto` 기본값: `"defaultMode": "auto"` (계정 eligible 시, **user settings만**)
+
+### 3) MCP·명령 미리 허용
+
+프로젝트 로컬: `.claude/settings.local.json` — 이미 `mcp__claude-design__*` 등 allow 목록 있음.
+
+특정 Bash 패턴 추가 예:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm *)",
+      "mcp__claude-design__write_files"
+    ]
+  }
+}
+```
+
+### 4) 완전 스킵 (주의)
+
+```bash
+claude --dangerously-skip-permissions
+```
+
+또는 settings에 `"defaultMode": "bypassPermissions"`. **삭제·push 등도 묻지 않음** — 로컬 데모·디자인 전용 세션에서만.
+
+### Goodz 권장 조합
+
+```text
+디자인 세션: Shift+Tab → accept edits on + settings.local.json MCP allow
+handoff 코드: acceptEdits 또는 auto (git은 Cursor가 담당하므로 Claude는 commit 안 함)
+```
+
+공식 문서: https://code.claude.com/docs/en/permissions

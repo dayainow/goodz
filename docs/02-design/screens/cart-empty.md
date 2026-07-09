@@ -13,4 +13,4 @@
 
 ## 코드 상태
 
-- ⚪ empty state UI 미구현
+- ✅ P2 handoff — 파스텔 empty state · Shop CTA
