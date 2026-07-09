@@ -28,12 +28,61 @@ export const mockProducts: Product[] = [
     category: "living",
     stock: 24,
   },
+  {
+    id: "gd-004",
+    name: "무지 노트 A5",
+    price: 6900,
+    description: "180매 도트 노트 — 3색",
+    imageUrl: "/images/notebook.png",
+    category: "stationery",
+    stock: 86,
+  },
+  {
+    id: "gd-005",
+    name: "에나멜 핀 뱃지",
+    price: 11900,
+    description: "굿즈 캐릭터 에나멜 핀 2종",
+    imageUrl: "/images/enamel-pin.png",
+    category: "accessory",
+    stock: 42,
+  },
+  {
+    id: "gd-006",
+    name: "파스텔 머그컵",
+    price: 18900,
+    description: "350ml 세라믹 머그 — 피치 톤",
+    imageUrl: "/images/mug.png",
+    category: "living",
+    stock: 35,
+  },
+  {
+    id: "gd-007",
+    name: "마스킹 테이프 3종",
+    price: 9900,
+    description: "굿즈 일러스트 마스킹 테이프 세트",
+    imageUrl: "/images/washi-tape.png",
+    category: "stationery",
+    stock: 64,
+  },
+  {
+    id: "gd-008",
+    name: "캔버스 토트백",
+    price: 22900,
+    description: "내츄럴 캔버스 에코백 — M 사이즈",
+    imageUrl: "/images/tote.png",
+    category: "accessory",
+    stock: 31,
+  },
 ];
 
-export function listProducts(): ProductListResponse {
+export function listProducts(category?: string): ProductListResponse {
+  const products = category
+    ? mockProducts.filter((product) => product.category === category)
+    : mockProducts;
+
   return {
-    products: mockProducts,
-    total: mockProducts.length,
+    products,
+    total: products.length,
   };
 }
 

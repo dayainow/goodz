@@ -1,19 +1,31 @@
 # Goodz 디자인 시스템
 
-## 컬러 (코드 매핑)
+## 컬러 (Tailwind 토큰)
 
-| 토큰 | Tailwind / hex | 용도 |
-|------|----------------|------|
-| primary | `violet-600` / `#7C3AED` | CTA, 브랜드 포인트 |
-| category-stationery | 파스텔 옐로우 | 문구 카테고리 (Claude Design) |
-| category-accessory | 파스텔 핑크 | 액세서리 카테고리 |
-| category-living | 파스텔 민트·피치 | 리빙 카테고리 |
-| surface | `slate-50` | 쇼핑몰 배경 |
-| surface-dark | `slate-950` | 어드민 배경 |
-| text | `slate-900` | 본문 |
-| danger | `rose-600` | 삭제·경고 |
+정의: `packages/ui/tailwind.config.ts` → 앱에서 `presets: [goodzPreset]`
 
-> Sticky Lemon 레퍼런스 톤 — P2 handoff 시 Tailwind 토큰으로 정식화 예정
+| 토큰 | Tailwind 클래스 | hex | 용도 |
+|------|-----------------|-----|------|
+| primary | `brand-violet` | `#7C3AED` | CTA, 브랜드 포인트 |
+| primary hover | `brand-violet-hover` | `#6D28D9` | CTA hover |
+| category-stationery bg | `category-stationery-bg` | `#FFF8DB` | 문구 카드·칩 배경 |
+| category-stationery border | `category-stationery-border` | `#FDE68A` | 문구 테두리 |
+| category-stationery text | `category-stationery-text` | `#92400E` | 문구 텍스트 |
+| category-accessory bg | `category-accessory-bg` | `#FFF0F5` | 액세서리 배경 |
+| category-accessory border | `category-accessory-border` | `#FBCFE8` | 액세서리 테두리 |
+| category-accessory text | `category-accessory-text` | `#9D174D` | 액세서리 텍스트 |
+| category-living bg | `category-living-bg` | `#ECFDF5` | 리빙 배경 |
+| category-living border | `category-living-border` | `#A7F3D0` | 리빙 테두리 |
+| category-living text | `category-living-text` | `#065F46` | 리빙 텍스트 |
+| category-living-peach bg | `category-living-peach-bg` | `#FFF7ED` | 리빙 피치 변형 (예비) |
+| surface | `slate-50` | — | 쇼핑몰 배경 |
+| surface-dark | `slate-950` | — | 어드민 배경 |
+| text | `slate-900` | — | 본문 |
+| danger | `rose-600` | — | 삭제·경고 |
+
+### 코드 헬퍼
+
+`apps/web-shop/src/lib/categories.ts` — 카테고리별 Tailwind 클래스 매핑
 
 ## 타이포
 
@@ -32,7 +44,9 @@
 | Button/Secondary | `Button variant="secondary"` | ✅ |
 | Button/Danger | `Button variant="danger"` | ✅ |
 | Card | `Card` | ✅ |
-| ProductCard | `ProductGrid` (web-shop) | ✅ |
+| ProductCard | `ProductGrid` (web-shop) | ✅ P2 handoff |
+| ShopHeader | `ShopHeader` (web-shop) | ✅ P2 handoff |
+| CategoryCards | `CategoryCards` (web-shop) | ✅ P2 handoff |
 
 ## 신규 컴포넌트 추가 절차
 

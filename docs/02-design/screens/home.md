@@ -19,4 +19,4 @@
 
 ## 코드 상태
 
-- ⚪ P2 handoff 대기 — 현재 `/`는 상품 목록 API 연동 중 ([product-list.md](./product-list.md))
+- ✅ P2 handoff — Home(`/`), Shop(`/shop`), Category(`/shop/[category]`)

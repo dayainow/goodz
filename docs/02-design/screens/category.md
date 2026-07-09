@@ -16,4 +16,4 @@
 
 ## 코드 상태
 
-- ⚪ P2 handoff 대기
+- ✅ `/shop/[category]` · API `?category=` 필터

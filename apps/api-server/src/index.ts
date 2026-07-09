@@ -27,8 +27,10 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, service: "goodz-api" });
 });
 
-app.get("/api/products", (_req, res) => {
-  const data: ProductListResponse = listProducts();
+app.get("/api/products", (req, res) => {
+  const category =
+    typeof req.query.category === "string" ? req.query.category : undefined;
+  const data: ProductListResponse = listProducts(category);
   res.json(data);
 });
 

@@ -1,45 +1,56 @@
-import type { ProductListResponse } from "@goodz/types";
-import { Button } from "@goodz/ui";
 import Link from "next/link";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
+import { PromoBanner } from "@/components/home/PromoBanner";
+import { CategoryCards } from "@/components/home/CategoryCards";
+import { NewsletterFooter } from "@/components/home/NewsletterFooter";
 import { ProductGrid } from "@/components/ProductGrid";
+import { fetchProducts } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
-
-async function getProducts(): Promise<ProductListResponse> {
-  const res = await fetch(`${API_URL}/api/products`, {
-    next: { revalidate: 30 },
-  });
-  if (!res.ok) throw new Error("Failed to fetch products");
-  return res.json() as Promise<ProductListResponse>;
-}
-
 export default async function HomePage() {
-  const { products, total } = await getProducts();
+  const { products } = await fetchProducts();
+  const newIn = products.slice(0, 4);
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-6 py-12">
-      <PageViewTracker pagePath="/" componentName="ProductListPage" />
-      <header className="mb-10 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-violet-600">Goodz Shop</p>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight">
-            오늘의 굿즈
-          </h1>
-          <p className="mt-2 text-slate-600">
-            API 타입 <code className="rounded bg-slate-200 px-1">@goodz/types</code>
-            를 프론트·백엔드가 공유합니다.
-          </p>
-        </div>
-        <Link href="/cart">
-          <Button variant="primary">장바구니 보기</Button>
-        </Link>
-      </header>
+    <>
+      <PromoBanner />
+      <main className="mx-auto max-w-5xl px-6 py-12">
+        <PageViewTracker pagePath="/" componentName="HomePage" />
 
-      <p className="mb-6 text-sm text-slate-500">총 {total}개 상품</p>
-      <ProductGrid products={products} />
-    </main>
+        <section className="mb-14 text-center">
+          <p className="text-sm font-medium text-brand-violet">Sticky Lemon mood</p>
+          <h1 className="mt-2 text-4xl font-bold tracking-tight">
+            오늘의 굿즈, Goodz
+          </h1>
+          <p className="mx-auto mt-4 max-w-lg text-slate-600">
+            파스텔 톤 문구·액세서리·리빙 아이템을 만나보세요.
+          </p>
+          <Link
+            href="/shop"
+            className="mt-6 inline-block rounded-lg bg-brand-violet px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-violet-hover"
+          >
+            전체 상품 보기
+          </Link>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="mb-6 text-2xl font-bold">카테고리</h2>
+          <CategoryCards />
+        </section>
+
+        <section className="mb-8">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <h2 className="text-2xl font-bold">NEW IN</h2>
+            <Link href="/shop" className="text-sm font-medium text-brand-violet">
+              모두 보기 →
+            </Link>
+          </div>
+          <ProductGrid products={newIn} pagePath="/" />
+        </section>
+
+        <NewsletterFooter />
+      </main>
+    </>
   );
 }

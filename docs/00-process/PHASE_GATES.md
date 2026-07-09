@@ -15,8 +15,8 @@
 - [x] `/design-sync`로 `@goodz/ui` · Tailwind DS 반영 (초기)
 - [x] 쇼핑몰 10화면 + 어드민 2화면 프로토타입 (Sticky Lemon 톤)
 - [x] `screens/` 12화면 스펙 인덱스
-- [ ] `DESIGN_SYSTEM.md` Sticky Lemon 카테고리 색 ↔ 코드 매핑 (P2 handoff)
-- [ ] 사용자 미리보기 최종 확인 (12화면·네비게이션)
+- [x] `DESIGN_SYSTEM.md` Sticky Lemon 카테고리 색 ↔ Tailwind 토큰 매핑
+- [x] web-shop Home(`/`) · Shop(`/shop`) 분리 + 파스텔 UI 1차 반영
 
 ## P2 → P3 (개발 → QA)
 

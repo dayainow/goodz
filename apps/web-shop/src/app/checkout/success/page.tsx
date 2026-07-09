@@ -17,7 +17,7 @@ export default async function CheckoutSuccessPage({
         pagePath="/checkout/success"
         componentName="CheckoutSuccessPage"
       />
-      <p className="text-sm font-medium text-violet-600">주문 완료</p>
+      <p className="text-sm font-medium text-brand-violet">주문 완료</p>
       <h1 className="mt-2 text-3xl font-bold">결제가 완료되었습니다</h1>
       {orderId && (
         <p className="mt-4 font-mono text-sm text-slate-500">
@@ -28,7 +28,10 @@ export default async function CheckoutSuccessPage({
         Goodz MVP mock 결제가 정상 처리되었습니다.
       </p>
       <Link href="/" className="mt-8 inline-block">
-        <Button variant="primary">쇼핑 계속하기</Button>
+        <Button variant="primary">홈으로</Button>
+      </Link>
+      <Link href="/shop" className="mt-4 block text-sm text-brand-violet">
+        전체 상품 보기
       </Link>
     </main>
   );

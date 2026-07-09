@@ -2,12 +2,19 @@ version: 1
 source: goodz-planning
 events:
   - event_name: page_view
-    trigger: 상품 목록 페이지 진입
-    component_name: ProductListPage
+    trigger: 홈 페이지 진입
+    component_name: HomePage
     parameters:
       - page_path
       - component_name
     page: /
+  - event_name: page_view
+    trigger: 전체 상품 페이지 진입
+    component_name: ShopPage
+    parameters:
+      - page_path
+      - component_name
+    page: /shop
   - event_name: product_card_click
     trigger: 상품 카드 클릭
     component_name: ProductCard
@@ -15,6 +22,13 @@ events:
       - page_path
       - component_name
     page: /
+  - event_name: product_card_click
+    trigger: 상품 카드 클릭 (샵)
+    component_name: ProductCard
+    parameters:
+      - page_path
+      - component_name
+    page: /shop
   - event_name: page_view
     trigger: 상품 상세 페이지 진입
     component_name: ProductDetailPage

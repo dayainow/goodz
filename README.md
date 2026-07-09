@@ -36,6 +36,26 @@ Goodz의 **진짜 제품**은 아래입니다. 쇼핑몰 앱은 **데모**입니
 
 ### 5단계 프로세스
 
+```mermaid
+flowchart LR
+  P0[P0 기획] --> G1{Gate}
+  G1 --> P1[P1 디자인]
+  P1 --> G2{Gate}
+  G2 --> P2[P2 개발]
+  P2 --> G3{Gate}
+  G3 --> P3[P3 QA]
+  P3 --> G4{Gate}
+  G4 --> P4[P4 배포]
+```
+
+| Phase | 핵심 산출물 |
+|-------|-------------|
+| P0 | PRD · 유저스토리 · GA4 명세 |
+| P1 | Claude Design 12화면 · `screens/` 스펙 |
+| P2 | `@goodz/types` → API → 앱 · `pnpm verify` |
+| P3 | TEST_PLAN · GA compliance |
+| P4 | RELEASE_CHECKLIST · 배포 |
+
 ```text
 P0 기획          P1 디자인         P2 개발           P3 QA            P4 배포
 ────────         ────────         ────────         ────────         ────────
@@ -61,13 +81,13 @@ Notion SSOT      handoff→Code      ADR              회귀 테스트
 ### Sprint 타임라인 (현재)
 
 ```text
-S0 ✅ 모노레포 스캐폴드   S1 ✅ MVP 쇼핑 플로우   S2 🟡 Claude Design P1   S3 ⚪ QA·스테이징
+S0 ✅ 모노레포 스캐폴드   S1 ✅ MVP 쇼핑 플로우   S2 🟡 P2 UI handoff   S3 ⚪ QA·스테이징
 ```
 
 | Phase | 현재 상태 |
 |-------|-----------|
 | P0 기획 | 🟢 Gate 통과 |
-| P1 디자인 | 🟡 Claude Design 12화면 (Sticky Lemon 레퍼런스) |
+| P1 디자인 | 🟢 12화면 완료 → P2 UI handoff 진행 |
 | P2 개발 | 🟢 MVP + GA4 harness + 어드민 등록 API |
 | P3/P4 | ⚪ 대기 |
 

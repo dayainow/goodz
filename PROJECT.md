@@ -18,8 +18,8 @@
 | Phase | 상태 | 시스템 산출물 (제품) |
 |-------|------|----------------------|
 | **P0 기획** | 🟢 Gate 통과 | PRD · 유저스토리 · GA4 템플릿 |
-| **P1 디자인** | 🟢 12화면 완료 | Claude Design 파이프라인 · 화면 스펙 |
-| **P2 개발** | 🟢 데모 완료 | 모노레포 SSOT · API 패턴 · CI |
+| **P1 디자인** | 🟢 Gate 통과 | Claude Design · Tailwind 토큰 · Home/Shop 분리 |
+| **P2 개발** | 🟡 UI handoff 진행 | Sticky Lemon 톤 1차 반영 |
 | **P3 QA** | ⚪ 대기 | TEST_PLAN · GA compliance 게이트 |
 | **P4 배포** | ⚪ 대기 | RELEASE_CHECKLIST |
 
@@ -37,7 +37,7 @@
 - [x] `screens/` 12화면 스펙 확장
 - [x] CI + Turbo cache + dep check ✅
 - [x] 어드민 등록 mock (데모 + API.md) ✅
-- [ ] P1→P2 Gate (`PHASE_GATES.md`) — 미리보기 최종 확인·DS 코드 매핑 남음
+- [x] P1→P2 Gate (`PHASE_GATES.md`) — Home/Shop 분리 · DS 토큰 반영
 
 ## 풀 프로세스
 

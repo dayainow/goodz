@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { ShopHeader } from "@/components/layout/ShopHeader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <AnalyticsProvider>{children}</AnalyticsProvider>
+        <AnalyticsProvider>
+          <ShopHeader />
+          {children}
+        </AnalyticsProvider>
       </body>
     </html>
   );

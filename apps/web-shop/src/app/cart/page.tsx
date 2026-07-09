@@ -61,7 +61,7 @@ export default function CartPage() {
       <PageViewTracker pagePath="/cart" componentName="CartPage" />
       <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
       <header className="mb-8">
-        <Link href="/" className="text-sm text-violet-600 hover:underline">
+        <Link href="/shop" className="text-sm text-brand-violet hover:underline">
           ← 쇼핑 계속하기
         </Link>
         <h1 className="mt-4 text-3xl font-bold">장바구니</h1>
@@ -75,7 +75,7 @@ export default function CartPage() {
       {isEmpty ? (
         <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center">
           <p className="text-slate-600">장바구니가 비어 있습니다.</p>
-          <Link href="/" className="mt-4 inline-block">
+          <Link href="/shop" className="mt-4 inline-block">
             <Button variant="primary">상품 보러가기</Button>
           </Link>
         </div>
@@ -94,7 +94,7 @@ export default function CartPage() {
                     {item.quantity}
                   </p>
                 </div>
-                <p className="font-bold text-violet-700">
+                <p className="font-bold text-brand-violet">
                   {item.lineTotal.toLocaleString("ko-KR")}원
                 </p>
               </li>

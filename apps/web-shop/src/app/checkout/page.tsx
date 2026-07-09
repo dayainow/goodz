@@ -85,7 +85,7 @@ export default function CheckoutPage() {
         <PageViewTracker pagePath="/checkout" componentName="CheckoutPage" />
         <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
           <p className="text-slate-600">결제할 상품이 없습니다.</p>
-          <Link href="/cart" className="mt-4 inline-block text-violet-600">
+          <Link href="/cart" className="mt-4 inline-block text-brand-violet">
             ← 장바구니로
           </Link>
         </main>
@@ -97,7 +97,7 @@ export default function CheckoutPage() {
     <>
       <PageViewTracker pagePath="/checkout" componentName="CheckoutPage" />
       <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
-      <Link href="/cart" className="text-sm text-violet-600 hover:underline">
+      <Link href="/cart" className="text-sm text-brand-violet hover:underline">
         ← 장바구니
       </Link>
       <h1 className="mt-4 text-3xl font-bold">주문 / 결제</h1>
