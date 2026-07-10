@@ -52,20 +52,21 @@
       "id": "P3",
       "name": "QA",
       "status": "done",
-      "progress": 85,
+      "progress": 100,
       "items": [
         { "id": "p3-verify", "label": "pnpm verify CI green", "status": "done" },
         { "id": "p3-test-plan", "label": "TEST_PLAN P0 시나리오", "status": "done", "doc": "docs/04-qa/TEST_PLAN.md" },
         { "id": "p3-ga", "label": "GA compliance harness", "status": "done", "doc": "apps/web-shop/events.spec.yaml" },
-        { "id": "p3-gate", "label": "P3→P4 Gate", "status": "in_progress" }
+        { "id": "p3-gate", "label": "P3→P4 Gate", "status": "done" }
       ]
     },
     {
       "id": "P4",
       "name": "배포",
       "status": "in_progress",
-      "progress": 25,
+      "progress": 35,
       "items": [
+        { "id": "p4-ci", "label": "GitHub Actions CI green", "status": "done" },
         { "id": "p4-staging", "label": "스테이징 배포", "status": "in_progress" },
         { "id": "p4-checklist", "label": "RELEASE_CHECKLIST", "status": "in_progress", "doc": "docs/04-qa/RELEASE_CHECKLIST.md" },
         { "id": "p4-prod", "label": "프로덕션", "status": "pending" }

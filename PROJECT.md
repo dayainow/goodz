@@ -41,7 +41,7 @@
 - [x] 프로세스 대시보드 → [PROCESS_DASHBOARD.md](./docs/00-process/PROCESS_DASHBOARD.md)
 - [x] S3: TEST_PLAN P0 사전 검증 + GA harness pass
 - [x] S3: TEST_PLAN P0 브라우저 육안 확인
-- [ ] P4: GitHub Actions CI green 확인
+- [x] P4: GitHub Actions CI green 확인
 - [ ] P4: 스테이징 env / 배포 준비
 
 ## 풀 프로세스
