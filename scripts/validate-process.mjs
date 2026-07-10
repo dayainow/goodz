@@ -25,6 +25,8 @@ const itemStatuses = new Set(["done", "in_progress", "pending", "blocked"]);
 const traceStatuses = new Set(["pending", "partial", "linked", "released"]);
 const refStatuses = new Set(["pending", "linked", "not_required"]);
 const ciStatuses = new Set(["success", "failed", "running", "pending"]);
+const approvalStatuses = new Set(["approved", "requested", "changes_requested"]);
+const approvalTypes = new Set(["phase_gate", "sprint", "deliverable", "change", "release"]);
 
 assert(status.version >= 3, "status.version must be >= 3");
 assert(typeof status.systemVersion === "string", "systemVersion is required");
@@ -68,6 +70,16 @@ for (const change of status.planningChanges) {
 }
 
 for (const approval of status.approvals) {
+  assert(approvalStatuses.has(approval.status), `${approval.id} has invalid approval status`);
+  assert(approvalTypes.has(approval.type), `${approval.id} has invalid approval type`);
+  assert(typeof approval.driver === "string" && approval.driver.length > 0, `${approval.id} driver is required`);
+  assert(typeof approval.approver === "string" && approval.approver.length > 0, `${approval.id} approver is required`);
+  assertArray(approval.contributors, `${approval.id}.contributors`);
+  assertArray(approval.informed, `${approval.id}.informed`);
+  assertArray(approval.criteria, `${approval.id}.criteria`);
+  assertArray(approval.traceLinkIds, `${approval.id}.traceLinkIds`);
+  assert(approval.criteria.length > 0, `${approval.id} needs at least one criterion`);
+  assert(typeof approval.decision === "string" && approval.decision.length > 0, `${approval.id} decision is required`);
   assertDocExists(approval.doc, approval.id);
 }
 
@@ -114,6 +126,13 @@ for (const trace of status.traceLinks) {
   for (const run of trace.ciRuns) {
     assert(ciStatuses.has(run.status), `${trace.id} invalid CI status ${run.status}`);
     assert(run.url.startsWith("https://github.com/"), `${trace.id} CI url must be GitHub`);
+  }
+}
+
+const traceIds = new Set(status.traceLinks.map((item) => item.id));
+for (const approval of status.approvals) {
+  for (const id of approval.traceLinkIds) {
+    assert(traceIds.has(id), `${approval.id} references missing trace link ${id}`);
   }
 }
 

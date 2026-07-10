@@ -1,12 +1,12 @@
 {
-  "version": 3,
+  "version": 4,
   "updatedAt": "2026-07-10",
-  "systemVersion": "v0.4",
+  "systemVersion": "v0.5",
   "sprint": {
-    "id": "S5",
-    "name": "시스템 v0.4 — Traceability + CI/CD Evidence",
+    "id": "S6",
+    "name": "시스템 v0.5 — DACI Approval Governance",
     "status": "done",
-    "goal": "기획·변경·산출물·승인에서 커밋·CI 증거까지 한 흐름으로 추적"
+    "goal": "승인 로그를 Driver·Approver·Contributors·Informed가 분리된 의사결정 체계로 고도화"
   },
   "phases": [
     {
@@ -46,6 +46,7 @@
         { "id": "p2-search-about", "label": "Search · About", "status": "done" },
         { "id": "p2-process-dash", "label": "프로세스 대시보드", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
         { "id": "p2-traceability", "label": "Traceability 매트릭스", "status": "done", "doc": "docs/00-process/TRACEABILITY.md" },
+        { "id": "p2-approval-governance", "label": "DACI 승인 체계", "status": "done", "doc": "docs/00-process/APPROVALS.md" },
         { "id": "p2-gate", "label": "P2→P3 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
       ]
     },
@@ -93,6 +94,15 @@
       "phase": "P2",
       "doc": "docs/00-process/TRACEABILITY.md",
       "nextAction": "Issue/PR 번호가 생기면 traceLinks에 연결"
+    },
+    {
+      "id": "IN-003",
+      "title": "DACI Approval Governance v0.5",
+      "source": "사용자 요청 · 2번 승인 체계 고도화",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/00-process/APPROVALS.md",
+      "nextAction": "신규 Gate와 변경 요청은 DACI 필드로 승인"
     }
   ],
   "deliverables": [
@@ -225,17 +235,92 @@
       "doc": "docs/00-process/CICD.md",
       "owner": "DevOps",
       "summary": "로컬 verify, GitHub Actions, smoke, traceability 검증 기준"
+    },
+    {
+      "id": "D-14",
+      "title": "DACI 승인 체계",
+      "type": "ops",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/APPROVALS.md",
+      "owner": "PM/Operations",
+      "summary": "Driver·Approver·Contributors·Informed와 승인 기준을 분리한 의사결정 로그"
+    },
+    {
+      "id": "D-15",
+      "title": "의사결정 로그",
+      "type": "ops",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/DECISIONS.md",
+      "owner": "PM/Operations",
+      "summary": "주요 프로세스 결정의 배경, 결정, 영향, 후속 액션 기록"
     }
   ],
   "approvals": [
     {
       "id": "AP-001",
       "target": "S4 Process OS v0.3",
+      "type": "sprint",
+      "driver": "Codex",
       "approver": "사용자",
+      "contributors": ["PM", "Engineering"],
+      "informed": ["Future Goodz operators"],
       "status": "approved",
+      "requestedAt": "2026-07-10",
       "approvedAt": "2026-07-10",
+      "decision": "기획 입력함, 산출물 레지스트리, 대시보드 기획·산출물 메뉴를 Process OS v0.3 범위로 승인",
+      "criteria": [
+        "문서 기반 기획 입력 유지",
+        "산출물 레지스트리와 대시보드 메뉴 연결",
+        "status.json을 기계 판독 SSOT로 유지"
+      ],
       "summary": "기획 입력함, 산출물 레지스트리, 대시보드 기획·산출물 메뉴 반영 승인",
-      "doc": "docs/00-process/APPROVALS.md"
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": ["TL-001"]
+    },
+    {
+      "id": "AP-002",
+      "target": "S5 Traceability + CI/CD Evidence v0.4",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Engineering", "DevOps"],
+      "informed": ["PM", "QA"],
+      "status": "approved",
+      "requestedAt": "2026-07-10",
+      "approvedAt": "2026-07-10",
+      "decision": "기획·변경·산출물·승인과 commit·CI evidence를 traceLinks로 연결",
+      "criteria": [
+        "traceLinks가 intake/change/deliverable/approval을 참조",
+        "linked 상태는 commit과 CI run을 요구",
+        "pnpm verify가 process 검증을 포함"
+      ],
+      "summary": "Traceability, CI/CD 문서, check:process, 대시보드 추적 메뉴 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": ["TL-002"]
+    },
+    {
+      "id": "AP-003",
+      "target": "S6 DACI Approval Governance v0.5",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["PM", "Engineering", "QA", "DevOps"],
+      "informed": ["Future Goodz operators", "dayainow profile readers"],
+      "status": "approved",
+      "requestedAt": "2026-07-10",
+      "approvedAt": "2026-07-10",
+      "decision": "승인 로그를 DACI 역할과 승인 기준, 결정 로그, 추적 링크로 고도화",
+      "criteria": [
+        "승인마다 Driver와 Approver가 분리됨",
+        "Contributors와 Informed가 명시됨",
+        "승인 기준과 결정 문장이 남음",
+        "대시보드 승인 메뉴에서 역할이 확인됨"
+      ],
+      "summary": "DACI 역할 분리, 승인 기준, 의사결정 로그, 대시보드 승인 UI 고도화",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": ["TL-003"]
     }
   ],
   "planningChanges": [
@@ -270,6 +355,23 @@
       "doc": "docs/00-process/TRACEABILITY.md",
       "summary": "Process OS 산출물을 GitHub Issue, PR, commit, CI run, release 증거와 연결",
       "decision": "실제 번호가 없는 Issue/PR은 pending으로 표시하고, 존재하는 commit/CI 증거부터 연결"
+    },
+    {
+      "id": "CR-003",
+      "title": "DACI 승인 체계 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-10",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/status.json",
+        "docs/00-process/APPROVALS.md",
+        "docs/00-process/DECISIONS.md",
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "README.md"
+      ],
+      "doc": "docs/00-process/APPROVALS.md",
+      "summary": "단순 승인 로그를 Driver·Approver·Contributors·Informed가 분리된 결정 체계로 확장",
+      "decision": "승인 레코드에 DACI 역할, 승인 기준, 결정 문장, trace link 참조를 추가"
     }
   ],
   "traceLinks": [
@@ -327,7 +429,7 @@
       "sourceIds": ["IN-002"],
       "changeIds": ["CR-002"],
       "deliverableIds": ["D-12", "D-13"],
-      "approvalIds": [],
+      "approvalIds": ["AP-002"],
       "issue": {
         "label": "GitHub Issue",
         "status": "pending"
@@ -356,6 +458,31 @@
       },
       "summary": "추적 매트릭스, CI/CD 운영 문서, check:process, 대시보드 추적 메뉴가 커밋·CI green 증거와 연결됨",
       "nextAction": "다음부터 신규 기능은 Issue/PR URL을 먼저 연결"
+    },
+    {
+      "id": "TL-003",
+      "title": "DACI Approval Governance v0.5",
+      "status": "partial",
+      "sourceIds": ["IN-003"],
+      "changeIds": ["CR-003"],
+      "deliverableIds": ["D-14", "D-15"],
+      "approvalIds": ["AP-003"],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "DACI 승인 체계와 의사결정 로그가 추가되었고, 이번 커밋·CI 성공 후 linked로 승격 예정",
+      "nextAction": "커밋 후 sha와 GitHub Actions run id를 traceLinks에 반영"
     }
   ],
   "features": [

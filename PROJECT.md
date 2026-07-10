@@ -5,16 +5,16 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S5 Traceability + CI/CD Evidence v0.4** ✅
+## 현재 스프린트: **S6 DACI Approval Governance v0.5** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
 | **P1 디자인** | ✅ 12화면 · Gate 통과 |
 | **P2 레퍼런스 데모** | ✅ 쇼핑·어드민·Search/About UI |
-| **프로세스 대시보드** | ✅ 기획·변경·산출물·승인·Phase 관리 UI |
+| **프로세스 대시보드** | ✅ 기획·변경·산출물·DACI 승인·추적·Phase 관리 UI |
 | **품질 게이트** | ✅ `pnpm verify` + GA harness + 브라우저 육안 QA |
 | **산출물 레지스트리** | ✅ [deliverables](./docs/deliverables/README.md) |
-| **승인 로그** | ✅ [APPROVALS](./docs/00-process/APPROVALS.md) |
+| **승인 로그** | ✅ [APPROVALS](./docs/00-process/APPROVALS.md) · [DECISIONS](./docs/00-process/DECISIONS.md) |
 | **추적 매트릭스** | ✅ [TRACEABILITY](./docs/00-process/TRACEABILITY.md) + CI 증거 |
 
 ## 현재 단계
@@ -55,6 +55,9 @@
 - [x] S5: Traceability 매트릭스 → [TRACEABILITY.md](./docs/00-process/TRACEABILITY.md)
 - [x] S5: CI/CD 운영 문서 → [CICD.md](./docs/00-process/CICD.md)
 - [x] S5: `pnpm check:process` + 대시보드 `추적` 메뉴
+- [x] S6: DACI 승인 체계 → [APPROVALS.md](./docs/00-process/APPROVALS.md)
+- [x] S6: 의사결정 로그 → [DECISIONS.md](./docs/00-process/DECISIONS.md)
+- [x] S6: 대시보드 승인 메뉴 역할·기준 표시
 
 ## 풀 프로세스
 

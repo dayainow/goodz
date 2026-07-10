@@ -61,14 +61,34 @@ export interface ProcessIntake {
   nextAction: string;
 }
 
+export type ProcessApprovalStatus =
+  | "approved"
+  | "requested"
+  | "changes_requested";
+
+export type ProcessApprovalType =
+  | "phase_gate"
+  | "sprint"
+  | "deliverable"
+  | "change"
+  | "release";
+
 export interface ProcessApproval {
   id: string;
   target: string;
+  type: ProcessApprovalType;
+  driver: string;
   approver: string;
-  status: "approved" | "requested" | "changes_requested";
+  contributors: string[];
+  informed: string[];
+  status: ProcessApprovalStatus;
+  requestedAt: string;
   approvedAt: string;
+  decision: string;
+  criteria: string[];
   summary: string;
   doc: string;
+  traceLinkIds: string[];
 }
 
 export type ProcessPlanningChangeStatus =

@@ -20,6 +20,8 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-11 | P0 | 기획 변경 로그 | [changes/README.md](../01-planning/changes/README.md) | PM | 완료 |
 | D-12 | P2 | Traceability 매트릭스 | [TRACEABILITY.md](../00-process/TRACEABILITY.md) | PM/Engineering | 완료 |
 | D-13 | P4 | CI/CD 운영 문서 | [CICD.md](../00-process/CICD.md) | DevOps | 완료 |
+| D-14 | P2 | DACI 승인 체계 | [APPROVALS.md](../00-process/APPROVALS.md) | PM/Operations | 완료 |
+| D-15 | P2 | 의사결정 로그 | [DECISIONS.md](../00-process/DECISIONS.md) | PM/Operations | 완료 |
 
 ## 운영 규칙
 
@@ -27,7 +29,8 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 2. 산출물이 생기면 `docs/00-process/status.json`의 `deliverables`에 등록합니다.
 3. 대시보드 `산출물` 메뉴에서 phase, owner, 상태를 확인합니다.
 4. Phase Gate를 넘길 때 해당 phase의 필수 산출물이 모두 `done`인지 확인합니다.
-5. 개발 증거가 생기면 `traceLinks`에 Issue/PR/Commit/CI/Release를 연결합니다.
+5. 승인 시 `APPROVALS.md`와 `traceLinks`에 DACI 역할과 결정 기준을 연결합니다.
+6. 개발 증거가 생기면 `traceLinks`에 Issue/PR/Commit/CI/Release를 연결합니다.
 
 ## 다음 확장
 

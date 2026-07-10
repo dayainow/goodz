@@ -133,6 +133,13 @@ Week 1
 - `pnpm check:process`로 산출물·추적 링크 검증
 - CI/CD 운영 문서 `docs/00-process/CICD.md`
 
+### Sprint S6 — DACI Approval Governance
+
+- `status.json`의 DACI 승인 필드
+- process-dashboard `승인` 메뉴 고도화
+- `APPROVALS.md` 승인 운영 규칙
+- `DECISIONS.md` 의사결정 로그
+
 ---
 
 ## 의존성 그래프
@@ -162,7 +169,8 @@ flowchart LR
 6. ✅ S2: Claude Design P1 (#7) · 어드민 · QA
 7. ✅ S4: Process OS 산출물 레지스트리
 8. ✅ v0.4: Issue/PR/Commit/CI 추적 레이어
-9. ⚪ v0.5: GitHub Issue/PR 자동 수집 + 대시보드 누락 경고
+9. ✅ v0.5: DACI 승인 체계
+10. ⚪ v0.6: GitHub Issue/PR 자동 수집 + 대시보드 누락 경고
 
 ---
 

@@ -108,6 +108,14 @@ const TRACE_REFERENCE_CLASS: Record<ProcessTraceReferenceStatus, string> = {
   not_required: "border-zinc-200 bg-zinc-50 text-zinc-500",
 };
 
+const APPROVAL_TYPE_LABEL: Record<ProcessApproval["type"], string> = {
+  phase_gate: "Phase Gate",
+  sprint: "Sprint",
+  deliverable: "Deliverable",
+  change: "Change",
+  release: "Release",
+};
+
 function buildQueue(phases: ProcessPhase[]) {
   return phases.flatMap((phase) =>
     phase.items.map((item) => ({
@@ -537,41 +545,112 @@ function ApprovalBadge({ status }: { status: ProcessApproval["status"] }) {
 
 function ApprovalsSection({ approvals }: { approvals: ProcessApproval[] }) {
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white">
-      <div className="grid border-b border-zinc-100 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 lg:grid-cols-[100px_1fr_120px_120px_120px]">
-        <span>ID</span>
-        <span>대상</span>
-        <span>승인자</span>
-        <span>일자</span>
-        <span>상태</span>
-      </div>
-      <ul>
-        {approvals.map((approval) => (
-          <li
-            key={approval.id}
-            className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[100px_1fr_120px_120px_120px] lg:items-center"
-          >
-            <span className="font-mono text-xs font-semibold text-brand-violet">
-              {approval.id}
-            </span>
+    <div className="space-y-4">
+      {approvals.map((approval) => (
+        <article
+          key={approval.id}
+          className="rounded-lg border border-zinc-200 bg-white"
+        >
+          <div className="grid gap-4 border-b border-zinc-100 px-4 py-4 lg:grid-cols-[100px_1fr_120px] lg:items-start">
             <div>
-              <p className="font-semibold text-zinc-950">{approval.target}</p>
-              <p className="mt-1 text-xs text-zinc-500">{approval.summary}</p>
+              <span className="font-mono text-xs font-semibold text-brand-violet">
+                {approval.id}
+              </span>
+              <p className="mt-2 w-fit rounded-md bg-zinc-100 px-2 py-1 text-[11px] font-semibold text-zinc-600">
+                {APPROVAL_TYPE_LABEL[approval.type]}
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-zinc-950">{approval.target}</h3>
+              <p className="mt-1 text-sm leading-6 text-zinc-600">
+                {approval.summary}
+              </p>
+              <p className="mt-2 text-xs text-zinc-500">
+                결정: {approval.decision}
+              </p>
               <p className="mt-1 truncate font-mono text-xs text-zinc-400">
                 {approval.doc}
               </p>
             </div>
-            <span className="text-xs font-medium text-zinc-500">
-              {approval.approver}
-            </span>
-            <span className="font-mono text-xs text-zinc-500">
-              {approval.approvedAt}
-            </span>
             <ApprovalBadge status={approval.status} />
-          </li>
-        ))}
-      </ul>
-    </section>
+          </div>
+
+          <div className="grid gap-3 px-4 py-4 md:grid-cols-4">
+            <div className="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                Driver
+              </p>
+              <p className="mt-1 text-sm font-semibold text-zinc-900">
+                {approval.driver}
+              </p>
+            </div>
+            <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-500">
+                Approver
+              </p>
+              <p className="mt-1 text-sm font-semibold text-emerald-900">
+                {approval.approver}
+              </p>
+            </div>
+            <div className="rounded-lg border border-violet-100 bg-violet-50 p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-violet-500">
+                Contributors
+              </p>
+              <p className="mt-1 text-sm font-semibold text-violet-900">
+                {approval.contributors.join(", ")}
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                Informed
+              </p>
+              <p className="mt-1 text-sm font-semibold text-zinc-900">
+                {approval.informed.join(", ")}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4 border-t border-zinc-100 px-4 py-4 lg:grid-cols-[1fr_220px]">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Approval Criteria
+              </p>
+              <ul className="mt-2 space-y-1">
+                {approval.criteria.map((criterion) => (
+                  <li key={criterion} className="text-sm text-zinc-600">
+                    {criterion}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-3 text-xs text-zinc-500">
+              <p>
+                요청일{" "}
+                <span className="font-mono text-zinc-700">
+                  {approval.requestedAt}
+                </span>
+              </p>
+              <p>
+                승인일{" "}
+                <span className="font-mono text-zinc-700">
+                  {approval.approvedAt}
+                </span>
+              </p>
+              <div className="flex flex-wrap gap-1">
+                {approval.traceLinkIds.map((id) => (
+                  <span
+                    key={id}
+                    className="rounded-md bg-zinc-100 px-2 py-1 font-mono text-[11px] text-zinc-600"
+                  >
+                    {id}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
   );
 }
 
