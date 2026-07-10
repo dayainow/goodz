@@ -462,7 +462,7 @@
     {
       "id": "TL-003",
       "title": "DACI Approval Governance v0.5",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": ["IN-003"],
       "changeIds": ["CR-003"],
       "deliverableIds": ["D-14", "D-15"],
@@ -475,14 +475,26 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "ceb8f4c",
+          "message": "feat: DACI 승인 체계 추가",
+          "url": "https://github.com/dayainow/goodz/commit/ceb8f4c"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29080875855",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29080875855"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
-      "summary": "DACI 승인 체계와 의사결정 로그가 추가되었고, 이번 커밋·CI 성공 후 linked로 승격 예정",
-      "nextAction": "커밋 후 sha와 GitHub Actions run id를 traceLinks에 반영"
+      "summary": "DACI 승인 체계, 의사결정 로그, 승인 메뉴 고도화가 커밋·CI green 증거와 연결됨",
+      "nextAction": "다음 승인부터 requested 상태로 시작해 승인 기준과 결정 문장을 먼저 기록"
     }
   ],
   "features": [
