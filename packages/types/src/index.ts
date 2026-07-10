@@ -64,6 +64,9 @@ export interface CheckoutResult {
 export type {
   ProcessApp,
   ProcessCheckItem,
+  ProcessDeliverable,
+  ProcessDeliverableType,
+  ProcessIntake,
   ProcessItemStatus,
   ProcessPhase,
   ProcessSprint,

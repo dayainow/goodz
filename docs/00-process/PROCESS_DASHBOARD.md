@@ -5,7 +5,7 @@
 ## 왜 필요한가
 
 Goodz의 진짜 제품은 쇼핑몰이 아니라 **P0–P4 풀 프로세스 시스템**입니다.  
-Phase Gate·Sprint·기능 백로그를 **한 화면에서 모니터링**해야 에이전트·PM이 상태를 공유할 수 있습니다.
+Phase Gate·Sprint·기획 입력·산출물·기능 백로그를 **한 화면에서 관리**해야 에이전트·PM이 상태를 공유할 수 있습니다.
 
 ## 아키텍처
 
@@ -21,10 +21,10 @@ process-dashboard (:5180)       ← 모니터링 UI
 
 | 레이어 | 역할 |
 |--------|------|
-| `status.json` | Phase·Sprint·기능·앱 목록의 기계 판독 가능 상태 |
+| `status.json` | Phase·Sprint·기획 입력·산출물·기능·앱 목록의 기계 판독 가능 상태 |
 | `@goodz/types` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
-| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Phase/Queue/Feature/App 관리 뷰 |
+| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Intake/Deliverable/Phase/Queue/Feature/App 관리 뷰 |
 
 ## 접속
 
@@ -59,6 +59,8 @@ curl http://localhost:4000/api/process/status
 ## UI 구성
 
 - **개요** — Sprint 목표·전체 진행률·우선 처리 작업
+- **기획** — 입력 요청·출처·다음 액션
+- **산출물** — PRD·화면설계·API·QA·릴리스 문서 레지스트리
 - **Phase Gate** — P0–P4 패널 + 문서 경로
 - **작업 큐** — 차단/진행/대기/완료 상태별 항목
 - **기능** — F-01… 기능 백로그 테이블
@@ -68,4 +70,5 @@ curl http://localhost:4000/api/process/status
 
 - [NORTH_STAR.md](./NORTH_STAR.md)
 - [PHASE_GATES.md](./PHASE_GATES.md)
+- [deliverables/README.md](../deliverables/README.md)
 - [PROJECT.md](../../PROJECT.md)

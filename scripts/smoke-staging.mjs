@@ -45,6 +45,9 @@ async function main() {
     if (!Array.isArray(data?.phases) || data.phases.length === 0) {
       throw new Error("process status has no phases");
     }
+    if (!Array.isArray(data?.deliverables) || data.deliverables.length === 0) {
+      throw new Error("process status has no deliverables");
+    }
   });
 
   await checkPage("web shop", targets.web);

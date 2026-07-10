@@ -1,0 +1,33 @@
+# Goodz 산출물 레지스트리
+
+Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배포 산출물이 남는 풀프로세스**를 제품으로 봅니다.  
+이 문서는 `docs/00-process/status.json`의 `deliverables`와 연결되는 사람용 인덱스입니다.
+
+## 산출물 맵
+
+| ID | Phase | 산출물 | 원본 문서 | Owner | 상태 |
+|----|-------|--------|-----------|-------|------|
+| D-01 | P0 | 기획 입력서 | [Process OS v0.3](../01-planning/intake/2026-07-10-process-os-v03.md) | PM | 완료 |
+| D-02 | P0 | PRD | [PRD.md](../01-planning/PRD.md) | PM | 완료 |
+| D-03 | P0 | 유저스토리 | [USER_STORIES.md](../01-planning/USER_STORIES.md) | PM | 완료 |
+| D-04 | P1 | 화면 설계 | [screens/README.md](../02-design/screens/README.md) | Design | 완료 |
+| D-05 | P1 | 디자인 시스템 | [DESIGN_SYSTEM.md](../02-design/DESIGN_SYSTEM.md) | Design | 완료 |
+| D-06 | P2 | API 명세 | [API.md](../03-engineering/API.md) | Engineering | 완료 |
+| D-07 | P2 | 프로세스 대시보드 명세 | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Engineering | 완료 |
+| D-08 | P3 | QA 테스트 계획 | [TEST_PLAN.md](../04-qa/TEST_PLAN.md) | QA | 완료 |
+| D-09 | P4 | 릴리스 체크리스트 | [RELEASE_CHECKLIST.md](../04-qa/RELEASE_CHECKLIST.md) | DevOps | 완료 |
+| D-10 | P4 | 스테이징 런북 | [STAGING_RUNBOOK.md](../04-qa/STAGING_RUNBOOK.md) | DevOps | 완료 |
+
+## 운영 규칙
+
+1. 새 요청은 먼저 `docs/01-planning/intake/`에 기록합니다.
+2. 산출물이 생기면 `docs/00-process/status.json`의 `deliverables`에 등록합니다.
+3. 대시보드 `산출물` 메뉴에서 phase, owner, 상태를 확인합니다.
+4. Phase Gate를 넘길 때 해당 phase의 필수 산출물이 모두 `done`인지 확인합니다.
+
+## 다음 확장
+
+- 산출물 승인자와 승인일
+- GitHub Issue/PR 링크
+- 변경 이력 요약
+- 산출물 누락 감지 스크립트

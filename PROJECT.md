@@ -5,14 +5,15 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S3 QA + P4 릴리스 준비** ✅
+## 현재 스프린트: **S4 Process OS v0.3** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
 | **P1 디자인** | ✅ 12화면 · Gate 통과 |
 | **P2 레퍼런스 데모** | ✅ 쇼핑·어드민·Search/About UI |
-| **프로세스 대시보드** | ✅ `process-dashboard` :5180 |
+| **프로세스 대시보드** | ✅ 기획·산출물·Phase 관리 UI |
 | **품질 게이트** | ✅ `pnpm verify` + GA harness + 브라우저 육안 QA |
+| **산출물 레지스트리** | ✅ [deliverables](./docs/deliverables/README.md) |
 
 ## 현재 단계
 
@@ -44,6 +45,9 @@
 - [x] P4: GitHub Actions CI green 확인
 - [x] P4: 스테이징 env / 배포 준비
 - [x] P4: smoke 명령 + 롤백 기준 문서화
+- [x] S4: 기획 입력함 → [intake](./docs/01-planning/intake/README.md)
+- [x] S4: 산출물 레지스트리 → [deliverables](./docs/deliverables/README.md)
+- [x] S4: 대시보드 기획·산출물 메뉴
 
 ## 풀 프로세스
 

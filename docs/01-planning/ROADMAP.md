@@ -9,16 +9,16 @@
 |------|------|------|
 | **v0.1** | 모노레포 + P0 Gate + MVP 데모 + CI | ✅ |
 | **v0.2** | P1 Claude Design + P2 UI handoff + 프로세스 대시보드 | ✅ |
-| **v0.3** | P3 QA 시나리오 + GA compliance 게이트 문서화 | ⚪ |
+| **v0.3** | Process OS: 기획 입력 + 산출물 레지스트리 + 대시보드 추적 | ✅ |
 | **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
 
 ## 전체 타임라인
 
 ```text
-S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 ✅ UI + 대시보드     S3 ✅ QA·스테이징
+S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 ✅ UI + 대시보드     S3 ✅ QA·스테이징     S4 ✅ Process OS
 ────────────      ────────────────────────────      ───────────────      ───────────────
-모노레포           기획 확정 · 이슈 등록              Claude Design P1      E2E · 릴리스
-3앱 기동           상품 상세 · 장바구니 · 체크아웃     /design-sync · handoff   프로덕션
+모노레포           기획 확정 · 이슈 등록              Claude Design P1      E2E · 릴리스       산출물 레지스트리
+3앱 기동           상품 상세 · 장바구니 · 체크아웃     /design-sync · handoff   프로덕션          기획 입력함
 ```
 
 ---
@@ -119,6 +119,13 @@ Week 1
 - 스테이징 런북 + smoke 명령
 - RELEASE_CHECKLIST 완료
 
+### Sprint S4 — Process OS
+
+- 기획 입력함 `docs/01-planning/intake/`
+- 산출물 레지스트리 `docs/deliverables/`
+- `status.json`의 `intakes`, `deliverables`
+- process-dashboard `기획`, `산출물` 메뉴
+
 ---
 
 ## 의존성 그래프
@@ -145,7 +152,9 @@ flowchart LR
 3. ✅ 상품 상세 페이지 `/products/[id]`
 4. ✅ 장바구니 API + `/cart`
 5. ✅ 체크아웃 mock + `/checkout`
-6. 🟡 S2: Claude Design P1 (#7) · 어드민 · QA
+6. ✅ S2: Claude Design P1 (#7) · 어드민 · QA
+7. ✅ S4: Process OS 산출물 레지스트리
+8. ⚪ v0.4: 승인자·이력·Issue/PR 연결
 
 ---
 

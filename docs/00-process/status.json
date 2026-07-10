@@ -1,12 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "updatedAt": "2026-07-10",
-  "systemVersion": "v0.2",
+  "systemVersion": "v0.3",
   "sprint": {
-    "id": "S3",
-    "name": "시스템 v0.2 — QA + P4 release-ready",
+    "id": "S4",
+    "name": "시스템 v0.3 — Process OS + 산출물 레지스트리",
     "status": "done",
-    "goal": "P0–P4 게이트 완료 · 릴리스 체크리스트와 스테이징 런북 확정"
+    "goal": "기획 입력부터 산출물·QA·릴리스까지 대시보드에서 추적"
   },
   "phases": [
     {
@@ -72,6 +72,119 @@
         { "id": "p4-checklist", "label": "RELEASE_CHECKLIST", "status": "done", "doc": "docs/04-qa/RELEASE_CHECKLIST.md" },
         { "id": "p4-prod", "label": "프로덕션 handoff", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" }
       ]
+    }
+  ],
+  "intakes": [
+    {
+      "id": "IN-001",
+      "title": "Goodz Process OS v0.3",
+      "source": "사용자 요청 · corp-brain식 산출물 운영",
+      "status": "done",
+      "phase": "P0",
+      "doc": "docs/01-planning/intake/2026-07-10-process-os-v03.md",
+      "nextAction": "산출물 레지스트리와 대시보드 메뉴로 운영"
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D-01",
+      "title": "기획 입력서",
+      "type": "planning",
+      "phase": "P0",
+      "status": "done",
+      "doc": "docs/01-planning/intake/2026-07-10-process-os-v03.md",
+      "owner": "PM",
+      "summary": "아이디어·요청·목표·다음 액션을 P0 입력으로 정리"
+    },
+    {
+      "id": "D-02",
+      "title": "PRD",
+      "type": "planning",
+      "phase": "P0",
+      "status": "done",
+      "doc": "docs/01-planning/PRD.md",
+      "owner": "PM",
+      "summary": "Goodz MVP 범위와 성공 기준"
+    },
+    {
+      "id": "D-03",
+      "title": "유저스토리",
+      "type": "planning",
+      "phase": "P0",
+      "status": "done",
+      "doc": "docs/01-planning/USER_STORIES.md",
+      "owner": "PM",
+      "summary": "고객·운영자 관점의 AC"
+    },
+    {
+      "id": "D-04",
+      "title": "화면 설계",
+      "type": "design",
+      "phase": "P1",
+      "status": "done",
+      "doc": "docs/02-design/screens/README.md",
+      "owner": "Design",
+      "summary": "쇼핑몰·어드민·프로세스 화면 스펙"
+    },
+    {
+      "id": "D-05",
+      "title": "디자인 시스템",
+      "type": "design",
+      "phase": "P1",
+      "status": "done",
+      "doc": "docs/02-design/DESIGN_SYSTEM.md",
+      "owner": "Design",
+      "summary": "Sticky Lemon 톤과 Tailwind 토큰"
+    },
+    {
+      "id": "D-06",
+      "title": "API 명세",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/API.md",
+      "owner": "Engineering",
+      "summary": "상품·장바구니·체크아웃·프로세스 API"
+    },
+    {
+      "id": "D-07",
+      "title": "프로세스 대시보드 명세",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/PROCESS_DASHBOARD.md",
+      "owner": "Engineering",
+      "summary": "P0–P4 진행과 산출물 운영 UI"
+    },
+    {
+      "id": "D-08",
+      "title": "QA 테스트 계획",
+      "type": "qa",
+      "phase": "P3",
+      "status": "done",
+      "doc": "docs/04-qa/TEST_PLAN.md",
+      "owner": "QA",
+      "summary": "P0 시나리오와 브라우저 육안 QA"
+    },
+    {
+      "id": "D-09",
+      "title": "릴리스 체크리스트",
+      "type": "release",
+      "phase": "P4",
+      "status": "done",
+      "doc": "docs/04-qa/RELEASE_CHECKLIST.md",
+      "owner": "DevOps",
+      "summary": "CI·smoke·스테이징·운영 전 확인"
+    },
+    {
+      "id": "D-10",
+      "title": "스테이징 런북",
+      "type": "ops",
+      "phase": "P4",
+      "status": "done",
+      "doc": "docs/04-qa/STAGING_RUNBOOK.md",
+      "owner": "DevOps",
+      "summary": "배포 순서·환경변수·smoke·롤백"
     }
   ],
   "features": [

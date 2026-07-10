@@ -86,6 +86,17 @@ Base URL: `http://localhost:4000` (개발)
 
 **소비자:** `process-dashboard` (:5180)
 
+**주요 필드**
+
+| 필드 | 설명 |
+|------|------|
+| `sprint` | 현재 스프린트와 목표 |
+| `phases` | P0–P4 Gate와 체크 항목 |
+| `intakes` | 기획 입력함 항목 |
+| `deliverables` | PRD·화면설계·API·QA·릴리스 산출물 레지스트리 |
+| `features` | 레퍼런스 기능 백로그 |
+| `apps` | 로컬 앱·서비스 링크 |
+
 ## 변경 절차
 
 1. `packages/types` 수정

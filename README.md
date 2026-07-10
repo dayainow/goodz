@@ -30,6 +30,7 @@ Goodz의 **진짜 제품**은 아래입니다. 쇼핑몰 앱은 **데모**입니
 | 원칙 | 설명 |
 |------|------|
 | **Phase Gate** | P0→P4 단계마다 산출물·체크리스트를 통과해야 다음 단계로 진행 |
+| **Process OS** | 기획 입력 → 산출물 레지스트리 → 대시보드 추적 |
 | **문서 = SSOT** | PRD·유저스토리·API·화면 스펙이 코드보다 먼저, GitHub에서 버전 관리 |
 | **타입 우선 개발** | `@goodz/types` → API → 앱 순서로 E2E 타입 일치 |
 | **검증 가능** | `pnpm verify` + CI로 매 커밋 품질 게이트 |
@@ -131,7 +132,7 @@ GitHub Issue (기획/기능)
 |----|------|------|------|
 | **web-shop** | Next.js 15 | `:3000` | B2C 쇼핑몰 |
 | **admin-dashboard** | Vite + React | `:5173` | 상품·운영 관리 |
-| **process-dashboard** | Vite + React | `:5180` | **풀 프로세스 모니터링** |
+| **process-dashboard** | Vite + React | `:5180` | **풀 프로세스 관리** |
 | **api-server** | Express + TS | `:4000` | REST API · Mock · status SSOT |
 
 | 패키지 | 역할 |

@@ -31,12 +31,44 @@ export interface ProcessApp {
   url: string;
 }
 
+export type ProcessDeliverableType =
+  | "planning"
+  | "design"
+  | "engineering"
+  | "qa"
+  | "release"
+  | "ops"
+  | "retro";
+
+export interface ProcessDeliverable {
+  id: string;
+  title: string;
+  type: ProcessDeliverableType;
+  phase: string;
+  status: ProcessItemStatus;
+  doc: string;
+  owner: string;
+  summary: string;
+}
+
+export interface ProcessIntake {
+  id: string;
+  title: string;
+  source: string;
+  status: ProcessItemStatus;
+  phase: string;
+  doc: string;
+  nextAction: string;
+}
+
 export interface ProcessStatus {
   version: number;
   updatedAt: string;
   systemVersion: string;
   sprint: ProcessSprint;
   phases: ProcessPhase[];
+  intakes: ProcessIntake[];
+  deliverables: ProcessDeliverable[];
   features: ProcessCheckItem[];
   apps: ProcessApp[];
 }

@@ -2,6 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   ProcessApp,
   ProcessCheckItem,
+  ProcessDeliverable,
+  ProcessDeliverableType,
+  ProcessIntake,
   ProcessItemStatus,
   ProcessPhase,
   ProcessStatus,
@@ -10,10 +13,19 @@ import { fetchProcessStatus } from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
 import { ProgressBar, StatusBadge } from "./components/StatusBadge";
 
-type SectionId = "overview" | "phases" | "queue" | "features" | "apps";
+type SectionId =
+  | "overview"
+  | "intakes"
+  | "deliverables"
+  | "phases"
+  | "queue"
+  | "features"
+  | "apps";
 
 const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "overview", label: "개요", eyebrow: "Overview" },
+  { id: "intakes", label: "기획", eyebrow: "Intake" },
+  { id: "deliverables", label: "산출물", eyebrow: "Docs" },
   { id: "phases", label: "Phase Gate", eyebrow: "P0-P4" },
   { id: "queue", label: "작업 큐", eyebrow: "Tasks" },
   { id: "features", label: "기능", eyebrow: "Backlog" },
@@ -32,6 +44,16 @@ const STATUS_TITLE: Record<ProcessItemStatus, string> = {
   in_progress: "진행 중",
   pending: "대기",
   done: "완료",
+};
+
+const DELIVERABLE_TYPE_LABEL: Record<ProcessDeliverableType, string> = {
+  planning: "기획",
+  design: "디자인",
+  engineering: "개발",
+  qa: "QA",
+  release: "릴리스",
+  ops: "운영",
+  retro: "회고",
 };
 
 function buildQueue(phases: ProcessPhase[]) {
@@ -187,6 +209,9 @@ function OverviewSection({
   const pendingWork = getPrimaryWork(queue);
   const donePhases = status.phases.filter((phase) => phase.status === "done");
   const doneFeatures = status.features.filter((item) => item.status === "done");
+  const doneDeliverables = status.deliverables.filter(
+    (item) => item.status === "done",
+  );
 
   return (
     <div className="space-y-6">
@@ -215,8 +240,13 @@ function OverviewSection({
         </div>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-4">
+      <section className="grid gap-3 md:grid-cols-5">
         <Metric label="Phase" value={`${donePhases.length}/${status.phases.length}`} tone="violet" />
+        <Metric
+          label="Deliverable"
+          value={`${doneDeliverables.length}/${status.deliverables.length}`}
+          tone="violet"
+        />
         <Metric label="Feature" value={`${doneFeatures.length}/${status.features.length}`} tone="green" />
         <Metric label="Service" value={status.apps.length} />
         <Metric label="Queue" value={pendingWork.length} tone={pendingWork.length ? "amber" : "green"} />
@@ -235,10 +265,108 @@ function OverviewSection({
           </ul>
         ) : (
           <p className="px-4 py-8 text-sm text-zinc-500">
-            현재 미완료 작업이 없습니다. v0.2 프로세스는 release-ready 상태입니다.
+            현재 미완료 작업이 없습니다. v0.3 Process OS는 산출물까지 추적 중입니다.
           </p>
         )}
       </section>
+    </div>
+  );
+}
+
+function IntakesSection({ intakes }: { intakes: ProcessIntake[] }) {
+  return (
+    <section className="rounded-lg border border-zinc-200 bg-white">
+      <div className="grid border-b border-zinc-100 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 md:grid-cols-[110px_1fr_160px_120px]">
+        <span>ID</span>
+        <span>기획 입력</span>
+        <span>Source</span>
+        <span>상태</span>
+      </div>
+      <ul>
+        {intakes.map((intake) => (
+          <li
+            key={intake.id}
+            className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 md:grid-cols-[110px_1fr_160px_120px] md:items-center"
+          >
+            <div>
+              <span className="font-mono text-xs font-semibold text-brand-violet">
+                {intake.id}
+              </span>
+              <p className="mt-1 text-xs text-zinc-500">{intake.phase}</p>
+            </div>
+            <div>
+              <p className="font-semibold text-zinc-950">{intake.title}</p>
+              <p className="mt-1 text-xs text-zinc-500">{intake.nextAction}</p>
+              <p className="mt-1 truncate font-mono text-xs text-zinc-400">
+                {intake.doc}
+              </p>
+            </div>
+            <p className="text-xs text-zinc-500">{intake.source}</p>
+            <StatusBadge status={intake.status} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function DeliverablesSection({
+  deliverables,
+}: {
+  deliverables: ProcessDeliverable[];
+}) {
+  const byPhase = deliverables.reduce<Record<string, ProcessDeliverable[]>>(
+    (acc, deliverable) => {
+      acc[deliverable.phase] ??= [];
+      acc[deliverable.phase].push(deliverable);
+      return acc;
+    },
+    {},
+  );
+
+  return (
+    <div className="space-y-4">
+      {Object.entries(byPhase).map(([phase, items]) => (
+        <section key={phase} className="rounded-lg border border-zinc-200 bg-white">
+          <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
+            <div>
+              <p className="font-mono text-xs font-semibold text-brand-violet">
+                {phase}
+              </p>
+              <h3 className="font-bold text-zinc-950">산출물</h3>
+            </div>
+            <span className="text-sm font-semibold text-zinc-500">
+              {items.filter((item) => item.status === "done").length}/{items.length}
+            </span>
+          </div>
+          <ul>
+            {items.map((item) => (
+              <li
+                key={item.id}
+                className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_120px_140px_110px] lg:items-center"
+              >
+                <span className="font-mono text-xs font-semibold text-zinc-500">
+                  {item.id}
+                </span>
+                <div>
+                  <p className="font-semibold text-zinc-950">{item.title}</p>
+                  <p className="mt-1 text-xs text-zinc-500">{item.summary}</p>
+                  <p className="mt-1 truncate font-mono text-xs text-zinc-400">
+                    {item.doc}
+                  </p>
+                </div>
+                <span className="w-fit rounded-md bg-zinc-100 px-2 py-1 text-xs font-semibold text-zinc-600">
+                  {DELIVERABLE_TYPE_LABEL[item.type]}
+                </span>
+                <span className="text-xs font-medium text-zinc-500">
+                  {item.owner}
+                </span>
+                <StatusBadge status={item.status} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </div>
   );
 }
@@ -433,6 +561,14 @@ export default function App() {
             overallProgress={overallProgress}
             queue={queue}
           />
+        )}
+
+        {activeSection === "intakes" && (
+          <IntakesSection intakes={status.intakes} />
+        )}
+
+        {activeSection === "deliverables" && (
+          <DeliverablesSection deliverables={status.deliverables} />
         )}
 
         {activeSection === "phases" && (
