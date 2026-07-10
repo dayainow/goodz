@@ -78,3 +78,17 @@ events:
       - page_path
       - component_name
     page: /checkout/success
+  - event_name: page_view
+    trigger: 검색 페이지 진입
+    component_name: SearchPage
+    parameters:
+      - page_path
+      - component_name
+    page: /search
+  - event_name: page_view
+    trigger: About 페이지 진입
+    component_name: AboutPage
+    parameters:
+      - page_path
+      - component_name
+    page: /about

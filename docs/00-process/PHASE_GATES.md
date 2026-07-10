@@ -28,9 +28,9 @@
 
 ## P3 → P4 (QA → 배포)
 
-- [ ] `docs/04-qa/TEST_PLAN.md` P0 시나리오 전부 pass
+- [x] `docs/04-qa/TEST_PLAN.md` P0 시나리오 전부 pass
 - [ ] `RELEASE_CHECKLIST.md` 스테이징 항목 완료
-- [ ] GA compliance (해당 시)
+- [x] GA compliance (해당 시)
 
 ## 승인
 

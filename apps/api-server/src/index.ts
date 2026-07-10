@@ -9,6 +9,7 @@ import type {
 import { addCartItem, buildCartView, getCart } from "./data/cart.js";
 import { checkout } from "./data/checkout.js";
 import { createProduct, getProductById, listProducts } from "./data/products.js";
+import { loadProcessStatus } from "./data/processStatus.js";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 4000;
@@ -25,6 +26,16 @@ function resolveCartId(req: express.Request): string | undefined {
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, service: "goodz-api" });
+});
+
+app.get("/api/process/status", (_req, res) => {
+  try {
+    res.json(loadProcessStatus());
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to load process status";
+    res.status(500).json({ message });
+  }
 });
 
 app.get("/api/products", (req, res) => {

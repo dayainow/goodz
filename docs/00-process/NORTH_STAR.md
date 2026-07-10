@@ -23,7 +23,7 @@
 | **디자인 파이프라인** | Claude Design handoff, 화면 스펙, DS 매핑 | `docs/02-design/` |
 | **엔지니어링 표준** | 아키텍처, API SSOT, ADR | `docs/03-engineering/` |
 | **품질 게이트** | TEST_PLAN, RELEASE_CHECKLIST, `pnpm verify`, CI | `docs/04-qa/`, `.github/` |
-| **모노레포 뼈대** | Turborepo + pnpm, `@goodz/types` SSOT, 3앱 구조 | `apps/`, `packages/`, `turbo.json` |
+| **모노레포 뼈대** | Turborepo + pnpm, `@goodz/types` SSOT, **4앱** 구조 | `apps/`, `packages/`, `turbo.json` |
 | **AI 협업 키트** | Phase별 스킬, `AGENTS.md`, 에이전트 역할 분리 | `skills/`, `AGENTS.md` |
 | **연동 패턴** | GA harness, (선택) Figma publish | 외부 repo + 문서 |
 
@@ -37,7 +37,7 @@
 |------|------|
 | `apps/web-shop` | B2C UX · GA4 퍼널 데모 |
 | `apps/admin-dashboard` | 운영 UI 데모 |
-| `apps/api-server` | REST + mock 데이터 패턴 |
+| `apps/process-dashboard` | **풀 프로세스 진행도 모니터링** (시스템 제품 UI) |
 | `packages/types` | 도메인 SSOT 패턴 시연 |
 
 도메인 기능(장바구니, 결제 mock 등)은 **시스템을 설명하기 위한 예시**입니다.  

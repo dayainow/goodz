@@ -2,11 +2,20 @@
 
 ## 스테이징 배포 전
 
-- [ ] `pnpm verify` 로컬 pass
+- [x] `pnpm verify` 로컬 pass
 - [ ] GitHub Actions CI green
-- [ ] PRD MVP AC 반영 여부 확인
+- [x] PRD MVP AC 반영 여부 확인
 - [ ] env 변수 스테이징 설정 (`NEXT_PUBLIC_API_URL`, `VITE_API_URL`)
-- [ ] API health check
+- [x] API health check
+
+### 2026-07-10 확인 메모
+
+- 로컬 `pnpm verify` pass
+- 로컬 API health: `GET /health` → `{ "ok": true }`
+- GitHub Actions: 원격 `main` 최신 CI는 success, 현재 변경사항은 커밋·푸시 후 재확인 필요
+- 스테이징 env 후보:
+  - `NEXT_PUBLIC_API_URL`
+  - `VITE_API_URL`
 
 ## 프로덕션 배포 전
 

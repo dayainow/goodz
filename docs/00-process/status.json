@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-10",
+  "systemVersion": "v0.2",
+  "sprint": {
+    "id": "S2",
+    "name": "시스템 v0.2 — P2 UI handoff + 프로세스 대시보드",
+    "status": "done",
+    "goal": "Claude Design 코드 반영 · 프로세스 모니터링 SSOT 완료"
+  },
+  "phases": [
+    {
+      "id": "P0",
+      "name": "기획",
+      "status": "done",
+      "progress": 100,
+      "items": [
+        { "id": "p0-prd", "label": "PRD v0.1", "status": "done", "doc": "docs/01-planning/PRD.md" },
+        { "id": "p0-us", "label": "유저스토리 · Issues", "status": "done", "doc": "docs/01-planning/USER_STORIES.md" },
+        { "id": "p0-ga4", "label": "GA4 퍼널 초안", "status": "done", "doc": "docs/01-planning/GA4_EVENTS.md" },
+        { "id": "p0-gate", "label": "P0→P1 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
+      ]
+    },
+    {
+      "id": "P1",
+      "name": "디자인",
+      "status": "done",
+      "progress": 100,
+      "items": [
+        { "id": "p1-design", "label": "Claude Design 12화면", "status": "done", "url": "https://claude.ai/design/p/2bcbb8f0-f646-49bd-a975-3da8631b71e9" },
+        { "id": "p1-screens", "label": "screens/ 스펙 12종", "status": "done", "doc": "docs/02-design/screens/README.md" },
+        { "id": "p1-ds", "label": "DESIGN_SYSTEM Tailwind 토큰", "status": "done", "doc": "docs/02-design/DESIGN_SYSTEM.md" },
+        { "id": "p1-gate", "label": "P1→P2 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "개발",
+      "status": "in_progress",
+      "progress": 95,
+      "items": [
+        { "id": "p2-mvp", "label": "MVP 쇼핑 플로우", "status": "done" },
+        { "id": "p2-home-shop", "label": "Home / Shop 분리", "status": "done" },
+        { "id": "p2-cart-checkout", "label": "장바구니 · 체크아웃 UI", "status": "done" },
+        { "id": "p2-admin", "label": "어드민 1280px UI", "status": "done" },
+        { "id": "p2-search-about", "label": "Search · About", "status": "done" },
+        { "id": "p2-process-dash", "label": "프로세스 대시보드", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
+        { "id": "p2-gate", "label": "P2→P3 Gate (PR merge)", "status": "pending", "doc": "docs/00-process/PHASE_GATES.md" }
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "QA",
+      "status": "done",
+      "progress": 85,
+      "items": [
+        { "id": "p3-verify", "label": "pnpm verify CI green", "status": "done" },
+        { "id": "p3-test-plan", "label": "TEST_PLAN P0 시나리오", "status": "done", "doc": "docs/04-qa/TEST_PLAN.md" },
+        { "id": "p3-ga", "label": "GA compliance harness", "status": "done", "doc": "apps/web-shop/events.spec.yaml" },
+        { "id": "p3-gate", "label": "P3→P4 Gate", "status": "in_progress" }
+      ]
+    },
+    {
+      "id": "P4",
+      "name": "배포",
+      "status": "in_progress",
+      "progress": 25,
+      "items": [
+        { "id": "p4-staging", "label": "스테이징 배포", "status": "in_progress" },
+        { "id": "p4-checklist", "label": "RELEASE_CHECKLIST", "status": "in_progress", "doc": "docs/04-qa/RELEASE_CHECKLIST.md" },
+        { "id": "p4-prod", "label": "프로덕션", "status": "pending" }
+      ]
+    }
+  ],
+  "features": [
+    { "id": "F-01", "label": "상품 목록 / Shop", "status": "done" },
+    { "id": "F-02", "label": "상품 상세", "status": "done" },
+    { "id": "F-03", "label": "장바구니", "status": "done" },
+    { "id": "F-04", "label": "체크아웃 mock", "status": "done" },
+    { "id": "F-05", "label": "어드민 상품 테이블", "status": "done" },
+    { "id": "F-06", "label": "Product API", "status": "done" },
+    { "id": "F-07", "label": "Home · Category", "status": "done" },
+    { "id": "F-08", "label": "어드민 상품 등록", "status": "done" },
+    { "id": "F-09", "label": "Search · About", "status": "done" },
+    { "id": "F-10", "label": "프로세스 대시보드", "status": "done" }
+  ],
+  "apps": [
+    { "id": "api-server", "name": "API Server", "port": 4000, "role": "REST · mock · process SSOT", "url": "http://localhost:4000" },
+    { "id": "web-shop", "name": "Web Shop", "port": 3000, "role": "B2C 레퍼런스 데모", "url": "http://localhost:3000" },
+    { "id": "admin-dashboard", "name": "Admin", "port": 5173, "role": "운영 UI 데모", "url": "http://localhost:5173" },
+    { "id": "process-dashboard", "name": "Process", "port": 5180, "role": "풀 프로세스 모니터링", "url": "http://localhost:5180" }
+  ]
+}

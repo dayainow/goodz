@@ -1,0 +1,9 @@
+import type { ProcessStatus } from "@goodz/types";
+
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+
+export async function fetchProcessStatus(): Promise<ProcessStatus> {
+  const res = await fetch(`${API_URL}/api/process/status`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<ProcessStatus>;
+}

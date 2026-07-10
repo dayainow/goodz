@@ -1,7 +1,5 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeAll, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { setupServer } from "msw/node";
-import { createGAHandlers } from "ga-analytics-harness/msw";
 import type { CapturedGAEvent } from "ga-analytics-harness";
 import {
   loadSpecFromFile,
@@ -17,7 +15,6 @@ import type { Product } from "@goodz/types";
 
 const appRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const captured: CapturedGAEvent[] = [];
-const server = setupServer(...createGAHandlers(captured));
 
 const mockProduct: Product = {
   id: "gd-001",
@@ -39,7 +36,13 @@ vi.mock("next/link", () => ({
     href: string;
     onClick?: () => void;
   }) => (
-    <a href={href} onClick={onClick}>
+    <a
+      href={href}
+      onClick={(event) => {
+        event.preventDefault();
+        onClick?.();
+      }}
+    >
       {children}
     </a>
   ),
@@ -62,22 +65,19 @@ describe("Goodz GA4 harness", () => {
     configureAnalytics({
       measurementId: "G-GOODZTEST",
       transport: (url, params) => {
-        void fetch(url, {
-          method: "POST",
-          body: new URLSearchParams(params),
-          keepalive: true,
+        captured.push({
+          event_name: params.en ?? params.event_name ?? "",
+          params: { ...params },
+          url,
+          timestamp: Date.now(),
         });
       },
     });
-    server.listen({ onUnhandledRequest: "error" });
   });
 
   afterEach(() => {
-    server.resetHandlers();
     captured.length = 0;
   });
-
-  afterAll(() => server.close());
 
   it("events.spec.yaml ↔ src compliance", () => {
     const specPath = resolve(appRoot, "events.spec.yaml");

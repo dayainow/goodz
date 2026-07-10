@@ -78,6 +78,14 @@ Base URL: `http://localhost:4000` (개발)
 }
 ```
 
+### `GET /api/process/status`
+
+**Response:** `ProcessStatus` (`@goodz/types`)
+
+풀 프로세스 진행도 SSOT — `docs/00-process/status.json`을 로드합니다.
+
+**소비자:** `process-dashboard` (:5180)
+
 ## 변경 절차
 
 1. `packages/types` 수정

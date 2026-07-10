@@ -8,6 +8,7 @@
 > Goodz는 **기획 → 디자인 → 개발 → QA → 배포**를 문서·게이트·모노레포·CI로 묶은 **풀 프로세스 모노레포 시스템**이며, 쇼핑몰은 그 시스템을 증명하는 레퍼런스입니다.  
 > (향후 템플릿·라이선스·컨설팅 패키지로 확장 가능)
 
+👉 **[Process Dashboard](http://localhost:5180)** — 풀 프로세스 진행도 모니터링 (`pnpm dev`)  
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 프로젝트 존재 이유 (에이전트 필독)  
 👉 **[에이전트 가이드](./docs/00-process/AGENT_GUIDE.md)** — Cursor / Claude Code 작업 절차  
 👉 **[PROJECT.md](./PROJECT.md)** — 현재 Sprint · Phase 상태
@@ -130,7 +131,8 @@ GitHub Issue (기획/기능)
 |----|------|------|------|
 | **web-shop** | Next.js 15 | `:3000` | B2C 쇼핑몰 |
 | **admin-dashboard** | Vite + React | `:5173` | 상품·운영 관리 |
-| **api-server** | Express + TS | `:4000` | REST API · Mock |
+| **process-dashboard** | Vite + React | `:5180` | **풀 프로세스 모니터링** |
+| **api-server** | Express + TS | `:4000` | REST API · Mock · status SSOT |
 
 | 패키지 | 역할 |
 |--------|------|
@@ -217,7 +219,7 @@ git clone https://github.com/dayainow/goodz.git
 cd goodz
 pnpm install
 pnpm build
-pnpm dev          # API :4000 · Shop :3000 · Admin :5173
+pnpm dev          # API :4000 · Shop :3000 · Admin :5173 · Process :5180
 pnpm verify       # workspace + deps + build + lint (PR 전 필수)
 ```
 
@@ -227,6 +229,7 @@ pnpm verify       # workspace + deps + build + lint (PR 전 필수)
 |------|------|
 | `apps/web-shop/.env.local` | `NEXT_PUBLIC_API_URL=http://localhost:4000` |
 | `apps/admin-dashboard/.env` | `VITE_API_URL=http://localhost:4000` |
+| `apps/process-dashboard/.env` | `VITE_API_URL=http://localhost:4000` |
 
 ---
 
