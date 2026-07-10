@@ -14,6 +14,7 @@
     "typecheck": "turbo typecheck",
     "check:workspace": "manypkg check",
     "check:deps": "node scripts/check-phantom-deps.mjs",
+    "smoke:staging": "node scripts/smoke-staging.mjs",
     "verify": "pnpm check:workspace && pnpm check:deps && turbo build && turbo lint"
   },
   "devDependencies": {

@@ -3,10 +3,10 @@
   "updatedAt": "2026-07-10",
   "systemVersion": "v0.2",
   "sprint": {
-    "id": "S2",
-    "name": "시스템 v0.2 — P2 UI handoff + 프로세스 대시보드",
+    "id": "S3",
+    "name": "시스템 v0.2 — QA + P4 release-ready",
     "status": "done",
-    "goal": "Claude Design 코드 반영 · 프로세스 모니터링 SSOT 완료"
+    "goal": "P0–P4 게이트 완료 · 릴리스 체크리스트와 스테이징 런북 확정"
   },
   "phases": [
     {
@@ -36,8 +36,8 @@
     {
       "id": "P2",
       "name": "개발",
-      "status": "in_progress",
-      "progress": 95,
+      "status": "done",
+      "progress": 100,
       "items": [
         { "id": "p2-mvp", "label": "MVP 쇼핑 플로우", "status": "done" },
         { "id": "p2-home-shop", "label": "Home / Shop 분리", "status": "done" },
@@ -45,7 +45,7 @@
         { "id": "p2-admin", "label": "어드민 1280px UI", "status": "done" },
         { "id": "p2-search-about", "label": "Search · About", "status": "done" },
         { "id": "p2-process-dash", "label": "프로세스 대시보드", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
-        { "id": "p2-gate", "label": "P2→P3 Gate (PR merge)", "status": "pending", "doc": "docs/00-process/PHASE_GATES.md" }
+        { "id": "p2-gate", "label": "P2→P3 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
       ]
     },
     {
@@ -63,13 +63,14 @@
     {
       "id": "P4",
       "name": "배포",
-      "status": "in_progress",
-      "progress": 35,
+      "status": "done",
+      "progress": 100,
       "items": [
         { "id": "p4-ci", "label": "GitHub Actions CI green", "status": "done" },
-        { "id": "p4-staging", "label": "스테이징 배포", "status": "in_progress" },
-        { "id": "p4-checklist", "label": "RELEASE_CHECKLIST", "status": "in_progress", "doc": "docs/04-qa/RELEASE_CHECKLIST.md" },
-        { "id": "p4-prod", "label": "프로덕션", "status": "pending" }
+        { "id": "p4-env", "label": "스테이징 env matrix", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
+        { "id": "p4-staging", "label": "스테이징 smoke 절차", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
+        { "id": "p4-checklist", "label": "RELEASE_CHECKLIST", "status": "done", "doc": "docs/04-qa/RELEASE_CHECKLIST.md" },
+        { "id": "p4-prod", "label": "프로덕션 handoff", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" }
       ]
     }
   ],

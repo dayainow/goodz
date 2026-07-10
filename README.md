@@ -221,6 +221,7 @@ pnpm install
 pnpm build
 pnpm dev          # API :4000 · Shop :3000 · Admin :5173 · Process :5180
 pnpm verify       # workspace + deps + build + lint (PR 전 필수)
+pnpm smoke:staging # API + 3개 화면 smoke check
 ```
 
 ### 환경 변수
@@ -230,6 +231,8 @@ pnpm verify       # workspace + deps + build + lint (PR 전 필수)
 | `apps/web-shop/.env.local` | `NEXT_PUBLIC_API_URL=http://localhost:4000` |
 | `apps/admin-dashboard/.env` | `VITE_API_URL=http://localhost:4000` |
 | `apps/process-dashboard/.env` | `VITE_API_URL=http://localhost:4000` |
+
+스테이징 배포 절차와 smoke URL override는 [STAGING_RUNBOOK.md](./docs/04-qa/STAGING_RUNBOOK.md)를 기준으로 합니다.
 
 ---
 

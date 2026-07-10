@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S3 QA** ✅ → **P4 릴리스 준비**
+## 현재 스프린트: **S3 QA + P4 릴리스 준비** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -22,7 +22,7 @@
 | **P1 디자인** | 🟢 Gate 통과 | Claude Design · Tailwind 토큰 · Home/Shop 분리 |
 | **P2 개발** | 🟢 데모 + 대시보드 | Sticky Lemon UI · process-dashboard |
 | **P3 QA** | 🟢 TEST_PLAN 통과 | 브라우저 QA · GA compliance |
-| **P4 배포** | 🟡 준비 | RELEASE_CHECKLIST · 스테이징 준비 |
+| **P4 배포** | 🟢 release-ready | RELEASE_CHECKLIST · 스테이징 런북 · smoke |
 
 ## 레퍼런스 구현체 (데모 — 최종 제품 아님)
 
@@ -42,7 +42,8 @@
 - [x] S3: TEST_PLAN P0 사전 검증 + GA harness pass
 - [x] S3: TEST_PLAN P0 브라우저 육안 확인
 - [x] P4: GitHub Actions CI green 확인
-- [ ] P4: 스테이징 env / 배포 준비
+- [x] P4: 스테이징 env / 배포 준비
+- [x] P4: smoke 명령 + 롤백 기준 문서화
 
 ## 풀 프로세스
 

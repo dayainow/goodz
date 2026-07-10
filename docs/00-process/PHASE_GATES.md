@@ -24,13 +24,14 @@
 - [x] API `Product` CRUD (최소 Read + mock)
 - [x] web-shop 상품 목록 API 연동
 - [x] admin 상품 테이블 API 연동
-- [ ] PR 1건 이상 merge (develop)
+- [x] `main` green 커밋 반영 (개인 프로젝트 직접 push 기준)
 
 ## P3 → P4 (QA → 배포)
 
 - [x] `docs/04-qa/TEST_PLAN.md` P0 시나리오 전부 pass
-- [ ] `RELEASE_CHECKLIST.md` 스테이징 항목 완료
+- [x] `RELEASE_CHECKLIST.md` 스테이징 항목 완료
 - [x] GA compliance (해당 시)
+- [x] `STAGING_RUNBOOK.md` + `pnpm smoke:staging` 준비
 
 ## 승인
 

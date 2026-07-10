@@ -15,7 +15,7 @@
 ## 전체 타임라인
 
 ```text
-S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 ✅ UI + 대시보드     S3 🟡 QA·스테이징
+S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 ✅ UI + 대시보드     S3 ✅ QA·스테이징
 ────────────      ────────────────────────────      ───────────────      ───────────────
 모노레포           기획 확정 · 이슈 등록              Claude Design P1      E2E · 릴리스
 3앱 기동           상품 상세 · 장바구니 · 체크아웃     /design-sync · handoff   프로덕션
@@ -84,9 +84,9 @@ S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 ✅ UI + 대시보드    
 
 | # | 작업 | 기준 |
 |---|------|------|
-| R1 | 스테이징 배포 | Vercel (web) + API 호스팅 |
+| R1 | 스테이징 배포 | 런북 + env matrix + smoke 명령 |
 | R2 | RELEASE_CHECKLIST | 전 항목 완료 |
-| R3 | 프로덕션 | 도메인·환경변수 |
+| R3 | 프로덕션 | 외부 호스팅 연결 시 같은 smoke 절차 적용 |
 
 ---
 
@@ -116,8 +116,8 @@ Week 1
 ### Sprint S3 — QA·배포
 
 - E2E (Playwright 선택)
-- 스테이징 배포
-- RELEASE_CHECKLIST
+- 스테이징 런북 + smoke 명령
+- RELEASE_CHECKLIST 완료
 
 ---
 
