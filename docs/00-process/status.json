@@ -185,6 +185,16 @@
       "doc": "docs/04-qa/STAGING_RUNBOOK.md",
       "owner": "DevOps",
       "summary": "배포 순서·환경변수·smoke·롤백"
+    },
+    {
+      "id": "D-11",
+      "title": "기획 변경 로그",
+      "type": "planning",
+      "phase": "P0",
+      "status": "done",
+      "doc": "docs/01-planning/changes/README.md",
+      "owner": "PM",
+      "summary": "문서 기반 기획 수정 요청·승인·반영 기록"
     }
   ],
   "approvals": [
@@ -196,6 +206,23 @@
       "approvedAt": "2026-07-10",
       "summary": "기획 입력함, 산출물 레지스트리, 대시보드 기획·산출물 메뉴 반영 승인",
       "doc": "docs/00-process/APPROVALS.md"
+    }
+  ],
+  "planningChanges": [
+    {
+      "id": "CR-001",
+      "title": "문서 기반 기획 수정 체계",
+      "status": "applied",
+      "requestedAt": "2026-07-10",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/01-planning/intake/README.md",
+        "docs/01-planning/changes/README.md",
+        "docs/00-process/status.json"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-10-planning-change-flow.md",
+      "summary": "기획 변경 시 Markdown 변경 요청서를 작성하고 status.json으로 대시보드 추적",
+      "decision": "문서 기반 입력을 유지하고 변경 요청 로그를 추가"
     }
   ],
   "features": [

@@ -71,6 +71,24 @@ export interface ProcessApproval {
   doc: string;
 }
 
+export type ProcessPlanningChangeStatus =
+  | "proposed"
+  | "approved"
+  | "applied"
+  | "rejected";
+
+export interface ProcessPlanningChange {
+  id: string;
+  title: string;
+  status: ProcessPlanningChangeStatus;
+  requestedAt: string;
+  source: string;
+  targetDocs: string[];
+  doc: string;
+  summary: string;
+  decision: string;
+}
+
 export interface ProcessStatus {
   version: number;
   updatedAt: string;
@@ -80,6 +98,7 @@ export interface ProcessStatus {
   intakes: ProcessIntake[];
   deliverables: ProcessDeliverable[];
   approvals: ProcessApproval[];
+  planningChanges: ProcessPlanningChange[];
   features: ProcessCheckItem[];
   apps: ProcessApp[];
 }

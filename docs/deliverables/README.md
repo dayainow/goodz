@@ -17,6 +17,7 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-08 | P3 | QA 테스트 계획 | [TEST_PLAN.md](../04-qa/TEST_PLAN.md) | QA | 완료 |
 | D-09 | P4 | 릴리스 체크리스트 | [RELEASE_CHECKLIST.md](../04-qa/RELEASE_CHECKLIST.md) | DevOps | 완료 |
 | D-10 | P4 | 스테이징 런북 | [STAGING_RUNBOOK.md](../04-qa/STAGING_RUNBOOK.md) | DevOps | 완료 |
+| D-11 | P0 | 기획 변경 로그 | [changes/README.md](../01-planning/changes/README.md) | PM | 완료 |
 
 ## 운영 규칙
 

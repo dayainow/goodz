@@ -48,6 +48,12 @@ async function main() {
     if (!Array.isArray(data?.deliverables) || data.deliverables.length === 0) {
       throw new Error("process status has no deliverables");
     }
+    if (
+      !Array.isArray(data?.planningChanges) ||
+      data.planningChanges.length === 0
+    ) {
+      throw new Error("process status has no planning changes");
+    }
     if (!Array.isArray(data?.approvals) || data.approvals.length === 0) {
       throw new Error("process status has no approvals");
     }

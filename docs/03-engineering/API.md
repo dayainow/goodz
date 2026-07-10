@@ -93,6 +93,7 @@ Base URL: `http://localhost:4000` (개발)
 | `sprint` | 현재 스프린트와 목표 |
 | `phases` | P0–P4 Gate와 체크 항목 |
 | `intakes` | 기획 입력함 항목 |
+| `planningChanges` | 기획 수정 요청·승인·반영 로그 |
 | `deliverables` | PRD·화면설계·API·QA·릴리스 산출물 레지스트리 |
 | `approvals` | 스프린트·Gate·산출물 승인 로그 |
 | `features` | 레퍼런스 기능 백로그 |

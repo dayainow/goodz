@@ -70,6 +70,8 @@ export type {
   ProcessIntake,
   ProcessItemStatus,
   ProcessPhase,
+  ProcessPlanningChange,
+  ProcessPlanningChangeStatus,
   ProcessSprint,
   ProcessStatus,
 } from "./process.js";

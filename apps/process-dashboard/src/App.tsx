@@ -8,6 +8,8 @@ import type {
   ProcessIntake,
   ProcessItemStatus,
   ProcessPhase,
+  ProcessPlanningChange,
+  ProcessPlanningChangeStatus,
   ProcessStatus,
 } from "@goodz/types";
 import { fetchProcessStatus } from "./api/process";
@@ -17,6 +19,7 @@ import { ProgressBar, StatusBadge } from "./components/StatusBadge";
 type SectionId =
   | "overview"
   | "intakes"
+  | "changes"
   | "deliverables"
   | "approvals"
   | "phases"
@@ -27,6 +30,7 @@ type SectionId =
 const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "overview", label: "개요", eyebrow: "Overview" },
   { id: "intakes", label: "기획", eyebrow: "Intake" },
+  { id: "changes", label: "변경", eyebrow: "Change" },
   { id: "deliverables", label: "산출물", eyebrow: "Docs" },
   { id: "approvals", label: "승인", eyebrow: "Approval" },
   { id: "phases", label: "Phase Gate", eyebrow: "P0-P4" },
@@ -57,6 +61,20 @@ const DELIVERABLE_TYPE_LABEL: Record<ProcessDeliverableType, string> = {
   release: "릴리스",
   ops: "운영",
   retro: "회고",
+};
+
+const PLANNING_CHANGE_LABEL: Record<ProcessPlanningChangeStatus, string> = {
+  proposed: "제안",
+  approved: "승인",
+  applied: "반영",
+  rejected: "반려",
+};
+
+const PLANNING_CHANGE_CLASS: Record<ProcessPlanningChangeStatus, string> = {
+  proposed: "border-amber-200 bg-amber-50 text-amber-700",
+  approved: "border-violet-200 bg-violet-50 text-violet-700",
+  applied: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  rejected: "border-rose-200 bg-rose-50 text-rose-700",
 };
 
 function buildQueue(phases: ProcessPhase[]) {
@@ -218,6 +236,9 @@ function OverviewSection({
   const approvedCount = status.approvals.filter(
     (item) => item.status === "approved",
   ).length;
+  const appliedChanges = status.planningChanges.filter(
+    (item) => item.status === "applied",
+  ).length;
 
   return (
     <div className="space-y-6">
@@ -258,8 +279,12 @@ function OverviewSection({
           value={`${approvedCount}/${status.approvals.length}`}
           tone="green"
         />
+        <Metric
+          label="Change"
+          value={`${appliedChanges}/${status.planningChanges.length}`}
+          tone="green"
+        />
         <Metric label="Feature" value={`${doneFeatures.length}/${status.features.length}`} tone="green" />
-        <Metric label="Service" value={status.apps.length} />
         <Metric label="Queue" value={pendingWork.length} tone={pendingWork.length ? "amber" : "green"} />
       </section>
 
@@ -314,6 +339,76 @@ function IntakesSection({ intakes }: { intakes: ProcessIntake[] }) {
             </div>
             <p className="text-xs text-zinc-500">{intake.source}</p>
             <StatusBadge status={intake.status} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function PlanningChangeBadge({
+  status,
+}: {
+  status: ProcessPlanningChangeStatus;
+}) {
+  return (
+    <span
+      className={[
+        "inline-flex w-fit rounded-full border px-2.5 py-0.5 text-xs font-medium",
+        PLANNING_CHANGE_CLASS[status],
+      ].join(" ")}
+    >
+      {PLANNING_CHANGE_LABEL[status]}
+    </span>
+  );
+}
+
+function PlanningChangesSection({
+  changes,
+}: {
+  changes: ProcessPlanningChange[];
+}) {
+  return (
+    <section className="rounded-lg border border-zinc-200 bg-white">
+      <div className="grid border-b border-zinc-100 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 lg:grid-cols-[100px_1fr_130px_120px]">
+        <span>ID</span>
+        <span>변경 요청</span>
+        <span>요청일</span>
+        <span>상태</span>
+      </div>
+      <ul>
+        {changes.map((change) => (
+          <li
+            key={change.id}
+            className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[100px_1fr_130px_120px] lg:items-center"
+          >
+            <span className="font-mono text-xs font-semibold text-brand-violet">
+              {change.id}
+            </span>
+            <div>
+              <p className="font-semibold text-zinc-950">{change.title}</p>
+              <p className="mt-1 text-xs text-zinc-500">{change.summary}</p>
+              <p className="mt-1 text-xs text-zinc-500">
+                결정: {change.decision}
+              </p>
+              <p className="mt-1 truncate font-mono text-xs text-zinc-400">
+                {change.doc}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1">
+                {change.targetDocs.map((doc) => (
+                  <span
+                    key={doc}
+                    className="rounded-md bg-zinc-100 px-2 py-1 font-mono text-[11px] text-zinc-500"
+                  >
+                    {doc}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <span className="font-mono text-xs text-zinc-500">
+              {change.requestedAt}
+            </span>
+            <PlanningChangeBadge status={change.status} />
           </li>
         ))}
       </ul>
@@ -635,6 +730,10 @@ export default function App() {
 
         {activeSection === "intakes" && (
           <IntakesSection intakes={status.intakes} />
+        )}
+
+        {activeSection === "changes" && (
+          <PlanningChangesSection changes={status.planningChanges} />
         )}
 
         {activeSection === "deliverables" && (
