@@ -8,17 +8,17 @@ const STATUS_LABEL: Record<ProcessItemStatus, string> = {
 };
 
 const STATUS_CLASS: Record<ProcessItemStatus, string> = {
-  done: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
-  in_progress: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-  pending: "bg-slate-700 text-slate-400 border-slate-600",
-  blocked: "bg-rose-500/20 text-rose-300 border-rose-500/30",
+  done: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  in_progress: "bg-amber-50 text-amber-700 border-amber-200",
+  pending: "bg-zinc-100 text-zinc-600 border-zinc-200",
+  blocked: "bg-rose-50 text-rose-700 border-rose-200",
 };
 
 export function StatusBadge({ status }: { status: ProcessItemStatus }) {
   return (
     <span
       className={[
-        "inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex w-fit rounded-full border px-2.5 py-0.5 text-xs font-medium",
         STATUS_CLASS[status],
       ].join(" ")}
     >
@@ -29,7 +29,7 @@ export function StatusBadge({ status }: { status: ProcessItemStatus }) {
 
 export function ProgressBar({ value }: { value: number }) {
   return (
-    <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+    <div className="h-2 overflow-hidden rounded-full bg-zinc-200">
       <div
         className="h-full rounded-full bg-brand-violet transition-all"
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}

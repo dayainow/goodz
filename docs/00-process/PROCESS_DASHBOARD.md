@@ -24,7 +24,7 @@ process-dashboard (:5180)       ← 모니터링 UI
 | `status.json` | Phase·Sprint·기능·앱 목록의 기계 판독 가능 상태 |
 | `@goodz/types` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
-| `process-dashboard` | 30초 폴링 · Phase 패널 · 앱 링크 |
+| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Phase/Queue/Feature/App 관리 뷰 |
 
 ## 접속
 
@@ -58,10 +58,11 @@ curl http://localhost:4000/api/process/status
 
 ## UI 구성
 
-- **Sprint 배너** — 현재 S2 목표·전체 진행률
-- **Phase Gate** — P0–P4 패널 + 체크리스트
-- **기능 백로그** — F-01…
-- **앱 링크** — 4앱 포트·역할
+- **개요** — Sprint 목표·전체 진행률·우선 처리 작업
+- **Phase Gate** — P0–P4 패널 + 문서 경로
+- **작업 큐** — 차단/진행/대기/완료 상태별 항목
+- **기능** — F-01… 기능 백로그 테이블
+- **앱** — 4앱 포트·역할·바로가기
 
 ## 관련 문서
 
