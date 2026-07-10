@@ -8,7 +8,7 @@
 > Goodz는 **기획 → 디자인 → 개발 → QA → 배포**를 문서·게이트·모노레포·CI로 묶은 **풀 프로세스 모노레포 시스템**이며, 쇼핑몰은 그 시스템을 증명하는 레퍼런스입니다.  
 > (향후 템플릿·라이선스·컨설팅 패키지로 확장 가능)
 
-👉 **[Process Dashboard](http://localhost:5180)** — 풀 프로세스 진행도 모니터링 (`pnpm dev`)  
+👉 **[Process Dashboard](http://localhost:5180)** — 기획·변경·산출물·승인까지 관리하는 풀 프로세스 대시보드 (`pnpm dev`)  
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 프로젝트 존재 이유 (에이전트 필독)  
 👉 **[에이전트 가이드](./docs/00-process/AGENT_GUIDE.md)** — Cursor / Claude Code 작업 절차  
 👉 **[PROJECT.md](./PROJECT.md)** — 현재 Sprint · Phase 상태
@@ -22,7 +22,8 @@ Goodz의 **진짜 제품**은 아래입니다. 쇼핑몰 앱은 **데모**입니
 | 시스템 레이어 | 내용 |
 |---------------|------|
 | **프로세스** | P0–P4, Phase Gate, Sprint ROADMAP |
-| **문서 SSOT** | PRD, 스펙, API, ADR, QA 체크리스트 |
+| **문서 SSOT** | 기획 입력, 변경 요청, PRD, 스펙, API, ADR, QA, 승인 로그 |
+| **운영 대시보드** | Process Dashboard에서 Phase, 기획, 변경, 산출물, 승인 상태 추적 |
 | **모노레포** | Turborepo + pnpm, `@goodz/types`, 3앱 스캐폴드 |
 | **품질** | `pnpm verify`, CI, GA harness 연동 패턴 |
 | **AI 협업** | Phase별 스킬, Cursor / Claude Code 역할 분리 |
@@ -30,8 +31,8 @@ Goodz의 **진짜 제품**은 아래입니다. 쇼핑몰 앱은 **데모**입니
 | 원칙 | 설명 |
 |------|------|
 | **Phase Gate** | P0→P4 단계마다 산출물·체크리스트를 통과해야 다음 단계로 진행 |
-| **Process OS** | 기획 입력 → 산출물 레지스트리 → 대시보드 추적 |
-| **문서 = SSOT** | PRD·유저스토리·API·화면 스펙이 코드보다 먼저, GitHub에서 버전 관리 |
+| **Process OS** | 기획 입력 → 변경 요청 → 산출물 레지스트리 → 승인 로그 → 대시보드 추적 |
+| **문서 = SSOT** | Intake·변경 로그·PRD·API·화면 스펙이 코드보다 먼저, GitHub에서 버전 관리 |
 | **타입 우선 개발** | `@goodz/types` → API → 앱 순서로 E2E 타입 일치 |
 | **검증 가능** | `pnpm verify` + CI로 매 커밋 품질 게이트 |
 | **AI 역할 분리** | Phase별 스킬·에이전트(Cursor / Claude Code)로 협업 규칙 명문화 |
@@ -52,19 +53,19 @@ flowchart LR
 
 | Phase | 핵심 산출물 |
 |-------|-------------|
-| P0 | PRD · 유저스토리 · GA4 명세 |
+| P0 | 기획 입력 · 변경 로그 · PRD · 유저스토리 · GA4 명세 |
 | P1 | Claude Design 12화면 · `screens/` 스펙 |
 | P2 | `@goodz/types` → API → 앱 · `pnpm verify` |
 | P3 | TEST_PLAN · GA compliance |
-| P4 | RELEASE_CHECKLIST · 배포 |
+| P4 | RELEASE_CHECKLIST · 배포 · 승인 로그 |
 
 ```text
 P0 기획          P1 디자인         P2 개발           P3 QA            P4 배포
 ────────         ────────         ────────         ────────         ────────
-PRD              Claude Design    @goodz/types     pnpm verify      CI green
-유저스토리        /design-sync      api → apps       E2E 시나리오      스테이징
-GA4 명세         화면 프로토타입    PR + 리뷰        GA harness       프로덕션
-Notion SSOT      handoff→Code      ADR              회귀 테스트
+Intake/변경       Claude Design    @goodz/types     pnpm verify      CI green
+PRD              /design-sync      api → apps       E2E 시나리오      스테이징
+유저스토리        화면 프로토타입    PR + 리뷰        GA harness       프로덕션
+GA4 명세         handoff→Code      ADR              회귀 테스트      승인 로그
      │                │                │                │                │
      └────────────────┴────────────────┴────────────────┴────────────────┘
                          Phase Gate — docs/00-process/PHASE_GATES.md
@@ -72,26 +73,28 @@ Notion SSOT      handoff→Code      ADR              회귀 테스트
 
 | Phase | 역할 | 핵심 산출물 | 문서 |
 |-------|------|-------------|------|
-| **P0 기획** | PM | PRD, 유저스토리, GA4 퍼널 | [PRD](./docs/01-planning/PRD.md) · [USER_STORIES](./docs/01-planning/USER_STORIES.md) |
+| **P0 기획** | PM | 기획 입력, 변경 로그, PRD, 유저스토리, GA4 퍼널 | [intake/](./docs/01-planning/intake/) · [changes/](./docs/01-planning/changes/) · [PRD](./docs/01-planning/PRD.md) |
 | **P1 디자인** | Design | Claude Design 프로토타입, DS, 화면 스펙 | [CLAUDE_DESIGN](./docs/02-design/CLAUDE_DESIGN.md) · [screens/](./docs/02-design/screens/) |
 | **P2 개발** | FE/BE | API, 모노레포 코드, ADR | [ARCHITECTURE](./docs/03-engineering/ARCHITECTURE.md) · [API](./docs/03-engineering/API.md) |
 | **P3 QA** | QA | 테스트 플랜, GA compliance | [TEST_PLAN](./docs/04-qa/TEST_PLAN.md) |
-| **P4 배포** | DevOps | 스테이징·프로덕션 릴리스 | [RELEASE_CHECKLIST](./docs/04-qa/RELEASE_CHECKLIST.md) |
+| **P4 배포** | DevOps | 스테이징·프로덕션 릴리스, 승인 로그 | [RELEASE_CHECKLIST](./docs/04-qa/RELEASE_CHECKLIST.md) · [APPROVALS](./docs/00-process/APPROVALS.md) |
 
 **상세 워크플로우:** [docs/00-process/WORKFLOW.md](./docs/00-process/WORKFLOW.md)
 
 ### Sprint 타임라인 (현재)
 
 ```text
-S0 ✅ 모노레포 스캐폴드   S1 ✅ MVP 쇼핑 플로우   S2 🟡 P2 UI handoff   S3 ⚪ QA·스테이징
+S0 ✅ 모노레포 스캐폴드   S1 ✅ MVP 쇼핑 플로우   S2 ✅ UI handoff   S3 ✅ QA·스테이징   S4 ✅ Process OS
 ```
 
 | Phase | 현재 상태 |
 |-------|-----------|
 | P0 기획 | 🟢 Gate 통과 |
-| P1 디자인 | 🟢 12화면 완료 → P2 UI handoff 진행 |
+| P1 디자인 | 🟢 12화면 완료 |
 | P2 개발 | 🟢 MVP + GA4 harness + 어드민 등록 API |
-| P3/P4 | ⚪ 대기 |
+| P3 QA | 🟢 smoke + staging checklist 통과 |
+| P4 배포 | 🟢 release checklist + 승인 로그 준비 |
+| Process OS | 🟢 기획 입력·변경·산출물·승인 대시보드 반영 |
 
 로드맵: [docs/01-planning/ROADMAP.md](./docs/01-planning/ROADMAP.md)
 
@@ -132,7 +135,7 @@ GitHub Issue (기획/기능)
 |----|------|------|------|
 | **web-shop** | Next.js 15 | `:3000` | B2C 쇼핑몰 |
 | **admin-dashboard** | Vite + React | `:5173` | 상품·운영 관리 |
-| **process-dashboard** | Vite + React | `:5180` | **풀 프로세스 관리** |
+| **process-dashboard** | Vite + React | `:5180` | **기획·변경·산출물·승인·Phase 관리** |
 | **api-server** | Express + TS | `:4000` | REST API · Mock · status SSOT |
 
 | 패키지 | 역할 |
@@ -200,11 +203,12 @@ Phase마다 **다른 도구·스킬**을 쓰고, 동시 작업 시 git은 Cursor
 goodz/
 ├── PROJECT.md                 # Phase · Sprint 상태 허브
 ├── docs/
-│   ├── 00-process/            # WORKFLOW · PHASE_GATES
-│   ├── 01-planning/           # PRD · USER_STORIES · ROADMAP · GA4
+│   ├── 00-process/            # WORKFLOW · PHASE_GATES · APPROVALS
+│   ├── 01-planning/           # intake/ · changes/ · PRD · USER_STORIES · ROADMAP · GA4
 │   ├── 02-design/             # CLAUDE_DESIGN · DESIGN_SYSTEM · screens/
 │   ├── 03-engineering/        # ARCHITECTURE · API · ADR
-│   └── 04-qa/                 # TEST_PLAN · RELEASE_CHECKLIST
+│   ├── 04-qa/                 # TEST_PLAN · RELEASE_CHECKLIST
+│   └── deliverables/          # 산출물 레지스트리
 ├── skills/                    # goodz-planning · design · dev
 ├── apps/                      # web-shop · admin-dashboard · api-server
 ├── packages/                  # types · ui · tsconfig
@@ -251,7 +255,7 @@ pnpm smoke:staging # API + 3개 화면 smoke check
 ## 기술 스택
 
 ```text
-Process    Phase Gate · PRD · ADR · Claude Design · GitHub Issues/PR
+Process    Phase Gate · Process OS · 기획 변경 로그 · 산출물 레지스트리 · 승인 로그
 Monorepo   Turborepo · pnpm workspaces · @goodz/types SSOT
 Frontend   Next.js 15 · React 19 · Vite · Tailwind CSS
 Backend    Express · TypeScript
