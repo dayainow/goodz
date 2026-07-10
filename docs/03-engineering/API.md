@@ -94,6 +94,7 @@ Base URL: `http://localhost:4000` (개발)
 | `phases` | P0–P4 Gate와 체크 항목 |
 | `intakes` | 기획 입력함 항목 |
 | `deliverables` | PRD·화면설계·API·QA·릴리스 산출물 레지스트리 |
+| `approvals` | 스프린트·Gate·산출물 승인 로그 |
 | `features` | 레퍼런스 기능 백로그 |
 | `apps` | 로컬 앱·서비스 링크 |
 

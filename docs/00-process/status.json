@@ -187,6 +187,17 @@
       "summary": "배포 순서·환경변수·smoke·롤백"
     }
   ],
+  "approvals": [
+    {
+      "id": "AP-001",
+      "target": "S4 Process OS v0.3",
+      "approver": "사용자",
+      "status": "approved",
+      "approvedAt": "2026-07-10",
+      "summary": "기획 입력함, 산출물 레지스트리, 대시보드 기획·산출물 메뉴 반영 승인",
+      "doc": "docs/00-process/APPROVALS.md"
+    }
+  ],
   "features": [
     { "id": "F-01", "label": "상품 목록 / Shop", "status": "done" },
     { "id": "F-02", "label": "상품 상세", "status": "done" },

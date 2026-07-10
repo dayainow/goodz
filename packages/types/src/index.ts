@@ -63,6 +63,7 @@ export interface CheckoutResult {
 
 export type {
   ProcessApp,
+  ProcessApproval,
   ProcessCheckItem,
   ProcessDeliverable,
   ProcessDeliverableType,

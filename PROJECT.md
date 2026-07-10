@@ -14,6 +14,7 @@
 | **프로세스 대시보드** | ✅ 기획·산출물·Phase 관리 UI |
 | **품질 게이트** | ✅ `pnpm verify` + GA harness + 브라우저 육안 QA |
 | **산출물 레지스트리** | ✅ [deliverables](./docs/deliverables/README.md) |
+| **승인 로그** | ✅ [APPROVALS](./docs/00-process/APPROVALS.md) |
 
 ## 현재 단계
 
@@ -48,6 +49,7 @@
 - [x] S4: 기획 입력함 → [intake](./docs/01-planning/intake/README.md)
 - [x] S4: 산출물 레지스트리 → [deliverables](./docs/deliverables/README.md)
 - [x] S4: 대시보드 기획·산출물 메뉴
+- [x] S4: 사용자 승인 로그 → [APPROVALS.md](./docs/00-process/APPROVALS.md)
 
 ## 풀 프로세스
 

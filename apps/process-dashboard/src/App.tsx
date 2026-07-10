@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   ProcessApp,
+  ProcessApproval,
   ProcessCheckItem,
   ProcessDeliverable,
   ProcessDeliverableType,
@@ -17,6 +18,7 @@ type SectionId =
   | "overview"
   | "intakes"
   | "deliverables"
+  | "approvals"
   | "phases"
   | "queue"
   | "features"
@@ -26,6 +28,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "overview", label: "개요", eyebrow: "Overview" },
   { id: "intakes", label: "기획", eyebrow: "Intake" },
   { id: "deliverables", label: "산출물", eyebrow: "Docs" },
+  { id: "approvals", label: "승인", eyebrow: "Approval" },
   { id: "phases", label: "Phase Gate", eyebrow: "P0-P4" },
   { id: "queue", label: "작업 큐", eyebrow: "Tasks" },
   { id: "features", label: "기능", eyebrow: "Backlog" },
@@ -212,6 +215,9 @@ function OverviewSection({
   const doneDeliverables = status.deliverables.filter(
     (item) => item.status === "done",
   );
+  const approvedCount = status.approvals.filter(
+    (item) => item.status === "approved",
+  ).length;
 
   return (
     <div className="space-y-6">
@@ -240,12 +246,17 @@ function OverviewSection({
         </div>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-5">
+      <section className="grid gap-3 md:grid-cols-6">
         <Metric label="Phase" value={`${donePhases.length}/${status.phases.length}`} tone="violet" />
         <Metric
           label="Deliverable"
           value={`${doneDeliverables.length}/${status.deliverables.length}`}
           tone="violet"
+        />
+        <Metric
+          label="Approval"
+          value={`${approvedCount}/${status.approvals.length}`}
+          tone="green"
         />
         <Metric label="Feature" value={`${doneFeatures.length}/${status.features.length}`} tone="green" />
         <Metric label="Service" value={status.apps.length} />
@@ -368,6 +379,65 @@ function DeliverablesSection({
         </section>
       ))}
     </div>
+  );
+}
+
+function ApprovalBadge({ status }: { status: ProcessApproval["status"] }) {
+  const label = {
+    approved: "승인",
+    requested: "요청",
+    changes_requested: "수정 요청",
+  }[status];
+  const tone = {
+    approved: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    requested: "border-amber-200 bg-amber-50 text-amber-700",
+    changes_requested: "border-rose-200 bg-rose-50 text-rose-700",
+  }[status];
+
+  return (
+    <span className={["inline-flex w-fit rounded-full border px-2.5 py-0.5 text-xs font-medium", tone].join(" ")}>
+      {label}
+    </span>
+  );
+}
+
+function ApprovalsSection({ approvals }: { approvals: ProcessApproval[] }) {
+  return (
+    <section className="rounded-lg border border-zinc-200 bg-white">
+      <div className="grid border-b border-zinc-100 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 lg:grid-cols-[100px_1fr_120px_120px_120px]">
+        <span>ID</span>
+        <span>대상</span>
+        <span>승인자</span>
+        <span>일자</span>
+        <span>상태</span>
+      </div>
+      <ul>
+        {approvals.map((approval) => (
+          <li
+            key={approval.id}
+            className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[100px_1fr_120px_120px_120px] lg:items-center"
+          >
+            <span className="font-mono text-xs font-semibold text-brand-violet">
+              {approval.id}
+            </span>
+            <div>
+              <p className="font-semibold text-zinc-950">{approval.target}</p>
+              <p className="mt-1 text-xs text-zinc-500">{approval.summary}</p>
+              <p className="mt-1 truncate font-mono text-xs text-zinc-400">
+                {approval.doc}
+              </p>
+            </div>
+            <span className="text-xs font-medium text-zinc-500">
+              {approval.approver}
+            </span>
+            <span className="font-mono text-xs text-zinc-500">
+              {approval.approvedAt}
+            </span>
+            <ApprovalBadge status={approval.status} />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -569,6 +639,10 @@ export default function App() {
 
         {activeSection === "deliverables" && (
           <DeliverablesSection deliverables={status.deliverables} />
+        )}
+
+        {activeSection === "approvals" && (
+          <ApprovalsSection approvals={status.approvals} />
         )}
 
         {activeSection === "phases" && (

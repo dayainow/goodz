@@ -61,6 +61,16 @@ export interface ProcessIntake {
   nextAction: string;
 }
 
+export interface ProcessApproval {
+  id: string;
+  target: string;
+  approver: string;
+  status: "approved" | "requested" | "changes_requested";
+  approvedAt: string;
+  summary: string;
+  doc: string;
+}
+
 export interface ProcessStatus {
   version: number;
   updatedAt: string;
@@ -69,6 +79,7 @@ export interface ProcessStatus {
   phases: ProcessPhase[];
   intakes: ProcessIntake[];
   deliverables: ProcessDeliverable[];
+  approvals: ProcessApproval[];
   features: ProcessCheckItem[];
   apps: ProcessApp[];
 }
