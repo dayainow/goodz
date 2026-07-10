@@ -1,12 +1,12 @@
 {
-  "version": 2,
+  "version": 3,
   "updatedAt": "2026-07-10",
-  "systemVersion": "v0.3",
+  "systemVersion": "v0.4",
   "sprint": {
-    "id": "S4",
-    "name": "시스템 v0.3 — Process OS + 산출물 레지스트리",
+    "id": "S5",
+    "name": "시스템 v0.4 — Traceability + CI/CD Evidence",
     "status": "done",
-    "goal": "기획 입력부터 산출물·QA·릴리스까지 대시보드에서 추적"
+    "goal": "기획·변경·산출물·승인에서 커밋·CI 증거까지 한 흐름으로 추적"
   },
   "phases": [
     {
@@ -45,6 +45,7 @@
         { "id": "p2-admin", "label": "어드민 1280px UI", "status": "done" },
         { "id": "p2-search-about", "label": "Search · About", "status": "done" },
         { "id": "p2-process-dash", "label": "프로세스 대시보드", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
+        { "id": "p2-traceability", "label": "Traceability 매트릭스", "status": "done", "doc": "docs/00-process/TRACEABILITY.md" },
         { "id": "p2-gate", "label": "P2→P3 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
       ]
     },
@@ -83,6 +84,15 @@
       "phase": "P0",
       "doc": "docs/01-planning/intake/2026-07-10-process-os-v03.md",
       "nextAction": "산출물 레지스트리와 대시보드 메뉴로 운영"
+    },
+    {
+      "id": "IN-002",
+      "title": "Traceability + CI/CD Evidence v0.4",
+      "source": "사용자 요청 · 1번부터 고도화",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/00-process/TRACEABILITY.md",
+      "nextAction": "Issue/PR 번호가 생기면 traceLinks에 연결"
     }
   ],
   "deliverables": [
@@ -195,6 +205,26 @@
       "doc": "docs/01-planning/changes/README.md",
       "owner": "PM",
       "summary": "문서 기반 기획 수정 요청·승인·반영 기록"
+    },
+    {
+      "id": "D-12",
+      "title": "Traceability 매트릭스",
+      "type": "ops",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/TRACEABILITY.md",
+      "owner": "PM/Engineering",
+      "summary": "기획·변경·산출물·승인과 Issue/PR/Commit/CI/Release 증거 연결"
+    },
+    {
+      "id": "D-13",
+      "title": "CI/CD 운영 문서",
+      "type": "ops",
+      "phase": "P4",
+      "status": "done",
+      "doc": "docs/00-process/CICD.md",
+      "owner": "DevOps",
+      "summary": "로컬 verify, GitHub Actions, smoke, traceability 검증 기준"
     }
   ],
   "approvals": [
@@ -223,6 +253,97 @@
       "doc": "docs/01-planning/changes/2026-07-10-planning-change-flow.md",
       "summary": "기획 변경 시 Markdown 변경 요청서를 작성하고 status.json으로 대시보드 추적",
       "decision": "문서 기반 입력을 유지하고 변경 요청 로그를 추가"
+    },
+    {
+      "id": "CR-002",
+      "title": "Issue/PR/Commit/CI 추적 레이어 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-10",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/status.json",
+        "docs/00-process/TRACEABILITY.md",
+        "docs/00-process/CICD.md",
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "README.md"
+      ],
+      "doc": "docs/00-process/TRACEABILITY.md",
+      "summary": "Process OS 산출물을 GitHub Issue, PR, commit, CI run, release 증거와 연결",
+      "decision": "실제 번호가 없는 Issue/PR은 pending으로 표시하고, 존재하는 commit/CI 증거부터 연결"
+    }
+  ],
+  "traceLinks": [
+    {
+      "id": "TL-001",
+      "title": "Process OS v0.3 산출물 운영",
+      "status": "linked",
+      "sourceIds": ["IN-001"],
+      "changeIds": ["CR-001"],
+      "deliverableIds": ["D-01", "D-07", "D-11"],
+      "approvalIds": ["AP-001"],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [
+        {
+          "sha": "ee59689",
+          "message": "feat: 문서 기반 기획 변경 로그 추가",
+          "url": "https://github.com/dayainow/goodz/commit/ee59689"
+        },
+        {
+          "sha": "279b609",
+          "message": "docs: README에 Process OS 흐름 반영",
+          "url": "https://github.com/dayainow/goodz/commit/279b609"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29076654464",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29076654464"
+        },
+        {
+          "id": "29077762295",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29077762295"
+        }
+      ],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "기획 입력, 변경 로그, 산출물 레지스트리, 승인 로그가 문서·대시보드·CI green 증거로 연결됨",
+      "nextAction": "앞으로 신규 기능은 Issue/PR URL을 먼저 연결"
+    },
+    {
+      "id": "TL-002",
+      "title": "Traceability + CI/CD Evidence v0.4",
+      "status": "partial",
+      "sourceIds": ["IN-002"],
+      "changeIds": ["CR-002"],
+      "deliverableIds": ["D-12", "D-13"],
+      "approvalIds": [],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "추적 매트릭스와 CI/CD 운영 문서가 추가되었고, 이번 커밋·CI 성공 후 linked로 승격 예정",
+      "nextAction": "커밋 후 sha와 GitHub Actions run id를 traceLinks에 반영"
     }
   ],
   "features": [

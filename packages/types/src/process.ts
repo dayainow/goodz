@@ -89,6 +89,48 @@ export interface ProcessPlanningChange {
   decision: string;
 }
 
+export type ProcessTraceStatus = "pending" | "partial" | "linked" | "released";
+
+export type ProcessTraceReferenceStatus =
+  | "pending"
+  | "linked"
+  | "not_required";
+
+export interface ProcessTraceReference {
+  label: string;
+  status: ProcessTraceReferenceStatus;
+  url?: string;
+}
+
+export interface ProcessTraceCommit {
+  sha: string;
+  message: string;
+  url: string;
+}
+
+export interface ProcessTraceCiRun {
+  id: string;
+  status: "success" | "failed" | "running" | "pending";
+  url: string;
+}
+
+export interface ProcessTraceLink {
+  id: string;
+  title: string;
+  status: ProcessTraceStatus;
+  sourceIds: string[];
+  changeIds: string[];
+  deliverableIds: string[];
+  approvalIds: string[];
+  issue: ProcessTraceReference;
+  pr: ProcessTraceReference;
+  commits: ProcessTraceCommit[];
+  ciRuns: ProcessTraceCiRun[];
+  release: ProcessTraceReference;
+  summary: string;
+  nextAction: string;
+}
+
 export interface ProcessStatus {
   version: number;
   updatedAt: string;
@@ -99,6 +141,7 @@ export interface ProcessStatus {
   deliverables: ProcessDeliverable[];
   approvals: ProcessApproval[];
   planningChanges: ProcessPlanningChange[];
+  traceLinks: ProcessTraceLink[];
   features: ProcessCheckItem[];
   apps: ProcessApp[];
 }

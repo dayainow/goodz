@@ -18,6 +18,8 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-09 | P4 | 릴리스 체크리스트 | [RELEASE_CHECKLIST.md](../04-qa/RELEASE_CHECKLIST.md) | DevOps | 완료 |
 | D-10 | P4 | 스테이징 런북 | [STAGING_RUNBOOK.md](../04-qa/STAGING_RUNBOOK.md) | DevOps | 완료 |
 | D-11 | P0 | 기획 변경 로그 | [changes/README.md](../01-planning/changes/README.md) | PM | 완료 |
+| D-12 | P2 | Traceability 매트릭스 | [TRACEABILITY.md](../00-process/TRACEABILITY.md) | PM/Engineering | 완료 |
+| D-13 | P4 | CI/CD 운영 문서 | [CICD.md](../00-process/CICD.md) | DevOps | 완료 |
 
 ## 운영 규칙
 
@@ -25,10 +27,11 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 2. 산출물이 생기면 `docs/00-process/status.json`의 `deliverables`에 등록합니다.
 3. 대시보드 `산출물` 메뉴에서 phase, owner, 상태를 확인합니다.
 4. Phase Gate를 넘길 때 해당 phase의 필수 산출물이 모두 `done`인지 확인합니다.
+5. 개발 증거가 생기면 `traceLinks`에 Issue/PR/Commit/CI/Release를 연결합니다.
 
 ## 다음 확장
 
 - 산출물 승인자와 승인일
-- GitHub Issue/PR 링크
+- GitHub Issue/PR 자동 수집
 - 변경 이력 요약
-- 산출물 누락 감지 스크립트
+- 대시보드 누락 경고

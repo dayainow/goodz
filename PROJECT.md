@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S4 Process OS v0.3** ✅
+## 현재 스프린트: **S5 Traceability + CI/CD Evidence v0.4** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -15,6 +15,7 @@
 | **품질 게이트** | ✅ `pnpm verify` + GA harness + 브라우저 육안 QA |
 | **산출물 레지스트리** | ✅ [deliverables](./docs/deliverables/README.md) |
 | **승인 로그** | ✅ [APPROVALS](./docs/00-process/APPROVALS.md) |
+| **추적 매트릭스** | ✅ [TRACEABILITY](./docs/00-process/TRACEABILITY.md) + CI 증거 |
 
 ## 현재 단계
 
@@ -24,7 +25,7 @@
 | **P1 디자인** | 🟢 Gate 통과 | Claude Design · Tailwind 토큰 · Home/Shop 분리 |
 | **P2 개발** | 🟢 데모 + 대시보드 | Sticky Lemon UI · process-dashboard |
 | **P3 QA** | 🟢 TEST_PLAN 통과 | 브라우저 QA · GA compliance |
-| **P4 배포** | 🟢 release-ready | RELEASE_CHECKLIST · 스테이징 런북 · smoke |
+| **P4 배포** | 🟢 release-ready | RELEASE_CHECKLIST · 스테이징 런북 · smoke · CI/CD evidence |
 
 ## 레퍼런스 구현체 (데모 — 최종 제품 아님)
 
@@ -51,6 +52,9 @@
 - [x] S4: 대시보드 기획·산출물 메뉴
 - [x] S4: 사용자 승인 로그 → [APPROVALS.md](./docs/00-process/APPROVALS.md)
 - [x] S4: 문서 기반 기획 변경 로그 → [changes](./docs/01-planning/changes/README.md)
+- [x] S5: Traceability 매트릭스 → [TRACEABILITY.md](./docs/00-process/TRACEABILITY.md)
+- [x] S5: CI/CD 운영 문서 → [CICD.md](./docs/00-process/CICD.md)
+- [x] S5: `pnpm check:process` + 대시보드 `추적` 메뉴
 
 ## 풀 프로세스
 

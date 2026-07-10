@@ -74,4 +74,10 @@ export type {
   ProcessPlanningChangeStatus,
   ProcessSprint,
   ProcessStatus,
+  ProcessTraceCiRun,
+  ProcessTraceCommit,
+  ProcessTraceLink,
+  ProcessTraceReference,
+  ProcessTraceReferenceStatus,
+  ProcessTraceStatus,
 } from "./process.js";

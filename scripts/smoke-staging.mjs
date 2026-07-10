@@ -57,6 +57,9 @@ async function main() {
     if (!Array.isArray(data?.approvals) || data.approvals.length === 0) {
       throw new Error("process status has no approvals");
     }
+    if (!Array.isArray(data?.traceLinks) || data.traceLinks.length === 0) {
+      throw new Error("process status has no trace links");
+    }
   });
 
   await checkPage("web shop", targets.web);

@@ -44,8 +44,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Workspace + dependency checks
-        run: pnpm check:workspace && pnpm check:deps
+      - name: Workspace + dependency + process checks
+        run: pnpm check:workspace && pnpm check:deps && pnpm check:process
 
       - name: Build + Lint
         run: pnpm turbo build && pnpm turbo lint

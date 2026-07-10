@@ -126,6 +126,13 @@ Week 1
 - `status.json`의 `intakes`, `deliverables`
 - process-dashboard `기획`, `산출물` 메뉴
 
+### Sprint S5 — Traceability + CI/CD Evidence
+
+- `status.json`의 `traceLinks`
+- process-dashboard `추적` 메뉴
+- `pnpm check:process`로 산출물·추적 링크 검증
+- CI/CD 운영 문서 `docs/00-process/CICD.md`
+
 ---
 
 ## 의존성 그래프
@@ -154,7 +161,8 @@ flowchart LR
 5. ✅ 체크아웃 mock + `/checkout`
 6. ✅ S2: Claude Design P1 (#7) · 어드민 · QA
 7. ✅ S4: Process OS 산출물 레지스트리
-8. ⚪ v0.4: 승인자·이력·Issue/PR 연결
+8. ✅ v0.4: Issue/PR/Commit/CI 추적 레이어
+9. ⚪ v0.5: GitHub Issue/PR 자동 수집 + 대시보드 누락 경고
 
 ---
 

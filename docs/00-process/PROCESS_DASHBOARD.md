@@ -5,7 +5,7 @@
 ## 왜 필요한가
 
 Goodz의 진짜 제품은 쇼핑몰이 아니라 **P0–P4 풀 프로세스 시스템**입니다.  
-Phase Gate·Sprint·기획 입력·산출물·기능 백로그를 **한 화면에서 관리**해야 에이전트·PM이 상태를 공유할 수 있습니다.
+Phase Gate·Sprint·기획 입력·산출물·기능 백로그·개발 증거를 **한 화면에서 관리**해야 에이전트·PM이 상태를 공유할 수 있습니다.
 
 ## 아키텍처
 
@@ -21,10 +21,10 @@ process-dashboard (:5180)       ← 모니터링 UI
 
 | 레이어 | 역할 |
 |--------|------|
-| `status.json` | Phase·Sprint·기획 입력·기획 변경·산출물·승인·기능·앱 목록의 기계 판독 가능 상태 |
+| `status.json` | Phase·Sprint·기획 입력·기획 변경·산출물·승인·추적 링크·기능·앱 목록의 기계 판독 가능 상태 |
 | `@goodz/types` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
-| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Intake/Change/Deliverable/Approval/Phase/Queue/Feature/App 관리 뷰 |
+| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Intake/Change/Deliverable/Approval/Trace/Phase/Queue/Feature/App 관리 뷰 |
 
 ## 접속
 
@@ -63,6 +63,7 @@ curl http://localhost:4000/api/process/status
 - **변경** — 기획 수정 요청·대상 문서·반영 상태
 - **산출물** — PRD·화면설계·API·QA·릴리스 문서 레지스트리
 - **승인** — 스프린트·Gate·산출물 승인 로그
+- **추적** — 기획·변경·산출물·승인과 Issue/PR/Commit/CI/Release 증거 연결
 - **Phase Gate** — P0–P4 패널 + 문서 경로
 - **작업 큐** — 차단/진행/대기/완료 상태별 항목
 - **기능** — F-01… 기능 백로그 테이블
@@ -73,5 +74,7 @@ curl http://localhost:4000/api/process/status
 - [NORTH_STAR.md](./NORTH_STAR.md)
 - [PHASE_GATES.md](./PHASE_GATES.md)
 - [APPROVALS.md](./APPROVALS.md)
+- [TRACEABILITY.md](./TRACEABILITY.md)
+- [CICD.md](./CICD.md)
 - [deliverables/README.md](../deliverables/README.md)
 - [PROJECT.md](../../PROJECT.md)

@@ -11,6 +11,9 @@ import type {
   ProcessPlanningChange,
   ProcessPlanningChangeStatus,
   ProcessStatus,
+  ProcessTraceLink,
+  ProcessTraceReferenceStatus,
+  ProcessTraceStatus,
 } from "@goodz/types";
 import { fetchProcessStatus } from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
@@ -22,6 +25,7 @@ type SectionId =
   | "changes"
   | "deliverables"
   | "approvals"
+  | "traceability"
   | "phases"
   | "queue"
   | "features"
@@ -33,6 +37,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "changes", label: "변경", eyebrow: "Change" },
   { id: "deliverables", label: "산출물", eyebrow: "Docs" },
   { id: "approvals", label: "승인", eyebrow: "Approval" },
+  { id: "traceability", label: "추적", eyebrow: "Trace" },
   { id: "phases", label: "Phase Gate", eyebrow: "P0-P4" },
   { id: "queue", label: "작업 큐", eyebrow: "Tasks" },
   { id: "features", label: "기능", eyebrow: "Backlog" },
@@ -75,6 +80,32 @@ const PLANNING_CHANGE_CLASS: Record<ProcessPlanningChangeStatus, string> = {
   approved: "border-violet-200 bg-violet-50 text-violet-700",
   applied: "border-emerald-200 bg-emerald-50 text-emerald-700",
   rejected: "border-rose-200 bg-rose-50 text-rose-700",
+};
+
+const TRACE_STATUS_LABEL: Record<ProcessTraceStatus, string> = {
+  pending: "대기",
+  partial: "부분 연결",
+  linked: "연결",
+  released: "릴리스",
+};
+
+const TRACE_STATUS_CLASS: Record<ProcessTraceStatus, string> = {
+  pending: "border-zinc-200 bg-zinc-50 text-zinc-600",
+  partial: "border-amber-200 bg-amber-50 text-amber-700",
+  linked: "border-violet-200 bg-violet-50 text-violet-700",
+  released: "border-emerald-200 bg-emerald-50 text-emerald-700",
+};
+
+const TRACE_REFERENCE_LABEL: Record<ProcessTraceReferenceStatus, string> = {
+  pending: "대기",
+  linked: "연결",
+  not_required: "해당 없음",
+};
+
+const TRACE_REFERENCE_CLASS: Record<ProcessTraceReferenceStatus, string> = {
+  pending: "border-amber-200 bg-amber-50 text-amber-700",
+  linked: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  not_required: "border-zinc-200 bg-zinc-50 text-zinc-500",
 };
 
 function buildQueue(phases: ProcessPhase[]) {
@@ -239,6 +270,9 @@ function OverviewSection({
   const appliedChanges = status.planningChanges.filter(
     (item) => item.status === "applied",
   ).length;
+  const linkedTraces = status.traceLinks.filter((item) =>
+    ["linked", "released"].includes(item.status),
+  ).length;
 
   return (
     <div className="space-y-6">
@@ -267,7 +301,7 @@ function OverviewSection({
         </div>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-6">
+      <section className="grid gap-3 md:grid-cols-7">
         <Metric label="Phase" value={`${donePhases.length}/${status.phases.length}`} tone="violet" />
         <Metric
           label="Deliverable"
@@ -283,6 +317,11 @@ function OverviewSection({
           label="Change"
           value={`${appliedChanges}/${status.planningChanges.length}`}
           tone="green"
+        />
+        <Metric
+          label="Trace"
+          value={`${linkedTraces}/${status.traceLinks.length}`}
+          tone={linkedTraces === status.traceLinks.length ? "green" : "amber"}
         />
         <Metric label="Feature" value={`${doneFeatures.length}/${status.features.length}`} tone="green" />
         <Metric label="Queue" value={pendingWork.length} tone={pendingWork.length ? "amber" : "green"} />
@@ -536,6 +575,166 @@ function ApprovalsSection({ approvals }: { approvals: ProcessApproval[] }) {
   );
 }
 
+function TraceStatusBadge({ status }: { status: ProcessTraceStatus }) {
+  return (
+    <span
+      className={[
+        "inline-flex w-fit rounded-full border px-2.5 py-0.5 text-xs font-medium",
+        TRACE_STATUS_CLASS[status],
+      ].join(" ")}
+    >
+      {TRACE_STATUS_LABEL[status]}
+    </span>
+  );
+}
+
+function TraceReferenceBadge({
+  label,
+  status,
+  url,
+}: {
+  label: string;
+  status: ProcessTraceReferenceStatus;
+  url?: string;
+}) {
+  const className = [
+    "inline-flex w-fit rounded-full border px-2.5 py-0.5 text-xs font-medium",
+    TRACE_REFERENCE_CLASS[status],
+  ].join(" ");
+
+  if (url) {
+    return (
+      <a href={url} target="_blank" rel="noreferrer" className={className}>
+        {label}: {TRACE_REFERENCE_LABEL[status]}
+      </a>
+    );
+  }
+
+  return (
+    <span className={className}>
+      {label}: {TRACE_REFERENCE_LABEL[status]}
+    </span>
+  );
+}
+
+function TraceabilitySection({ traces }: { traces: ProcessTraceLink[] }) {
+  return (
+    <div className="space-y-4">
+      {traces.map((trace) => (
+        <article
+          key={trace.id}
+          className="rounded-lg border border-zinc-200 bg-white"
+        >
+          <div className="grid gap-4 border-b border-zinc-100 px-4 py-4 lg:grid-cols-[100px_1fr_120px] lg:items-start">
+            <span className="font-mono text-xs font-semibold text-brand-violet">
+              {trace.id}
+            </span>
+            <div>
+              <h3 className="font-bold text-zinc-950">{trace.title}</h3>
+              <p className="mt-1 text-sm leading-6 text-zinc-600">
+                {trace.summary}
+              </p>
+              <p className="mt-2 text-xs text-zinc-500">
+                다음 액션: {trace.nextAction}
+              </p>
+            </div>
+            <TraceStatusBadge status={trace.status} />
+          </div>
+
+          <div className="grid gap-4 px-4 py-4 lg:grid-cols-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Source
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1">
+                {[...trace.sourceIds, ...trace.changeIds].map((id) => (
+                  <span
+                    key={id}
+                    className="rounded-md bg-violet-50 px-2 py-1 font-mono text-[11px] font-semibold text-violet-700"
+                  >
+                    {id}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Deliverables
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1">
+                {trace.deliverableIds.map((id) => (
+                  <span
+                    key={id}
+                    className="rounded-md bg-zinc-100 px-2 py-1 font-mono text-[11px] text-zinc-600"
+                  >
+                    {id}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Flow Evidence
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <TraceReferenceBadge {...trace.issue} label="Issue" />
+                <TraceReferenceBadge {...trace.pr} label="PR" />
+                <TraceReferenceBadge {...trace.release} label="Release" />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 border-t border-zinc-100 px-4 py-4 lg:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Commits
+              </p>
+              <ul className="mt-2 space-y-2">
+                {trace.commits.map((commit) => (
+                  <li key={commit.sha} className="text-sm">
+                    <a
+                      href={commit.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-mono text-xs font-semibold text-brand-violet hover:underline"
+                    >
+                      {commit.sha}
+                    </a>
+                    <span className="ml-2 text-zinc-600">{commit.message}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                CI Runs
+              </p>
+              <ul className="mt-2 space-y-2">
+                {trace.ciRuns.map((run) => (
+                  <li key={run.id} className="text-sm">
+                    <a
+                      href={run.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-mono text-xs font-semibold text-brand-violet hover:underline"
+                    >
+                      {run.id}
+                    </a>
+                    <span className="ml-2 text-zinc-600">{run.status}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 function QueueSection({
   queue,
 }: {
@@ -742,6 +941,10 @@ export default function App() {
 
         {activeSection === "approvals" && (
           <ApprovalsSection approvals={status.approvals} />
+        )}
+
+        {activeSection === "traceability" && (
+          <TraceabilitySection traces={status.traceLinks} />
         )}
 
         {activeSection === "phases" && (
