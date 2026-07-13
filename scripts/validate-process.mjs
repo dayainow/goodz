@@ -21,6 +21,12 @@ function assertDocExists(doc, owner) {
   assert(existsSync(resolve(root, doc)), `${owner} doc not found: ${doc}`);
 }
 
+function assertOptionalTimestamp(value, owner) {
+  if (value === undefined) return;
+  assert(typeof value === "string" && value.length > 0, `${owner} timestamp must be a string`);
+  assert(!Number.isNaN(Date.parse(value)), `${owner} timestamp is invalid: ${value}`);
+}
+
 const itemStatuses = new Set(["done", "in_progress", "pending", "blocked"]);
 const traceStatuses = new Set(["pending", "partial", "linked", "released"]);
 const refStatuses = new Set(["pending", "linked", "not_required"]);
@@ -112,6 +118,9 @@ for (const trace of status.traceLinks) {
     if (ref.status === "linked") {
       assert(typeof ref.url === "string" && ref.url.startsWith("https://"), `${trace.id}.${refName} linked ref needs https url`);
     }
+    for (const field of ["createdAt", "updatedAt", "closedAt", "mergedAt", "publishedAt"]) {
+      assertOptionalTimestamp(ref[field], `${trace.id}.${refName}.${field}`);
+    }
   }
 
   if (trace.status === "linked" || trace.status === "released") {
@@ -122,17 +131,22 @@ for (const trace of status.traceLinks) {
   for (const commit of trace.commits) {
     assert(/^[a-f0-9]{7,40}$/.test(commit.sha), `${trace.id} invalid commit sha ${commit.sha}`);
     assert(commit.url.startsWith("https://github.com/"), `${trace.id} commit url must be GitHub`);
+    assertOptionalTimestamp(commit.committedAt, `${trace.id}.commits[].committedAt`);
   }
 
   for (const run of trace.ciRuns) {
     assert(ciStatuses.has(run.status), `${trace.id} invalid CI status ${run.status}`);
     assert(run.url.startsWith("https://github.com/"), `${trace.id} CI url must be GitHub`);
+    assertOptionalTimestamp(run.createdAt, `${trace.id}.ciRuns[].createdAt`);
+    assertOptionalTimestamp(run.startedAt, `${trace.id}.ciRuns[].startedAt`);
+    assertOptionalTimestamp(run.completedAt, `${trace.id}.ciRuns[].completedAt`);
   }
 
   if (trace.smoke) {
     assert(smokeStatuses.has(trace.smoke.status), `${trace.id} invalid smoke status ${trace.smoke.status}`);
     assert(typeof trace.smoke.command === "string" && trace.smoke.command.length > 0, `${trace.id}.smoke.command is required`);
     assert(typeof trace.smoke.summary === "string" && trace.smoke.summary.length > 0, `${trace.id}.smoke.summary is required`);
+    assertOptionalTimestamp(trace.smoke.checkedAt, `${trace.id}.smoke.checkedAt`);
     if (trace.smoke.url) {
       assert(trace.smoke.url.startsWith("https://") || trace.smoke.url.startsWith("http://localhost:"), `${trace.id}.smoke.url must be https or localhost`);
     }

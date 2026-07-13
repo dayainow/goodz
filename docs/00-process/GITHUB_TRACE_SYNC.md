@@ -25,12 +25,24 @@ pnpm sync:github-trace:check
 | Issue | PR 제목/본문의 `#N`, `Closes #N`, `Fixes #N` 등 |
 | Release | `GOODZ_RELEASE_URL` 또는 GitHub latest release |
 
+## Timestamp 필드
+
+v0.8부터 sync는 Delivery Metrics 계산을 위해 아래 timestamp를 보강합니다.
+
+| 위치 | 필드 |
+|------|------|
+| `commits[]` | `committedAt` |
+| `ciRuns[]` | `createdAt`, `startedAt`, `completedAt` |
+| `pr` | `createdAt`, `updatedAt`, `closedAt`, `mergedAt` |
+| `issue` | `createdAt`, `updatedAt`, `closedAt` |
+| `release` | `createdAt`, `publishedAt` |
+
 ## 운영 규칙
 
 1. 새 작업은 먼저 intake/change/deliverable/approval/trace link를 만든다.
 2. 커밋 후 `traceLinks[].commits`에 최소 SHA와 메시지를 기록한다.
 3. CI가 끝나면 `pnpm sync:github-trace`를 실행한다.
-4. 스크립트가 CI run, PR, Issue, Release URL을 보강한다.
+4. 스크립트가 CI run, PR, Issue, Release URL과 timestamp를 보강한다.
 5. `pnpm check:process`와 `pnpm verify`로 SSOT 정합성을 확인한다.
 
 직접 `main`에 반영한 1인 프로젝트 작업은 `pr.status = "not_required"`로 둡니다. 팀 운영에서는 Issue와 PR을 먼저 만들고, PR 본문에 `Closes #N`을 남기는 것을 기본으로 합니다.

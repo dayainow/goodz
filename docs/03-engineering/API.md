@@ -96,7 +96,7 @@ Base URL: `http://localhost:4000` (개발)
 | `planningChanges` | 기획 수정 요청·승인·반영 로그 |
 | `deliverables` | PRD·화면설계·API·QA·릴리스 산출물 레지스트리 |
 | `approvals` | 스프린트·Gate·산출물의 DACI 승인 로그 |
-| `traceLinks` | 기획·변경·산출물·승인과 Issue/PR/Commit/CI/Release/Smoke 증거 연결 |
+| `traceLinks` | 기획·변경·산출물·승인과 Issue/PR/Commit/CI/Release/Smoke 증거 및 timestamp 연결 |
 | `features` | 레퍼런스 기능 백로그 |
 | `apps` | 로컬 앱·서비스 링크 |
 

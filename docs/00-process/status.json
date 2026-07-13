@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.7",
+  "systemVersion": "v0.8",
   "sprint": {
-    "id": "S9",
-    "name": "시스템 v0.7 — Delivery Metrics Baseline",
+    "id": "S10",
+    "name": "시스템 v0.8 — Timestamp Metrics",
     "status": "done",
-    "goal": "traceLinks, CI run, smoke 증거를 DORA/Delivery Metrics 베이스라인으로 시각화"
+    "goal": "GitHub run/PR timestamp를 traceLinks에 저장하고 요청→커밋→CI→증거 시간을 계산"
   },
   "phases": [
     {
@@ -15,10 +15,30 @@
       "status": "done",
       "progress": 100,
       "items": [
-        { "id": "p0-prd", "label": "PRD v0.1", "status": "done", "doc": "docs/01-planning/PRD.md" },
-        { "id": "p0-us", "label": "유저스토리 · Issues", "status": "done", "doc": "docs/01-planning/USER_STORIES.md" },
-        { "id": "p0-ga4", "label": "GA4 퍼널 초안", "status": "done", "doc": "docs/01-planning/GA4_EVENTS.md" },
-        { "id": "p0-gate", "label": "P0→P1 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
+        {
+          "id": "p0-prd",
+          "label": "PRD v0.1",
+          "status": "done",
+          "doc": "docs/01-planning/PRD.md"
+        },
+        {
+          "id": "p0-us",
+          "label": "유저스토리 · Issues",
+          "status": "done",
+          "doc": "docs/01-planning/USER_STORIES.md"
+        },
+        {
+          "id": "p0-ga4",
+          "label": "GA4 퍼널 초안",
+          "status": "done",
+          "doc": "docs/01-planning/GA4_EVENTS.md"
+        },
+        {
+          "id": "p0-gate",
+          "label": "P0→P1 Gate",
+          "status": "done",
+          "doc": "docs/00-process/PHASE_GATES.md"
+        }
       ]
     },
     {
@@ -27,10 +47,30 @@
       "status": "done",
       "progress": 100,
       "items": [
-        { "id": "p1-design", "label": "Claude Design 12화면", "status": "done", "url": "https://claude.ai/design/p/2bcbb8f0-f646-49bd-a975-3da8631b71e9" },
-        { "id": "p1-screens", "label": "screens/ 스펙 12종", "status": "done", "doc": "docs/02-design/screens/README.md" },
-        { "id": "p1-ds", "label": "DESIGN_SYSTEM Tailwind 토큰", "status": "done", "doc": "docs/02-design/DESIGN_SYSTEM.md" },
-        { "id": "p1-gate", "label": "P1→P2 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
+        {
+          "id": "p1-design",
+          "label": "Claude Design 12화면",
+          "status": "done",
+          "url": "https://claude.ai/design/p/2bcbb8f0-f646-49bd-a975-3da8631b71e9"
+        },
+        {
+          "id": "p1-screens",
+          "label": "screens/ 스펙 12종",
+          "status": "done",
+          "doc": "docs/02-design/screens/README.md"
+        },
+        {
+          "id": "p1-ds",
+          "label": "DESIGN_SYSTEM Tailwind 토큰",
+          "status": "done",
+          "doc": "docs/02-design/DESIGN_SYSTEM.md"
+        },
+        {
+          "id": "p1-gate",
+          "label": "P1→P2 Gate",
+          "status": "done",
+          "doc": "docs/00-process/PHASE_GATES.md"
+        }
       ]
     },
     {
@@ -39,19 +79,85 @@
       "status": "done",
       "progress": 100,
       "items": [
-        { "id": "p2-mvp", "label": "MVP 쇼핑 플로우", "status": "done" },
-        { "id": "p2-home-shop", "label": "Home / Shop 분리", "status": "done" },
-        { "id": "p2-cart-checkout", "label": "장바구니 · 체크아웃 UI", "status": "done" },
-        { "id": "p2-admin", "label": "어드민 1280px UI", "status": "done" },
-        { "id": "p2-search-about", "label": "Search · About", "status": "done" },
-        { "id": "p2-process-dash", "label": "프로세스 대시보드", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
-        { "id": "p2-traceability", "label": "Traceability 매트릭스", "status": "done", "doc": "docs/00-process/TRACEABILITY.md" },
-        { "id": "p2-approval-governance", "label": "DACI 승인 체계", "status": "done", "doc": "docs/00-process/APPROVALS.md" },
-        { "id": "p2-github-trace-sync", "label": "GitHub trace 자동 동기화", "status": "done", "doc": "docs/00-process/GITHUB_TRACE_SYNC.md" },
-        { "id": "p2-evidence-alerts", "label": "대시보드 증거 누락 경고", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
-        { "id": "p2-delivery-metrics", "label": "Delivery Metrics 대시보드", "status": "done", "doc": "docs/00-process/METRICS.md" },
-        { "id": "p2-roadmap-sync", "label": "ROADMAP v0.5 정합성", "status": "done", "doc": "docs/01-planning/ROADMAP.md" },
-        { "id": "p2-gate", "label": "P2→P3 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
+        {
+          "id": "p2-mvp",
+          "label": "MVP 쇼핑 플로우",
+          "status": "done"
+        },
+        {
+          "id": "p2-home-shop",
+          "label": "Home / Shop 분리",
+          "status": "done"
+        },
+        {
+          "id": "p2-cart-checkout",
+          "label": "장바구니 · 체크아웃 UI",
+          "status": "done"
+        },
+        {
+          "id": "p2-admin",
+          "label": "어드민 1280px UI",
+          "status": "done"
+        },
+        {
+          "id": "p2-search-about",
+          "label": "Search · About",
+          "status": "done"
+        },
+        {
+          "id": "p2-process-dash",
+          "label": "프로세스 대시보드",
+          "status": "done",
+          "doc": "docs/00-process/PROCESS_DASHBOARD.md"
+        },
+        {
+          "id": "p2-traceability",
+          "label": "Traceability 매트릭스",
+          "status": "done",
+          "doc": "docs/00-process/TRACEABILITY.md"
+        },
+        {
+          "id": "p2-approval-governance",
+          "label": "DACI 승인 체계",
+          "status": "done",
+          "doc": "docs/00-process/APPROVALS.md"
+        },
+        {
+          "id": "p2-github-trace-sync",
+          "label": "GitHub trace 자동 동기화",
+          "status": "done",
+          "doc": "docs/00-process/GITHUB_TRACE_SYNC.md"
+        },
+        {
+          "id": "p2-evidence-alerts",
+          "label": "대시보드 증거 누락 경고",
+          "status": "done",
+          "doc": "docs/00-process/PROCESS_DASHBOARD.md"
+        },
+        {
+          "id": "p2-delivery-metrics",
+          "label": "Delivery Metrics 대시보드",
+          "status": "done",
+          "doc": "docs/00-process/METRICS.md"
+        },
+        {
+          "id": "p2-timestamp-metrics",
+          "label": "GitHub timestamp 기반 metrics",
+          "status": "done",
+          "doc": "docs/00-process/METRICS.md"
+        },
+        {
+          "id": "p2-roadmap-sync",
+          "label": "ROADMAP v0.5 정합성",
+          "status": "done",
+          "doc": "docs/01-planning/ROADMAP.md"
+        },
+        {
+          "id": "p2-gate",
+          "label": "P2→P3 Gate",
+          "status": "done",
+          "doc": "docs/00-process/PHASE_GATES.md"
+        }
       ]
     },
     {
@@ -60,10 +166,28 @@
       "status": "done",
       "progress": 100,
       "items": [
-        { "id": "p3-verify", "label": "pnpm verify CI green", "status": "done" },
-        { "id": "p3-test-plan", "label": "TEST_PLAN P0 시나리오", "status": "done", "doc": "docs/04-qa/TEST_PLAN.md" },
-        { "id": "p3-ga", "label": "GA compliance harness", "status": "done", "doc": "apps/web-shop/events.spec.yaml" },
-        { "id": "p3-gate", "label": "P3→P4 Gate", "status": "done" }
+        {
+          "id": "p3-verify",
+          "label": "pnpm verify CI green",
+          "status": "done"
+        },
+        {
+          "id": "p3-test-plan",
+          "label": "TEST_PLAN P0 시나리오",
+          "status": "done",
+          "doc": "docs/04-qa/TEST_PLAN.md"
+        },
+        {
+          "id": "p3-ga",
+          "label": "GA compliance harness",
+          "status": "done",
+          "doc": "apps/web-shop/events.spec.yaml"
+        },
+        {
+          "id": "p3-gate",
+          "label": "P3→P4 Gate",
+          "status": "done"
+        }
       ]
     },
     {
@@ -72,13 +196,47 @@
       "status": "done",
       "progress": 100,
       "items": [
-        { "id": "p4-ci", "label": "GitHub Actions CI green", "status": "done" },
-        { "id": "p4-node24", "label": "GitHub Actions Node 24 런타임", "status": "done", "doc": ".github/workflows/ci.yml" },
-        { "id": "p4-env", "label": "스테이징 env matrix", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
-        { "id": "p4-staging", "label": "스테이징 smoke 절차", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
-        { "id": "p4-release-evidence", "label": "Release/Smoke 증거 연결", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
-        { "id": "p4-checklist", "label": "RELEASE_CHECKLIST", "status": "done", "doc": "docs/04-qa/RELEASE_CHECKLIST.md" },
-        { "id": "p4-prod", "label": "프로덕션 handoff", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" }
+        {
+          "id": "p4-ci",
+          "label": "GitHub Actions CI green",
+          "status": "done"
+        },
+        {
+          "id": "p4-node24",
+          "label": "GitHub Actions Node 24 런타임",
+          "status": "done",
+          "doc": ".github/workflows/ci.yml"
+        },
+        {
+          "id": "p4-env",
+          "label": "스테이징 env matrix",
+          "status": "done",
+          "doc": "docs/04-qa/STAGING_RUNBOOK.md"
+        },
+        {
+          "id": "p4-staging",
+          "label": "스테이징 smoke 절차",
+          "status": "done",
+          "doc": "docs/04-qa/STAGING_RUNBOOK.md"
+        },
+        {
+          "id": "p4-release-evidence",
+          "label": "Release/Smoke 증거 연결",
+          "status": "done",
+          "doc": "docs/04-qa/STAGING_RUNBOOK.md"
+        },
+        {
+          "id": "p4-checklist",
+          "label": "RELEASE_CHECKLIST",
+          "status": "done",
+          "doc": "docs/04-qa/RELEASE_CHECKLIST.md"
+        },
+        {
+          "id": "p4-prod",
+          "label": "프로덕션 handoff",
+          "status": "done",
+          "doc": "docs/04-qa/STAGING_RUNBOOK.md"
+        }
       ]
     }
   ],
@@ -136,6 +294,15 @@
       "phase": "P2",
       "doc": "docs/00-process/METRICS.md",
       "nextAction": "GitHub timestamp와 PR merge time을 수집해 시간 단위 지표로 고도화"
+    },
+    {
+      "id": "IN-007",
+      "title": "Timestamp Metrics v0.8",
+      "source": "사용자 요청 · 요청→커밋→CI→smoke/release 시간 계산",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/00-process/METRICS.md",
+      "nextAction": "Metrics snapshot과 incident/MTTR 기록으로 확장"
     }
   ],
   "deliverables": [
@@ -348,6 +515,16 @@
       "doc": "docs/00-process/METRICS.md",
       "owner": "PM/Engineering/DevOps",
       "summary": "DORA 원형 지표와 Goodz 보조 지표를 traceLinks 기반으로 계산하고 대시보드에서 표시"
+    },
+    {
+      "id": "D-22",
+      "title": "Timestamp Metrics",
+      "type": "ops",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/METRICS.md",
+      "owner": "Engineering/DevOps",
+      "summary": "GitHub commit/CI/PR timestamp를 traceLinks에 저장하고 단계별 리드타임을 시간 단위로 계산"
     }
   ],
   "approvals": [
@@ -357,8 +534,13 @@
       "type": "sprint",
       "driver": "Codex",
       "approver": "사용자",
-      "contributors": ["PM", "Engineering"],
-      "informed": ["Future Goodz operators"],
+      "contributors": [
+        "PM",
+        "Engineering"
+      ],
+      "informed": [
+        "Future Goodz operators"
+      ],
       "status": "approved",
       "requestedAt": "2026-07-10",
       "approvedAt": "2026-07-10",
@@ -370,7 +552,9 @@
       ],
       "summary": "기획 입력함, 산출물 레지스트리, 대시보드 기획·산출물 메뉴 반영 승인",
       "doc": "docs/00-process/APPROVALS.md",
-      "traceLinkIds": ["TL-001"]
+      "traceLinkIds": [
+        "TL-001"
+      ]
     },
     {
       "id": "AP-002",
@@ -378,8 +562,14 @@
       "type": "sprint",
       "driver": "Codex",
       "approver": "사용자",
-      "contributors": ["Engineering", "DevOps"],
-      "informed": ["PM", "QA"],
+      "contributors": [
+        "Engineering",
+        "DevOps"
+      ],
+      "informed": [
+        "PM",
+        "QA"
+      ],
       "status": "approved",
       "requestedAt": "2026-07-10",
       "approvedAt": "2026-07-10",
@@ -391,7 +581,9 @@
       ],
       "summary": "Traceability, CI/CD 문서, check:process, 대시보드 추적 메뉴 승인",
       "doc": "docs/00-process/APPROVALS.md",
-      "traceLinkIds": ["TL-002"]
+      "traceLinkIds": [
+        "TL-002"
+      ]
     },
     {
       "id": "AP-003",
@@ -399,8 +591,16 @@
       "type": "sprint",
       "driver": "Codex",
       "approver": "사용자",
-      "contributors": ["PM", "Engineering", "QA", "DevOps"],
-      "informed": ["Future Goodz operators", "dayainow profile readers"],
+      "contributors": [
+        "PM",
+        "Engineering",
+        "QA",
+        "DevOps"
+      ],
+      "informed": [
+        "Future Goodz operators",
+        "dayainow profile readers"
+      ],
       "status": "approved",
       "requestedAt": "2026-07-10",
       "approvedAt": "2026-07-10",
@@ -413,7 +613,9 @@
       ],
       "summary": "DACI 역할 분리, 승인 기준, 의사결정 로그, 대시보드 승인 UI 고도화",
       "doc": "docs/00-process/APPROVALS.md",
-      "traceLinkIds": ["TL-003"]
+      "traceLinkIds": [
+        "TL-003"
+      ]
     },
     {
       "id": "AP-004",
@@ -421,8 +623,14 @@
       "type": "sprint",
       "driver": "Codex",
       "approver": "사용자",
-      "contributors": ["PM", "DevOps"],
-      "informed": ["Engineering", "QA"],
+      "contributors": [
+        "PM",
+        "DevOps"
+      ],
+      "informed": [
+        "Engineering",
+        "QA"
+      ],
       "status": "approved",
       "requestedAt": "2026-07-13",
       "approvedAt": "2026-07-13",
@@ -435,7 +643,9 @@
       ],
       "summary": "로드맵 정합성, CI Node 24 전환, 다음 v0.6 준비 승인",
       "doc": "docs/00-process/APPROVALS.md",
-      "traceLinkIds": ["TL-004"]
+      "traceLinkIds": [
+        "TL-004"
+      ]
     },
     {
       "id": "AP-005",
@@ -443,8 +653,15 @@
       "type": "sprint",
       "driver": "Codex",
       "approver": "사용자",
-      "contributors": ["Engineering", "DevOps", "QA"],
-      "informed": ["PM", "Future Goodz operators"],
+      "contributors": [
+        "Engineering",
+        "DevOps",
+        "QA"
+      ],
+      "informed": [
+        "PM",
+        "Future Goodz operators"
+      ],
       "status": "approved",
       "requestedAt": "2026-07-13",
       "approvedAt": "2026-07-13",
@@ -457,7 +674,9 @@
       ],
       "summary": "자동 trace sync, evidence alerts, release/smoke evidence 체계 승인",
       "doc": "docs/00-process/APPROVALS.md",
-      "traceLinkIds": ["TL-005"]
+      "traceLinkIds": [
+        "TL-005"
+      ]
     },
     {
       "id": "AP-006",
@@ -465,8 +684,15 @@
       "type": "sprint",
       "driver": "Codex",
       "approver": "사용자",
-      "contributors": ["PM", "Engineering", "DevOps", "QA"],
-      "informed": ["Future Goodz operators"],
+      "contributors": [
+        "PM",
+        "Engineering",
+        "DevOps",
+        "QA"
+      ],
+      "informed": [
+        "Future Goodz operators"
+      ],
       "status": "approved",
       "requestedAt": "2026-07-13",
       "approvedAt": "2026-07-13",
@@ -479,7 +705,39 @@
       ],
       "summary": "Delivery Metrics 베이스라인과 대시보드 지표 메뉴 승인",
       "doc": "docs/00-process/APPROVALS.md",
-      "traceLinkIds": ["TL-006"]
+      "traceLinkIds": [
+        "TL-006"
+      ]
+    },
+    {
+      "id": "AP-007",
+      "target": "S10 Timestamp Metrics v0.8",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": [
+        "Engineering",
+        "DevOps",
+        "PM"
+      ],
+      "informed": [
+        "Future Goodz operators"
+      ],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "sync:github-trace가 GitHub timestamp를 저장하고 Metrics가 요청→커밋→CI→증거 시간을 계산하도록 고도화",
+      "criteria": [
+        "commit committedAt, CI createdAt/startedAt/completedAt 필드가 저장됨",
+        "PR/Issue/Release reference timestamp가 선택적으로 저장됨",
+        "대시보드 지표 메뉴가 단계별 시간을 표시함",
+        "기존 날짜 기반 데이터도 fallback으로 동작함"
+      ],
+      "summary": "GitHub timestamp sync와 시간 단위 Delivery Metrics 고도화 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": [
+        "TL-007"
+      ]
     }
   ],
   "planningChanges": [
@@ -582,6 +840,22 @@
       "doc": "docs/00-process/METRICS.md",
       "summary": "traceLinks, CI run, smoke 증거를 운영 판단 지표로 계산하고 대시보드 Metrics 메뉴에 표시",
       "decision": "v0.7은 날짜 단위 베이스라인으로 시작하고, 다음 단계에서 GitHub timestamp 기반 시간 단위 지표로 고도화"
+    },
+    {
+      "id": "CR-007",
+      "title": "GitHub timestamp 기반 Delivery Metrics",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/METRICS.md",
+        "docs/00-process/GITHUB_TRACE_SYNC.md",
+        "docs/00-process/status.json",
+        "apps/process-dashboard/src/App.tsx"
+      ],
+      "doc": "docs/00-process/METRICS.md",
+      "summary": "GitHub commit/CI/PR timestamp를 traceLinks에 저장하고 요청→커밋→CI→smoke/release 시간을 계산",
+      "decision": "v0.8에서 시간 단위 지표를 기본값으로 사용하고 날짜-only 기록은 fallback으로 처리"
     }
   ],
   "traceLinks": [
@@ -589,10 +863,20 @@
       "id": "TL-001",
       "title": "Process OS v0.3 산출물 운영",
       "status": "linked",
-      "sourceIds": ["IN-001"],
-      "changeIds": ["CR-001"],
-      "deliverableIds": ["D-01", "D-07", "D-11"],
-      "approvalIds": ["AP-001"],
+      "sourceIds": [
+        "IN-001"
+      ],
+      "changeIds": [
+        "CR-001"
+      ],
+      "deliverableIds": [
+        "D-01",
+        "D-07",
+        "D-11"
+      ],
+      "approvalIds": [
+        "AP-001"
+      ],
       "issue": {
         "label": "GitHub Issue",
         "status": "pending"
@@ -605,24 +889,32 @@
         {
           "sha": "ee59689",
           "message": "feat: 문서 기반 기획 변경 로그 추가",
-          "url": "https://github.com/dayainow/goodz/commit/ee59689"
+          "url": "https://github.com/dayainow/goodz/commit/ee596898ca050e5c9292a64cd8066b3e0e9fe0e0",
+          "committedAt": "2026-07-10T07:25:44Z"
         },
         {
           "sha": "279b609",
           "message": "docs: README에 Process OS 흐름 반영",
-          "url": "https://github.com/dayainow/goodz/commit/279b609"
+          "url": "https://github.com/dayainow/goodz/commit/279b609634752d28bbd18998698b6a2ecd5d4f36",
+          "committedAt": "2026-07-10T07:47:53Z"
         }
       ],
       "ciRuns": [
         {
-          "id": "29076654464",
-          "status": "success",
-          "url": "https://github.com/dayainow/goodz/actions/runs/29076654464"
-        },
-        {
           "id": "29077762295",
           "status": "success",
-          "url": "https://github.com/dayainow/goodz/actions/runs/29077762295"
+          "url": "https://github.com/dayainow/goodz/actions/runs/29077762295",
+          "createdAt": "2026-07-10T07:48:02Z",
+          "startedAt": "2026-07-10T07:48:02Z",
+          "completedAt": "2026-07-10T07:48:41Z"
+        },
+        {
+          "id": "29076654464",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29076654464",
+          "createdAt": "2026-07-10T07:25:53Z",
+          "startedAt": "2026-07-10T07:25:53Z",
+          "completedAt": "2026-07-10T07:27:03Z"
         }
       ],
       "release": {
@@ -636,10 +928,19 @@
       "id": "TL-002",
       "title": "Traceability + CI/CD Evidence v0.4",
       "status": "linked",
-      "sourceIds": ["IN-002"],
-      "changeIds": ["CR-002"],
-      "deliverableIds": ["D-12", "D-13"],
-      "approvalIds": ["AP-002"],
+      "sourceIds": [
+        "IN-002"
+      ],
+      "changeIds": [
+        "CR-002"
+      ],
+      "deliverableIds": [
+        "D-12",
+        "D-13"
+      ],
+      "approvalIds": [
+        "AP-002"
+      ],
       "issue": {
         "label": "GitHub Issue",
         "status": "pending"
@@ -652,14 +953,18 @@
         {
           "sha": "2b8bf23",
           "message": "feat: Process OS 추적 링크와 CI 증거 추가",
-          "url": "https://github.com/dayainow/goodz/commit/2b8bf23"
+          "url": "https://github.com/dayainow/goodz/commit/2b8bf230b879101a7b2361cb625d973f9bad37ac",
+          "committedAt": "2026-07-10T08:34:23Z"
         }
       ],
       "ciRuns": [
         {
           "id": "29080215538",
           "status": "success",
-          "url": "https://github.com/dayainow/goodz/actions/runs/29080215538"
+          "url": "https://github.com/dayainow/goodz/actions/runs/29080215538",
+          "createdAt": "2026-07-10T08:34:42Z",
+          "startedAt": "2026-07-10T08:34:42Z",
+          "completedAt": "2026-07-10T08:35:43Z"
         }
       ],
       "release": {
@@ -673,10 +978,19 @@
       "id": "TL-003",
       "title": "DACI Approval Governance v0.5",
       "status": "linked",
-      "sourceIds": ["IN-003"],
-      "changeIds": ["CR-003"],
-      "deliverableIds": ["D-14", "D-15"],
-      "approvalIds": ["AP-003"],
+      "sourceIds": [
+        "IN-003"
+      ],
+      "changeIds": [
+        "CR-003"
+      ],
+      "deliverableIds": [
+        "D-14",
+        "D-15"
+      ],
+      "approvalIds": [
+        "AP-003"
+      ],
       "issue": {
         "label": "GitHub Issue",
         "status": "pending"
@@ -689,14 +1003,18 @@
         {
           "sha": "ceb8f4c",
           "message": "feat: DACI 승인 체계 추가",
-          "url": "https://github.com/dayainow/goodz/commit/ceb8f4c"
+          "url": "https://github.com/dayainow/goodz/commit/ceb8f4cd8b999321dcf87a2f3afdf60150465835",
+          "committedAt": "2026-07-10T08:46:47Z"
         }
       ],
       "ciRuns": [
         {
           "id": "29080875855",
           "status": "success",
-          "url": "https://github.com/dayainow/goodz/actions/runs/29080875855"
+          "url": "https://github.com/dayainow/goodz/actions/runs/29080875855",
+          "createdAt": "2026-07-10T08:46:59Z",
+          "startedAt": "2026-07-10T08:46:59Z",
+          "completedAt": "2026-07-10T08:47:57Z"
         }
       ],
       "release": {
@@ -710,10 +1028,19 @@
       "id": "TL-004",
       "title": "Roadmap + CI Runtime Maintenance v0.5.1",
       "status": "linked",
-      "sourceIds": ["IN-004"],
-      "changeIds": ["CR-004"],
-      "deliverableIds": ["D-16", "D-17"],
-      "approvalIds": ["AP-004"],
+      "sourceIds": [
+        "IN-004"
+      ],
+      "changeIds": [
+        "CR-004"
+      ],
+      "deliverableIds": [
+        "D-16",
+        "D-17"
+      ],
+      "approvalIds": [
+        "AP-004"
+      ],
       "issue": {
         "label": "GitHub Issue",
         "status": "pending"
@@ -726,14 +1053,18 @@
         {
           "sha": "530faee",
           "message": "chore: ROADMAP 정합성 및 CI Node 24 전환",
-          "url": "https://github.com/dayainow/goodz/commit/530faee"
+          "url": "https://github.com/dayainow/goodz/commit/530faeeb7b467096f32b0c43dbd803924b46ac4b",
+          "committedAt": "2026-07-13T00:44:18Z"
         }
       ],
       "ciRuns": [
         {
           "id": "29215956559",
           "status": "success",
-          "url": "https://github.com/dayainow/goodz/actions/runs/29215956559"
+          "url": "https://github.com/dayainow/goodz/actions/runs/29215956559",
+          "createdAt": "2026-07-13T00:44:26Z",
+          "startedAt": "2026-07-13T00:44:26Z",
+          "completedAt": "2026-07-13T00:44:55Z"
         }
       ],
       "release": {
@@ -747,10 +1078,20 @@
       "id": "TL-005",
       "title": "GitHub Trace Sync + Evidence Alerts v0.6",
       "status": "linked",
-      "sourceIds": ["IN-005"],
-      "changeIds": ["CR-005"],
-      "deliverableIds": ["D-18", "D-19", "D-20"],
-      "approvalIds": ["AP-005"],
+      "sourceIds": [
+        "IN-005"
+      ],
+      "changeIds": [
+        "CR-005"
+      ],
+      "deliverableIds": [
+        "D-18",
+        "D-19",
+        "D-20"
+      ],
+      "approvalIds": [
+        "AP-005"
+      ],
       "issue": {
         "label": "GitHub Issue",
         "status": "pending"
@@ -763,14 +1104,18 @@
         {
           "sha": "dbfdb72",
           "message": "feat: GitHub trace sync와 증거 경고 추가",
-          "url": "https://github.com/dayainow/goodz/commit/dbfdb72"
+          "url": "https://github.com/dayainow/goodz/commit/dbfdb7240e87b65fc6b663b8ea7341a29da852a6",
+          "committedAt": "2026-07-13T01:31:56Z"
         }
       ],
       "ciRuns": [
         {
           "id": "29217600997",
           "status": "success",
-          "url": "https://github.com/dayainow/goodz/actions/runs/29217600997"
+          "url": "https://github.com/dayainow/goodz/actions/runs/29217600997",
+          "createdAt": "2026-07-13T01:32:07Z",
+          "startedAt": "2026-07-13T01:32:07Z",
+          "completedAt": "2026-07-13T01:33:03Z"
         }
       ],
       "release": {
@@ -790,10 +1135,18 @@
       "id": "TL-006",
       "title": "Delivery Metrics Baseline v0.7",
       "status": "linked",
-      "sourceIds": ["IN-006"],
-      "changeIds": ["CR-006"],
-      "deliverableIds": ["D-21"],
-      "approvalIds": ["AP-006"],
+      "sourceIds": [
+        "IN-006"
+      ],
+      "changeIds": [
+        "CR-006"
+      ],
+      "deliverableIds": [
+        "D-21"
+      ],
+      "approvalIds": [
+        "AP-006"
+      ],
       "issue": {
         "label": "GitHub Issue",
         "status": "pending"
@@ -806,14 +1159,18 @@
         {
           "sha": "123d3b3",
           "message": "feat: Delivery Metrics 베이스라인 추가",
-          "url": "https://github.com/dayainow/goodz/commit/123d3b3"
+          "url": "https://github.com/dayainow/goodz/commit/123d3b35125aaabf07d9b9b534876f7794201c5b",
+          "committedAt": "2026-07-13T01:43:15Z"
         }
       ],
       "ciRuns": [
         {
           "id": "29217992968",
           "status": "success",
-          "url": "https://github.com/dayainow/goodz/actions/runs/29217992968"
+          "url": "https://github.com/dayainow/goodz/actions/runs/29217992968",
+          "createdAt": "2026-07-13T01:43:19Z",
+          "startedAt": "2026-07-13T01:43:19Z",
+          "completedAt": "2026-07-13T01:43:56Z"
         }
       ],
       "release": {
@@ -822,26 +1179,136 @@
       },
       "summary": "DORA 원형 지표와 Goodz 보조 지표가 traceLinks 기반으로 계산되고 process-dashboard 지표 메뉴와 CI green 증거에 연결됨",
       "nextAction": "GitHub timestamp 기반 시간 단위 metrics 고도화"
+    },
+    {
+      "id": "TL-007",
+      "title": "Timestamp Metrics v0.8",
+      "status": "partial",
+      "sourceIds": [
+        "IN-007"
+      ],
+      "changeIds": [
+        "CR-007"
+      ],
+      "deliverableIds": [
+        "D-22"
+      ],
+      "approvalIds": [
+        "AP-007"
+      ],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "GitHub timestamp를 traceLinks에 저장하고 Metrics 대시보드에서 단계별 시간을 계산하도록 고도화",
+      "nextAction": "커밋과 GitHub Actions CI run을 연결"
     }
   ],
   "features": [
-    { "id": "F-01", "label": "상품 목록 / Shop", "status": "done" },
-    { "id": "F-02", "label": "상품 상세", "status": "done" },
-    { "id": "F-03", "label": "장바구니", "status": "done" },
-    { "id": "F-04", "label": "체크아웃 mock", "status": "done" },
-    { "id": "F-05", "label": "어드민 상품 테이블", "status": "done" },
-    { "id": "F-06", "label": "Product API", "status": "done" },
-    { "id": "F-07", "label": "Home · Category", "status": "done" },
-    { "id": "F-08", "label": "어드민 상품 등록", "status": "done" },
-    { "id": "F-09", "label": "Search · About", "status": "done" },
-    { "id": "F-10", "label": "프로세스 대시보드", "status": "done" },
-    { "id": "F-11", "label": "증거 누락 경고", "status": "done" },
-    { "id": "F-12", "label": "Delivery Metrics", "status": "done" }
+    {
+      "id": "F-01",
+      "label": "상품 목록 / Shop",
+      "status": "done"
+    },
+    {
+      "id": "F-02",
+      "label": "상품 상세",
+      "status": "done"
+    },
+    {
+      "id": "F-03",
+      "label": "장바구니",
+      "status": "done"
+    },
+    {
+      "id": "F-04",
+      "label": "체크아웃 mock",
+      "status": "done"
+    },
+    {
+      "id": "F-05",
+      "label": "어드민 상품 테이블",
+      "status": "done"
+    },
+    {
+      "id": "F-06",
+      "label": "Product API",
+      "status": "done"
+    },
+    {
+      "id": "F-07",
+      "label": "Home · Category",
+      "status": "done"
+    },
+    {
+      "id": "F-08",
+      "label": "어드민 상품 등록",
+      "status": "done"
+    },
+    {
+      "id": "F-09",
+      "label": "Search · About",
+      "status": "done"
+    },
+    {
+      "id": "F-10",
+      "label": "프로세스 대시보드",
+      "status": "done"
+    },
+    {
+      "id": "F-11",
+      "label": "증거 누락 경고",
+      "status": "done"
+    },
+    {
+      "id": "F-12",
+      "label": "Delivery Metrics",
+      "status": "done"
+    },
+    {
+      "id": "F-13",
+      "label": "Timestamp Metrics",
+      "status": "done"
+    }
   ],
   "apps": [
-    { "id": "api-server", "name": "API Server", "port": 4000, "role": "REST · mock · process SSOT", "url": "http://localhost:4000" },
-    { "id": "web-shop", "name": "Web Shop", "port": 3000, "role": "B2C 레퍼런스 데모", "url": "http://localhost:3000" },
-    { "id": "admin-dashboard", "name": "Admin", "port": 5173, "role": "운영 UI 데모", "url": "http://localhost:5173" },
-    { "id": "process-dashboard", "name": "Process", "port": 5180, "role": "풀 프로세스 모니터링", "url": "http://localhost:5180" }
+    {
+      "id": "api-server",
+      "name": "API Server",
+      "port": 4000,
+      "role": "REST · mock · process SSOT",
+      "url": "http://localhost:4000"
+    },
+    {
+      "id": "web-shop",
+      "name": "Web Shop",
+      "port": 3000,
+      "role": "B2C 레퍼런스 데모",
+      "url": "http://localhost:3000"
+    },
+    {
+      "id": "admin-dashboard",
+      "name": "Admin",
+      "port": 5173,
+      "role": "운영 UI 데모",
+      "url": "http://localhost:5173"
+    },
+    {
+      "id": "process-dashboard",
+      "name": "Process",
+      "port": 5180,
+      "role": "풀 프로세스 모니터링",
+      "url": "http://localhost:5180"
+    }
   ]
 }

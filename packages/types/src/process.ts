@@ -120,18 +120,27 @@ export interface ProcessTraceReference {
   label: string;
   status: ProcessTraceReferenceStatus;
   url?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  closedAt?: string;
+  mergedAt?: string;
+  publishedAt?: string;
 }
 
 export interface ProcessTraceCommit {
   sha: string;
   message: string;
   url: string;
+  committedAt?: string;
 }
 
 export interface ProcessTraceCiRun {
   id: string;
   status: "success" | "failed" | "running" | "pending";
   url: string;
+  createdAt?: string;
+  startedAt?: string;
+  completedAt?: string;
 }
 
 export interface ProcessTraceSmoke {

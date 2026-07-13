@@ -145,8 +145,13 @@ interface DeliveryTraceRow {
   id: string;
   title: string;
   requestedAt: string;
+  committedAt: string;
+  ciCompletedAt: string;
   deliveredAt: string;
-  leadTimeDays: number | null;
+  requestToCommitHours: number | null;
+  commitToCiHours: number | null;
+  ciToDeliveryHours: number | null;
+  totalLeadHours: number | null;
   ciStatus: string;
   smokeStatus: string;
   evidenceWarnings: number;
@@ -179,20 +184,52 @@ const DELIVERY_METRIC_TONE_CLASS: Record<DeliveryMetricTone, string> = {
   risk: "border-rose-200 bg-rose-50 text-rose-950",
 };
 
-function parseDate(value?: string) {
+function parseTimestamp(value?: string, boundary: "start" | "end" = "start") {
   if (!value) return null;
-  const date = new Date(`${value}T00:00:00`);
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
+  const date = new Date(
+    isDateOnly
+      ? `${value}T${boundary === "start" ? "00:00:00" : "23:59:59"}`
+      : value,
+  );
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-function diffDays(start?: string, end?: string) {
-  const startDate = parseDate(start);
-  const endDate = parseDate(end);
+function diffHours(
+  start?: string,
+  end?: string,
+  endBoundary: "start" | "end" = "start",
+) {
+  const startDate = parseTimestamp(start, "start");
+  const endDate = parseTimestamp(end, endBoundary);
   if (!startDate || !endDate) return null;
   return Math.max(
     0,
-    Math.round((endDate.getTime() - startDate.getTime()) / 86_400_000),
+    (endDate.getTime() - startDate.getTime()) / 3_600_000,
   );
+}
+
+function earliestTimestamp(values: Array<string | undefined>) {
+  return values
+    .filter((value): value is string => Boolean(value))
+    .sort((a, b) => {
+      const aTime = parseTimestamp(a)?.getTime() ?? Number.POSITIVE_INFINITY;
+      const bTime = parseTimestamp(b)?.getTime() ?? Number.POSITIVE_INFINITY;
+      return aTime - bTime;
+    })[0];
+}
+
+function formatDuration(hours: number | null) {
+  if (hours === null) return "N/A";
+  if (hours < 1) return `${Math.round(hours * 60)}m`;
+  if (hours < 48) return `${hours.toFixed(1)}h`;
+  return `${(hours / 24).toFixed(1)}d`;
+}
+
+function formatTimestamp(value?: string) {
+  if (!value) return "-";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  return value.replace("T", " ").replace("Z", "").slice(0, 16);
 }
 
 function formatPercent(value: number | null) {
@@ -321,12 +358,19 @@ function buildDeliveryMetrics(
         .map((id) => approvalsById.get(id)?.requestedAt)
         .find(Boolean) ??
       status.updatedAt;
+    const committedAt = earliestTimestamp(
+      trace.commits.map((commit) => commit.committedAt),
+    );
+    const successfulCiCompletedAt = earliestTimestamp(
+      trace.ciRuns
+        .filter((run) => run.status === "success")
+        .map((run) => run.completedAt ?? run.startedAt ?? run.createdAt),
+    );
     const deliveredAt =
       trace.smoke?.checkedAt ??
-      trace.approvalIds
-        .map((id) => approvalsById.get(id)?.approvedAt)
-        .find(Boolean) ??
-      (["linked", "released"].includes(trace.status) ? status.updatedAt : "");
+      trace.release.publishedAt ??
+      trace.release.createdAt ??
+      "";
     const hasFailedCi = trace.ciRuns.some((run) => run.status === "failed");
     const ciStatus = hasFailedCi
       ? "failed"
@@ -338,8 +382,23 @@ function buildDeliveryMetrics(
       id: trace.id,
       title: trace.title,
       requestedAt,
+      committedAt: committedAt ?? "-",
+      ciCompletedAt: successfulCiCompletedAt ?? "-",
       deliveredAt: deliveredAt || "-",
-      leadTimeDays: deliveredAt ? diffDays(requestedAt, deliveredAt) : null,
+      requestToCommitHours: committedAt
+        ? diffHours(requestedAt, committedAt)
+        : null,
+      commitToCiHours:
+        committedAt && successfulCiCompletedAt
+          ? diffHours(committedAt, successfulCiCompletedAt)
+          : null,
+      ciToDeliveryHours:
+        successfulCiCompletedAt && deliveredAt
+          ? diffHours(successfulCiCompletedAt, deliveredAt, "end")
+          : null,
+      totalLeadHours: deliveredAt
+        ? diffHours(requestedAt, deliveredAt, "end")
+        : null,
       ciStatus,
       smokeStatus: trace.smoke?.status ?? "not_recorded",
       evidenceWarnings: warningCountByTrace[trace.id] ?? 0,
@@ -347,9 +406,9 @@ function buildDeliveryMetrics(
   });
 
   const deliveredRows = traceRows.filter((row) => row.deliveredAt !== "-");
-  const leadTimeDays = average(
+  const leadTimeHours = average(
     deliveredRows
-      .map((row) => row.leadTimeDays)
+      .map((row) => row.totalLeadHours)
       .filter((value): value is number => value !== null),
   );
   const totalCiRuns = status.traceLinks.reduce(
@@ -402,10 +461,9 @@ function buildDeliveryMetrics(
       },
       {
         label: "Lead time",
-        value: leadTimeDays === null ? "N/A" : leadTimeDays.toFixed(1),
-        unit: "days",
-        tone: leadTimeDays === null ? "neutral" : leadTimeDays <= 3 ? "good" : "watch",
-        summary: "요청일에서 승인/smoke 증거까지의 날짜 단위 평균",
+        value: formatDuration(leadTimeHours),
+        tone: leadTimeHours === null ? "neutral" : leadTimeHours <= 72 ? "good" : "watch",
+        summary: "요청에서 smoke/release 증거까지의 시간 단위 평균",
       },
       {
         label: "CI success rate",
@@ -1135,15 +1193,16 @@ function DeliveryMetricsSection({ metrics }: { metrics: DeliveryMetrics }) {
         <div className="border-b border-zinc-100 px-4 py-3">
           <h3 className="font-bold text-zinc-950">Trace lead time</h3>
           <p className="mt-1 text-xs text-zinc-500">
-            현재는 날짜 단위 베이스라인입니다. GitHub event timestamp를 저장하면 시간 단위로 고도화할 수 있습니다.
+            GitHub commit/CI timestamp와 smoke/release 증거를 기준으로 단계별 시간을 계산합니다.
           </p>
         </div>
-        <div className="grid border-b border-zinc-100 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 lg:grid-cols-[90px_1fr_120px_120px_90px_90px_90px]">
+        <div className="grid border-b border-zinc-100 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 lg:grid-cols-[90px_1fr_120px_120px_120px_100px_90px_90px]">
           <span>ID</span>
           <span>대상</span>
-          <span>요청일</span>
-          <span>증거일</span>
-          <span>Lead</span>
+          <span>요청→커밋</span>
+          <span>커밋→CI</span>
+          <span>CI→증거</span>
+          <span>전체</span>
           <span>CI</span>
           <span>Smoke</span>
         </div>
@@ -1151,7 +1210,7 @@ function DeliveryMetricsSection({ metrics }: { metrics: DeliveryMetrics }) {
           {metrics.traceRows.map((row) => (
             <li
               key={row.id}
-              className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_120px_120px_90px_90px_90px] lg:items-center"
+              className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_120px_120px_120px_100px_90px_90px] lg:items-center"
             >
               <span className="font-mono text-xs font-semibold text-brand-violet">
                 {row.id}
@@ -1164,14 +1223,17 @@ function DeliveryMetricsSection({ metrics }: { metrics: DeliveryMetrics }) {
                   </p>
                 )}
               </div>
-              <span className="font-mono text-xs text-zinc-500">
-                {row.requestedAt}
-              </span>
-              <span className="font-mono text-xs text-zinc-500">
-                {row.deliveredAt}
+              <span className="font-semibold text-zinc-700">
+                {formatDuration(row.requestToCommitHours)}
               </span>
               <span className="font-semibold text-zinc-700">
-                {row.leadTimeDays === null ? "-" : `${row.leadTimeDays}d`}
+                {formatDuration(row.commitToCiHours)}
+              </span>
+              <span className="font-semibold text-zinc-700">
+                {formatDuration(row.ciToDeliveryHours)}
+              </span>
+              <span className="font-semibold text-zinc-900">
+                {formatDuration(row.totalLeadHours)}
               </span>
               <span className="text-xs font-semibold text-zinc-600">
                 {row.ciStatus}
@@ -1179,6 +1241,14 @@ function DeliveryMetricsSection({ metrics }: { metrics: DeliveryMetrics }) {
               <span className="text-xs font-semibold text-zinc-600">
                 {row.smokeStatus}
               </span>
+              <div className="lg:col-span-8">
+                <p className="font-mono text-[11px] leading-5 text-zinc-400">
+                  request {formatTimestamp(row.requestedAt)} · commit{" "}
+                  {formatTimestamp(row.committedAt)} · ci{" "}
+                  {formatTimestamp(row.ciCompletedAt)} · evidence{" "}
+                  {formatTimestamp(row.deliveredAt)}
+                </p>
+              </div>
             </li>
           ))}
         </ul>

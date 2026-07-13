@@ -50,7 +50,18 @@ function getRunForCommit(sha) {
     id: String(ciRun.id),
     status: mapRunStatus(ciRun),
     url: ciRun.html_url,
+    createdAt: ciRun.created_at,
+    startedAt: ciRun.run_started_at,
+    completedAt: ciRun.status === "completed" ? ciRun.updated_at : undefined,
   };
+}
+
+function getCommitForSha(sha) {
+  try {
+    return ghApi(`/repos/${repo}/commits/${sha}`);
+  } catch {
+    return null;
+  }
 }
 
 function getPullsForCommit(sha) {
@@ -104,6 +115,8 @@ function syncRelease(trace) {
         label: latest.tag_name ? `Release ${latest.tag_name}` : "Release",
         status: "linked",
         url: latest.html_url,
+        createdAt: latest.created_at,
+        publishedAt: latest.published_at,
       };
       return latest.tag_name ?? "latest";
     }
@@ -131,7 +144,18 @@ for (const trace of status.traceLinks) {
   let linkedIssue = null;
 
   for (const commit of commits) {
-    const run = getRunForCommit(commit.sha);
+    const commitDetails = getCommitForSha(commit.sha);
+    if (commitDetails?.commit?.author?.date) {
+      commit.committedAt = commitDetails.commit.author.date;
+    }
+    if (commitDetails?.html_url) {
+      commit.url = commitDetails.html_url;
+    }
+    if (commitDetails?.commit?.message && !commit.message) {
+      commit.message = commitDetails.commit.message.split("\n")[0];
+    }
+
+    const run = getRunForCommit(commitDetails?.sha ?? commit.sha);
     if (run) ciRuns.unshift(run);
 
     const pulls = getPullsForCommit(commit.sha);
@@ -147,6 +171,10 @@ for (const trace of status.traceLinks) {
       label: `PR #${linkedPr.number}`,
       status: "linked",
       url: linkedPr.html_url,
+      createdAt: linkedPr.created_at,
+      updatedAt: linkedPr.updated_at,
+      closedAt: linkedPr.closed_at ?? undefined,
+      mergedAt: linkedPr.merged_at ?? undefined,
     };
   }
 
@@ -155,6 +183,9 @@ for (const trace of status.traceLinks) {
       label: `Issue #${linkedIssue.number}`,
       status: "linked",
       url: linkedIssue.html_url,
+      createdAt: linkedIssue.created_at,
+      updatedAt: linkedIssue.updated_at,
+      closedAt: linkedIssue.closed_at ?? undefined,
     };
   }
 
