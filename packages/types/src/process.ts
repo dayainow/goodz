@@ -109,6 +109,40 @@ export interface ProcessPlanningChange {
   decision: string;
 }
 
+export interface ProcessDesignReference {
+  id: string;
+  name: string;
+  source: string;
+  url: string;
+  category: "foundation" | "component" | "pattern" | "commerce" | "accessibility";
+  takeaways: string[];
+  applyTo: string[];
+  status: ProcessItemStatus;
+  doc: string;
+}
+
+export interface ProcessWireframe {
+  id: string;
+  title: string;
+  screen: string;
+  fidelity: "low" | "mid" | "high";
+  status: ProcessItemStatus;
+  doc: string;
+  references: string[];
+  summary: string;
+}
+
+export interface ProcessStoryboard {
+  id: string;
+  title: string;
+  actor: string;
+  status: ProcessItemStatus;
+  doc: string;
+  steps: string[];
+  linkedWireframes: string[];
+  summary: string;
+}
+
 export type ProcessTraceStatus = "pending" | "partial" | "linked" | "released";
 
 export type ProcessTraceReferenceStatus =
@@ -219,6 +253,9 @@ export interface ProcessStatus {
   deliverables: ProcessDeliverable[];
   approvals: ProcessApproval[];
   planningChanges: ProcessPlanningChange[];
+  designReferences: ProcessDesignReference[];
+  wireframes: ProcessWireframe[];
+  storyboards: ProcessStoryboard[];
   traceLinks: ProcessTraceLink[];
   features: ProcessCheckItem[];
   apps: ProcessApp[];

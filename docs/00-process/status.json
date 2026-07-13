@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.12",
+  "systemVersion": "v0.13",
   "sprint": {
-    "id": "S14",
-    "name": "시스템 v0.12 — Premium Dashboard UX",
+    "id": "S15",
+    "name": "시스템 v0.13 — Design OS",
     "status": "done",
-    "goal": "사이드바 검색·접힘과 메인 콘솔 UI를 엔터프라이즈 운영 도구 수준으로 고도화"
+    "goal": "디자인 시스템, 레퍼런스, 와이어프레임, 스토리보드를 풀프로세스 산출물로 연결"
   },
   "phases": [
     {
@@ -64,6 +64,12 @@
           "label": "DESIGN_SYSTEM Tailwind 토큰",
           "status": "done",
           "doc": "docs/02-design/DESIGN_SYSTEM.md"
+        },
+        {
+          "id": "p1-design-os",
+          "label": "Design OS 산출물 체계",
+          "status": "done",
+          "doc": "docs/02-design/DESIGN_OS.md"
         },
         {
           "id": "p1-gate",
@@ -169,6 +175,12 @@
           "label": "프리미엄 대시보드 UX",
           "status": "done",
           "doc": "docs/00-process/PROCESS_DASHBOARD.md"
+        },
+        {
+          "id": "p2-design-menu",
+          "label": "대시보드 Design 메뉴",
+          "status": "done",
+          "doc": "docs/02-design/DESIGN_OS.md"
         },
         {
           "id": "p2-roadmap-sync",
@@ -363,6 +375,15 @@
       "phase": "P2",
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
       "nextAction": "문서 검색, guided workflow, role-based view로 확장"
+    },
+    {
+      "id": "IN-012",
+      "title": "Design OS v0.13",
+      "source": "사용자 요청 · 디자인 시스템, 레퍼런스, 와이어프레임, 스토리보드 강화",
+      "status": "done",
+      "phase": "P1",
+      "doc": "docs/02-design/DESIGN_OS.md",
+      "nextAction": "Figma 연동, 디자인 QA, reference-to-screen 자동 연결로 확장"
     }
   ],
   "deliverables": [
@@ -625,6 +646,46 @@
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
       "owner": "Product/Engineering",
       "summary": "사이드바 검색, quick jump, 접힘 그룹, 콘솔형 메인 헤더로 운영 편의성과 완성도를 고도화"
+    },
+    {
+      "id": "D-27",
+      "title": "Design OS",
+      "type": "design",
+      "phase": "P1",
+      "status": "done",
+      "doc": "docs/02-design/DESIGN_OS.md",
+      "owner": "Product/Design",
+      "summary": "레퍼런스, 디자인 시스템, 와이어프레임, 스토리보드를 연결하는 디자인 운영 체계"
+    },
+    {
+      "id": "D-28",
+      "title": "Design Reference Board",
+      "type": "design",
+      "phase": "P1",
+      "status": "done",
+      "doc": "docs/02-design/REFERENCES.md",
+      "owner": "Product/Design",
+      "summary": "Atlassian, Carbon, Polaris, GOV.UK 레퍼런스의 차용점과 적용 화면 기록"
+    },
+    {
+      "id": "D-29",
+      "title": "Wireframe Registry",
+      "type": "design",
+      "phase": "P1",
+      "status": "done",
+      "doc": "docs/02-design/wireframes/README.md",
+      "owner": "Product/Design",
+      "summary": "Design 메뉴와 Admin 운영 화면의 저해상도 정보 구조"
+    },
+    {
+      "id": "D-30",
+      "title": "Storyboard Registry",
+      "type": "design",
+      "phase": "P1",
+      "status": "done",
+      "doc": "docs/02-design/storyboards/README.md",
+      "owner": "Product/Design",
+      "summary": "기획 요청에서 디자인 handoff와 커머스 Admin 개선까지의 사용자 여정"
     }
   ],
   "approvals": [
@@ -958,6 +1019,36 @@
       "traceLinkIds": [
         "TL-011"
       ]
+    },
+    {
+      "id": "AP-012",
+      "target": "S15 Design OS v0.13",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": [
+        "Product",
+        "Design",
+        "Engineering"
+      ],
+      "informed": [
+        "Future Goodz operators"
+      ],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "디자인 시스템, 레퍼런스, 와이어프레임, 스토리보드를 Process OS의 공식 산출물로 연결",
+      "criteria": [
+        "Design OS 문서 구조가 추가됨",
+        "레퍼런스 보드가 차용점과 적용 화면을 기록함",
+        "와이어프레임과 스토리보드가 status.json에서 추적됨",
+        "대시보드 Design 메뉴에서 디자인 산출물을 확인할 수 있음"
+      ],
+      "summary": "Design OS 산출물 체계와 대시보드 Design 메뉴 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": [
+        "TL-012"
+      ]
     }
   ],
   "planningChanges": [
@@ -1141,6 +1232,162 @@
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
       "summary": "사이드바 검색, quick jump, 접힘 그룹, 콘솔형 메인 헤더로 프로세스 관리 UX를 고급화",
       "decision": "v0.12에서 메이저 운영 콘솔 레퍼런스의 좌측 내비게이션 원칙을 Goodz Process Dashboard에 반영"
+    },
+    {
+      "id": "CR-012",
+      "title": "Design OS 산출물 체계 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/02-design/DESIGN_OS.md",
+        "docs/02-design/REFERENCES.md",
+        "docs/02-design/wireframes/README.md",
+        "docs/02-design/storyboards/README.md",
+        "docs/00-process/status.json",
+        "apps/process-dashboard/src/App.tsx"
+      ],
+      "doc": "docs/02-design/DESIGN_OS.md",
+      "summary": "디자인 레퍼런스, 와이어프레임, 스토리보드를 Process OS 산출물과 대시보드 메뉴에 연결",
+      "decision": "v0.13에서 Design OS를 별도 산출물 레이어로 추가하고 Design 메뉴에서 확인"
+    }
+  ],
+  "designReferences": [
+    {
+      "id": "DR-001",
+      "name": "Atlassian Design System",
+      "source": "Atlassian",
+      "url": "https://atlassian.design/foundations/",
+      "category": "foundation",
+      "takeaways": [
+        "tokens, spacing, grid, typography를 foundations로 분리",
+        "제품 UI의 일관성을 foundation과 component로 함께 관리"
+      ],
+      "applyTo": [
+        "Process Dashboard",
+        "Design menu"
+      ],
+      "status": "done",
+      "doc": "docs/02-design/REFERENCES.md"
+    },
+    {
+      "id": "DR-002",
+      "name": "IBM Carbon Design System",
+      "source": "IBM",
+      "url": "https://carbondesignsystem.com/",
+      "category": "component",
+      "takeaways": [
+        "엔터프라이즈 제품과 디지털 경험을 위한 shell, left panel, reusable component 구조",
+        "디자인 도구, 코드, human interface guideline을 함께 제공"
+      ],
+      "applyTo": [
+        "Process Dashboard",
+        "Admin"
+      ],
+      "status": "done",
+      "doc": "docs/02-design/REFERENCES.md"
+    },
+    {
+      "id": "DR-003",
+      "name": "Shopify Polaris",
+      "source": "Shopify",
+      "url": "https://polaris-react.shopify.com/",
+      "category": "commerce",
+      "takeaways": [
+        "커머스 admin 경험을 위한 components, tokens, icons, patterns 구조",
+        "상품 운영자가 반복 작업을 빠르게 처리하는 UI 밀도"
+      ],
+      "applyTo": [
+        "Admin",
+        "Product operations"
+      ],
+      "status": "done",
+      "doc": "docs/02-design/REFERENCES.md"
+    },
+    {
+      "id": "DR-004",
+      "name": "GOV.UK Design System",
+      "source": "GOV.UK",
+      "url": "https://design-system.service.gov.uk/",
+      "category": "accessibility",
+      "takeaways": [
+        "styles, components, patterns를 사용자의 과업 완료 기준으로 정리",
+        "명확한 문장과 접근성 중심 서비스 패턴"
+      ],
+      "applyTo": [
+        "Guide",
+        "Intake",
+        "Approval"
+      ],
+      "status": "done",
+      "doc": "docs/02-design/REFERENCES.md"
+    }
+  ],
+  "wireframes": [
+    {
+      "id": "WF-001",
+      "title": "Process Dashboard Design Menu",
+      "screen": "process-dashboard/design",
+      "fidelity": "low",
+      "status": "done",
+      "doc": "docs/02-design/wireframes/README.md",
+      "references": [
+        "DR-001",
+        "DR-002",
+        "DR-004"
+      ],
+      "summary": "Design System, Reference Board, Wireframes, Storyboards를 한 화면에서 확인하는 메뉴 구조"
+    },
+    {
+      "id": "WF-002",
+      "title": "Admin Product Operations",
+      "screen": "admin-dashboard/products",
+      "fidelity": "low",
+      "status": "done",
+      "doc": "docs/02-design/wireframes/README.md",
+      "references": [
+        "DR-002",
+        "DR-003"
+      ],
+      "summary": "상품 목록과 등록 CTA, table state를 중심으로 하는 커머스 운영 화면 구조"
+    }
+  ],
+  "storyboards": [
+    {
+      "id": "SB-001",
+      "title": "기획 요청에서 디자인 handoff까지",
+      "actor": "PM / Product Operator",
+      "status": "done",
+      "doc": "docs/02-design/storyboards/README.md",
+      "steps": [
+        "새 기능 요청을 기획 또는 변경에 기록",
+        "디자인 메뉴에서 관련 레퍼런스 확인",
+        "저해상도 와이어프레임 작성",
+        "승인 기준이 필요하면 DACI 레코드 생성",
+        "개발자가 스토리보드와 와이어프레임을 보고 화면 스펙 작성"
+      ],
+      "linkedWireframes": [
+        "WF-001"
+      ],
+      "summary": "요청이 디자인 근거와 화면 구조를 거쳐 개발 handoff로 이어지는 흐름"
+    },
+    {
+      "id": "SB-002",
+      "title": "커머스 Admin 화면 개선",
+      "actor": "Operations Manager",
+      "status": "done",
+      "doc": "docs/02-design/storyboards/README.md",
+      "steps": [
+        "상품 목록에서 재고와 가격 확인",
+        "신규 상품이 필요하면 상품 등록으로 이동",
+        "필수 입력과 저장 결과 확인",
+        "오류가 있으면 필드 근처에서 수정",
+        "저장 후 목록에서 새 상품 상태 확인"
+      ],
+      "linkedWireframes": [
+        "WF-002"
+      ],
+      "summary": "커머스 운영자가 상품 등록과 목록 확인을 반복하는 주요 흐름"
     }
   ],
   "traceLinks": [
@@ -1709,6 +1956,42 @@
       },
       "summary": "사이드바 검색, quick jump, 접힘 그룹, 콘솔형 메인 헤더로 프로세스 대시보드 UX를 고급화",
       "nextAction": "문서 검색, guided workflow, role-based view로 확장"
+    },
+    {
+      "id": "TL-012",
+      "title": "Design OS v0.13",
+      "status": "partial",
+      "sourceIds": [
+        "IN-012"
+      ],
+      "changeIds": [
+        "CR-012"
+      ],
+      "deliverableIds": [
+        "D-27",
+        "D-28",
+        "D-29",
+        "D-30"
+      ],
+      "approvalIds": [
+        "AP-012"
+      ],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "Design OS 문서 구조, 레퍼런스 보드, 와이어프레임, 스토리보드, 대시보드 Design 메뉴를 연결",
+      "nextAction": "구현 커밋과 CI green 증거 연결"
     }
   ],
   "features": [
@@ -1795,6 +2078,11 @@
     {
       "id": "F-17",
       "label": "Premium Dashboard UX",
+      "status": "done"
+    },
+    {
+      "id": "F-18",
+      "label": "Design OS dashboard menu",
       "status": "done"
     }
   ],

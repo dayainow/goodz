@@ -3,6 +3,7 @@ import type {
   ProcessApp,
   ProcessApproval,
   ProcessCheckItem,
+  ProcessDesignReference,
   ProcessDeliverable,
   ProcessDeliverableType,
   ProcessDocumentResponse,
@@ -16,6 +17,8 @@ import type {
   ProcessTraceLink,
   ProcessTraceReferenceStatus,
   ProcessTraceStatus,
+  ProcessWireframe,
+  ProcessStoryboard,
 } from "@goodz/types";
 import {
   fetchProcessDocument,
@@ -29,6 +32,7 @@ type SectionId =
   | "overview"
   | "intakes"
   | "changes"
+  | "design"
   | "guide"
   | "deliverables"
   | "approvals"
@@ -44,6 +48,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "overview", label: "개요", eyebrow: "Overview" },
   { id: "intakes", label: "기획", eyebrow: "Intake" },
   { id: "changes", label: "변경", eyebrow: "Change" },
+  { id: "design", label: "디자인", eyebrow: "Design" },
   { id: "guide", label: "가이드", eyebrow: "Manual" },
   { id: "deliverables", label: "산출물", eyebrow: "Docs" },
   { id: "approvals", label: "승인", eyebrow: "Approval" },
@@ -60,6 +65,7 @@ const SECTION_COPY: Record<SectionId, string> = {
   overview: "현재 상태와 오늘 볼 신호",
   intakes: "요청과 아이디어 입력",
   changes: "기획 수정과 의사결정",
+  design: "레퍼런스와 와이어프레임",
   guide: "사용법과 운영 기준",
   deliverables: "문서 산출물 원문",
   approvals: "DACI 승인 로그",
@@ -84,8 +90,8 @@ const MENU_GROUPS: Array<{
   },
   {
     title: "Plan",
-    summary: "요청과 문서",
-    items: ["intakes", "changes", "deliverables"],
+    summary: "요청과 설계",
+    items: ["intakes", "changes", "design", "deliverables"],
   },
   {
     title: "Control",
@@ -99,7 +105,7 @@ const MENU_GROUPS: Array<{
   },
 ];
 
-const QUICK_SECTIONS: SectionId[] = ["overview", "guide", "evidence", "metrics"];
+const QUICK_SECTIONS: SectionId[] = ["overview", "design", "guide", "metrics"];
 
 const GUIDE_DOCS = [
   {
@@ -2283,6 +2289,183 @@ function FeaturesSection({ features }: { features: ProcessCheckItem[] }) {
   );
 }
 
+const DESIGN_CATEGORY_LABEL: Record<ProcessDesignReference["category"], string> = {
+  foundation: "Foundation",
+  component: "Component",
+  pattern: "Pattern",
+  commerce: "Commerce",
+  accessibility: "Accessibility",
+};
+
+function DesignReferenceCard({
+  reference,
+}: {
+  reference: ProcessDesignReference;
+}) {
+  return (
+    <article className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-mono text-xs font-semibold text-brand-violet">
+            {reference.id}
+          </p>
+          <h3 className="mt-1 text-lg font-bold text-zinc-950">
+            {reference.name}
+          </h3>
+          <p className="mt-1 text-sm text-zinc-500">{reference.source}</p>
+        </div>
+        <span className="rounded-full border border-violet-200 bg-violet-50 px-2.5 py-0.5 text-xs font-semibold text-brand-violet">
+          {DESIGN_CATEGORY_LABEL[reference.category]}
+        </span>
+      </div>
+      <ul className="mt-4 space-y-2">
+        {reference.takeaways.map((item) => (
+          <li key={item} className="text-sm leading-6 text-zinc-600">
+            {item}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {reference.applyTo.map((target) => (
+          <span
+            key={target}
+            className="rounded-md bg-zinc-100 px-2 py-1 text-xs font-semibold text-zinc-600"
+          >
+            {target}
+          </span>
+        ))}
+      </div>
+      <div className="mt-5 flex items-center justify-between gap-3">
+        <a
+          href={reference.url}
+          target="_blank"
+          rel="noreferrer"
+          className="text-sm font-semibold text-brand-violet hover:underline"
+        >
+          레퍼런스 열기 →
+        </a>
+        <p className="truncate font-mono text-xs text-zinc-400">
+          {reference.doc}
+        </p>
+      </div>
+    </article>
+  );
+}
+
+function DesignArtifactRow({
+  item,
+}: {
+  item: ProcessWireframe | ProcessStoryboard;
+}) {
+  const meta =
+    "fidelity" in item
+      ? `${item.screen} · ${item.fidelity}`
+      : `${item.actor} · ${item.linkedWireframes.join(", ")}`;
+
+  return (
+    <li className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_130px_110px] lg:items-center">
+      <span className="font-mono text-xs font-semibold text-brand-violet">
+        {item.id}
+      </span>
+      <div>
+        <p className="font-semibold text-zinc-950">{item.title}</p>
+        <p className="mt-1 text-xs leading-5 text-zinc-500">{item.summary}</p>
+        <p className="mt-1 truncate font-mono text-xs text-zinc-400">
+          {item.doc}
+        </p>
+      </div>
+      <span className="text-xs text-zinc-500">{meta}</span>
+      <StatusBadge status={item.status} />
+    </li>
+  );
+}
+
+function DesignSection({
+  references,
+  wireframes,
+  storyboards,
+}: {
+  references: ProcessDesignReference[];
+  wireframes: ProcessWireframe[];
+  storyboards: ProcessStoryboard[];
+}) {
+  return (
+    <div className="space-y-6">
+      <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold text-brand-violet">
+              Design OS
+            </p>
+            <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-950">
+              레퍼런스에서 스토리보드까지 한 흐름으로 관리
+            </h3>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-zinc-600">
+              디자인 시스템, 외부 레퍼런스, 와이어프레임, 스토리보드를
+              개발 전 산출물로 남기고 trace와 승인 흐름에 연결합니다.
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <Metric label="Reference" value={references.length} tone="violet" />
+            <Metric label="Wireframe" value={wireframes.length} tone="green" />
+            <Metric label="Storyboard" value={storyboards.length} tone="green" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="mb-3">
+          <p className="text-sm font-semibold text-brand-violet">
+            Reference Board
+          </p>
+          <h3 className="mt-1 text-xl font-bold text-zinc-950">
+            차용할 점과 적용 화면
+          </h3>
+        </div>
+        <div className="grid gap-4 xl:grid-cols-2">
+          {references.map((reference) => (
+            <DesignReferenceCard key={reference.id} reference={reference} />
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-2">
+        <article className="rounded-xl border border-zinc-200 bg-white shadow-sm">
+          <div className="border-b border-zinc-100 px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
+              Wireframes
+            </p>
+            <h3 className="mt-1 font-bold text-zinc-950">
+              화면 구조와 정보 우선순위
+            </h3>
+          </div>
+          <ul>
+            {wireframes.map((wireframe) => (
+              <DesignArtifactRow key={wireframe.id} item={wireframe} />
+            ))}
+          </ul>
+        </article>
+
+        <article className="rounded-xl border border-zinc-200 bg-white shadow-sm">
+          <div className="border-b border-zinc-100 px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
+              Storyboards
+            </p>
+            <h3 className="mt-1 font-bold text-zinc-950">
+              사용자 흐름과 handoff 기준
+            </h3>
+          </div>
+          <ul>
+            {storyboards.map((storyboard) => (
+              <DesignArtifactRow key={storyboard.id} item={storyboard} />
+            ))}
+          </ul>
+        </article>
+      </section>
+    </div>
+  );
+}
+
 function AppsSection({ apps }: { apps: ProcessApp[] }) {
   return (
     <section className="grid gap-4 lg:grid-cols-2">
@@ -2487,6 +2670,14 @@ export default function App() {
 
         {activeSection === "changes" && (
           <PlanningChangesSection changes={status.planningChanges} />
+        )}
+
+        {activeSection === "design" && (
+          <DesignSection
+            references={status.designReferences}
+            wireframes={status.wireframes}
+            storyboards={status.storyboards}
+          />
         )}
 
         {activeSection === "guide" && <GuideSection />}

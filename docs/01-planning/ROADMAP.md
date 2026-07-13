@@ -20,6 +20,7 @@
 | **v0.10** | 대시보드 문서 뷰어 + 서비스 이용 가이드 | ✅ |
 | **v0.11** | 운영자 관점 사이드 메뉴 + Overview UX 고도화 | ✅ |
 | **v0.12** | 검색/접힘 사이드바 + Quick jump + 콘솔형 헤더 UI 고급화 | ✅ |
+| **v0.13** | Design OS: 레퍼런스 + 와이어프레임 + 스토리보드 + Design 메뉴 | ✅ |
 | **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
 
 ## 전체 타임라인
@@ -27,7 +28,7 @@
 ```text
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
-S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX
+S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS
 ```
 
 ---
@@ -56,7 +57,8 @@ S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11
 | D1-2 | 화면 스펙 12종 | `screens/*.md` | ✅ |
 | D1-3 | DS 토큰·컴포넌트 매핑 | `DESIGN_SYSTEM.md` | ✅ |
 | D1-4 | Claude Design 착수 | [CLAUDE_DESIGN.md](./CLAUDE_DESIGN.md) | ✅ |
-| D1-5 | **P1→P2 Gate** | 12화면 프로토타입 + DS 매핑 | ✅ |
+| D1-5 | Design OS | `DESIGN_OS.md` + references/wireframes/storyboards | ✅ |
+| D1-6 | **P1→P2 Gate** | 12화면 프로토타입 + DS 매핑 | ✅ |
 
 **병행:** 코드 스펙(`screens/`)으로 개발 착수 가능. Figma는 보조 — [FIGMA.md](../02-design/FIGMA.md).
 
@@ -76,7 +78,7 @@ S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11
 | F-09 | Search · About | — | P1 | ✅ |
 | F-10 | 프로세스 대시보드 | — | P0 | ✅ |
 
-**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계, 증거 자동화, 시간 단위 Delivery Metrics, snapshot trend, 문서 뷰어/이용 가이드, 운영자 UX, 프리미엄 대시보드 UX 완료
+**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계, 증거 자동화, 시간 단위 Delivery Metrics, snapshot trend, 문서 뷰어/이용 가이드, 운영자 UX, 프리미엄 대시보드 UX, Design OS 완료
 
 ---
 
@@ -208,6 +210,14 @@ Week 1
 - 현재 섹션, sprint, version, updated date를 보여주는 콘솔형 헤더 적용
 - Atlassian, IBM Carbon, Material 계열 운영 콘솔 내비게이션 원칙을 PROCESS_DASHBOARD 문서에 기록
 
+### Sprint S15 — Design OS
+
+- `docs/02-design/DESIGN_OS.md` 디자인 운영 허브 추가
+- `REFERENCES.md`에 Atlassian, Carbon, Polaris, GOV.UK 차용점 기록
+- `wireframes/README.md`와 `storyboards/README.md`를 산출물로 등록
+- `status.json`에 `designReferences`, `wireframes`, `storyboards` 추가
+- process-dashboard `디자인` 메뉴 추가
+
 ---
 
 ## 의존성 그래프
@@ -246,7 +256,8 @@ flowchart LR
 15. ✅ v0.10: 문서 뷰어 + 서비스 이용 가이드
 16. ✅ v0.11: 운영자 UX 고도화
 17. ✅ v0.12: 프리미엄 대시보드 UX 고도화
-18. ⚪ v1.0 후보: 문서 검색, guided workflow, incident/MTTR 기록 + PR review lead time
+18. ✅ v0.13: Design OS 산출물 체계
+19. ⚪ v1.0 후보: 문서 검색, guided workflow, incident/MTTR 기록 + PR review lead time
 
 ---
 
@@ -263,3 +274,5 @@ flowchart LR
 | 2026-07-13 | v0.9 — Metrics snapshot 저장 + 추세 그래프 |
 | 2026-07-13 | v0.10 — 대시보드 문서 뷰어 + 서비스 이용 가이드 |
 | 2026-07-13 | v0.11 — 운영자 관점 사이드 메뉴 + Overview UX 고도화 |
+| 2026-07-13 | v0.12 — 프리미엄 대시보드 UX 고도화 |
+| 2026-07-13 | v0.13 — Design OS 산출물 체계 |

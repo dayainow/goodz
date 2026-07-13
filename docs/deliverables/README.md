@@ -33,6 +33,10 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-24 | P2 | User Manual + In-dashboard Docs Viewer | [USER_MANUAL.md](../00-process/USER_MANUAL.md) | PM/Engineering | 완료 |
 | D-25 | P2 | Operator UX | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Engineering | 완료 |
 | D-26 | P2 | Premium Dashboard UX | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Engineering | 완료 |
+| D-27 | P1 | Design OS | [DESIGN_OS.md](../02-design/DESIGN_OS.md) | Product/Design | 완료 |
+| D-28 | P1 | Design Reference Board | [REFERENCES.md](../02-design/REFERENCES.md) | Product/Design | 완료 |
+| D-29 | P1 | Wireframe Registry | [wireframes/README.md](../02-design/wireframes/README.md) | Product/Design | 완료 |
+| D-30 | P1 | Storyboard Registry | [storyboards/README.md](../02-design/storyboards/README.md) | Product/Design | 완료 |
 
 ## 운영 규칙
 

@@ -38,6 +38,8 @@ const ciStatuses = new Set(["success", "failed", "running", "pending"]);
 const smokeStatuses = new Set(["passed", "failed", "pending", "not_required"]);
 const approvalStatuses = new Set(["approved", "requested", "changes_requested"]);
 const approvalTypes = new Set(["phase_gate", "sprint", "deliverable", "change", "release"]);
+const designReferenceCategories = new Set(["foundation", "component", "pattern", "commerce", "accessibility"]);
+const wireframeFidelities = new Set(["low", "mid", "high"]);
 
 assert(status.version >= 3, "status.version must be >= 3");
 assert(typeof status.systemVersion === "string", "systemVersion is required");
@@ -46,12 +48,17 @@ assertArray(status.intakes, "intakes");
 assertArray(status.deliverables, "deliverables");
 assertArray(status.approvals, "approvals");
 assertArray(status.planningChanges, "planningChanges");
+assertArray(status.designReferences, "designReferences");
+assertArray(status.wireframes, "wireframes");
+assertArray(status.storyboards, "storyboards");
 assertArray(status.traceLinks, "traceLinks");
 
 const intakes = new Set(status.intakes.map((item) => item.id));
 const changes = new Set(status.planningChanges.map((item) => item.id));
 const deliverables = new Set(status.deliverables.map((item) => item.id));
 const approvals = new Set(status.approvals.map((item) => item.id));
+const designReferences = new Set(status.designReferences.map((item) => item.id));
+const wireframes = new Set(status.wireframes.map((item) => item.id));
 
 for (const phase of status.phases) {
   assert(itemStatuses.has(phase.status), `${phase.id} has invalid status`);
@@ -78,6 +85,38 @@ for (const change of status.planningChanges) {
   for (const doc of change.targetDocs) {
     assertDocExists(doc, `${change.id}.targetDocs`);
   }
+}
+
+for (const reference of status.designReferences) {
+  assert(designReferenceCategories.has(reference.category), `${reference.id} has invalid design reference category`);
+  assert(itemStatuses.has(reference.status), `${reference.id} has invalid status`);
+  assert(typeof reference.url === "string" && reference.url.startsWith("https://"), `${reference.id} url must be https`);
+  assertArray(reference.takeaways, `${reference.id}.takeaways`);
+  assertArray(reference.applyTo, `${reference.id}.applyTo`);
+  assert(reference.takeaways.length > 0, `${reference.id} needs at least one takeaway`);
+  assert(reference.applyTo.length > 0, `${reference.id} needs at least one applyTo item`);
+  assertDocExists(reference.doc, reference.id);
+}
+
+for (const wireframe of status.wireframes) {
+  assert(wireframeFidelities.has(wireframe.fidelity), `${wireframe.id} has invalid fidelity`);
+  assert(itemStatuses.has(wireframe.status), `${wireframe.id} has invalid status`);
+  assertArray(wireframe.references, `${wireframe.id}.references`);
+  for (const id of wireframe.references) {
+    assert(designReferences.has(id), `${wireframe.id} references missing design reference ${id}`);
+  }
+  assertDocExists(wireframe.doc, wireframe.id);
+}
+
+for (const storyboard of status.storyboards) {
+  assert(itemStatuses.has(storyboard.status), `${storyboard.id} has invalid status`);
+  assertArray(storyboard.steps, `${storyboard.id}.steps`);
+  assertArray(storyboard.linkedWireframes, `${storyboard.id}.linkedWireframes`);
+  assert(storyboard.steps.length > 0, `${storyboard.id} needs at least one step`);
+  for (const id of storyboard.linkedWireframes) {
+    assert(wireframes.has(id), `${storyboard.id} references missing wireframe ${id}`);
+  }
+  assertDocExists(storyboard.doc, storyboard.id);
 }
 
 for (const approval of status.approvals) {
