@@ -9,7 +9,10 @@ import type {
 import { addCartItem, buildCartView, getCart } from "./data/cart.js";
 import { checkout } from "./data/checkout.js";
 import { createProduct, getProductById, listProducts } from "./data/products.js";
-import { loadProcessStatus } from "./data/processStatus.js";
+import {
+  loadProcessMetricSnapshots,
+  loadProcessStatus,
+} from "./data/processStatus.js";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 4000;
@@ -34,6 +37,16 @@ app.get("/api/process/status", (_req, res) => {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to load process status";
+    res.status(500).json({ message });
+  }
+});
+
+app.get("/api/process/metrics-snapshots", (_req, res) => {
+  try {
+    res.json(loadProcessMetricSnapshots());
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to load metric snapshots";
     res.status(500).json({ message });
   }
 });

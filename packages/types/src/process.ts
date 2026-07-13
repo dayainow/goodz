@@ -169,6 +169,39 @@ export interface ProcessTraceLink {
   nextAction: string;
 }
 
+export interface ProcessMetricSnapshot {
+  id: string;
+  capturedAt: string;
+  source: {
+    systemVersion: string;
+    statusUpdatedAt: string;
+    headSha?: string;
+  };
+  totals: {
+    traceCount: number;
+    linkedTraceCount: number;
+    releasedTraceCount: number;
+    evidenceIssues: number;
+  };
+  delivery: {
+    deploymentFrequency: number;
+    leadTimeHours: number | null;
+    ciSuccessRate: number | null;
+    changeFailureRate: number;
+    smokePassRate: number | null;
+    traceCoverage: number;
+    evidenceCompleteness: number;
+    mttrHours: number | null;
+  };
+  notes?: string;
+}
+
+export interface ProcessMetricSnapshotsFile {
+  version: number;
+  updatedAt: string;
+  snapshots: ProcessMetricSnapshot[];
+}
+
 export interface ProcessStatus {
   version: number;
   updatedAt: string;

@@ -10,9 +10,11 @@ Phase Gate·Sprint·기획 입력·산출물·기능 백로그·개발 증거를
 ## 아키텍처
 
 ```text
-docs/00-process/status.json     ← SSOT (수동·에이전트 갱신)
+docs/00-process/status.json              ← SSOT (수동·에이전트 갱신)
+docs/00-process/metrics-snapshots.json   ← Metrics trend snapshot
         │
         ▼ GET /api/process/status
+        ▼ GET /api/process/metrics-snapshots
 api-server (:4000)
         │
         ▼ fetch
@@ -22,6 +24,7 @@ process-dashboard (:5180)       ← 모니터링 UI
 | 레이어 | 역할 |
 |--------|------|
 | `status.json` | Phase·Sprint·기획 입력·기획 변경·산출물·DACI 승인·추적 링크·기능·앱 목록의 기계 판독 가능 상태 |
+| `metrics-snapshots.json` | Delivery Metrics 추세를 위한 저장 시점별 기준점 |
 | `@goodz/types` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
 | `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Intake/Change/Deliverable/DACI Approval/Evidence/Metrics/Trace/Phase/Queue/Feature/App 관리 뷰 |
@@ -37,6 +40,7 @@ API 단독 확인:
 
 ```bash
 curl http://localhost:4000/api/process/status
+curl http://localhost:4000/api/process/metrics-snapshots
 ```
 
 ## status.json 갱신 규칙
@@ -64,7 +68,7 @@ curl http://localhost:4000/api/process/status
 - **산출물** — PRD·화면설계·API·QA·릴리스 문서 레지스트리
 - **승인** — Driver·Approver·Contributors·Informed·승인 기준·결정 로그
 - **증거** — Issue/PR/Commit/CI/승인/릴리즈·스모크 누락 경고
-- **지표** — DORA 원형 지표, Goodz delivery health, 요청→커밋→CI→증거 시간
+- **지표** — DORA 원형 지표, Goodz delivery health, snapshot trend, 요청→커밋→CI→증거 시간
 - **추적** — 기획·변경·산출물·승인과 Issue/PR/Commit/CI/Release 증거 연결
 - **Phase Gate** — P0–P4 패널 + 문서 경로
 - **작업 큐** — 차단/진행/대기/완료 상태별 항목

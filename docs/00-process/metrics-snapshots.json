@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-13T02:17:38.055Z",
+  "snapshots": [
+    {
+      "id": "MS-20260713T021142Z",
+      "capturedAt": "2026-07-13T02:11:42.362Z",
+      "source": {
+        "systemVersion": "v0.8",
+        "statusUpdatedAt": "2026-07-13",
+        "headSha": "8534ed5"
+      },
+      "totals": {
+        "traceCount": 7,
+        "linkedTraceCount": 7,
+        "releasedTraceCount": 0,
+        "evidenceIssues": 13
+      },
+      "delivery": {
+        "deploymentFrequency": 1,
+        "leadTimeHours": 24,
+        "ciSuccessRate": 87.5,
+        "changeFailureRate": 0,
+        "smokePassRate": 100,
+        "traceCoverage": 100,
+        "evidenceCompleteness": 73.47,
+        "mttrHours": null
+      },
+      "notes": "Generated from docs/00-process/status.json"
+    },
+    {
+      "id": "MS-20260713T021738Z",
+      "capturedAt": "2026-07-13T02:17:38.055Z",
+      "source": {
+        "systemVersion": "v0.9",
+        "statusUpdatedAt": "2026-07-13",
+        "headSha": "8534ed5"
+      },
+      "totals": {
+        "traceCount": 8,
+        "linkedTraceCount": 7,
+        "releasedTraceCount": 0,
+        "evidenceIssues": 17
+      },
+      "delivery": {
+        "deploymentFrequency": 1,
+        "leadTimeHours": 24,
+        "ciSuccessRate": 87.5,
+        "changeFailureRate": 0,
+        "smokePassRate": 100,
+        "traceCoverage": 87.5,
+        "evidenceCompleteness": 69.64,
+        "mttrHours": null
+      },
+      "notes": "Generated from docs/00-process/status.json"
+    }
+  ]
+}

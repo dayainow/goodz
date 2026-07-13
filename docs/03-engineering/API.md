@@ -100,6 +100,23 @@ Base URL: `http://localhost:4000` (개발)
 | `features` | 레퍼런스 기능 백로그 |
 | `apps` | 로컬 앱·서비스 링크 |
 
+### `GET /api/process/metrics-snapshots`
+
+**Response:** `ProcessMetricSnapshotsFile` (`@goodz/types`)
+
+Delivery Metrics 추세용 snapshot — `docs/00-process/metrics-snapshots.json`을 로드합니다.
+
+**소비자:** `process-dashboard` (:5180) Metrics 메뉴
+
+**주요 필드**
+
+| 필드 | 설명 |
+|------|------|
+| `snapshots[].capturedAt` | snapshot 저장 시각 |
+| `snapshots[].source` | 기준 systemVersion, status updatedAt, Git HEAD |
+| `snapshots[].totals` | trace 수, linked/released 수, evidence issue 수 |
+| `snapshots[].delivery` | lead time, CI success, change failure, smoke pass, trace coverage, evidence completeness |
+
 ## 변경 절차
 
 1. `packages/types` 수정

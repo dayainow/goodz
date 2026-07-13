@@ -4,7 +4,11 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const statusPath = resolve(root, "docs/00-process/status.json");
+const metricsSnapshotsPath = resolve(root, "docs/00-process/metrics-snapshots.json");
 const status = JSON.parse(readFileSync(statusPath, "utf8"));
+const metricsSnapshots = existsSync(metricsSnapshotsPath)
+  ? JSON.parse(readFileSync(metricsSnapshotsPath, "utf8"))
+  : null;
 
 function assert(condition, message) {
   if (!condition) {
@@ -157,6 +161,32 @@ const traceIds = new Set(status.traceLinks.map((item) => item.id));
 for (const approval of status.approvals) {
   for (const id of approval.traceLinkIds) {
     assert(traceIds.has(id), `${approval.id} references missing trace link ${id}`);
+  }
+}
+
+if (metricsSnapshots) {
+  assert(metricsSnapshots.version >= 1, "metricsSnapshots.version must be >= 1");
+  assertOptionalTimestamp(metricsSnapshots.updatedAt, "metricsSnapshots.updatedAt");
+  assertArray(metricsSnapshots.snapshots, "metricsSnapshots.snapshots");
+
+  for (const snapshot of metricsSnapshots.snapshots) {
+    assert(typeof snapshot.id === "string" && snapshot.id.startsWith("MS-"), `${snapshot.id} invalid snapshot id`);
+    assertOptionalTimestamp(snapshot.capturedAt, `${snapshot.id}.capturedAt`);
+    assert(snapshot.source && typeof snapshot.source.systemVersion === "string", `${snapshot.id}.source.systemVersion is required`);
+    assertOptionalTimestamp(snapshot.source.statusUpdatedAt, `${snapshot.id}.source.statusUpdatedAt`);
+    assert(snapshot.totals && typeof snapshot.totals.traceCount === "number", `${snapshot.id}.totals.traceCount is required`);
+    assert(snapshot.delivery && typeof snapshot.delivery.deploymentFrequency === "number", `${snapshot.id}.delivery.deploymentFrequency is required`);
+
+    for (const field of ["leadTimeHours", "ciSuccessRate", "smokePassRate", "mttrHours"]) {
+      assert(
+        snapshot.delivery[field] === null || typeof snapshot.delivery[field] === "number",
+        `${snapshot.id}.delivery.${field} must be number or null`,
+      );
+    }
+
+    for (const field of ["changeFailureRate", "traceCoverage", "evidenceCompleteness"]) {
+      assert(typeof snapshot.delivery[field] === "number", `${snapshot.id}.delivery.${field} must be number`);
+    }
   }
 }
 

@@ -7,6 +7,7 @@ import type {
   ProcessDeliverableType,
   ProcessIntake,
   ProcessItemStatus,
+  ProcessMetricSnapshot,
   ProcessPhase,
   ProcessPlanningChange,
   ProcessPlanningChangeStatus,
@@ -15,7 +16,7 @@ import type {
   ProcessTraceReferenceStatus,
   ProcessTraceStatus,
 } from "@goodz/types";
-import { fetchProcessStatus } from "./api/process";
+import { fetchProcessMetricSnapshots, fetchProcessStatus } from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
 import { ProgressBar, StatusBadge } from "./components/StatusBadge";
 
@@ -1123,7 +1124,243 @@ function EvidenceSection({ issues }: { issues: EvidenceIssue[] }) {
   );
 }
 
-function DeliveryMetricsSection({ metrics }: { metrics: DeliveryMetrics }) {
+type MetricTrendKey =
+  | "leadTimeHours"
+  | "ciSuccessRate"
+  | "evidenceCompleteness"
+  | "traceCoverage";
+
+interface MetricTrendDefinition {
+  key: MetricTrendKey;
+  label: string;
+  unit: string;
+  summary: string;
+  format: (value: number | null) => string;
+}
+
+const METRIC_TREND_DEFINITIONS: MetricTrendDefinition[] = [
+  {
+    key: "leadTimeHours",
+    label: "Lead time",
+    unit: "hours",
+    summary: "요청에서 smoke/release 증거까지 평균 시간",
+    format: formatDuration,
+  },
+  {
+    key: "ciSuccessRate",
+    label: "CI success",
+    unit: "%",
+    summary: "연결된 GitHub Actions run 성공률",
+    format: formatPercent,
+  },
+  {
+    key: "evidenceCompleteness",
+    label: "Evidence",
+    unit: "%",
+    summary: "trace별 증거 누락을 반영한 완성도",
+    format: formatPercent,
+  },
+  {
+    key: "traceCoverage",
+    label: "Coverage",
+    unit: "%",
+    summary: "linked/released trace 비율",
+    format: formatPercent,
+  },
+];
+
+function MetricTrendChart({
+  snapshots,
+  definition,
+}: {
+  snapshots: ProcessMetricSnapshot[];
+  definition: MetricTrendDefinition;
+}) {
+  const points = snapshots
+    .map((snapshot) => ({
+      id: snapshot.id,
+      value: snapshot.delivery[definition.key],
+    }))
+    .filter((point): point is { id: string; value: number } =>
+      typeof point.value === "number",
+    );
+  const latest = points.at(-1);
+  const width = 520;
+  const height = 160;
+  const paddingX = 34;
+  const paddingY = 24;
+  const values = points.map((point) => point.value);
+  const minValue = Math.min(0, ...values);
+  const maxValue = Math.max(1, ...values);
+  const range = Math.max(maxValue - minValue, 1);
+  const toX = (index: number) =>
+    points.length === 1
+      ? width / 2
+      : paddingX +
+        (index * (width - paddingX * 2)) / Math.max(points.length - 1, 1);
+  const toY = (value: number) =>
+    height - paddingY - ((value - minValue) / range) * (height - paddingY * 2);
+  const linePoints = points
+    .map((point, index) => `${toX(index)},${toY(point.value)}`)
+    .join(" ");
+
+  return (
+    <article className="rounded-lg border border-zinc-200 bg-white p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            {definition.label}
+          </p>
+          <p className="mt-1 text-sm leading-5 text-zinc-500">
+            {definition.summary}
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-2xl font-bold text-zinc-950">
+            {latest ? definition.format(latest.value) : "N/A"}
+          </p>
+          <p className="text-xs font-semibold text-zinc-400">
+            {definition.unit}
+          </p>
+        </div>
+      </div>
+      {points.length > 0 ? (
+        <div className="mt-5 overflow-hidden rounded-md border border-zinc-100 bg-zinc-50">
+          <svg
+            role="img"
+            aria-label={`${definition.label} trend`}
+            viewBox={`0 0 ${width} ${height}`}
+            className="h-44 w-full"
+            preserveAspectRatio="none"
+          >
+            <line
+              x1={paddingX}
+              y1={height - paddingY}
+              x2={width - paddingX}
+              y2={height - paddingY}
+              stroke="#d4d4d8"
+              strokeWidth="1"
+            />
+            <line
+              x1={paddingX}
+              y1={paddingY}
+              x2={paddingX}
+              y2={height - paddingY}
+              stroke="#e4e4e7"
+              strokeWidth="1"
+            />
+            <polyline
+              points={linePoints}
+              fill="none"
+              stroke="#7c3aed"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="3"
+            />
+            {points.map((point, index) => (
+              <circle
+                key={point.id}
+                cx={toX(index)}
+                cy={toY(point.value)}
+                r="4"
+                fill="#7c3aed"
+                stroke="#ffffff"
+                strokeWidth="2"
+              />
+            ))}
+          </svg>
+        </div>
+      ) : (
+        <div className="mt-5 rounded-md border border-dashed border-zinc-200 bg-zinc-50 px-4 py-8 text-sm text-zinc-500">
+          snapshot 데이터가 아직 없습니다.
+        </div>
+      )}
+    </article>
+  );
+}
+
+function MetricSnapshotsSection({
+  snapshots,
+}: {
+  snapshots: ProcessMetricSnapshot[];
+}) {
+  const latestSnapshots = snapshots.slice(-5).reverse();
+
+  return (
+    <section className="rounded-lg border border-zinc-200 bg-white p-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h3 className="font-bold text-zinc-950">Snapshot trend</h3>
+          <p className="mt-1 text-sm leading-6 text-zinc-500">
+            pnpm snapshot:metrics로 저장한 지표 이력을 기준으로 추세를 봅니다.
+          </p>
+        </div>
+        <p className="rounded-full border border-zinc-200 px-3 py-1 text-xs font-semibold text-zinc-500">
+          {snapshots.length} snapshots
+        </p>
+      </div>
+      <div className="mt-5 grid gap-4 xl:grid-cols-2">
+        {METRIC_TREND_DEFINITIONS.map((definition) => (
+          <MetricTrendChart
+            key={definition.key}
+            snapshots={snapshots}
+            definition={definition}
+          />
+        ))}
+      </div>
+      <div className="mt-5 overflow-hidden rounded-lg border border-zinc-200">
+        <div className="grid bg-zinc-50 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 lg:grid-cols-[190px_120px_120px_120px_120px_1fr]">
+          <span>Captured</span>
+          <span>Lead</span>
+          <span>CI</span>
+          <span>Evidence</span>
+          <span>Coverage</span>
+          <span>Source</span>
+        </div>
+        <ul>
+          {latestSnapshots.map((snapshot) => (
+            <li
+              key={snapshot.id}
+              className="grid gap-2 border-t border-zinc-100 px-4 py-3 text-sm lg:grid-cols-[190px_120px_120px_120px_120px_1fr] lg:items-center"
+            >
+              <span className="font-mono text-xs text-zinc-500">
+                {formatTimestamp(snapshot.capturedAt)}
+              </span>
+              <span className="font-semibold text-zinc-800">
+                {formatDuration(snapshot.delivery.leadTimeHours)}
+              </span>
+              <span className="font-semibold text-zinc-800">
+                {formatPercent(snapshot.delivery.ciSuccessRate)}
+              </span>
+              <span className="font-semibold text-zinc-800">
+                {formatPercent(snapshot.delivery.evidenceCompleteness)}
+              </span>
+              <span className="font-semibold text-zinc-800">
+                {formatPercent(snapshot.delivery.traceCoverage)}
+              </span>
+              <span className="text-xs text-zinc-500">
+                {snapshot.source.systemVersion} · {snapshot.source.headSha ?? "no sha"}
+              </span>
+            </li>
+          ))}
+          {latestSnapshots.length === 0 && (
+            <li className="border-t border-zinc-100 px-4 py-6 text-sm text-zinc-500">
+              아직 저장된 metrics snapshot이 없습니다.
+            </li>
+          )}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+function DeliveryMetricsSection({
+  metrics,
+  snapshots,
+}: {
+  metrics: DeliveryMetrics;
+  snapshots: ProcessMetricSnapshot[];
+}) {
   return (
     <div className="space-y-6">
       <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
@@ -1152,6 +1389,8 @@ function DeliveryMetricsSection({ metrics }: { metrics: DeliveryMetrics }) {
           </article>
         ))}
       </section>
+
+      <MetricSnapshotsSection snapshots={snapshots} />
 
       <section className="grid gap-4 lg:grid-cols-3">
         <article className="rounded-lg border border-zinc-200 bg-white p-5">
@@ -1557,6 +1796,7 @@ function AppsSection({ apps }: { apps: ProcessApp[] }) {
 
 export default function App() {
   const [status, setStatus] = useState<ProcessStatus | null>(null);
+  const [metricSnapshots, setMetricSnapshots] = useState<ProcessMetricSnapshot[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<SectionId>("overview");
@@ -1564,8 +1804,12 @@ export default function App() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const data = await fetchProcessStatus();
+      const [data, snapshots] = await Promise.all([
+        fetchProcessStatus(),
+        fetchProcessMetricSnapshots(),
+      ]);
       setStatus(data);
+      setMetricSnapshots(snapshots.snapshots);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
@@ -1692,7 +1936,10 @@ export default function App() {
         )}
 
         {activeSection === "metrics" && (
-          <DeliveryMetricsSection metrics={deliveryMetrics} />
+          <DeliveryMetricsSection
+            metrics={deliveryMetrics}
+            snapshots={metricSnapshots}
+          />
         )}
 
         {activeSection === "traceability" && (

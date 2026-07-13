@@ -17,6 +17,8 @@
     "check:process": "node scripts/validate-process.mjs",
     "sync:github-trace": "node scripts/sync-github-trace.mjs",
     "sync:github-trace:check": "node scripts/sync-github-trace.mjs --check",
+    "snapshot:metrics": "node scripts/snapshot-metrics.mjs",
+    "snapshot:metrics:check": "node scripts/snapshot-metrics.mjs --check",
     "smoke:staging": "node scripts/smoke-staging.mjs",
     "verify": "pnpm check:workspace && pnpm check:deps && pnpm check:process && turbo build && turbo lint"
   },

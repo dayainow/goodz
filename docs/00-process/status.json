@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.8",
+  "systemVersion": "v0.9",
   "sprint": {
-    "id": "S10",
-    "name": "시스템 v0.8 — Timestamp Metrics",
+    "id": "S11",
+    "name": "시스템 v0.9 — Metrics Snapshots",
     "status": "done",
-    "goal": "GitHub run/PR timestamp를 traceLinks에 저장하고 요청→커밋→CI→증거 시간을 계산"
+    "goal": "Delivery Metrics snapshot을 저장하고 프로세스 대시보드에서 추세를 확인"
   },
   "phases": [
     {
@@ -143,6 +143,12 @@
         {
           "id": "p2-timestamp-metrics",
           "label": "GitHub timestamp 기반 metrics",
+          "status": "done",
+          "doc": "docs/00-process/METRICS.md"
+        },
+        {
+          "id": "p2-metrics-snapshots",
+          "label": "Metrics snapshot 추세",
           "status": "done",
           "doc": "docs/00-process/METRICS.md"
         },
@@ -303,6 +309,15 @@
       "phase": "P2",
       "doc": "docs/00-process/METRICS.md",
       "nextAction": "Metrics snapshot과 incident/MTTR 기록으로 확장"
+    },
+    {
+      "id": "IN-008",
+      "title": "Metrics Snapshot Trend v0.9",
+      "source": "사용자 요청 · metrics snapshot 저장 + 추세 그래프",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/00-process/METRICS.md",
+      "nextAction": "incident/MTTR 기록과 snapshot 비교 기준 고도화"
     }
   ],
   "deliverables": [
@@ -525,6 +540,16 @@
       "doc": "docs/00-process/METRICS.md",
       "owner": "Engineering/DevOps",
       "summary": "GitHub commit/CI/PR timestamp를 traceLinks에 저장하고 단계별 리드타임을 시간 단위로 계산"
+    },
+    {
+      "id": "D-23",
+      "title": "Metrics Snapshot Trend",
+      "type": "ops",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/METRICS.md",
+      "owner": "PM/Engineering/DevOps",
+      "summary": "metrics-snapshots.json에 Delivery Metrics 기준점을 저장하고 대시보드에서 추세 그래프를 표시"
     }
   ],
   "approvals": [
@@ -738,6 +763,36 @@
       "traceLinkIds": [
         "TL-007"
       ]
+    },
+    {
+      "id": "AP-008",
+      "target": "S11 Metrics Snapshots v0.9",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": [
+        "PM",
+        "Engineering",
+        "DevOps"
+      ],
+      "informed": [
+        "Future Goodz operators"
+      ],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "Delivery Metrics snapshot을 JSON으로 저장하고 대시보드에서 추세 그래프를 제공",
+      "criteria": [
+        "pnpm snapshot:metrics로 snapshot 파일을 생성할 수 있음",
+        "process API가 metrics snapshot을 제공함",
+        "대시보드 Metrics 메뉴에서 snapshot trend를 확인할 수 있음",
+        "check:process가 snapshot schema를 검증함"
+      ],
+      "summary": "Metrics snapshot 저장과 추세 그래프 고도화 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": [
+        "TL-008"
+      ]
     }
   ],
   "planningChanges": [
@@ -856,6 +911,22 @@
       "doc": "docs/00-process/METRICS.md",
       "summary": "GitHub commit/CI/PR timestamp를 traceLinks에 저장하고 요청→커밋→CI→smoke/release 시간을 계산",
       "decision": "v0.8에서 시간 단위 지표를 기본값으로 사용하고 날짜-only 기록은 fallback으로 처리"
+    },
+    {
+      "id": "CR-008",
+      "title": "Metrics snapshot 저장과 추세 그래프",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/METRICS.md",
+        "docs/00-process/metrics-snapshots.json",
+        "docs/00-process/status.json",
+        "apps/process-dashboard/src/App.tsx"
+      ],
+      "doc": "docs/00-process/METRICS.md",
+      "summary": "Delivery Metrics snapshot을 저장하고 대시보드에서 지표 추세를 그래프로 표시",
+      "decision": "v0.9에서 snapshot 파일을 SSOT 보조 데이터로 두고 추세 UI를 Metrics 메뉴에 추가"
     }
   ],
   "traceLinks": [
@@ -1228,6 +1299,39 @@
       },
       "summary": "GitHub timestamp를 traceLinks에 저장하고 Metrics 대시보드에서 단계별 시간을 계산하도록 고도화",
       "nextAction": "metrics snapshot 저장과 trend 분석으로 확장"
+    },
+    {
+      "id": "TL-008",
+      "title": "Metrics Snapshot Trend v0.9",
+      "status": "partial",
+      "sourceIds": [
+        "IN-008"
+      ],
+      "changeIds": [
+        "CR-008"
+      ],
+      "deliverableIds": [
+        "D-23"
+      ],
+      "approvalIds": [
+        "AP-008"
+      ],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "metrics-snapshots.json에 지표 기준점을 저장하고 process-dashboard Metrics 메뉴에서 추세 그래프를 표시",
+      "nextAction": "커밋과 GitHub Actions CI run을 연결"
     }
   ],
   "features": [
@@ -1294,6 +1398,11 @@
     {
       "id": "F-13",
       "label": "Timestamp Metrics",
+      "status": "done"
+    },
+    {
+      "id": "F-14",
+      "label": "Metrics Snapshots",
       "status": "done"
     }
   ],

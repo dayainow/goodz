@@ -71,6 +71,8 @@ export type {
   ProcessDeliverableType,
   ProcessIntake,
   ProcessItemStatus,
+  ProcessMetricSnapshot,
+  ProcessMetricSnapshotsFile,
   ProcessPhase,
   ProcessPlanningChange,
   ProcessPlanningChangeStatus,

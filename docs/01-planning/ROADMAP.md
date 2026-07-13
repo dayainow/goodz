@@ -16,6 +16,7 @@
 | **v0.6** | GitHub Issue/PR 자동 연결 + 대시보드 누락 경고 + Release/Smoke 증거 | ✅ |
 | **v0.7** | DORA/Delivery Metrics 베이스라인 + 대시보드 지표 메뉴 | ✅ |
 | **v0.8** | GitHub timestamp 기반 시간 단위 Delivery Metrics | ✅ |
+| **v0.9** | Metrics snapshot 저장 + 대시보드 추세 그래프 | ✅ |
 | **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
 
 ## 전체 타임라인
@@ -23,7 +24,7 @@
 ```text
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
-S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ⚪ Metrics Snapshots
+S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots
 ```
 
 ---
@@ -72,7 +73,7 @@ S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11
 | F-09 | Search · About | — | P1 | ✅ |
 | F-10 | 프로세스 대시보드 | — | P0 | ✅ |
 
-**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계, 증거 자동화, 시간 단위 Delivery Metrics 완료
+**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계, 증거 자동화, 시간 단위 Delivery Metrics, snapshot trend 완료
 
 ---
 
@@ -176,6 +177,13 @@ Week 1
 - 날짜-only 기록 fallback 유지
 - 다음 단계의 MTTR, PR review lead time, metrics snapshot 기반 마련
 
+### Sprint S11 — Metrics Snapshots
+
+- `pnpm snapshot:metrics`로 Delivery Metrics 기준점 저장
+- `docs/00-process/metrics-snapshots.json` snapshot SSOT 추가
+- process-dashboard `지표` 메뉴에서 snapshot trend 그래프 표시
+- 다음 단계의 incident/MTTR 기록과 PR review lead time 기반 마련
+
 ---
 
 ## 의존성 그래프
@@ -210,7 +218,8 @@ flowchart LR
 11. ✅ v0.6: GitHub Issue/PR 자동 수집 + 대시보드 누락 경고
 12. ✅ v0.7: DORA/Delivery Metrics 초안
 13. ✅ v0.8: GitHub timestamp 기반 시간 단위 metrics
-14. ⚪ v0.9: Metrics snapshot + incident/MTTR 기록
+14. ✅ v0.9: Metrics snapshot + 추세 그래프
+15. ⚪ v1.0 후보: incident/MTTR 기록 + PR review lead time
 
 ---
 
@@ -224,3 +233,4 @@ flowchart LR
 | 2026-07-13 | v0.6 — GitHub Trace Sync, Evidence Alerts, Release/Smoke 증거 |
 | 2026-07-13 | v0.7 — Delivery Metrics 베이스라인 |
 | 2026-07-13 | v0.8 — GitHub timestamp 기반 시간 단위 metrics |
+| 2026-07-13 | v0.9 — Metrics snapshot 저장 + 추세 그래프 |

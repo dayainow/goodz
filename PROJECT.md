@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S10 Timestamp Metrics v0.8** ✅
+## 현재 스프린트: **S11 Metrics Snapshots v0.9** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -18,7 +18,7 @@
 | **추적 매트릭스** | ✅ [TRACEABILITY](./docs/00-process/TRACEABILITY.md) + CI 증거 |
 | **CI 런타임** | ✅ GitHub Actions Node 24 + 최신 major actions |
 | **증거 자동화** | ✅ [GITHUB_TRACE_SYNC](./docs/00-process/GITHUB_TRACE_SYNC.md) + 대시보드 누락 경고 |
-| **Delivery Metrics** | ✅ [METRICS](./docs/00-process/METRICS.md) + 시간 단위 DORA 베이스라인 |
+| **Delivery Metrics** | ✅ [METRICS](./docs/00-process/METRICS.md) + 시간 단위 DORA 베이스라인 + snapshot trend |
 
 ## 현재 단계
 
@@ -70,6 +70,8 @@
 - [x] S9: 대시보드 지표 메뉴
 - [x] S10: GitHub timestamp sync
 - [x] S10: 요청→커밋→CI→증거 시간 단위 metrics
+- [x] S11: Metrics snapshot 저장
+- [x] S11: 대시보드 지표 추세 그래프
 
 ## 풀 프로세스
 
