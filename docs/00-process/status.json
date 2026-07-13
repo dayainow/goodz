@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.6",
+  "systemVersion": "v0.7",
   "sprint": {
-    "id": "S8",
-    "name": "시스템 v0.6 — GitHub Trace Sync + Evidence Alerts",
+    "id": "S9",
+    "name": "시스템 v0.7 — Delivery Metrics Baseline",
     "status": "done",
-    "goal": "GitHub Issue/PR/CI 증거 자동 수집, 대시보드 누락 경고, 릴리즈·스모크 증거 연결 체계 완성"
+    "goal": "traceLinks, CI run, smoke 증거를 DORA/Delivery Metrics 베이스라인으로 시각화"
   },
   "phases": [
     {
@@ -49,6 +49,7 @@
         { "id": "p2-approval-governance", "label": "DACI 승인 체계", "status": "done", "doc": "docs/00-process/APPROVALS.md" },
         { "id": "p2-github-trace-sync", "label": "GitHub trace 자동 동기화", "status": "done", "doc": "docs/00-process/GITHUB_TRACE_SYNC.md" },
         { "id": "p2-evidence-alerts", "label": "대시보드 증거 누락 경고", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
+        { "id": "p2-delivery-metrics", "label": "Delivery Metrics 대시보드", "status": "done", "doc": "docs/00-process/METRICS.md" },
         { "id": "p2-roadmap-sync", "label": "ROADMAP v0.5 정합성", "status": "done", "doc": "docs/01-planning/ROADMAP.md" },
         { "id": "p2-gate", "label": "P2→P3 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
       ]
@@ -126,6 +127,15 @@
       "phase": "P2",
       "doc": "docs/00-process/GITHUB_TRACE_SYNC.md",
       "nextAction": "DORA/Delivery Metrics 고도화 여부 판단"
+    },
+    {
+      "id": "IN-006",
+      "title": "Delivery Metrics Baseline v0.7",
+      "source": "사용자 요청 · DORA/Delivery Metrics 구현",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/00-process/METRICS.md",
+      "nextAction": "GitHub timestamp와 PR merge time을 수집해 시간 단위 지표로 고도화"
     }
   ],
   "deliverables": [
@@ -328,6 +338,16 @@
       "doc": "docs/04-qa/STAGING_RUNBOOK.md",
       "owner": "DevOps/QA",
       "summary": "traceLinks에 릴리즈 URL과 smoke pass 결과를 배포 증거로 연결하는 규칙"
+    },
+    {
+      "id": "D-21",
+      "title": "Delivery Metrics Baseline",
+      "type": "ops",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/METRICS.md",
+      "owner": "PM/Engineering/DevOps",
+      "summary": "DORA 원형 지표와 Goodz 보조 지표를 traceLinks 기반으로 계산하고 대시보드에서 표시"
     }
   ],
   "approvals": [
@@ -438,6 +458,28 @@
       "summary": "자동 trace sync, evidence alerts, release/smoke evidence 체계 승인",
       "doc": "docs/00-process/APPROVALS.md",
       "traceLinkIds": ["TL-005"]
+    },
+    {
+      "id": "AP-006",
+      "target": "S9 Delivery Metrics Baseline v0.7",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["PM", "Engineering", "DevOps", "QA"],
+      "informed": ["Future Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "traceLinks, CI run, smoke 증거를 기반으로 DORA/Delivery Metrics 베이스라인을 대시보드에 추가",
+      "criteria": [
+        "Metrics 문서가 지표 정의와 한계를 설명",
+        "대시보드가 배포 빈도, 리드타임, CI 성공률, 변경 실패율, MTTR을 표시",
+        "Goodz 보조 지표로 evidence completeness, smoke pass rate, trace coverage를 표시",
+        "trace별 요청일과 증거일, lead time이 확인 가능"
+      ],
+      "summary": "Delivery Metrics 베이스라인과 대시보드 지표 메뉴 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": ["TL-006"]
     }
   ],
   "planningChanges": [
@@ -523,6 +565,23 @@
       "doc": "docs/00-process/GITHUB_TRACE_SYNC.md",
       "summary": "traceLinks의 GitHub 증거 수집을 gh CLI로 자동화하고 대시보드에 증거 누락 경고를 추가",
       "decision": "증거 입력은 자동 수집을 우선하고, 릴리즈 URL 또는 smoke 결과를 배포 증거로 인정"
+    },
+    {
+      "id": "CR-006",
+      "title": "DORA/Delivery Metrics 베이스라인 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/METRICS.md",
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/status.json",
+        "PROJECT.md",
+        "README.md"
+      ],
+      "doc": "docs/00-process/METRICS.md",
+      "summary": "traceLinks, CI run, smoke 증거를 운영 판단 지표로 계산하고 대시보드 Metrics 메뉴에 표시",
+      "decision": "v0.7은 날짜 단위 베이스라인으로 시작하고, 다음 단계에서 GitHub timestamp 기반 시간 단위 지표로 고도화"
     }
   ],
   "traceLinks": [
@@ -726,6 +785,31 @@
       },
       "summary": "GitHub trace 자동 동기화, 대시보드 증거 누락 경고, release/smoke 증거 필드가 커밋·CI green·smoke pass 증거와 연결됨",
       "nextAction": "DORA/Delivery Metrics 초안 검토"
+    },
+    {
+      "id": "TL-006",
+      "title": "Delivery Metrics Baseline v0.7",
+      "status": "partial",
+      "sourceIds": ["IN-006"],
+      "changeIds": ["CR-006"],
+      "deliverableIds": ["D-21"],
+      "approvalIds": ["AP-006"],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "DORA 원형 지표와 Goodz 보조 지표를 traceLinks 기반으로 계산하고 process-dashboard 지표 메뉴에 표시",
+      "nextAction": "커밋과 GitHub Actions CI run을 연결"
     }
   ],
   "features": [
@@ -739,7 +823,8 @@
     { "id": "F-08", "label": "어드민 상품 등록", "status": "done" },
     { "id": "F-09", "label": "Search · About", "status": "done" },
     { "id": "F-10", "label": "프로세스 대시보드", "status": "done" },
-    { "id": "F-11", "label": "증거 누락 경고", "status": "done" }
+    { "id": "F-11", "label": "증거 누락 경고", "status": "done" },
+    { "id": "F-12", "label": "Delivery Metrics", "status": "done" }
   ],
   "apps": [
     { "id": "api-server", "name": "API Server", "port": 4000, "role": "REST · mock · process SSOT", "url": "http://localhost:4000" },

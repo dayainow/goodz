@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S8 GitHub Trace Sync + Evidence Alerts v0.6** ✅
+## 현재 스프린트: **S9 Delivery Metrics Baseline v0.7** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -18,6 +18,7 @@
 | **추적 매트릭스** | ✅ [TRACEABILITY](./docs/00-process/TRACEABILITY.md) + CI 증거 |
 | **CI 런타임** | ✅ GitHub Actions Node 24 + 최신 major actions |
 | **증거 자동화** | ✅ [GITHUB_TRACE_SYNC](./docs/00-process/GITHUB_TRACE_SYNC.md) + 대시보드 누락 경고 |
+| **Delivery Metrics** | ✅ [METRICS](./docs/00-process/METRICS.md) + DORA 베이스라인 |
 
 ## 현재 단계
 
@@ -65,6 +66,8 @@
 - [x] S8: GitHub trace 자동 동기화
 - [x] S8: 대시보드 증거 누락 경고
 - [x] S8: Release/Smoke evidence 연결 규칙
+- [x] S9: Delivery Metrics 베이스라인
+- [x] S9: 대시보드 지표 메뉴
 
 ## 풀 프로세스
 

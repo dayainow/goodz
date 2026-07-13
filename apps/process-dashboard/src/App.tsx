@@ -26,6 +26,7 @@ type SectionId =
   | "deliverables"
   | "approvals"
   | "evidence"
+  | "metrics"
   | "traceability"
   | "phases"
   | "queue"
@@ -39,6 +40,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "deliverables", label: "산출물", eyebrow: "Docs" },
   { id: "approvals", label: "승인", eyebrow: "Approval" },
   { id: "evidence", label: "증거", eyebrow: "Evidence" },
+  { id: "metrics", label: "지표", eyebrow: "Metrics" },
   { id: "traceability", label: "추적", eyebrow: "Trace" },
   { id: "phases", label: "Phase Gate", eyebrow: "P0-P4" },
   { id: "queue", label: "작업 큐", eyebrow: "Tasks" },
@@ -129,6 +131,35 @@ interface EvidenceIssue {
   nextAction: string;
 }
 
+type DeliveryMetricTone = "neutral" | "good" | "watch" | "risk";
+
+interface DeliveryMetricCard {
+  label: string;
+  value: string;
+  unit?: string;
+  tone: DeliveryMetricTone;
+  summary: string;
+}
+
+interface DeliveryTraceRow {
+  id: string;
+  title: string;
+  requestedAt: string;
+  deliveredAt: string;
+  leadTimeDays: number | null;
+  ciStatus: string;
+  smokeStatus: string;
+  evidenceWarnings: number;
+}
+
+interface DeliveryMetrics {
+  cards: DeliveryMetricCard[];
+  traceRows: DeliveryTraceRow[];
+  evidenceCompleteness: number;
+  smokePassRate: number | null;
+  traceCoverage: number;
+}
+
 const EVIDENCE_SEVERITY_LABEL: Record<EvidenceSeverity, string> = {
   high: "필수",
   medium: "권장",
@@ -140,6 +171,38 @@ const EVIDENCE_SEVERITY_CLASS: Record<EvidenceSeverity, string> = {
   medium: "border-amber-200 bg-amber-50 text-amber-700",
   low: "border-sky-200 bg-sky-50 text-sky-700",
 };
+
+const DELIVERY_METRIC_TONE_CLASS: Record<DeliveryMetricTone, string> = {
+  neutral: "border-zinc-200 bg-white text-zinc-950",
+  good: "border-emerald-200 bg-emerald-50 text-emerald-950",
+  watch: "border-amber-200 bg-amber-50 text-amber-950",
+  risk: "border-rose-200 bg-rose-50 text-rose-950",
+};
+
+function parseDate(value?: string) {
+  if (!value) return null;
+  const date = new Date(`${value}T00:00:00`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function diffDays(start?: string, end?: string) {
+  const startDate = parseDate(start);
+  const endDate = parseDate(end);
+  if (!startDate || !endDate) return null;
+  return Math.max(
+    0,
+    Math.round((endDate.getTime() - startDate.getTime()) / 86_400_000),
+  );
+}
+
+function formatPercent(value: number | null) {
+  return value === null ? "N/A" : `${Math.round(value)}%`;
+}
+
+function average(values: number[]) {
+  if (!values.length) return null;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
 
 function buildEvidenceIssues(traces: ProcessTraceLink[]): EvidenceIssue[] {
   return traces.flatMap((trace) => {
@@ -229,6 +292,147 @@ function buildEvidenceIssues(traces: ProcessTraceLink[]): EvidenceIssue[] {
 
     return issues;
   });
+}
+
+function buildDeliveryMetrics(
+  status: ProcessStatus,
+  evidenceIssues: EvidenceIssue[],
+): DeliveryMetrics {
+  const changesById = new Map(
+    status.planningChanges.map((change) => [change.id, change]),
+  );
+  const approvalsById = new Map(
+    status.approvals.map((approval) => [approval.id, approval]),
+  );
+  const warningCountByTrace = evidenceIssues.reduce<Record<string, number>>(
+    (acc, issue) => {
+      acc[issue.traceId] = (acc[issue.traceId] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
+
+  const traceRows = status.traceLinks.map<DeliveryTraceRow>((trace) => {
+    const requestedAt =
+      trace.changeIds
+        .map((id) => changesById.get(id)?.requestedAt)
+        .find(Boolean) ??
+      trace.approvalIds
+        .map((id) => approvalsById.get(id)?.requestedAt)
+        .find(Boolean) ??
+      status.updatedAt;
+    const deliveredAt =
+      trace.smoke?.checkedAt ??
+      trace.approvalIds
+        .map((id) => approvalsById.get(id)?.approvedAt)
+        .find(Boolean) ??
+      (["linked", "released"].includes(trace.status) ? status.updatedAt : "");
+    const hasFailedCi = trace.ciRuns.some((run) => run.status === "failed");
+    const ciStatus = hasFailedCi
+      ? "failed"
+      : trace.ciRuns.some((run) => run.status === "success")
+        ? "success"
+        : "pending";
+
+    return {
+      id: trace.id,
+      title: trace.title,
+      requestedAt,
+      deliveredAt: deliveredAt || "-",
+      leadTimeDays: deliveredAt ? diffDays(requestedAt, deliveredAt) : null,
+      ciStatus,
+      smokeStatus: trace.smoke?.status ?? "not_recorded",
+      evidenceWarnings: warningCountByTrace[trace.id] ?? 0,
+    };
+  });
+
+  const deliveredRows = traceRows.filter((row) => row.deliveredAt !== "-");
+  const leadTimeDays = average(
+    deliveredRows
+      .map((row) => row.leadTimeDays)
+      .filter((value): value is number => value !== null),
+  );
+  const totalCiRuns = status.traceLinks.reduce(
+    (sum, trace) => sum + trace.ciRuns.length,
+    0,
+  );
+  const successfulCiRuns = status.traceLinks.reduce(
+    (sum, trace) =>
+      sum + trace.ciRuns.filter((run) => run.status === "success").length,
+    0,
+  );
+  const failedCiRuns = status.traceLinks.reduce(
+    (sum, trace) =>
+      sum + trace.ciRuns.filter((run) => run.status === "failed").length,
+    0,
+  );
+  const smokeRuns = status.traceLinks
+    .map((trace) => trace.smoke)
+    .filter(Boolean);
+  const failedSmokeRuns = smokeRuns.filter((smoke) => smoke?.status === "failed");
+  const passedSmokeRuns = smokeRuns.filter((smoke) => smoke?.status === "passed");
+  const deliveryAttempts = Math.max(deliveredRows.length, 1);
+  const changeFailureRate =
+    ((failedCiRuns + failedSmokeRuns.length) / deliveryAttempts) * 100;
+  const ciSuccessRate =
+    totalCiRuns === 0 ? null : (successfulCiRuns / totalCiRuns) * 100;
+  const smokePassRate =
+    smokeRuns.length === 0 ? null : (passedSmokeRuns.length / smokeRuns.length) * 100;
+  const traceCoverage =
+    (status.traceLinks.filter((trace) => ["linked", "released"].includes(trace.status)).length /
+      Math.max(status.traceLinks.length, 1)) *
+    100;
+  const evidenceCompleteness =
+    ((status.traceLinks.length * 7 - evidenceIssues.length) /
+      Math.max(status.traceLinks.length * 7, 1)) *
+    100;
+
+  return {
+    traceRows,
+    evidenceCompleteness,
+    smokePassRate,
+    traceCoverage,
+    cards: [
+      {
+        label: "Deployment frequency",
+        value: String(deliveredRows.length),
+        unit: "ready traces",
+        tone: deliveredRows.length > 0 ? "good" : "watch",
+        summary: "Release URL 또는 smoke pass가 있는 trace 수",
+      },
+      {
+        label: "Lead time",
+        value: leadTimeDays === null ? "N/A" : leadTimeDays.toFixed(1),
+        unit: "days",
+        tone: leadTimeDays === null ? "neutral" : leadTimeDays <= 3 ? "good" : "watch",
+        summary: "요청일에서 승인/smoke 증거까지의 날짜 단위 평균",
+      },
+      {
+        label: "CI success rate",
+        value: formatPercent(ciSuccessRate),
+        tone:
+          ciSuccessRate === null
+            ? "neutral"
+            : ciSuccessRate >= 95
+              ? "good"
+              : "risk",
+        summary: "traceLinks에 연결된 GitHub Actions run 성공률",
+      },
+      {
+        label: "Change failure rate",
+        value: formatPercent(changeFailureRate),
+        tone: changeFailureRate === 0 ? "good" : changeFailureRate <= 15 ? "watch" : "risk",
+        summary: "실패 CI 또는 실패 smoke가 배포 후보에서 차지하는 비율",
+      },
+      {
+        label: "MTTR",
+        value: failedCiRuns + failedSmokeRuns.length === 0 ? "N/A" : "TBD",
+        unit: failedCiRuns + failedSmokeRuns.length === 0 ? undefined : "hours",
+        tone: failedCiRuns + failedSmokeRuns.length === 0 ? "neutral" : "watch",
+        summary: "실패 후 복구 기록이 생기면 계산",
+      },
+    ],
+  };
 }
 
 function buildQueue(phases: ProcessPhase[]) {
@@ -377,11 +581,13 @@ function OverviewSection({
   overallProgress,
   queue,
   evidenceIssues,
+  deliveryMetrics,
 }: {
   status: ProcessStatus;
   overallProgress: number;
   queue: Array<ProcessCheckItem & { phaseId: string; phaseName: string }>;
   evidenceIssues: EvidenceIssue[];
+  deliveryMetrics: DeliveryMetrics;
 }) {
   const pendingWork = getPrimaryWork(queue);
   const donePhases = status.phases.filter((phase) => phase.status === "done");
@@ -426,7 +632,7 @@ function OverviewSection({
         </div>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-4 xl:grid-cols-8">
+      <section className="grid gap-3 md:grid-cols-3 xl:grid-cols-9">
         <Metric label="Phase" value={`${donePhases.length}/${status.phases.length}`} tone="violet" />
         <Metric
           label="Deliverable"
@@ -452,6 +658,11 @@ function OverviewSection({
           label="Evidence"
           value={evidenceIssues.length}
           tone={evidenceIssues.length ? "amber" : "green"}
+        />
+        <Metric
+          label="Delivery"
+          value={formatPercent(deliveryMetrics.traceCoverage)}
+          tone={deliveryMetrics.traceCoverage >= 95 ? "green" : "amber"}
         />
         <Metric label="Feature" value={`${doneFeatures.length}/${status.features.length}`} tone="green" />
         <Metric label="Queue" value={pendingWork.length} tone={pendingWork.length ? "amber" : "green"} />
@@ -854,6 +1065,128 @@ function EvidenceSection({ issues }: { issues: EvidenceIssue[] }) {
   );
 }
 
+function DeliveryMetricsSection({ metrics }: { metrics: DeliveryMetrics }) {
+  return (
+    <div className="space-y-6">
+      <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        {metrics.cards.map((metric) => (
+          <article
+            key={metric.label}
+            className={[
+              "rounded-lg border p-4",
+              DELIVERY_METRIC_TONE_CLASS[metric.tone],
+            ].join(" ")}
+          >
+            <p className="text-xs font-semibold uppercase tracking-wider opacity-70">
+              {metric.label}
+            </p>
+            <div className="mt-2 flex items-end gap-2">
+              <p className="text-3xl font-bold">{metric.value}</p>
+              {metric.unit && (
+                <p className="pb-1 text-xs font-semibold opacity-70">
+                  {metric.unit}
+                </p>
+              )}
+            </div>
+            <p className="mt-3 text-xs leading-5 opacity-75">
+              {metric.summary}
+            </p>
+          </article>
+        ))}
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-3">
+        <article className="rounded-lg border border-zinc-200 bg-white p-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            Evidence completeness
+          </p>
+          <p className="mt-2 text-3xl font-bold text-zinc-950">
+            {formatPercent(metrics.evidenceCompleteness)}
+          </p>
+          <p className="mt-3 text-sm leading-6 text-zinc-600">
+            증거 메뉴의 누락 경고를 기반으로 계산한 trace 건강도입니다.
+          </p>
+        </article>
+        <article className="rounded-lg border border-zinc-200 bg-white p-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            Smoke pass rate
+          </p>
+          <p className="mt-2 text-3xl font-bold text-zinc-950">
+            {formatPercent(metrics.smokePassRate)}
+          </p>
+          <p className="mt-3 text-sm leading-6 text-zinc-600">
+            기록된 smoke 증거 중 pass 비율입니다.
+          </p>
+        </article>
+        <article className="rounded-lg border border-zinc-200 bg-white p-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            Trace coverage
+          </p>
+          <p className="mt-2 text-3xl font-bold text-zinc-950">
+            {formatPercent(metrics.traceCoverage)}
+          </p>
+          <p className="mt-3 text-sm leading-6 text-zinc-600">
+            commit과 CI run이 연결된 trace 비율입니다.
+          </p>
+        </article>
+      </section>
+
+      <section className="rounded-lg border border-zinc-200 bg-white">
+        <div className="border-b border-zinc-100 px-4 py-3">
+          <h3 className="font-bold text-zinc-950">Trace lead time</h3>
+          <p className="mt-1 text-xs text-zinc-500">
+            현재는 날짜 단위 베이스라인입니다. GitHub event timestamp를 저장하면 시간 단위로 고도화할 수 있습니다.
+          </p>
+        </div>
+        <div className="grid border-b border-zinc-100 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 lg:grid-cols-[90px_1fr_120px_120px_90px_90px_90px]">
+          <span>ID</span>
+          <span>대상</span>
+          <span>요청일</span>
+          <span>증거일</span>
+          <span>Lead</span>
+          <span>CI</span>
+          <span>Smoke</span>
+        </div>
+        <ul>
+          {metrics.traceRows.map((row) => (
+            <li
+              key={row.id}
+              className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_120px_120px_90px_90px_90px] lg:items-center"
+            >
+              <span className="font-mono text-xs font-semibold text-brand-violet">
+                {row.id}
+              </span>
+              <div>
+                <p className="font-semibold text-zinc-950">{row.title}</p>
+                {row.evidenceWarnings > 0 && (
+                  <p className="mt-1 text-xs text-amber-700">
+                    증거 보강 {row.evidenceWarnings}건
+                  </p>
+                )}
+              </div>
+              <span className="font-mono text-xs text-zinc-500">
+                {row.requestedAt}
+              </span>
+              <span className="font-mono text-xs text-zinc-500">
+                {row.deliveredAt}
+              </span>
+              <span className="font-semibold text-zinc-700">
+                {row.leadTimeDays === null ? "-" : `${row.leadTimeDays}d`}
+              </span>
+              <span className="text-xs font-semibold text-zinc-600">
+                {row.ciStatus}
+              </span>
+              <span className="text-xs font-semibold text-zinc-600">
+                {row.smokeStatus}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  );
+}
+
 function TraceStatusBadge({ status }: { status: ProcessTraceStatus }) {
   return (
     <span
@@ -1184,6 +1517,19 @@ export default function App() {
     () => (status ? buildEvidenceIssues(status.traceLinks) : []),
     [status],
   );
+  const deliveryMetrics = useMemo(
+    () =>
+      status
+        ? buildDeliveryMetrics(status, evidenceIssues)
+        : {
+            cards: [],
+            traceRows: [],
+            evidenceCompleteness: 0,
+            smokePassRate: null,
+            traceCoverage: 0,
+          },
+    [status, evidenceIssues],
+  );
 
   if (loading) {
     return (
@@ -1251,6 +1597,7 @@ export default function App() {
             overallProgress={overallProgress}
             queue={queue}
             evidenceIssues={evidenceIssues}
+            deliveryMetrics={deliveryMetrics}
           />
         )}
 
@@ -1272,6 +1619,10 @@ export default function App() {
 
         {activeSection === "evidence" && (
           <EvidenceSection issues={evidenceIssues} />
+        )}
+
+        {activeSection === "metrics" && (
+          <DeliveryMetricsSection metrics={deliveryMetrics} />
         )}
 
         {activeSection === "traceability" && (

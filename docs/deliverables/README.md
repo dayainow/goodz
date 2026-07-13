@@ -27,6 +27,7 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-18 | P2 | GitHub Trace Sync | [GITHUB_TRACE_SYNC.md](../00-process/GITHUB_TRACE_SYNC.md) | Engineering/DevOps | 완료 |
 | D-19 | P2 | Evidence Alerts | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Engineering | 완료 |
 | D-20 | P4 | Release/Smoke Evidence | [STAGING_RUNBOOK.md](../04-qa/STAGING_RUNBOOK.md) | DevOps/QA | 완료 |
+| D-21 | P2 | Delivery Metrics Baseline | [METRICS.md](../00-process/METRICS.md) | PM/Engineering/DevOps | 완료 |
 
 ## 운영 규칙
 
@@ -42,4 +43,4 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 
 - 산출물 승인자와 승인일
 - 변경 이력 요약
-- DORA/Delivery Metrics
+- GitHub timestamp 기반 시간 단위 Metrics
