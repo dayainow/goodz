@@ -38,12 +38,13 @@ pnpm sync:github-trace:check
 
 CI 단계:
 
-1. `dayainow/goodz` checkout
-2. `dayainow/ga-analytics-harness` 형제 checkout
-3. pnpm + Node.js 24 설치
-4. Turborepo cache 복원
-5. workspace/dependency/process 검증
-6. build + lint
+1. 현재 저장소 checkout
+2. pnpm + Node.js 24 설치
+3. Turborepo cache 복원
+4. pnpm install --frozen-lockfile
+5. pnpm verify로 workspace/dependency/process/template/build/lint 검증
+
+GA analytics harness는 web-shop package가 고정 GitHub commit에서 직접 설치합니다. CI 작업 디렉터리 밖의 형제 저장소 checkout은 요구하지 않습니다.
 
 ### Actions Runtime
 

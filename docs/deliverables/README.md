@@ -38,6 +38,9 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-29 | P1 | Wireframe Registry | [wireframes/README.md](../02-design/wireframes/README.md) | Product/Design | 완료 |
 | D-30 | P1 | Storyboard Registry | [storyboards/README.md](../02-design/storyboards/README.md) | Product/Design | 완료 |
 | D-31 | P2 | Premium White UI Guidelines | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Engineering | 완료 |
+| D-32 | P0 | Template Onboarding Runbook | [ONBOARDING.md](../00-process/ONBOARDING.md) | Product/Engineering | 완료 |
+| D-33 | P3 | Template Contract Validator | [ONBOARDING.md](../00-process/ONBOARDING.md) | Engineering/QA | 완료 |
+| D-34 | P2 | White Premium Detail Guidelines | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Design/Engineering | 완료 |
 
 ## 운영 규칙
 

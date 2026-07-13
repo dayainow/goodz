@@ -147,8 +147,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       ga-analytics-harness:
-        specifier: file:../../../ga-analytics-harness
-        version: file:../ga-analytics-harness(msw@2.15.0(@types/node@22.20.0)(typescript@5.9.3))
+        specifier: github:dayainow/ga-analytics-harness#153fea4
+        version: https://codeload.github.com/dayainow/ga-analytics-harness/tar.gz/153fea4(msw@2.15.0(@types/node@22.20.0)(typescript@5.9.3))
       next:
         specifier: ^15.3.3
         version: 15.5.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -2293,8 +2293,9 @@ packages:
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
 
-  ga-analytics-harness@file:../ga-analytics-harness:
-    resolution: {directory: ../ga-analytics-harness, type: directory}
+  ga-analytics-harness@https://codeload.github.com/dayainow/ga-analytics-harness/tar.gz/153fea4:
+    resolution: {tarball: https://codeload.github.com/dayainow/ga-analytics-harness/tar.gz/153fea4}
+    version: 0.1.0
     hasBin: true
     peerDependencies:
       msw: ^2.0.0
@@ -5848,7 +5849,7 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
-  ga-analytics-harness@file:../ga-analytics-harness(msw@2.15.0(@types/node@22.20.0)(typescript@5.9.3)):
+  ga-analytics-harness@https://codeload.github.com/dayainow/ga-analytics-harness/tar.gz/153fea4(msw@2.15.0(@types/node@22.20.0)(typescript@5.9.3)):
     dependencies:
       tsx: 4.23.0
       yaml: 2.9.0

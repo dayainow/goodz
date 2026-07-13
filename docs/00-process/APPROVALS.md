@@ -29,6 +29,8 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-011 | S14 Premium Dashboard UX v0.12 | Codex | 사용자 | approved | TL-011 |
 | AP-012 | S15 Design OS v0.13 | Codex | 사용자 | approved | TL-012 |
 | AP-013 | S16 Premium White UI v0.14 | Codex | 사용자 | approved | TL-013 |
+| AP-014 | S17 Template Onboarding Baseline v0.15 | Codex | 사용자 | approved | TL-014 |
+| AP-015 | S18 White Premium Detail Tuning v0.16 | Codex | 사용자 | approved | TL-015 |
 
 ## 승인 기준
 

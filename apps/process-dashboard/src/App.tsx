@@ -61,6 +61,8 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "apps", label: "앱", eyebrow: "Services" },
 ];
 
+const SECTION_MAP = new Map(SECTIONS.map((section) => [section.id, section]));
+
 const SECTION_COPY: Record<SectionId, string> = {
   overview: "현재 상태와 오늘 볼 신호",
   intakes: "요청과 아이디어 입력",
@@ -278,7 +280,7 @@ const META_LABEL =
 const PRIMARY_ACTION =
   "border-zinc-950 bg-zinc-950 text-white hover:border-zinc-800 hover:bg-zinc-800";
 const QUIET_ACTION =
-  "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400 hover:bg-zinc-50 hover:text-zinc-950";
+  "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400 hover:bg-zinc-100 hover:text-zinc-950";
 
 function parseTimestamp(value?: string, boundary: "start" | "end" = "start") {
   if (!value) return null;
@@ -698,7 +700,7 @@ function Sidebar({
           </p>
           <div className="grid grid-cols-4 gap-2">
             {QUICK_SECTIONS.map((id) => {
-              const section = SECTIONS.find((item) => item.id === id);
+              const section = SECTION_MAP.get(id);
               if (!section) return null;
               const isActive = activeSection === id;
               return (
@@ -707,8 +709,10 @@ function Sidebar({
                   type="button"
                   onClick={() => onSelect(id)}
                   className={[
-                    "rounded-lg border px-2 py-2 text-xs font-bold transition",
-                    isActive ? PRIMARY_ACTION : QUIET_ACTION,
+                    "rounded-xl border px-2 py-2 text-xs font-bold transition duration-200",
+                    isActive
+                      ? PRIMARY_ACTION
+                      : "border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-950",
                   ].join(" ")}
                 >
                   {section.label}
@@ -722,7 +726,7 @@ function Sidebar({
       <nav className="mt-4 space-y-4 overflow-y-auto pr-1">
         {MENU_GROUPS.map((group) => {
           const visibleItems = group.items.filter((id) => {
-            const section = SECTIONS.find((item) => item.id === id);
+            const section = SECTION_MAP.get(id);
             if (!section) return false;
             return (
               !normalizedQuery ||
@@ -751,7 +755,7 @@ function Sidebar({
                     [group.title]: !current[group.title],
                   }))
                 }
-                className="flex w-full items-end justify-between gap-2 rounded-lg px-2 py-2 text-left hover:bg-zinc-50"
+                className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2 text-left transition hover:bg-zinc-200"
               >
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
@@ -759,14 +763,23 @@ function Sidebar({
                   </p>
                   <p className="text-[11px] text-zinc-500">{group.summary}</p>
                 </div>
-                <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-500">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2 py-0.5 text-xs font-semibold text-zinc-600">
+                  <span
+                    aria-hidden="true"
+                    className={[
+                      "inline-block text-sm transition-transform",
+                      isCollapsed ? "rotate-0" : "rotate-90",
+                    ].join(" ")}
+                  >
+                    ›
+                  </span>
                   {isCollapsed ? "열기" : `${visibleItems.length}/${group.items.length}`}
                 </span>
               </button>
               {!isCollapsed && (
                 <div className="mt-1 grid grid-cols-2 gap-2 lg:grid-cols-1">
                   {visibleItems.map((id) => {
-                    const section = SECTIONS.find((item) => item.id === id);
+                    const section = SECTION_MAP.get(id);
                     if (!section) return null;
                     const isActive = section.id === activeSection;
                     return (
@@ -775,8 +788,10 @@ function Sidebar({
                         type="button"
                         onClick={() => onSelect(section.id)}
                         className={[
-                          "flex min-h-14 items-center justify-between rounded-lg border px-3 text-left transition",
-                          isActive ? PRIMARY_ACTION : QUIET_ACTION,
+                          "flex min-h-14 items-center justify-between rounded-xl border px-3 text-left transition duration-200",
+                          isActive
+                            ? PRIMARY_ACTION
+                            : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-200 hover:text-zinc-950",
                         ].join(" ")}
                       >
                         <span className="min-w-0">
@@ -857,36 +872,48 @@ function ActionCard({
   title,
   summary,
   action,
-  tone = "neutral",
+  variant = "signal",
   onClick,
 }: {
   eyebrow: string;
   title: string;
   summary: string;
   action: string;
-  tone?: "neutral" | "violet" | "green" | "amber";
+  variant?: "primary" | "signal" | "health";
   onClick: () => void;
 }) {
-  const toneClass = {
-    neutral: "border-l-zinc-300",
-    violet: "border-l-zinc-950",
-    green: "border-l-emerald-500",
-    amber: "border-l-amber-500",
-  }[tone];
+  const variantClass = {
+    primary:
+      "border-violet-200 bg-violet-50/70 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_rgba(76,29,149,0.10)]",
+    signal: "border-zinc-300 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
+    health:
+      "border-emerald-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
+  }[variant];
 
   return (
     <button
       type="button"
       onClick={onClick}
       className={[
-        "rounded-lg border border-zinc-200 border-l-2 bg-white p-4 text-left shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]",
-        toneClass,
+        "rounded-xl border p-5 text-left transition duration-200 hover:-translate-y-1 hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_28px_rgba(0,0,0,0.07)]",
+        variantClass,
       ].join(" ")}
     >
       <p className={META_LABEL}>
         {eyebrow}
       </p>
-      <h3 className="mt-2 font-bold text-zinc-950">{title}</h3>
+      <h3
+        className={[
+          "mt-2 font-bold leading-[1.15] text-zinc-950",
+          variant === "primary"
+            ? "text-lg"
+            : variant === "health"
+              ? "text-3xl tracking-tight"
+              : "text-base",
+        ].join(" ")}
+      >
+        {title}
+      </h3>
       <p className="mt-2 text-sm leading-6 text-zinc-600">{summary}</p>
       <p className="mt-4 text-sm font-semibold text-zinc-950">
         {action} →
@@ -895,16 +922,25 @@ function ActionCard({
   );
 }
 
-function PhaseSignal({ phase }: { phase: ProcessPhase }) {
+function PhaseSignal({
+  phase,
+  isCurrent,
+}: {
+  phase: ProcessPhase;
+  isCurrent: boolean;
+}) {
   const isDone = phase.status === "done";
 
   return (
     <div
       className={[
-        "h-full rounded-xl border p-4 transition",
+        "h-full rounded-xl border p-4 transition duration-200 hover:-translate-y-1",
         isDone
           ? "border-zinc-950 bg-zinc-950 text-white shadow-[0_1px_3px_rgba(0,0,0,0.05),0_8px_24px_rgba(0,0,0,0.08)]"
           : "border-zinc-300 bg-white text-zinc-950 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+        isCurrent
+          ? "ring-2 ring-violet-400 ring-offset-2 ring-offset-[#F4F4F5]"
+          : "",
       ].join(" ")}
     >
       <div className="flex items-start justify-between gap-3">
@@ -912,19 +948,27 @@ function PhaseSignal({ phase }: { phase: ProcessPhase }) {
           <p
             className={[
               "font-mono text-xs font-semibold",
-              isDone ? "text-white/70" : "text-zinc-500",
+              isDone ? "text-white/55" : "text-zinc-500",
             ].join(" ")}
           >
             {phase.id}
           </p>
-          <h3 className="mt-1 font-bold">{phase.name}</h3>
+          <h3 className={["mt-1 font-bold", isDone ? "text-white" : "text-zinc-950"].join(" ")}>
+            {phase.name}
+          </h3>
         </div>
-        <StatusBadge status={phase.status} />
+        {isCurrent ? (
+          <span className="rounded-full border border-violet-300/60 bg-violet-400/15 px-2.5 py-0.5 text-xs font-semibold text-violet-100">
+            현재 운영
+          </span>
+        ) : (
+          <StatusBadge status={phase.status} />
+        )}
       </div>
       <div className="mt-4">
         <ProgressBar value={phase.progress} />
       </div>
-      <p className={["mt-2 text-xs", isDone ? "text-white/60" : "text-zinc-500"].join(" ")}>
+      <p className={["mt-2 text-xs", isDone ? "text-white/55" : "text-zinc-500"].join(" ")}>
         {phase.items.filter((item) => item.status === "done").length}/
         {phase.items.length} 항목 완료
       </p>
@@ -957,32 +1001,45 @@ function OverviewMetricGroup({
   value,
   summary,
   rows,
-  tone = "neutral",
+  variant,
 }: {
   title: string;
   value: string | number;
   summary: string;
   rows: Array<{ label: string; value: string | number }>;
-  tone?: "neutral" | "green" | "amber";
+  variant: "completion" | "delivery" | "operations";
 }) {
-  const toneClass = {
-    neutral: "border-l-zinc-950",
-    green: "border-l-emerald-500",
-    amber: "border-l-amber-500",
-  }[tone];
+  const surfaceClass = {
+    completion:
+      "border-emerald-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]",
+    delivery: "border-zinc-200 bg-[#F7F7F7] shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
+    operations: "border-zinc-300 bg-transparent shadow-none",
+  }[variant];
 
   return (
     <article
       className={[
-        "rounded-xl border border-zinc-200 border-l-2 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]",
-        toneClass,
+        "rounded-xl border p-5 transition duration-200 hover:-translate-y-1",
+        surfaceClass,
       ].join(" ")}
     >
       <p className={META_LABEL}>{title}</p>
       <div className="mt-3 flex items-end justify-between gap-4">
-        <p className="text-3xl font-bold tracking-tight text-zinc-950">
-          {value}
-        </p>
+        {variant === "completion" ? (
+          <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700">
+            <span aria-hidden="true">✓</span>
+            완료 · {value}
+          </p>
+        ) : variant === "operations" ? (
+          <p className="inline-flex items-center gap-2 text-base font-bold text-zinc-950">
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-emerald-500" />
+            {value}
+          </p>
+        ) : (
+          <p className="text-3xl font-bold tracking-tight text-zinc-950">
+            {value}
+          </p>
+        )}
         <p className="max-w-40 text-right text-xs leading-5 text-zinc-500">
           {summary}
         </p>
@@ -1043,6 +1100,8 @@ function OverviewSection({
   const deliveryMetric = deliveryMetrics.cards.find(
     (metric) => metric.label === "Deployment frequency",
   );
+  const currentPhaseId =
+    status.phases.find((phase) => phase.status === "in_progress")?.id ?? "P2";
 
   return (
     <div className="space-y-6">
@@ -1069,37 +1128,41 @@ function OverviewSection({
                 Operator ready
               </span>
             </div>
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
+            <div className="mt-6 grid gap-3 md:grid-cols-[1.2fr_1fr_0.9fr]">
               <ActionCard
                 eyebrow="Start here"
                 title="서비스 이용법 확인"
                 summary="새 사용자는 가이드에서 흐름과 운영 명령을 먼저 확인합니다."
                 action="가이드 열기"
-                tone="violet"
+                variant="primary"
                 onClick={() => onSelect("guide")}
               />
               <ActionCard
                 eyebrow="Next signal"
                 title={
                   evidenceIssues.length
-                    ? `증거 ${evidenceIssues.length}건 보강`
-                    : "증거 상태 양호"
+                    ? `검토할 신호 ${evidenceIssues.length}건`
+                    : "모든 증거 연결 완료"
                 }
                 summary={
                   evidenceIssues.length
-                    ? "Issue, CI, Release, Smoke 증거 중 빠진 항목을 먼저 정리합니다."
-                    : "현재 필수 증거 연결은 안정적입니다. 추세 지표를 확인하세요."
+                    ? "Issue, CI, Release, Smoke 중 확인할 연결 상태를 정리했습니다."
+                    : "필수 연결이 모두 완료되었습니다. 추세 지표를 확인하세요."
                 }
                 action="증거 보기"
-                tone={evidenceIssues.length ? "amber" : "green"}
+                variant="signal"
                 onClick={() => onSelect("evidence")}
               />
               <ActionCard
                 eyebrow="Health"
-                title={`Delivery ${formatPercent(deliveryMetrics.traceCoverage)}`}
-                summary="trace coverage, lead time, snapshot trend로 운영 건강도를 확인합니다."
+                title={formatPercent(deliveryMetrics.traceCoverage)}
+                summary={
+                  deliveryMetrics.traceCoverage >= 100
+                    ? "모든 추적 연결 완료"
+                    : "운영 건강도와 추적 범위"
+                }
                 action="지표 보기"
-                tone="green"
+                variant="health"
                 onClick={() => onSelect("metrics")}
               />
             </div>
@@ -1177,7 +1240,7 @@ function OverviewSection({
               value: `${appliedChanges}/${status.planningChanges.length}`,
             },
           ]}
-          tone="green"
+          variant="completion"
         />
         <OverviewMetricGroup
           title="Delivery Health"
@@ -1189,12 +1252,12 @@ function OverviewSection({
             { label: "Ready", value: deliveryMetric?.value ?? "0" },
             { label: "Snapshot", value: metricSnapshots.length },
           ]}
-          tone={deliveryMetrics.traceCoverage >= 95 ? "green" : "amber"}
+          variant="delivery"
         />
         <OverviewMetricGroup
           title="Operations"
-          value={pendingWork.length}
-          summary="오늘 먼저 확인할 운영 신호"
+          value={pendingWork.length ? `${pendingWork.length}건 대기` : "대기열 없음"}
+          summary={pendingWork.length ? "오늘 먼저 확인할 운영 신호" : "모든 필수 작업 완료"}
           rows={[
             { label: "Queue", value: pendingWork.length },
             { label: "Evidence", value: evidenceIssues.length },
@@ -1209,7 +1272,7 @@ function OverviewSection({
                 : "-",
             },
           ]}
-          tone={pendingWork.length || evidenceIssues.length ? "amber" : "green"}
+          variant="operations"
         />
       </section>
 
@@ -1234,7 +1297,7 @@ function OverviewSection({
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           {status.phases.map((phase, index) => (
             <div key={phase.id} className="relative">
-              <PhaseSignal phase={phase} />
+              <PhaseSignal phase={phase} isCurrent={phase.id === currentPhaseId} />
               {index < status.phases.length - 1 && (
                 <span
                   aria-hidden="true"
@@ -1246,6 +1309,10 @@ function OverviewSection({
             </div>
           ))}
         </div>
+        <div
+          aria-hidden="true"
+          className="mt-4 h-6 rounded-b-2xl bg-gradient-to-b from-zinc-200/50 to-transparent"
+        />
       </section>
 
       <section className={CARD_SURFACE}>
@@ -2704,7 +2771,7 @@ export default function App() {
     status.phases.reduce((sum, p) => sum + p.progress, 0) /
       status.phases.length,
   );
-  const active = SECTIONS.find((section) => section.id === activeSection);
+  const active = SECTION_MAP.get(activeSection);
 
   return (
     <div className="min-h-screen bg-[#F4F4F5] text-zinc-950 lg:flex">
@@ -2743,32 +2810,34 @@ export default function App() {
               </button>
             </div>
           </div>
-          <div className="mt-4 grid gap-3 border-t border-zinc-100 pt-4 text-xs text-zinc-500 md:grid-cols-4">
-            <div>
+          <div className="mt-4 grid gap-4 border-t border-zinc-100 pt-4 text-xs md:grid-cols-[1.1fr_1fr_1.2fr_auto] md:items-end">
+            <div className="border-l-2 border-zinc-950 pl-3">
               <p className="font-semibold uppercase tracking-wider text-zinc-400">
                 Sprint
               </p>
-              <p className="mt-1 font-bold text-zinc-800">{status.sprint.id}</p>
+              <p className="mt-1 text-sm font-extrabold text-zinc-950">{status.sprint.id}</p>
             </div>
             <div>
               <p className="font-semibold uppercase tracking-wider text-zinc-400">
                 Version
               </p>
-              <p className="mt-1 font-bold text-zinc-800">{status.systemVersion}</p>
+              <p className="mt-1 font-mono font-bold text-zinc-800">{status.systemVersion}</p>
             </div>
             <div>
               <p className="font-semibold uppercase tracking-wider text-zinc-400">
                 Updated
               </p>
-              <p className="mt-1 font-mono font-semibold text-zinc-700">
+              <p className="mt-1 font-mono font-medium text-zinc-500">
                 {status.updatedAt}
               </p>
             </div>
             <div>
-              <p className="font-semibold uppercase tracking-wider text-zinc-400">
+              <p className="mb-1 font-semibold uppercase tracking-wider text-zinc-400">
                 Section
               </p>
-              <p className="mt-1 font-bold text-zinc-800">{active?.label}</p>
+              <p className="inline-flex rounded-full border border-zinc-300 bg-zinc-100 px-3 py-1 font-bold text-zinc-800">
+                {active?.label}
+              </p>
             </div>
           </div>
         </header>

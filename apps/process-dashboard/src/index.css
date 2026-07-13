@@ -3,5 +3,36 @@
 @tailwind utilities;
 
 body {
-  @apply bg-zinc-100 text-zinc-950 antialiased;
+  @apply bg-zinc-100 font-sans text-zinc-950 antialiased;
+  font-feature-settings: "cv02", "ss01";
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+}
+
+* {
+  scrollbar-color: #a1a1aa transparent;
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #a1a1aa;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #71717a;
 }

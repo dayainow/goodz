@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "template": "goodz-process-os",
+  "packageManager": "pnpm",
+  "requiredScripts": [
+    "dev",
+    "build",
+    "check:process",
+    "check:template",
+    "verify"
+  ],
+  "requiredPaths": [
+    "AGENTS.md",
+    "PROJECT.md",
+    "docs/00-process/NORTH_STAR.md",
+    "docs/00-process/ONBOARDING.md",
+    "docs/00-process/PHASE_GATES.md",
+    "docs/00-process/status.json",
+    "docs/01-planning/ROADMAP.md",
+    "apps/api-server/package.json",
+    "apps/web-shop/package.json",
+    "apps/admin-dashboard/package.json",
+    "apps/process-dashboard/package.json",
+    "packages/types/package.json",
+    "packages/ui/package.json"
+  ],
+  "envExamples": [
+    "apps/web-shop/.env.local.example",
+    "apps/admin-dashboard/.env.example",
+    "apps/process-dashboard/.env.example"
+  ],
+  "customize": [
+    {
+      "id": "identity",
+      "label": "프로젝트 이름·소유자·저장소 URL",
+      "docs": ["README.md", "PROJECT.md", "package.json"]
+    },
+    {
+      "id": "process",
+      "label": "North Star·PRD·Phase Gate·DACI",
+      "docs": [
+        "docs/00-process/NORTH_STAR.md",
+        "docs/00-process/PHASE_GATES.md",
+        "docs/00-process/APPROVALS.md",
+        "docs/01-planning/PRD.md"
+      ]
+    },
+    {
+      "id": "runtime",
+      "label": "포트·API URL·배포 환경",
+      "docs": [
+        "docs/00-process/ONBOARDING.md",
+        "docs/04-qa/STAGING_RUNBOOK.md"
+      ]
+    }
+  ],
+  "externalIntegrations": [
+    {
+      "id": "ga-analytics-harness",
+      "required": true,
+      "source": "https://github.com/dayainow/ga-analytics-harness",
+      "purpose": "GA4 명세 compliance 레퍼런스"
+    }
+  ]
+}

@@ -127,6 +127,19 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - **Phase flow**: P0-P4는 동일한 독립 카드가 아니라 선형 flow로 보여주고, 완료 단계는 채움 스타일, 현재 단계는 보더 강조로 구분합니다.
 - **사이드바**: light gray sidebar + white panels로 본문과 분리하고, active item은 near-black fill로 확실하게 표시합니다.
 
+## v0.16 White Premium Detail Tuning
+
+- **Quick Jump**: active는 near-black fill, inactive는 zinc-600 텍스트와 zinc-300 outline을 사용해 양쪽 상태 모두 읽히게 합니다.
+- **Action hierarchy**: Start here는 violet-50 표면과 2단 shadow, Next signal은 white + border, Health는 큰 건강도 숫자로 구분합니다.
+- **Metric semantics**: Completion은 작은 완료 badge, Delivery Health는 비율 중심, Operations는 0 대신 대기열 없음 같은 문장으로 표현합니다.
+- **Current phase**: P0-P4 중 현재 운영 단계는 violet ring과 현재 운영 badge로 표시합니다.
+- **Metadata**: Sprint를 가장 강하게, Version은 mono, Updated는 muted, Section은 badge로 분리합니다.
+- **Micro interaction**: 핵심 action/metric/phase card만 4px lift를 사용하고 표·문서 컨테이너는 움직이지 않습니다.
+- **Typography**: Noto Sans KR → Pretendard → system-ui 순서로 사용하며 heading 1.15, body 1.5 line-height를 적용합니다.
+- **Navigation cue**: 접힘 그룹은 회전하는 chevron과 항목 수를 함께 보여줍니다.
+
+브라우저 육안 QA에서는 1440px 데스크톱과 1024px 이하 반응형에서 CTA 높이, metadata 줄바꿈, Operating map ring 잘림을 확인합니다.
+
 ## 참고한 UI 레퍼런스
 
 - Atlassian Design System — Side navigation: 제품 영역 안에서 중첩 뷰와 섹션 이동을 다루는 좌측 내비게이션 패턴

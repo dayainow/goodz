@@ -16,13 +16,6 @@ jobs:
         with:
           path: goodz
 
-      # web-shop의 file: 의존성이 참조하는 형제 리포를 함께 체크아웃
-      - name: Checkout ga-analytics-harness
-        uses: actions/checkout@v7
-        with:
-          repository: dayainow/ga-analytics-harness
-          path: ga-analytics-harness
-
       - uses: pnpm/action-setup@v6
         with:
           package_json_file: goodz/package.json
@@ -44,8 +37,5 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Workspace + dependency + process checks
-        run: pnpm check:workspace && pnpm check:deps && pnpm check:process
-
-      - name: Build + Lint
-        run: pnpm turbo build && pnpm turbo lint
+      - name: Verify workspace, process, template, build, and lint
+        run: pnpm verify

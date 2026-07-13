@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.14",
+  "systemVersion": "v0.16",
   "sprint": {
-    "id": "S16",
-    "name": "시스템 v0.14 — Premium White UI",
+    "id": "S18",
+    "name": "시스템 v0.16 — White Premium Detail Tuning",
     "status": "done",
-    "goal": "프로세스 대시보드를 프리미엄 화이트 테마와 운영 흐름 중심 UI로 고도화"
+    "goal": "색 온도, 타이포 계층, 카드 깊이와 운영 문구를 조정해 화이트 프리미엄 완성도 강화"
   },
   "phases": [
     {
@@ -399,6 +399,24 @@
       "phase": "P2",
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
       "nextAction": "브라우저 육안 QA 후 role-based view와 guided workflow로 확장"
+    },
+    {
+      "id": "IN-014",
+      "title": "Template Onboarding Baseline v0.15",
+      "source": "사용자 요청 · 현재 단계 파악 후 다음 작업 진행",
+      "status": "done",
+      "phase": "P0",
+      "doc": "docs/01-planning/intake/2026-07-13-template-onboarding-v015.md",
+      "nextAction": "새 저장소 clean-clone CI와 rebrand 리허설 후 v1.0 Gate 검토"
+    },
+    {
+      "id": "IN-015",
+      "title": "White Premium Detail Tuning v0.16",
+      "source": "사용자 상세 디자인 리뷰 · 7.5/10에서 화이트 프리미엄 고도화",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-13-white-premium-detail-v016.md",
+      "nextAction": "1440px와 1024px 브라우저 육안 QA 후 spacing 미세 조정"
     }
   ],
   "deliverables": [
@@ -711,6 +729,36 @@
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
       "owner": "Product/Engineering",
       "summary": "화이트 기반 표면, 미세 보더, 제한된 액센트, 운영 metric grouping, Phase flow UI 기준"
+    },
+    {
+      "id": "D-32",
+      "title": "Template Onboarding Runbook",
+      "type": "planning",
+      "phase": "P0",
+      "status": "done",
+      "doc": "docs/00-process/ONBOARDING.md",
+      "owner": "Product/Engineering",
+      "summary": "30분 fork, standalone install, 첫 P0 Gate 온보딩 절차"
+    },
+    {
+      "id": "D-33",
+      "title": "Template Contract Validator",
+      "type": "qa",
+      "phase": "P3",
+      "status": "done",
+      "doc": "docs/00-process/ONBOARDING.md",
+      "owner": "Engineering/QA",
+      "summary": "필수 경로, env example, 스크립트, portable dependency 자동 검증"
+    },
+    {
+      "id": "D-34",
+      "title": "White Premium Detail Guidelines",
+      "type": "design",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/PROCESS_DASHBOARD.md",
+      "owner": "Product/Design/Engineering",
+      "summary": "Quick Jump, CTA, metric, phase, metadata, typography의 역할별 시각 위계"
     }
   ],
   "approvals": [
@@ -1104,6 +1152,67 @@
       "traceLinkIds": [
         "TL-013"
       ]
+    },
+    {
+      "id": "AP-014",
+      "target": "S17 Template Onboarding Baseline v0.15",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": [
+        "Product",
+        "Engineering",
+        "QA"
+      ],
+      "informed": [
+        "Future template adopters"
+      ],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "v0.15에서 fork 온보딩과 standalone 설치 계약을 확립하고 실제 clean-clone 리허설 후 v1.0으로 승격",
+      "criteria": [
+        "30분 fork 온보딩 런북이 있음",
+        "template contract가 필수 파일과 설정을 검증함",
+        "pnpm verify와 CI가 template contract를 실행함",
+        "저장소 밖 로컬 package 의존성이 없음"
+      ],
+      "summary": "Template Onboarding Baseline과 standalone dependency 전환 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": [
+        "TL-014"
+      ]
+    },
+    {
+      "id": "AP-015",
+      "target": "S18 White Premium Detail Tuning v0.16",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": [
+        "Product",
+        "Design",
+        "Engineering"
+      ],
+      "informed": [
+        "Goodz operators"
+      ],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "화이트 프리미엄 UI를 동일 카드 반복이 아니라 역할별 표면, 타이포, 문구 위계로 고도화",
+      "criteria": [
+        "Quick Jump active와 inactive가 모두 읽힘",
+        "Start here가 CTA 중 가장 강한 시작점으로 보임",
+        "Operations 0 대신 대기열 없음 문장을 사용함",
+        "현재 운영 phase와 접힘 navigation cue가 보임",
+        "Noto Sans KR, line-height, scrollbar, hover 기준이 문서화됨"
+      ],
+      "summary": "White Premium detail tuning 디자인 리뷰 반영 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": [
+        "TL-015"
+      ]
     }
   ],
   "planningChanges": [
@@ -1321,6 +1430,41 @@
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
       "summary": "파스텔 카드 중심 UI를 화이트 표면, 미세 보더, 제한된 액센트, grouped metrics, phase flow로 개선",
       "decision": "v0.14에서 대시보드 기본 표면은 중립 화이트로 통일하고 색은 상태 신호에 제한"
+    },
+    {
+      "id": "CR-014",
+      "title": "Template Onboarding Baseline 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/ONBOARDING.md",
+        "template.config.json",
+        "scripts/validate-template.mjs",
+        "docs/01-planning/ROADMAP.md",
+        "docs/00-process/status.json"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-13-template-onboarding-v015.md",
+      "summary": "fork 런북, template contract, verify/CI 검사, standalone GA harness dependency를 추가",
+      "decision": "v1.0 전 단계로 v0.15 Template Onboarding Baseline을 완료하고 clean-clone 증거를 다음 Gate로 유지"
+    },
+    {
+      "id": "CR-015",
+      "title": "White Premium Detail Tuning",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 상세 디자인 리뷰",
+      "targetDocs": [
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/02-design/DESIGN_SYSTEM.md",
+        "docs/00-process/status.json",
+        "apps/process-dashboard/src/App.tsx",
+        "apps/process-dashboard/src/index.css",
+        "packages/ui/tailwind.config.ts"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-13-white-premium-detail-v016.md",
+      "summary": "색 온도, 타이포 계층, 카드 깊이, 운영 문구, navigation cue를 세부 조정",
+      "decision": "동일한 카드 무게 대신 primary, signal, health와 completion, delivery, operations 역할을 명시"
     }
   ],
   "designReferences": [
@@ -2135,6 +2279,85 @@
       },
       "summary": "프리미엄 화이트 테마, grouped metrics, P0-P4 phase flow, 중립 sidebar UI를 프로세스 대시보드에 반영",
       "nextAction": "브라우저 육안 QA 후 role-based view와 guided workflow로 확장"
+    },
+    {
+      "id": "TL-014",
+      "title": "Template Onboarding Baseline v0.15",
+      "status": "partial",
+      "sourceIds": [
+        "IN-014"
+      ],
+      "changeIds": [
+        "CR-014"
+      ],
+      "deliverableIds": [
+        "D-32",
+        "D-33"
+      ],
+      "approvalIds": [
+        "AP-014"
+      ],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:template",
+        "checkedAt": "2026-07-13T05:00:00Z",
+        "summary": "Template contract validates required files, scripts, env examples, and portable dependencies"
+      },
+      "summary": "30분 fork 런북, 기계 판독 template contract, standalone GA harness 설치 구조를 연결",
+      "nextAction": "commit/CI 증거 연결 후 새 저장소 clean-clone과 rebrand 리허설 수행"
+    },
+    {
+      "id": "TL-015",
+      "title": "White Premium Detail Tuning v0.16",
+      "status": "partial",
+      "sourceIds": [
+        "IN-015"
+      ],
+      "changeIds": [
+        "CR-015"
+      ],
+      "deliverableIds": [
+        "D-34"
+      ],
+      "approvalIds": [
+        "AP-015"
+      ],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm --filter @goodz/process-dashboard build && pnpm --filter @goodz/process-dashboard lint",
+        "checkedAt": "2026-07-13T05:30:00Z",
+        "summary": "Process Dashboard detail tuning build and TypeScript validation passed"
+      },
+      "summary": "Quick Jump, CTA, metric semantics, current phase, metadata, typography와 micro interaction 고도화",
+      "nextAction": "인앱 브라우저가 가능한 세션에서 1440px와 1024px 육안 QA"
     }
   ],
   "features": [
@@ -2231,6 +2454,16 @@
     {
       "id": "F-19",
       "label": "Premium White dashboard UI",
+      "status": "done"
+    },
+    {
+      "id": "F-20",
+      "label": "Template Onboarding Contract",
+      "status": "done"
+    },
+    {
+      "id": "F-21",
+      "label": "White Premium Detail Tuning",
       "status": "done"
     }
   ],

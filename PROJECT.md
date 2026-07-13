@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S16 Premium White UI v0.14** ✅
+## 현재 스프린트: **S18 White Premium Detail Tuning v0.16** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -22,6 +22,8 @@
 | **서비스 매뉴얼** | ✅ [USER_MANUAL](./docs/00-process/USER_MANUAL.md) + 대시보드 문서 뷰어 |
 | **Design OS** | ✅ [DESIGN_OS](./docs/02-design/DESIGN_OS.md) + [REFERENCES](./docs/02-design/REFERENCES.md) + Wireframes/Storyboards |
 | **Premium White UI** | ✅ [PROCESS_DASHBOARD](./docs/00-process/PROCESS_DASHBOARD.md) + grouped metrics + Phase flow |
+| **Template Onboarding** | ✅ [ONBOARDING](./docs/00-process/ONBOARDING.md) + template contract + standalone install |
+| **White Premium Detail** | ✅ Quick Jump·CTA·metrics·phase·metadata·typography hierarchy |
 
 ## 현재 단계
 
@@ -87,6 +89,12 @@
 - [x] S16: Premium White UI 원칙 반영
 - [x] S16: grouped metrics + P0-P4 phase flow
 - [x] S16: 사이드바/카드 표면 고급화
+- [x] S17: 30분 fork 온보딩 런북
+- [x] S17: template.config.json + pnpm check:template
+- [x] S17: 저장소 밖 로컬 의존성 제거
+- [x] S18: Quick Jump와 사이드바 navigation cue 고도화
+- [x] S18: CTA·metrics 역할별 시각 위계와 운영 문구 개선
+- [x] S18: Noto Sans KR·line-height·scrollbar·hover detail tuning
 
 ## 풀 프로세스
 

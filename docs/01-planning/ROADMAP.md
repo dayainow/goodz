@@ -22,6 +22,8 @@
 | **v0.12** | 검색/접힘 사이드바 + Quick jump + 콘솔형 헤더 UI 고급화 | ✅ |
 | **v0.13** | Design OS: 레퍼런스 + 와이어프레임 + 스토리보드 + Design 메뉴 | ✅ |
 | **v0.14** | Premium White UI: 화이트 표면 + grouped metrics + Phase flow | ✅ |
+| **v0.15** | Template Onboarding Baseline: fork 런북 + template contract + standalone 의존성 | ✅ |
+| **v0.16** | White Premium Detail: navigation + CTA + metrics + typography hierarchy | ✅ |
 | **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
 
 ## 전체 타임라인
@@ -29,7 +31,7 @@
 ```text
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
-S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI
+S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail
 ```
 
 ---
@@ -229,6 +231,27 @@ Week 1
 
 ---
 
+### Sprint S17 — Template Onboarding Baseline
+
+- ONBOARDING.md에 30분 fork → verify → 첫 P0 Gate 런북 정의
+- template.config.json으로 필수 산출물, env example, 커스터마이즈 지점 정의
+- pnpm check:template로 필수 계약과 저장소 밖 file 의존성 검증
+- GA analytics harness를 GitHub commit에 pin해 형제 저장소 필수 결합 제거
+- v1.0 Gate는 clean-clone CI, rebrand 리허설, 배포 증거 후 통과
+
+---
+
+### Sprint S18 — White Premium Detail Tuning
+
+- Quick Jump active/inactive 대비와 sidebar hover/collapse cue 강화
+- Start here, Next signal, Health를 역할별 표면과 타이포로 구분
+- Completion 완료 badge, Operations 자연어 signal 적용
+- P2 현재 운영 강조와 metadata hierarchy 적용
+- Noto Sans KR, line-height, scrollbar, near-black progress 기준 추가
+- 후속 Gate: 1440px/1024px 브라우저 육안 QA
+
+---
+
 ## 의존성 그래프
 
 ```mermaid
@@ -267,7 +290,10 @@ flowchart LR
 17. ✅ v0.12: 프리미엄 대시보드 UX 고도화
 18. ✅ v0.13: Design OS 산출물 체계
 19. ✅ v0.14: Premium White UI 고도화
-20. ⚪ v1.0 후보: 문서 검색, guided workflow, incident/MTTR 기록 + PR review lead time
+20. ✅ v0.15: Template Onboarding Baseline + standalone 의존성
+21. ✅ v0.16: White Premium Detail Tuning
+22. ⚪ v1.0 Gate: clean-clone CI + rebrand 리허설 + 배포 증거
+23. ⚪ v1.x 후보: 문서 검색, guided workflow, incident/MTTR 기록 + PR review lead time
 
 ---
 
@@ -287,3 +313,5 @@ flowchart LR
 | 2026-07-13 | v0.12 — 프리미엄 대시보드 UX 고도화 |
 | 2026-07-13 | v0.13 — Design OS 산출물 체계 |
 | 2026-07-13 | v0.14 — Premium White UI 고도화 |
+| 2026-07-13 | v0.15 — Template Onboarding Baseline + standalone 의존성 |
+| 2026-07-13 | v0.16 — White Premium Detail Tuning |

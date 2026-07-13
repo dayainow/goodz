@@ -7,6 +7,7 @@ const goodzPreset: Config = {
     extend: {
       fontFamily: {
         sans: [
+          "Noto Sans KR",
           "Pretendard",
           "ui-sans-serif",
           "system-ui",
