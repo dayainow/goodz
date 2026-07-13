@@ -789,7 +789,7 @@
     {
       "id": "TL-006",
       "title": "Delivery Metrics Baseline v0.7",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": ["IN-006"],
       "changeIds": ["CR-006"],
       "deliverableIds": ["D-21"],
@@ -802,14 +802,26 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "123d3b3",
+          "message": "feat: Delivery Metrics 베이스라인 추가",
+          "url": "https://github.com/dayainow/goodz/commit/123d3b3"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29217992968",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29217992968"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
-      "summary": "DORA 원형 지표와 Goodz 보조 지표를 traceLinks 기반으로 계산하고 process-dashboard 지표 메뉴에 표시",
-      "nextAction": "커밋과 GitHub Actions CI run을 연결"
+      "summary": "DORA 원형 지표와 Goodz 보조 지표가 traceLinks 기반으로 계산되고 process-dashboard 지표 메뉴와 CI green 증거에 연결됨",
+      "nextAction": "GitHub timestamp 기반 시간 단위 metrics 고도화"
     }
   ],
   "features": [
