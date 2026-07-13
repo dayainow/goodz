@@ -1303,7 +1303,7 @@
     {
       "id": "TL-008",
       "title": "Metrics Snapshot Trend v0.9",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": [
         "IN-008"
       ],
@@ -1324,14 +1324,30 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "ee73ffa",
+          "message": "feat: add metrics snapshots trend",
+          "url": "https://github.com/dayainow/goodz/commit/ee73ffa926f850871a12b3d335d942fd209a1db6",
+          "committedAt": "2026-07-13T02:18:43Z"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29219254756",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29219254756",
+          "createdAt": "2026-07-13T02:18:52Z",
+          "startedAt": "2026-07-13T02:18:52Z",
+          "completedAt": "2026-07-13T02:19:50Z"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
       "summary": "metrics-snapshots.json에 지표 기준점을 저장하고 process-dashboard Metrics 메뉴에서 추세 그래프를 표시",
-      "nextAction": "커밋과 GitHub Actions CI run을 연결"
+      "nextAction": "incident/MTTR 기록과 PR review lead time으로 확장"
     }
   ],
   "features": [
