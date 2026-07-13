@@ -14,6 +14,7 @@
 👉 **[PROJECT.md](./PROJECT.md)** — 현재 Sprint · Phase 상태
 
 👉 **[Template Onboarding](./docs/00-process/ONBOARDING.md)** — fork 후 30분 안에 첫 Gate 시작하기
+👉 **[Dashboard Redesign PRD](./docs/01-planning/PRD-PROCESS-DASHBOARD-REDESIGN.md)** — Hero·Sidebar·Phase·Metrics 디자인 리셋 기준
 
 ---
 

@@ -10,6 +10,7 @@
 | 시스템 레이어 | 상태 |
 |---------------|------|
 | **P1 디자인** | ✅ 12화면 · Design OS · 레퍼런스/와이어프레임/스토리보드 |
+| **Dashboard Redesign PRD** | ✅ v1.0 승인 · Hero/Sidebar/Phase/Metrics 핵심 AC 반영 |
 | **P2 레퍼런스 데모** | ✅ 쇼핑·어드민·Search/About UI |
 | **프로세스 대시보드** | ✅ Premium White UI·Design 메뉴·검색/접힘 사이드바·Quick jump·콘솔형 헤더·가이드·산출물·DACI 승인·추적·Phase 관리 UI |
 | **품질 게이트** | ✅ `pnpm verify` + GA harness + 브라우저 육안 QA |

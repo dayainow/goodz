@@ -282,8 +282,11 @@ const DELIVERY_METRIC_TONE_CLASS: Record<DeliveryMetricTone, string> = {
   risk: "border-zinc-200 border-l-rose-500 bg-white text-zinc-950",
 };
 
-const CARD_SURFACE =
-  "rounded-xl border border-zinc-200/80 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]";
+const SHADOW_L1 =
+  "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]";
+const SHADOW_L2 =
+  "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)]";
+const CARD_SURFACE = `rounded-2xl border border-zinc-200 bg-white ${SHADOW_L1}`;
 const META_LABEL =
   "text-[12px] font-semibold uppercase tracking-wider text-zinc-500";
 const PRIMARY_ACTION =
@@ -722,7 +725,7 @@ function Sidebar({
                   type="button"
                   onClick={() => onSelect(id)}
                   className={[
-                    "rounded-xl border px-2 py-2 text-xs font-bold transition duration-200",
+                    "rounded-xl border px-2 py-2 text-xs font-bold transition duration-150",
                     isActive
                       ? PRIMARY_ACTION
                       : "border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-950",
@@ -790,7 +793,7 @@ function Sidebar({
                 </span>
               </button>
               {!isCollapsed && (
-                <div className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-1">
+                <div className="mt-2 grid grid-cols-1 gap-2">
                   {visibleItems.map((id) => {
                     const section = SECTION_MAP.get(id);
                     if (!section) return null;
@@ -801,17 +804,17 @@ function Sidebar({
                         type="button"
                         onClick={() => onSelect(section.id)}
                         className={[
-                          "flex min-h-14 items-center justify-between rounded-xl border px-3.5 py-2.5 text-left transition duration-200",
+                          "flex min-h-14 items-center justify-between rounded-xl border border-l-[3px] px-3.5 py-2.5 text-left transition duration-150",
                           isActive
-                            ? PRIMARY_ACTION
-                            : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-200 hover:text-zinc-950",
+                            ? `border-zinc-300 border-l-violet-500 bg-white text-zinc-950 ${SHADOW_L1}`
+                            : "border-zinc-200 border-l-transparent bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-100 hover:text-zinc-950",
                         ].join(" ")}
                       >
                         <span className="min-w-0">
                           <span
                             className={[
                               "block text-[11px] font-semibold uppercase tracking-wider",
-                              isActive ? "text-white/70" : "text-zinc-500",
+                              isActive ? "text-violet-700" : "text-zinc-500",
                             ].join(" ")}
                           >
                             {section.eyebrow}
@@ -822,13 +825,13 @@ function Sidebar({
                           <span
                             className={[
                               "mt-1 hidden truncate text-xs lg:block",
-                              isActive ? "text-white/70" : "text-zinc-500",
+                              isActive ? "text-zinc-600" : "text-zinc-500",
                             ].join(" ")}
                           >
                             {SECTION_COPY[section.id]}
                           </span>
                         </span>
-                        <span aria-hidden="true" className="text-lg leading-none">
+                        <span aria-hidden="true" className={isActive ? "text-lg leading-none text-violet-600" : "text-lg leading-none text-zinc-400"}>
                           ›
                         </span>
                       </button>
@@ -868,7 +871,7 @@ function Metric({
   return (
     <div
       className={[
-        "rounded-xl border border-zinc-200 border-l-2 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+        `rounded-2xl border border-zinc-200 border-l-[3px] bg-white p-4 ${SHADOW_L1}`,
         toneClass,
       ].join(" ")}
     >
@@ -897,10 +900,9 @@ function ActionCard({
 }) {
   const variantClass = {
     primary:
-      "border-violet-200 bg-violet-50/70 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_rgba(76,29,149,0.10)]",
-    signal: "border-zinc-300 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
-    health:
-      "border-emerald-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
+      `border-zinc-300 border-l-[3px] border-l-violet-500 bg-white ${SHADOW_L2}`,
+    signal: `border-zinc-300 bg-white ${SHADOW_L1}`,
+    health: `border-zinc-300 bg-white ${SHADOW_L1}`,
   }[variant];
 
   return (
@@ -908,7 +910,7 @@ function ActionCard({
       type="button"
       onClick={onClick}
       className={[
-        "rounded-xl border p-5 text-left transition duration-200 hover:-translate-y-1 hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_28px_rgba(0,0,0,0.07)]",
+        "rounded-2xl border p-5 text-left transition duration-150 hover:-translate-y-1 hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_28px_rgba(0,0,0,0.07)]",
         variantClass,
       ].join(" ")}
     >
@@ -947,12 +949,12 @@ function PhaseSignal({
   return (
     <div
       className={[
-        "h-full rounded-xl border p-4 transition duration-200 hover:-translate-y-1",
+        "h-full rounded-2xl border p-4 transition duration-150 hover:-translate-y-1",
         isDone
           ? "border-zinc-950 bg-zinc-950 text-white shadow-[0_1px_3px_rgba(0,0,0,0.05),0_8px_24px_rgba(0,0,0,0.08)]"
           : "border-zinc-300 bg-white text-zinc-950 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
         isCurrent
-          ? "ring-2 ring-violet-400 ring-offset-2 ring-offset-[#F4F4F5]"
+          ? "border-l-[3px] border-l-violet-400 ring-2 ring-violet-400 ring-offset-2 ring-offset-[#F4F4F5]"
           : "",
       ].join(" ")}
     >
@@ -1020,19 +1022,18 @@ function OverviewMetricGroup({
   value: string | number;
   summary: string;
   rows: Array<{ label: string; value: string | number }>;
-  variant: "completion" | "delivery" | "operations";
+  variant: "completion" | "delivery";
 }) {
   const surfaceClass = {
     completion:
       "border-emerald-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]",
     delivery: "border-zinc-200 bg-[#F7F7F7] shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
-    operations: "border-zinc-300 bg-transparent shadow-none",
   }[variant];
 
   return (
     <article
       className={[
-        "rounded-xl border p-5 transition duration-200 hover:-translate-y-1",
+        "rounded-2xl border p-5 transition duration-150 hover:-translate-y-1",
         surfaceClass,
       ].join(" ")}
     >
@@ -1042,11 +1043,6 @@ function OverviewMetricGroup({
           <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700">
             <span aria-hidden="true">✓</span>
             완료 · {value}
-          </p>
-        ) : variant === "operations" ? (
-          <p className="inline-flex items-center gap-2 text-base font-bold text-zinc-950">
-            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-emerald-500" />
-            {value}
           </p>
         ) : (
           <p className="text-3xl font-bold tracking-tight text-zinc-950">
@@ -1100,10 +1096,6 @@ function OverviewSection({
   const appliedChanges = status.planningChanges.filter(
     (item) => item.status === "applied",
   ).length;
-  const linkedTraces = status.traceLinks.filter((item) =>
-    ["linked", "released"].includes(item.status),
-  ).length;
-  const latestSnapshot = metricSnapshots.at(-1);
   const leadMetric = deliveryMetrics.cards.find(
     (metric) => metric.label === "Lead time",
   );
@@ -1182,6 +1174,16 @@ function OverviewSection({
           </div>
           <div className="border-t border-zinc-100 bg-[#FAFAFA] p-6 xl:border-l xl:border-t-0">
             <div className="flex items-center justify-between text-sm">
+              <span className="font-semibold text-zinc-600">Trace coverage</span>
+              <span className="text-2xl font-bold text-zinc-950">
+                {formatPercent(deliveryMetrics.traceCoverage)}
+              </span>
+            </div>
+            <div className="mt-3">
+              <ProgressBar value={deliveryMetrics.traceCoverage} />
+            </div>
+            <div className="my-5 border-t border-zinc-200" />
+            <div className="flex items-center justify-between text-sm">
               <span className="font-semibold text-zinc-600">전체 진행률</span>
               <span className="text-2xl font-bold text-zinc-950">
                 {overallProgress}%
@@ -1191,7 +1193,7 @@ function OverviewSection({
               <ProgressBar value={overallProgress} />
             </div>
             <dl className="mt-6 grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-md bg-white p-3">
+              <div className="rounded-xl border border-zinc-100 bg-white p-3">
                 <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
                   Lead
                 </dt>
@@ -1199,7 +1201,7 @@ function OverviewSection({
                   {leadMetric?.value ?? "N/A"}
                 </dd>
               </div>
-              <div className="rounded-md bg-white p-3">
+              <div className="rounded-xl border border-zinc-100 bg-white p-3">
                 <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
                   CI
                 </dt>
@@ -1207,7 +1209,7 @@ function OverviewSection({
                   {ciMetric?.value ?? "N/A"}
                 </dd>
               </div>
-              <div className="rounded-md bg-white p-3">
+              <div className="rounded-xl border border-zinc-100 bg-white p-3">
                 <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
                   Snapshot
                 </dt>
@@ -1215,14 +1217,12 @@ function OverviewSection({
                   {metricSnapshots.length}
                 </dd>
               </div>
-              <div className="rounded-md bg-white p-3">
+              <div className="rounded-xl border border-zinc-100 bg-white p-3">
                 <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                  Latest
+                  Queue
                 </dt>
-                <dd className="mt-1 truncate font-mono text-xs font-semibold text-zinc-600">
-                  {latestSnapshot
-                    ? formatTimestamp(latestSnapshot.capturedAt)
-                    : "-"}
+                <dd className="mt-1 font-bold text-zinc-950">
+                  {pendingWork.length ? `${pendingWork.length}건` : "없음"}
                 </dd>
               </div>
             </dl>
@@ -1230,7 +1230,7 @@ function OverviewSection({
         </div>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-3">
+      <section className="grid gap-4 xl:grid-cols-2">
         <OverviewMetricGroup
           title="Completion"
           value={`${donePhases.length}/${status.phases.length}`}
@@ -1266,26 +1266,6 @@ function OverviewSection({
             { label: "Snapshot", value: metricSnapshots.length },
           ]}
           variant="delivery"
-        />
-        <OverviewMetricGroup
-          title="Operations"
-          value={pendingWork.length ? `${pendingWork.length}건 대기` : "대기열 없음"}
-          summary={pendingWork.length ? "오늘 먼저 확인할 운영 신호" : "모든 필수 작업 완료"}
-          rows={[
-            { label: "Queue", value: pendingWork.length },
-            { label: "Evidence", value: evidenceIssues.length },
-            {
-              label: "Trace",
-              value: `${linkedTraces}/${status.traceLinks.length}`,
-            },
-            {
-              label: "Latest",
-              value: latestSnapshot
-                ? formatTimestamp(latestSnapshot.capturedAt)
-                : "-",
-            },
-          ]}
-          variant="operations"
         />
       </section>
 

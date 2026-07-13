@@ -157,6 +157,17 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - **Durability cue**: storage durability와 schema version을 노출해 영구 디스크 누락을 발견할 수 있게 합니다.
 - **Deployment**: 프로덕션에서는 API가 대시보드 정적 빌드를 같은 origin으로 제공합니다.
 
+## Redesign PRD v1.0
+
+- Hero는 trace coverage와 전체 진행률을 한 surface에서 비교합니다.
+- Sidebar 메뉴는 모든 viewport에서 1컬럼을 유지하며 active item은 violet 3px indicator로 구분합니다.
+- START HERE는 흰 surface, violet indicator, L2 shadow로 강조하고 장식용 violet tint는 사용하지 않습니다.
+- Overview metric은 Completion과 Delivery Health만 유지하고 Queue는 Hero에서 자연어로 표현합니다.
+- core surface는 16px radius, L1/L2 shadow, 150ms transition을 사용합니다.
+- 키보드 focus-visible과 prefers-reduced-motion을 전역 기준으로 적용합니다.
+
+상세 AC: [PRD-PROCESS-DASHBOARD-REDESIGN.md](../01-planning/PRD-PROCESS-DASHBOARD-REDESIGN.md)
+
 ## 참고한 UI 레퍼런스
 
 - Atlassian Design System — Side navigation: 제품 영역 안에서 중첩 뷰와 섹션 이동을 다루는 좌측 내비게이션 패턴

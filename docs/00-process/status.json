@@ -435,6 +435,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-13-sqlite-operations-v018.md",
       "nextAction": "비용 승인 후 Render 영구 디스크 배포와 외부 재배포 보존 smoke"
+    },
+    {
+      "id": "IN-018",
+      "title": "Process Dashboard Redesign PRD v1.0",
+      "source": "사용자 전달 리디자인 PRD",
+      "status": "done",
+      "phase": "P1",
+      "doc": "docs/01-planning/intake/2026-07-13-process-dashboard-redesign-prd.md",
+      "nextAction": "인앱 브라우저 세션에서 Sidebar, Hero, Phase 스크린샷과 Lighthouse 기록"
     }
   ],
   "deliverables": [
@@ -807,6 +816,16 @@
       "doc": "docs/04-qa/STAGING_RUNBOOK.md",
       "owner": "Engineering/DevOps",
       "summary": "Process Dashboard와 API 단일 서비스, Render 1GB 영구 디스크 배포 구성"
+    },
+    {
+      "id": "D-38",
+      "title": "Process Dashboard Redesign PRD v1.0",
+      "type": "design",
+      "phase": "P1",
+      "status": "done",
+      "doc": "docs/01-planning/PRD-PROCESS-DASHBOARD-REDESIGN.md",
+      "owner": "Product/Design/Engineering",
+      "summary": "Hero, Sidebar, Phase flow, Metrics와 micro detail의 승인된 디자인 리셋 기준"
     }
   ],
   "approvals": [
@@ -1315,6 +1334,29 @@
       "summary": "SQLite 운영 저장소와 persistent deployment 구성 승인",
       "doc": "docs/00-process/APPROVALS.md",
       "traceLinkIds": ["TL-017"]
+    },
+    {
+      "id": "AP-018",
+      "target": "Process Dashboard Redesign PRD v1.0",
+      "type": "deliverable",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Product", "Design", "Engineering"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "리디자인 PRD를 현재 v0.18 이후 기준으로 정규화하고 핵심 AC를 구현",
+      "criteria": [
+        "Sidebar가 1컬럼과 active indicator를 사용함",
+        "Hero에 trace coverage와 전체 진행률이 함께 보임",
+        "Operations 숫자 카드가 제거됨",
+        "장식용 pastel과 상태 badge 색상 책임이 분리됨",
+        "focus-visible과 reduced motion이 적용됨"
+      ],
+      "summary": "Process Dashboard Redesign PRD 승인과 핵심 AC 반영",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": ["TL-018"]
     }
   ],
   "planningChanges": [
@@ -1602,6 +1644,23 @@
       "doc": "docs/01-planning/changes/2026-07-13-sqlite-operations-v018.md",
       "summary": "SQLite migration, 문서 seed, incident/MTTR, 운영 화면, 영구 디스크 배포 구성 추가",
       "decision": "문서 SSOT와 SQLite 실행 계층을 분리하고 same-origin 단일 서비스로 배포"
+    },
+    {
+      "id": "CR-018",
+      "title": "Process Dashboard Redesign PRD 반영",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 전달 리디자인 PRD",
+      "targetDocs": [
+        "docs/01-planning/PRD-PROCESS-DASHBOARD-REDESIGN.md",
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/status.json",
+        "apps/process-dashboard/src/App.tsx",
+        "apps/process-dashboard/src/index.css"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-13-process-dashboard-redesign-prd.md",
+      "summary": "Hero, Sidebar, Phase flow, Metrics, focus와 motion 기준을 PRD에 맞게 정리",
+      "decision": "일반 surface는 white/zinc, 상태 색은 badge와 active/current indicator에만 사용"
     }
   ],
   "designReferences": [
@@ -2565,6 +2624,37 @@
       },
       "summary": "문서 SSOT 위에 SQLite 운영 실행 계층과 persistent deployment 구성을 추가",
       "nextAction": "비용 승인 후 Render 외부 URL, durability persistent, 재배포 보존 증거 연결"
+    },
+    {
+      "id": "TL-018",
+      "title": "Process Dashboard Redesign PRD v1.0",
+      "status": "partial",
+      "sourceIds": ["IN-018"],
+      "changeIds": ["CR-018"],
+      "deliverableIds": ["D-38"],
+      "approvalIds": ["AP-018"],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Render Blueprint",
+        "status": "pending"
+      },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm verify && pnpm smoke:process-os",
+        "checkedAt": "2026-07-13T09:00:00Z",
+        "summary": "전체 workspace verify와 인증 포함 production Process OS smoke passed"
+      },
+      "summary": "리디자인 PRD 정합성 수정과 Hero, Sidebar, Phase, Metrics 핵심 AC 구현",
+      "nextAction": "commit/CI 증거 연결 후 인앱 브라우저 세션에서 디자인 QA"
     }
   ],
   "features": [

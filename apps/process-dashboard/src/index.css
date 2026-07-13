@@ -14,6 +14,15 @@ h3 {
   line-height: 1.15;
 }
 
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(124 58 237 / 20%);
+}
+
 * {
   scrollbar-color: #a1a1aa transparent;
   scrollbar-width: thin;
@@ -65,4 +74,19 @@ h3 {
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {
   background: #71717a;
   background-clip: padding-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  [class*="hover:-translate"]:hover {
+    transform: none !important;
+  }
 }

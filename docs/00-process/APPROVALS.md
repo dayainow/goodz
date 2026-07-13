@@ -33,6 +33,7 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-015 | S18 White Premium Detail Tuning v0.16 | Codex | 사용자 | approved | TL-015 |
 | AP-016 | S19 Sidebar Comfort v0.17 | Codex | 사용자 | approved | TL-016 |
 | AP-017 | S20 SQLite Operations v0.18 | Codex | 사용자 | approved | TL-017 |
+| AP-018 | Process Dashboard Redesign PRD v1.0 | Codex | 사용자 | approved | TL-018 |
 
 ## 승인 기준
 
