@@ -39,6 +39,23 @@ pnpm smoke:staging
 - API `/api/process/status` phase 1개 이상
 - web-shop, admin-dashboard, process-dashboard HTML 응답이 비어 있지 않음
 
+## Trace Evidence 기록
+
+Smoke가 통과하면 관련 `traceLinks`에 아래 형식으로 기록합니다.
+
+```json
+{
+  "smoke": {
+    "status": "passed",
+    "command": "pnpm smoke:staging",
+    "checkedAt": "2026-07-13",
+    "summary": "API, web, admin, process dashboard smoke passed"
+  }
+}
+```
+
+외부 배포 URL이 있으면 `release.url` 또는 `GOODZ_RELEASE_URL`을 통해 함께 연결합니다.
+
 ## 롤백
 
 외부 호스팅에서 문제 발생 시 이전 성공 SHA로 재배포합니다.

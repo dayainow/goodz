@@ -25,6 +25,7 @@ type SectionId =
   | "changes"
   | "deliverables"
   | "approvals"
+  | "evidence"
   | "traceability"
   | "phases"
   | "queue"
@@ -37,6 +38,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "changes", label: "변경", eyebrow: "Change" },
   { id: "deliverables", label: "산출물", eyebrow: "Docs" },
   { id: "approvals", label: "승인", eyebrow: "Approval" },
+  { id: "evidence", label: "증거", eyebrow: "Evidence" },
   { id: "traceability", label: "추적", eyebrow: "Trace" },
   { id: "phases", label: "Phase Gate", eyebrow: "P0-P4" },
   { id: "queue", label: "작업 큐", eyebrow: "Tasks" },
@@ -115,6 +117,119 @@ const APPROVAL_TYPE_LABEL: Record<ProcessApproval["type"], string> = {
   change: "Change",
   release: "Release",
 };
+
+type EvidenceSeverity = "high" | "medium" | "low";
+
+interface EvidenceIssue {
+  traceId: string;
+  title: string;
+  severity: EvidenceSeverity;
+  label: string;
+  detail: string;
+  nextAction: string;
+}
+
+const EVIDENCE_SEVERITY_LABEL: Record<EvidenceSeverity, string> = {
+  high: "필수",
+  medium: "권장",
+  low: "릴리스 전",
+};
+
+const EVIDENCE_SEVERITY_CLASS: Record<EvidenceSeverity, string> = {
+  high: "border-rose-200 bg-rose-50 text-rose-700",
+  medium: "border-amber-200 bg-amber-50 text-amber-700",
+  low: "border-sky-200 bg-sky-50 text-sky-700",
+};
+
+function buildEvidenceIssues(traces: ProcessTraceLink[]): EvidenceIssue[] {
+  return traces.flatMap((trace) => {
+    const issues: EvidenceIssue[] = [];
+    const needsRuntimeEvidence = trace.status === "linked" || trace.status === "released";
+    const hasDeploymentEvidence =
+      trace.release.status === "linked" ||
+      trace.smoke?.status === "passed" ||
+      trace.smoke?.status === "not_required";
+
+    if (trace.deliverableIds.length === 0) {
+      issues.push({
+        traceId: trace.id,
+        title: trace.title,
+        severity: "high",
+        label: "산출물 없음",
+        detail: "trace link가 산출물 ID와 연결되지 않았습니다.",
+        nextAction: "deliverables에 산출물을 등록하고 deliverableIds에 연결",
+      });
+    }
+
+    if (trace.approvalIds.length === 0) {
+      issues.push({
+        traceId: trace.id,
+        title: trace.title,
+        severity: "high",
+        label: "승인 없음",
+        detail: "DACI 승인 ID가 연결되지 않았습니다.",
+        nextAction: "APPROVALS.md와 approvalIds에 승인 레코드 연결",
+      });
+    }
+
+    if (trace.commits.length === 0) {
+      issues.push({
+        traceId: trace.id,
+        title: trace.title,
+        severity: needsRuntimeEvidence ? "high" : "medium",
+        label: "Commit 없음",
+        detail: "코드 변경 증거가 아직 연결되지 않았습니다.",
+        nextAction: "merge 후 commit SHA를 연결하거나 sync:github-trace 실행",
+      });
+    }
+
+    if (trace.ciRuns.length === 0) {
+      issues.push({
+        traceId: trace.id,
+        title: trace.title,
+        severity: needsRuntimeEvidence ? "high" : "medium",
+        label: "CI 없음",
+        detail: "GitHub Actions run 증거가 아직 연결되지 않았습니다.",
+        nextAction: "CI 완료 후 pnpm sync:github-trace 실행",
+      });
+    }
+
+    if (trace.issue.status === "pending") {
+      issues.push({
+        traceId: trace.id,
+        title: trace.title,
+        severity: "medium",
+        label: "Issue 대기",
+        detail: "기획 또는 작업 이슈 URL이 연결되지 않았습니다.",
+        nextAction: "GitHub Issue를 만들거나 not_required로 명시",
+      });
+    }
+
+    if (trace.pr.status === "pending") {
+      issues.push({
+        traceId: trace.id,
+        title: trace.title,
+        severity: "medium",
+        label: "PR 대기",
+        detail: "Pull Request URL이 연결되지 않았습니다.",
+        nextAction: "PR URL을 연결하거나 직접 반영이면 not_required로 명시",
+      });
+    }
+
+    if (!hasDeploymentEvidence) {
+      issues.push({
+        traceId: trace.id,
+        title: trace.title,
+        severity: trace.status === "released" ? "high" : "low",
+        label: "릴리스 증거 대기",
+        detail: "Release URL 또는 smoke pass 증거가 아직 없습니다.",
+        nextAction: "릴리스 URL을 연결하거나 smoke 결과를 trace.smoke에 기록",
+      });
+    }
+
+    return issues;
+  });
+}
 
 function buildQueue(phases: ProcessPhase[]) {
   return phases.flatMap((phase) =>
@@ -261,10 +376,12 @@ function OverviewSection({
   status,
   overallProgress,
   queue,
+  evidenceIssues,
 }: {
   status: ProcessStatus;
   overallProgress: number;
   queue: Array<ProcessCheckItem & { phaseId: string; phaseName: string }>;
+  evidenceIssues: EvidenceIssue[];
 }) {
   const pendingWork = getPrimaryWork(queue);
   const donePhases = status.phases.filter((phase) => phase.status === "done");
@@ -309,7 +426,7 @@ function OverviewSection({
         </div>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-7">
+      <section className="grid gap-3 md:grid-cols-4 xl:grid-cols-8">
         <Metric label="Phase" value={`${donePhases.length}/${status.phases.length}`} tone="violet" />
         <Metric
           label="Deliverable"
@@ -330,6 +447,11 @@ function OverviewSection({
           label="Trace"
           value={`${linkedTraces}/${status.traceLinks.length}`}
           tone={linkedTraces === status.traceLinks.length ? "green" : "amber"}
+        />
+        <Metric
+          label="Evidence"
+          value={evidenceIssues.length}
+          tone={evidenceIssues.length ? "amber" : "green"}
         />
         <Metric label="Feature" value={`${doneFeatures.length}/${status.features.length}`} tone="green" />
         <Metric label="Queue" value={pendingWork.length} tone={pendingWork.length ? "amber" : "green"} />
@@ -654,6 +776,84 @@ function ApprovalsSection({ approvals }: { approvals: ProcessApproval[] }) {
   );
 }
 
+function EvidenceSection({ issues }: { issues: EvidenceIssue[] }) {
+  if (!issues.length) {
+    return (
+      <section className="rounded-lg border border-emerald-200 bg-emerald-50 p-6">
+        <p className="text-sm font-semibold text-emerald-700">Evidence clear</p>
+        <h3 className="mt-2 text-xl font-bold text-emerald-950">
+          누락된 운영 증거가 없습니다
+        </h3>
+        <p className="mt-2 text-sm leading-6 text-emerald-800">
+          모든 trace link가 산출물, 승인, 개발 증거, 배포 증거 기준을 충족합니다.
+        </p>
+      </section>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {(["high", "medium", "low"] as EvidenceSeverity[]).map((severity) => {
+        const items = issues.filter((issue) => issue.severity === severity);
+        if (!items.length) return null;
+
+        return (
+          <section
+            key={severity}
+            className="rounded-lg border border-zinc-200 bg-white"
+          >
+            <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  {EVIDENCE_SEVERITY_LABEL[severity]}
+                </p>
+                <h3 className="font-bold text-zinc-950">증거 보강 항목</h3>
+              </div>
+              <span
+                className={[
+                  "rounded-full border px-2.5 py-0.5 text-xs font-semibold",
+                  EVIDENCE_SEVERITY_CLASS[severity],
+                ].join(" ")}
+              >
+                {items.length}
+              </span>
+            </div>
+            <ul>
+              {items.map((issue) => (
+                <li
+                  key={`${issue.traceId}-${issue.label}`}
+                  className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_150px_1fr_260px] lg:items-start"
+                >
+                  <span className="font-mono text-xs font-semibold text-brand-violet">
+                    {issue.traceId}
+                  </span>
+                  <span
+                    className={[
+                      "w-fit rounded-full border px-2.5 py-0.5 text-xs font-semibold",
+                      EVIDENCE_SEVERITY_CLASS[issue.severity],
+                    ].join(" ")}
+                  >
+                    {issue.label}
+                  </span>
+                  <div>
+                    <p className="font-semibold text-zinc-950">{issue.title}</p>
+                    <p className="mt-1 text-xs leading-5 text-zinc-500">
+                      {issue.detail}
+                    </p>
+                  </div>
+                  <p className="text-xs leading-5 text-zinc-600">
+                    {issue.nextAction}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
 function TraceStatusBadge({ status }: { status: ProcessTraceStatus }) {
   return (
     <span
@@ -696,14 +896,25 @@ function TraceReferenceBadge({
   );
 }
 
-function TraceabilitySection({ traces }: { traces: ProcessTraceLink[] }) {
+function TraceabilitySection({
+  traces,
+  evidenceIssues,
+}: {
+  traces: ProcessTraceLink[];
+  evidenceIssues: EvidenceIssue[];
+}) {
   return (
     <div className="space-y-4">
-      {traces.map((trace) => (
-        <article
-          key={trace.id}
-          className="rounded-lg border border-zinc-200 bg-white"
-        >
+      {traces.map((trace) => {
+        const warningCount = evidenceIssues.filter(
+          (issue) => issue.traceId === trace.id,
+        ).length;
+
+        return (
+          <article
+            key={trace.id}
+            className="rounded-lg border border-zinc-200 bg-white"
+          >
           <div className="grid gap-4 border-b border-zinc-100 px-4 py-4 lg:grid-cols-[100px_1fr_120px] lg:items-start">
             <span className="font-mono text-xs font-semibold text-brand-violet">
               {trace.id}
@@ -716,6 +927,11 @@ function TraceabilitySection({ traces }: { traces: ProcessTraceLink[] }) {
               <p className="mt-2 text-xs text-zinc-500">
                 다음 액션: {trace.nextAction}
               </p>
+              {warningCount > 0 && (
+                <p className="mt-2 inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                  증거 보강 {warningCount}건
+                </p>
+              )}
             </div>
             <TraceStatusBadge status={trace.status} />
           </div>
@@ -761,11 +977,16 @@ function TraceabilitySection({ traces }: { traces: ProcessTraceLink[] }) {
                 <TraceReferenceBadge {...trace.issue} label="Issue" />
                 <TraceReferenceBadge {...trace.pr} label="PR" />
                 <TraceReferenceBadge {...trace.release} label="Release" />
+                {trace.smoke && (
+                  <span className="inline-flex w-fit rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs font-medium text-zinc-600">
+                    Smoke: {trace.smoke.status}
+                  </span>
+                )}
               </div>
             </div>
           </div>
 
-          <div className="grid gap-4 border-t border-zinc-100 px-4 py-4 lg:grid-cols-2">
+          <div className="grid gap-4 border-t border-zinc-100 px-4 py-4 lg:grid-cols-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
                 Commits
@@ -807,9 +1028,31 @@ function TraceabilitySection({ traces }: { traces: ProcessTraceLink[] }) {
                 ))}
               </ul>
             </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Release Smoke
+              </p>
+              {trace.smoke ? (
+                <div className="mt-2 space-y-1 text-sm text-zinc-600">
+                  <p className="font-semibold text-zinc-900">
+                    {trace.smoke.status}
+                  </p>
+                  <p className="font-mono text-xs text-zinc-500">
+                    {trace.smoke.command}
+                  </p>
+                  <p className="text-xs leading-5 text-zinc-500">
+                    {trace.smoke.summary}
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-2 text-sm text-zinc-400">아직 없음</p>
+              )}
+            </div>
           </div>
         </article>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -937,6 +1180,10 @@ export default function App() {
     () => (status ? buildQueue(status.phases) : []),
     [status],
   );
+  const evidenceIssues = useMemo(
+    () => (status ? buildEvidenceIssues(status.traceLinks) : []),
+    [status],
+  );
 
   if (loading) {
     return (
@@ -1003,6 +1250,7 @@ export default function App() {
             status={status}
             overallProgress={overallProgress}
             queue={queue}
+            evidenceIssues={evidenceIssues}
           />
         )}
 
@@ -1022,8 +1270,15 @@ export default function App() {
           <ApprovalsSection approvals={status.approvals} />
         )}
 
+        {activeSection === "evidence" && (
+          <EvidenceSection issues={evidenceIssues} />
+        )}
+
         {activeSection === "traceability" && (
-          <TraceabilitySection traces={status.traceLinks} />
+          <TraceabilitySection
+            traces={status.traceLinks}
+            evidenceIssues={evidenceIssues}
+          />
         )}
 
         {activeSection === "phases" && (

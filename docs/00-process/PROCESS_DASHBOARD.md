@@ -24,7 +24,7 @@ process-dashboard (:5180)       ← 모니터링 UI
 | `status.json` | Phase·Sprint·기획 입력·기획 변경·산출물·DACI 승인·추적 링크·기능·앱 목록의 기계 판독 가능 상태 |
 | `@goodz/types` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
-| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Intake/Change/Deliverable/DACI Approval/Trace/Phase/Queue/Feature/App 관리 뷰 |
+| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Intake/Change/Deliverable/DACI Approval/Evidence/Trace/Phase/Queue/Feature/App 관리 뷰 |
 
 ## 접속
 
@@ -63,6 +63,7 @@ curl http://localhost:4000/api/process/status
 - **변경** — 기획 수정 요청·대상 문서·반영 상태
 - **산출물** — PRD·화면설계·API·QA·릴리스 문서 레지스트리
 - **승인** — Driver·Approver·Contributors·Informed·승인 기준·결정 로그
+- **증거** — Issue/PR/Commit/CI/승인/릴리즈·스모크 누락 경고
 - **추적** — 기획·변경·산출물·승인과 Issue/PR/Commit/CI/Release 증거 연결
 - **Phase Gate** — P0–P4 패널 + 문서 경로
 - **작업 큐** — 차단/진행/대기/완료 상태별 항목
@@ -76,6 +77,7 @@ curl http://localhost:4000/api/process/status
 - [APPROVALS.md](./APPROVALS.md)
 - [DECISIONS.md](./DECISIONS.md)
 - [TRACEABILITY.md](./TRACEABILITY.md)
+- [GITHUB_TRACE_SYNC.md](./GITHUB_TRACE_SYNC.md)
 - [CICD.md](./CICD.md)
 - [deliverables/README.md](../deliverables/README.md)
 - [PROJECT.md](../../PROJECT.md)

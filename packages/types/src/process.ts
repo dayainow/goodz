@@ -134,6 +134,14 @@ export interface ProcessTraceCiRun {
   url: string;
 }
 
+export interface ProcessTraceSmoke {
+  status: "passed" | "failed" | "pending" | "not_required";
+  command: string;
+  checkedAt?: string;
+  url?: string;
+  summary: string;
+}
+
 export interface ProcessTraceLink {
   id: string;
   title: string;
@@ -147,6 +155,7 @@ export interface ProcessTraceLink {
   commits: ProcessTraceCommit[];
   ciRuns: ProcessTraceCiRun[];
   release: ProcessTraceReference;
+  smoke?: ProcessTraceSmoke;
   summary: string;
   nextAction: string;
 }

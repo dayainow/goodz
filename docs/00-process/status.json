@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.5.1",
+  "systemVersion": "v0.6",
   "sprint": {
-    "id": "S7",
-    "name": "시스템 v0.5.1 — Roadmap + CI Runtime Maintenance",
+    "id": "S8",
+    "name": "시스템 v0.6 — GitHub Trace Sync + Evidence Alerts",
     "status": "done",
-    "goal": "로드맵 문서 정합성을 v0.5 기준으로 맞추고 GitHub Actions Node 24 런타임으로 전환"
+    "goal": "GitHub Issue/PR/CI 증거 자동 수집, 대시보드 누락 경고, 릴리즈·스모크 증거 연결 체계 완성"
   },
   "phases": [
     {
@@ -47,6 +47,8 @@
         { "id": "p2-process-dash", "label": "프로세스 대시보드", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
         { "id": "p2-traceability", "label": "Traceability 매트릭스", "status": "done", "doc": "docs/00-process/TRACEABILITY.md" },
         { "id": "p2-approval-governance", "label": "DACI 승인 체계", "status": "done", "doc": "docs/00-process/APPROVALS.md" },
+        { "id": "p2-github-trace-sync", "label": "GitHub trace 자동 동기화", "status": "done", "doc": "docs/00-process/GITHUB_TRACE_SYNC.md" },
+        { "id": "p2-evidence-alerts", "label": "대시보드 증거 누락 경고", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
         { "id": "p2-roadmap-sync", "label": "ROADMAP v0.5 정합성", "status": "done", "doc": "docs/01-planning/ROADMAP.md" },
         { "id": "p2-gate", "label": "P2→P3 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
       ]
@@ -73,6 +75,7 @@
         { "id": "p4-node24", "label": "GitHub Actions Node 24 런타임", "status": "done", "doc": ".github/workflows/ci.yml" },
         { "id": "p4-env", "label": "스테이징 env matrix", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
         { "id": "p4-staging", "label": "스테이징 smoke 절차", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
+        { "id": "p4-release-evidence", "label": "Release/Smoke 증거 연결", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
         { "id": "p4-checklist", "label": "RELEASE_CHECKLIST", "status": "done", "doc": "docs/04-qa/RELEASE_CHECKLIST.md" },
         { "id": "p4-prod", "label": "프로덕션 handoff", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" }
       ]
@@ -114,6 +117,15 @@
       "phase": "P4",
       "doc": "docs/01-planning/ROADMAP.md",
       "nextAction": "v0.6에서 GitHub Issue/PR 자동 연결 착수"
+    },
+    {
+      "id": "IN-005",
+      "title": "GitHub Trace Sync + Evidence Alerts v0.6",
+      "source": "사용자 요청 · 1번 2번 3번 진행",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/00-process/GITHUB_TRACE_SYNC.md",
+      "nextAction": "DORA/Delivery Metrics 고도화 여부 판단"
     }
   ],
   "deliverables": [
@@ -286,6 +298,36 @@
       "doc": "docs/00-process/CICD.md",
       "owner": "DevOps",
       "summary": "GitHub Actions 액션 major와 setup-node 런타임을 Node 24 기준으로 갱신"
+    },
+    {
+      "id": "D-18",
+      "title": "GitHub Trace Sync",
+      "type": "ops",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/GITHUB_TRACE_SYNC.md",
+      "owner": "Engineering/DevOps",
+      "summary": "gh CLI로 commit, CI run, PR, Issue, Release 증거를 traceLinks에 자동 반영"
+    },
+    {
+      "id": "D-19",
+      "title": "Evidence Alerts",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/PROCESS_DASHBOARD.md",
+      "owner": "Engineering",
+      "summary": "대시보드에서 Issue, PR, commit, CI, 승인, 릴리즈·스모크 증거 누락을 경고로 표시"
+    },
+    {
+      "id": "D-20",
+      "title": "Release/Smoke Evidence",
+      "type": "release",
+      "phase": "P4",
+      "status": "done",
+      "doc": "docs/04-qa/STAGING_RUNBOOK.md",
+      "owner": "DevOps/QA",
+      "summary": "traceLinks에 릴리즈 URL과 smoke pass 결과를 배포 증거로 연결하는 규칙"
     }
   ],
   "approvals": [
@@ -374,6 +416,28 @@
       "summary": "로드맵 정합성, CI Node 24 전환, 다음 v0.6 준비 승인",
       "doc": "docs/00-process/APPROVALS.md",
       "traceLinkIds": ["TL-004"]
+    },
+    {
+      "id": "AP-005",
+      "target": "S8 GitHub Trace Sync + Evidence Alerts v0.6",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Engineering", "DevOps", "QA"],
+      "informed": ["PM", "Future Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "GitHub 증거 자동 동기화, 대시보드 누락 경고, Release/Smoke 증거 연결을 v0.6 범위로 진행",
+      "criteria": [
+        "pnpm sync:github-trace가 gh CLI로 CI/PR/Issue/Release 증거를 동기화",
+        "대시보드에서 증거 누락 항목을 별도 메뉴와 trace card에 표시",
+        "traceLinks가 smoke 증거를 선택적으로 기록하고 check:process가 검증",
+        "CI/CD 문서와 README가 새 운영 명령을 설명"
+      ],
+      "summary": "자동 trace sync, evidence alerts, release/smoke evidence 체계 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": ["TL-005"]
     }
   ],
   "planningChanges": [
@@ -442,6 +506,23 @@
       "doc": "docs/01-planning/ROADMAP.md",
       "summary": "ROADMAP의 과거 상태 표현을 정리하고 GitHub Actions Node 24 전환을 반영",
       "decision": "v0.5.1 유지보수 스프린트로 기록하고 v0.6 자동 연결 작업 전 문서·CI 기반을 정리"
+    },
+    {
+      "id": "CR-005",
+      "title": "GitHub 증거 자동화와 대시보드 누락 경고",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/GITHUB_TRACE_SYNC.md",
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/CICD.md",
+        "docs/04-qa/STAGING_RUNBOOK.md",
+        "docs/00-process/status.json"
+      ],
+      "doc": "docs/00-process/GITHUB_TRACE_SYNC.md",
+      "summary": "traceLinks의 GitHub 증거 수집을 gh CLI로 자동화하고 대시보드에 증거 누락 경고를 추가",
+      "decision": "증거 입력은 자동 수집을 우선하고, 릴리즈 URL 또는 smoke 결과를 배포 증거로 인정"
     }
   ],
   "traceLinks": [
@@ -602,6 +683,37 @@
       },
       "summary": "ROADMAP v0.5.1 정합성과 CI Node 24 전환이 커밋·CI green 증거와 연결됨",
       "nextAction": "v0.6에서 GitHub Issue/PR 자동 연결과 대시보드 누락 경고 착수"
+    },
+    {
+      "id": "TL-005",
+      "title": "GitHub Trace Sync + Evidence Alerts v0.6",
+      "status": "partial",
+      "sourceIds": ["IN-005"],
+      "changeIds": ["CR-005"],
+      "deliverableIds": ["D-18", "D-19", "D-20"],
+      "approvalIds": ["AP-005"],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "smoke": {
+        "status": "passed",
+        "command": "GOODZ_WEB_URL=http://localhost:3001 pnpm smoke:staging",
+        "checkedAt": "2026-07-13",
+        "summary": "API, web-shop(:3001), admin-dashboard, process-dashboard smoke passed"
+      },
+      "summary": "GitHub trace 자동 동기화, 대시보드 증거 누락 경고, release/smoke 증거 필드를 v0.6로 추가",
+      "nextAction": "커밋과 GitHub Actions CI run을 sync:github-trace 또는 수동 증거로 연결"
     }
   ],
   "features": [
@@ -614,7 +726,8 @@
     { "id": "F-07", "label": "Home · Category", "status": "done" },
     { "id": "F-08", "label": "어드민 상품 등록", "status": "done" },
     { "id": "F-09", "label": "Search · About", "status": "done" },
-    { "id": "F-10", "label": "프로세스 대시보드", "status": "done" }
+    { "id": "F-10", "label": "프로세스 대시보드", "status": "done" },
+    { "id": "F-11", "label": "증거 누락 경고", "status": "done" }
   ],
   "apps": [
     { "id": "api-server", "name": "API Server", "port": 4000, "role": "REST · mock · process SSOT", "url": "http://localhost:4000" },

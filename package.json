@@ -15,6 +15,8 @@
     "check:workspace": "manypkg check",
     "check:deps": "node scripts/check-phantom-deps.mjs",
     "check:process": "node scripts/validate-process.mjs",
+    "sync:github-trace": "node scripts/sync-github-trace.mjs",
+    "sync:github-trace:check": "node scripts/sync-github-trace.mjs --check",
     "smoke:staging": "node scripts/smoke-staging.mjs",
     "verify": "pnpm check:workspace && pnpm check:deps && pnpm check:process && turbo build && turbo lint"
   },

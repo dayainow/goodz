@@ -8,6 +8,7 @@
 - [x] env 변수 스테이징 설정 기준 문서화 (`NEXT_PUBLIC_API_URL`, `VITE_API_URL`)
 - [x] API health check
 - [x] 스테이징 smoke 명령 준비 (`pnpm smoke:staging`)
+- [x] Release/Smoke evidence 기록 규칙 (`traceLinks[].release`, `traceLinks[].smoke`)
 
 ### 2026-07-10 확인 메모
 
@@ -32,3 +33,4 @@
 - [x] 프로덕션 smoke test 명령 문서화 (`pnpm smoke:staging` + production URL)
 - [x] `PROJECT.md` Phase 상태 갱신
 - [x] 회고 메모: v0.2는 외부 호스팅 연결 전 release-ready 기준으로 완료
+- [x] GitHub trace sync 명령 문서화 (`pnpm sync:github-trace`)

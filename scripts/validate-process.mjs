@@ -25,6 +25,7 @@ const itemStatuses = new Set(["done", "in_progress", "pending", "blocked"]);
 const traceStatuses = new Set(["pending", "partial", "linked", "released"]);
 const refStatuses = new Set(["pending", "linked", "not_required"]);
 const ciStatuses = new Set(["success", "failed", "running", "pending"]);
+const smokeStatuses = new Set(["passed", "failed", "pending", "not_required"]);
 const approvalStatuses = new Set(["approved", "requested", "changes_requested"]);
 const approvalTypes = new Set(["phase_gate", "sprint", "deliverable", "change", "release"]);
 
@@ -126,6 +127,15 @@ for (const trace of status.traceLinks) {
   for (const run of trace.ciRuns) {
     assert(ciStatuses.has(run.status), `${trace.id} invalid CI status ${run.status}`);
     assert(run.url.startsWith("https://github.com/"), `${trace.id} CI url must be GitHub`);
+  }
+
+  if (trace.smoke) {
+    assert(smokeStatuses.has(trace.smoke.status), `${trace.id} invalid smoke status ${trace.smoke.status}`);
+    assert(typeof trace.smoke.command === "string" && trace.smoke.command.length > 0, `${trace.id}.smoke.command is required`);
+    assert(typeof trace.smoke.summary === "string" && trace.smoke.summary.length > 0, `${trace.id}.smoke.summary is required`);
+    if (trace.smoke.url) {
+      assert(trace.smoke.url.startsWith("https://") || trace.smoke.url.startsWith("http://localhost:"), `${trace.id}.smoke.url must be https or localhost`);
+    }
   }
 }
 

@@ -20,6 +20,7 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-002 | S5 Traceability + CI/CD Evidence v0.4 | Codex | 사용자 | approved | TL-002 |
 | AP-003 | S6 DACI Approval Governance v0.5 | Codex | 사용자 | approved | TL-003 |
 | AP-004 | S7 Roadmap + CI Runtime Maintenance v0.5.1 | Codex | 사용자 | approved | TL-004 |
+| AP-005 | S8 GitHub Trace Sync + Evidence Alerts v0.6 | Codex | 사용자 | approved | TL-005 |
 
 ## 승인 기준
 
@@ -48,5 +49,5 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 
 - 승인 SLA 또는 due date
 - 변경 요청과 승인 재요청 이력
-- 대시보드에서 승인 누락/지연 경고
 - GitHub Issue/PR reviewer와 승인자 자동 연결
+- DORA/Delivery Metrics와 승인 리드타임 연결
