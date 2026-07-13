@@ -1544,7 +1544,7 @@
     {
       "id": "TL-010",
       "title": "Operator UX v0.11",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": [
         "IN-010"
       ],
@@ -1565,14 +1565,30 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "1b0ae4e",
+          "message": "feat: improve process dashboard operator ux",
+          "url": "https://github.com/dayainow/goodz/commit/1b0ae4ecb49a01cf4bf8f5fa6617e3afa785d2b2",
+          "committedAt": "2026-07-13T02:52:13Z"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29220409009",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29220409009",
+          "createdAt": "2026-07-13T02:52:22Z",
+          "startedAt": "2026-07-13T02:52:22Z",
+          "completedAt": "2026-07-13T02:53:11Z"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
       "summary": "사이드 메뉴 그룹화와 개요 운영 브리핑으로 프로세스 대시보드 사용성을 고도화",
-      "nextAction": "커밋과 GitHub Actions CI run을 연결"
+      "nextAction": "문서 검색, guided workflow, 온보딩 템플릿으로 확장"
     }
   ],
   "features": [
