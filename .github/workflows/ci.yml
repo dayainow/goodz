@@ -12,29 +12,29 @@ jobs:
       run:
         working-directory: goodz
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           path: goodz
 
       # web-shop의 file: 의존성이 참조하는 형제 리포를 함께 체크아웃
       - name: Checkout ga-analytics-harness
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: dayainow/ga-analytics-harness
           path: ga-analytics-harness
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           package_json_file: goodz/package.json
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
           cache-dependency-path: goodz/pnpm-lock.yaml
 
       - name: Cache Turborepo
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: goodz/.turbo/cache
           key: ${{ runner.os }}-turbo-${{ hashFiles('goodz/pnpm-lock.yaml') }}-${{ github.sha }}

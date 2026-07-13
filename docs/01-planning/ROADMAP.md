@@ -10,22 +10,24 @@
 | **v0.1** | 모노레포 + P0 Gate + MVP 데모 + CI | ✅ |
 | **v0.2** | P1 Claude Design + P2 UI handoff + 프로세스 대시보드 | ✅ |
 | **v0.3** | Process OS: 기획 입력 + 산출물 레지스트리 + 대시보드 추적 | ✅ |
+| **v0.4** | Traceability: Issue/PR/Commit/CI 증거 연결 | ✅ |
+| **v0.5** | DACI Approval Governance: 승인·결정 체계 | ✅ |
+| **v0.5.1** | ROADMAP 정합성 + GitHub Actions Node 24 전환 | ✅ |
+| **v0.6** | GitHub Issue/PR 자동 연결 + 대시보드 누락 경고 | ⚪ |
 | **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
 
 ## 전체 타임라인
 
 ```text
-S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 ✅ UI + 대시보드     S3 ✅ QA·스테이징     S4 ✅ Process OS
-────────────      ────────────────────────────      ───────────────      ───────────────
-모노레포           기획 확정 · 이슈 등록              Claude Design P1      E2E · 릴리스       산출물 레지스트리
-3앱 기동           상품 상세 · 장바구니 · 체크아웃     /design-sync · handoff   프로덕션          기획 입력함
+S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
+S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 ```
 
 ---
 
 ## Phase별 계획
 
-### P0 기획 — Sprint S1 (현재)
+### P0 기획 — Sprint S1 완료
 
 | # | 작업 | 산출물 | 상태 |
 |---|------|--------|------|
@@ -39,21 +41,21 @@ S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 ✅ UI + 대시보드    
 
 ---
 
-### P1 디자인 — Sprint S1~S2
+### P1 디자인 — Sprint S1~S2 완료
 
 | # | 작업 | 산출물 | 상태 |
 |---|------|--------|------|
 | D1-1 | 디자인 브리프 확정 | `DESIGN_BRIEF.md` | ✅ |
-| D1-2 | 화면 스펙 5종 | `screens/*.md` | 🟡 |
-| D1-3 | DS 토큰·컴포넌트 매핑 | `DESIGN_SYSTEM.md` | 🟡 |
-| D1-4 | Claude Design 착수 | [CLAUDE_DESIGN.md](./CLAUDE_DESIGN.md) | 🟡 |
-| D1-5 | **P1→P2 Gate** | 4화면 프로토타입 + DS 매핑 | ⚪ |
+| D1-2 | 화면 스펙 12종 | `screens/*.md` | ✅ |
+| D1-3 | DS 토큰·컴포넌트 매핑 | `DESIGN_SYSTEM.md` | ✅ |
+| D1-4 | Claude Design 착수 | [CLAUDE_DESIGN.md](./CLAUDE_DESIGN.md) | ✅ |
+| D1-5 | **P1→P2 Gate** | 12화면 프로토타입 + DS 매핑 | ✅ |
 
 **병행:** 코드 스펙(`screens/`)으로 개발 착수 가능. Figma는 보조 — [FIGMA.md](../02-design/FIGMA.md).
 
 ---
 
-### P2 개발 — Sprint S1~S2
+### P2 개발 — Sprint S1~S7 완료
 
 | ID | 기능 | 유저스토리 | 우선순위 | 상태 |
 |----|------|-----------|----------|------|
@@ -64,35 +66,38 @@ S0 ✅ 스캐폴드     S1 ✅ MVP 플로우        S2 ✅ UI + 대시보드    
 | F-03 | 장바구니 | US-010 | P1 | ✅ |
 | F-04 | 체크아웃 mock | US-011 | P1 | ✅ |
 | F-08 | 어드민 상품 등록 | US-002+ | P1 | ✅ |
+| F-09 | Search · About | — | P1 | ✅ |
+| F-10 | 프로세스 대시보드 | — | P0 | ✅ |
 
-**S1 목표 (이번 스프린트):** F-02 · F-03 · F-04 완료 → MVP 쇼핑 플로우 end-to-end
-
----
-
-### P3 QA — Sprint S3
-
-| # | 작업 | 기준 |
-|---|------|------|
-| Q1 | `pnpm verify` CI green | 100% pass |
-| Q2 | TEST_PLAN P0 시나리오 | 전부 pass |
-| Q3 | GA compliance | ga-analytics-harness 연동 |
-| Q4 | 회귀 | 상품→장바구니→결제 플로우 |
+**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계 완료
 
 ---
 
-### P4 배포 — Sprint S3+
+### P3 QA — Sprint S3 완료
 
 | # | 작업 | 기준 |
 |---|------|------|
-| R1 | 스테이징 배포 | 런북 + env matrix + smoke 명령 |
-| R2 | RELEASE_CHECKLIST | 전 항목 완료 |
-| R3 | 프로덕션 | 외부 호스팅 연결 시 같은 smoke 절차 적용 |
+| Q1 | `pnpm verify` CI green | ✅ |
+| Q2 | TEST_PLAN P0 시나리오 | ✅ |
+| Q3 | GA compliance | ✅ |
+| Q4 | 회귀 | ✅ |
+
+---
+
+### P4 배포 — Sprint S3+ 완료
+
+| # | 작업 | 기준 |
+|---|------|------|
+| R1 | 스테이징 배포 | ✅ 런북 + env matrix + smoke 명령 |
+| R2 | RELEASE_CHECKLIST | ✅ 전 항목 완료 |
+| R3 | CI/CD evidence | ✅ traceLinks + GitHub Actions |
+| R4 | 프로덕션 | 외부 호스팅 연결 시 같은 smoke 절차 적용 |
 
 ---
 
 ## 스프린트 백로그 (상세)
 
-### Sprint S1 — MVP 쇼핑 플로우 (현재)
+### Sprint S1 — MVP 쇼핑 플로우
 
 ```text
 Week 1
@@ -140,6 +145,13 @@ Week 1
 - `APPROVALS.md` 승인 운영 규칙
 - `DECISIONS.md` 의사결정 로그
 
+### Sprint S7 — Roadmap + CI Runtime Maintenance
+
+- ROADMAP의 과거 상태 표현 정리
+- `status.json` v0.5.1 유지보수 trace 추가
+- GitHub Actions를 Node 24와 최신 major actions로 갱신
+- v0.6 자동 연결 작업 전 문서·CI 기반 정리
+
 ---
 
 ## 의존성 그래프
@@ -170,7 +182,8 @@ flowchart LR
 7. ✅ S4: Process OS 산출물 레지스트리
 8. ✅ v0.4: Issue/PR/Commit/CI 추적 레이어
 9. ✅ v0.5: DACI 승인 체계
-10. ⚪ v0.6: GitHub Issue/PR 자동 수집 + 대시보드 누락 경고
+10. ✅ v0.5.1: ROADMAP 정합성 + CI Node 24 전환
+11. ⚪ v0.6: GitHub Issue/PR 자동 수집 + 대시보드 누락 경고
 
 ---
 
@@ -179,3 +192,5 @@ flowchart LR
 | 날짜 | 변경 |
 |------|------|
 | 2026-07-08 | ROADMAP v1 — S1 MVP 쇼핑 플로우 착수 |
+| 2026-07-10 | v0.3–v0.5 — Process OS, Traceability, DACI 승인 체계 완료 |
+| 2026-07-13 | v0.5.1 — ROADMAP 정합성 및 CI Node 24 전환 |

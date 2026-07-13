@@ -1,12 +1,12 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-10",
-  "systemVersion": "v0.5",
+  "updatedAt": "2026-07-13",
+  "systemVersion": "v0.5.1",
   "sprint": {
-    "id": "S6",
-    "name": "시스템 v0.5 — DACI Approval Governance",
+    "id": "S7",
+    "name": "시스템 v0.5.1 — Roadmap + CI Runtime Maintenance",
     "status": "done",
-    "goal": "승인 로그를 Driver·Approver·Contributors·Informed가 분리된 의사결정 체계로 고도화"
+    "goal": "로드맵 문서 정합성을 v0.5 기준으로 맞추고 GitHub Actions Node 24 런타임으로 전환"
   },
   "phases": [
     {
@@ -47,6 +47,7 @@
         { "id": "p2-process-dash", "label": "프로세스 대시보드", "status": "done", "doc": "docs/00-process/PROCESS_DASHBOARD.md" },
         { "id": "p2-traceability", "label": "Traceability 매트릭스", "status": "done", "doc": "docs/00-process/TRACEABILITY.md" },
         { "id": "p2-approval-governance", "label": "DACI 승인 체계", "status": "done", "doc": "docs/00-process/APPROVALS.md" },
+        { "id": "p2-roadmap-sync", "label": "ROADMAP v0.5 정합성", "status": "done", "doc": "docs/01-planning/ROADMAP.md" },
         { "id": "p2-gate", "label": "P2→P3 Gate", "status": "done", "doc": "docs/00-process/PHASE_GATES.md" }
       ]
     },
@@ -69,6 +70,7 @@
       "progress": 100,
       "items": [
         { "id": "p4-ci", "label": "GitHub Actions CI green", "status": "done" },
+        { "id": "p4-node24", "label": "GitHub Actions Node 24 런타임", "status": "done", "doc": ".github/workflows/ci.yml" },
         { "id": "p4-env", "label": "스테이징 env matrix", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
         { "id": "p4-staging", "label": "스테이징 smoke 절차", "status": "done", "doc": "docs/04-qa/STAGING_RUNBOOK.md" },
         { "id": "p4-checklist", "label": "RELEASE_CHECKLIST", "status": "done", "doc": "docs/04-qa/RELEASE_CHECKLIST.md" },
@@ -103,6 +105,15 @@
       "phase": "P2",
       "doc": "docs/00-process/APPROVALS.md",
       "nextAction": "신규 Gate와 변경 요청은 DACI 필드로 승인"
+    },
+    {
+      "id": "IN-004",
+      "title": "Roadmap + CI Runtime Maintenance v0.5.1",
+      "source": "사용자 승인 · 문서 정합성 + Node 24 업데이트",
+      "status": "done",
+      "phase": "P4",
+      "doc": "docs/01-planning/ROADMAP.md",
+      "nextAction": "v0.6에서 GitHub Issue/PR 자동 연결 착수"
     }
   ],
   "deliverables": [
@@ -255,6 +266,26 @@
       "doc": "docs/00-process/DECISIONS.md",
       "owner": "PM/Operations",
       "summary": "주요 프로세스 결정의 배경, 결정, 영향, 후속 액션 기록"
+    },
+    {
+      "id": "D-16",
+      "title": "ROADMAP v0.5 정합성 정리",
+      "type": "planning",
+      "phase": "P0",
+      "status": "done",
+      "doc": "docs/01-planning/ROADMAP.md",
+      "owner": "PM",
+      "summary": "시스템 버전, 스프린트 타임라인, 다음 액션을 v0.5.1 기준으로 정리"
+    },
+    {
+      "id": "D-17",
+      "title": "CI Node 24 런타임 전환",
+      "type": "ops",
+      "phase": "P4",
+      "status": "done",
+      "doc": "docs/00-process/CICD.md",
+      "owner": "DevOps",
+      "summary": "GitHub Actions 액션 major와 setup-node 런타임을 Node 24 기준으로 갱신"
     }
   ],
   "approvals": [
@@ -321,6 +352,28 @@
       "summary": "DACI 역할 분리, 승인 기준, 의사결정 로그, 대시보드 승인 UI 고도화",
       "doc": "docs/00-process/APPROVALS.md",
       "traceLinkIds": ["TL-003"]
+    },
+    {
+      "id": "AP-004",
+      "target": "S7 Roadmap + CI Runtime Maintenance v0.5.1",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["PM", "DevOps"],
+      "informed": ["Engineering", "QA"],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "ROADMAP의 과거 표현을 v0.5.1 기준으로 정리하고 GitHub Actions를 Node 24 런타임으로 갱신",
+      "criteria": [
+        "ROADMAP이 v0.3까지만 보이는 문제를 해소",
+        "현재 스프린트/다음 액션이 S7 이후 흐름과 일치",
+        "CI가 Node 24와 최신 major actions로 동작",
+        "pnpm verify와 GitHub Actions가 모두 통과"
+      ],
+      "summary": "로드맵 정합성, CI Node 24 전환, 다음 v0.6 준비 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": ["TL-004"]
     }
   ],
   "planningChanges": [
@@ -372,6 +425,23 @@
       "doc": "docs/00-process/APPROVALS.md",
       "summary": "단순 승인 로그를 Driver·Approver·Contributors·Informed가 분리된 결정 체계로 확장",
       "decision": "승인 레코드에 DACI 역할, 승인 기준, 결정 문장, trace link 참조를 추가"
+    },
+    {
+      "id": "CR-004",
+      "title": "ROADMAP 정합성 및 CI Node 24 업데이트",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        ".github/workflows/ci.yml",
+        "PROJECT.md",
+        "docs/01-planning/ROADMAP.md",
+        "docs/00-process/CICD.md",
+        "docs/00-process/status.json"
+      ],
+      "doc": "docs/01-planning/ROADMAP.md",
+      "summary": "ROADMAP의 과거 상태 표현을 정리하고 GitHub Actions Node 24 전환을 반영",
+      "decision": "v0.5.1 유지보수 스프린트로 기록하고 v0.6 자동 연결 작업 전 문서·CI 기반을 정리"
     }
   ],
   "traceLinks": [
@@ -495,6 +565,31 @@
       },
       "summary": "DACI 승인 체계, 의사결정 로그, 승인 메뉴 고도화가 커밋·CI green 증거와 연결됨",
       "nextAction": "다음 승인부터 requested 상태로 시작해 승인 기준과 결정 문장을 먼저 기록"
+    },
+    {
+      "id": "TL-004",
+      "title": "Roadmap + CI Runtime Maintenance v0.5.1",
+      "status": "partial",
+      "sourceIds": ["IN-004"],
+      "changeIds": ["CR-004"],
+      "deliverableIds": ["D-16", "D-17"],
+      "approvalIds": ["AP-004"],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "ROADMAP v0.5 정합성과 CI Node 24 전환이 반영되었고, 이번 커밋·CI 성공 후 linked로 승격 예정",
+      "nextAction": "커밋 후 sha와 GitHub Actions run id를 traceLinks에 반영"
     }
   ],
   "features": [

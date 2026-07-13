@@ -19,6 +19,7 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-001 | S4 Process OS v0.3 | Codex | 사용자 | approved | TL-001 |
 | AP-002 | S5 Traceability + CI/CD Evidence v0.4 | Codex | 사용자 | approved | TL-002 |
 | AP-003 | S6 DACI Approval Governance v0.5 | Codex | 사용자 | approved | TL-003 |
+| AP-004 | S7 Roadmap + CI Runtime Maintenance v0.5.1 | Codex | 사용자 | approved | TL-004 |
 
 ## 승인 기준
 

@@ -33,10 +33,23 @@ CI 단계:
 
 1. `dayainow/goodz` checkout
 2. `dayainow/ga-analytics-harness` 형제 checkout
-3. pnpm + Node.js 20 설치
+3. pnpm + Node.js 24 설치
 4. Turborepo cache 복원
 5. workspace/dependency/process 검증
 6. build + lint
+
+### Actions Runtime
+
+2026-07-13 기준 CI는 Node 24 런타임을 사용합니다.
+
+| 액션 | 버전 |
+|------|------|
+| `actions/checkout` | `v7` |
+| `pnpm/action-setup` | `v6` |
+| `actions/setup-node` | `v6` |
+| `actions/cache` | `v6` |
+
+GitHub Actions의 Node 20 deprecation 경고를 피하기 위해 workflow와 setup-node 런타임을 함께 갱신합니다.
 
 ## Smoke 검증
 

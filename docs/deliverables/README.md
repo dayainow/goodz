@@ -22,6 +22,8 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-13 | P4 | CI/CD 운영 문서 | [CICD.md](../00-process/CICD.md) | DevOps | 완료 |
 | D-14 | P2 | DACI 승인 체계 | [APPROVALS.md](../00-process/APPROVALS.md) | PM/Operations | 완료 |
 | D-15 | P2 | 의사결정 로그 | [DECISIONS.md](../00-process/DECISIONS.md) | PM/Operations | 완료 |
+| D-16 | P0 | ROADMAP v0.5 정합성 정리 | [ROADMAP.md](../01-planning/ROADMAP.md) | PM | 완료 |
+| D-17 | P4 | CI Node 24 런타임 전환 | [CICD.md](../00-process/CICD.md) | DevOps | 완료 |
 
 ## 운영 규칙
 

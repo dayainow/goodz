@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S6 DACI Approval Governance v0.5** ✅
+## 현재 스프린트: **S7 Roadmap + CI Runtime Maintenance v0.5.1** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -16,6 +16,7 @@
 | **산출물 레지스트리** | ✅ [deliverables](./docs/deliverables/README.md) |
 | **승인 로그** | ✅ [APPROVALS](./docs/00-process/APPROVALS.md) · [DECISIONS](./docs/00-process/DECISIONS.md) |
 | **추적 매트릭스** | ✅ [TRACEABILITY](./docs/00-process/TRACEABILITY.md) + CI 증거 |
+| **CI 런타임** | ✅ GitHub Actions Node 24 + 최신 major actions |
 
 ## 현재 단계
 
@@ -58,6 +59,8 @@
 - [x] S6: DACI 승인 체계 → [APPROVALS.md](./docs/00-process/APPROVALS.md)
 - [x] S6: 의사결정 로그 → [DECISIONS.md](./docs/00-process/DECISIONS.md)
 - [x] S6: 대시보드 승인 메뉴 역할·기준 표시
+- [x] S7: ROADMAP v0.5.1 정합성 정리
+- [x] S7: GitHub Actions Node 24 런타임 전환
 
 ## 풀 프로세스
 
