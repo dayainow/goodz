@@ -1960,7 +1960,7 @@
     {
       "id": "TL-012",
       "title": "Design OS v0.13",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": [
         "IN-012"
       ],
@@ -1984,14 +1984,30 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "4b806f6",
+          "message": "feat: add design os dashboard flow",
+          "url": "https://github.com/dayainow/goodz/commit/4b806f6c2b7df78fbf1c2484c9555db1101b591e",
+          "committedAt": "2026-07-13T03:55:59Z"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29222754688",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29222754688",
+          "createdAt": "2026-07-13T03:56:13Z",
+          "startedAt": "2026-07-13T03:56:13Z",
+          "completedAt": "2026-07-13T03:57:14Z"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
       "summary": "Design OS 문서 구조, 레퍼런스 보드, 와이어프레임, 스토리보드, 대시보드 Design 메뉴를 연결",
-      "nextAction": "구현 커밋과 CI green 증거 연결"
+      "nextAction": "Figma 연동, 디자인 QA, reference-to-screen 자동 연결로 확장"
     }
   ],
   "features": [
