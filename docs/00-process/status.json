@@ -1424,7 +1424,7 @@
     {
       "id": "TL-009",
       "title": "Docs Viewer + User Manual v0.10",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": [
         "IN-009"
       ],
@@ -1445,14 +1445,30 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "73e9423",
+          "message": "feat: add in-dashboard docs guide",
+          "url": "https://github.com/dayainow/goodz/commit/73e9423cc42dd71f91d996af41eb92460b14f24e",
+          "committedAt": "2026-07-13T02:33:30Z"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29219766920",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29219766920",
+          "createdAt": "2026-07-13T02:33:39Z",
+          "startedAt": "2026-07-13T02:33:39Z",
+          "completedAt": "2026-07-13T02:34:37Z"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
       "summary": "대시보드에서 Markdown 문서 원문과 서비스 이용 가이드를 읽을 수 있도록 고도화",
-      "nextAction": "커밋과 GitHub Actions CI run을 연결"
+      "nextAction": "문서 검색과 수정 요청 생성으로 확장"
     }
   ],
   "features": [
