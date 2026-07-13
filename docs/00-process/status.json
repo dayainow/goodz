@@ -1664,7 +1664,7 @@
     {
       "id": "TL-011",
       "title": "Premium Dashboard UX v0.12",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": [
         "IN-011"
       ],
@@ -1685,14 +1685,30 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "e01e440",
+          "message": "feat: polish process dashboard premium ux",
+          "url": "https://github.com/dayainow/goodz/commit/e01e4402d2648a835cebfa90e5de4dab75d07cad",
+          "committedAt": "2026-07-13T03:31:18Z"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29221869227",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29221869227",
+          "createdAt": "2026-07-13T03:31:30Z",
+          "startedAt": "2026-07-13T03:31:30Z",
+          "completedAt": "2026-07-13T03:32:01Z"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
       "summary": "사이드바 검색, quick jump, 접힘 그룹, 콘솔형 메인 헤더로 프로세스 대시보드 UX를 고급화",
-      "nextAction": "구현 커밋과 CI green 증거 연결"
+      "nextAction": "문서 검색, guided workflow, role-based view로 확장"
     }
   ],
   "features": [
