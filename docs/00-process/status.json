@@ -1183,7 +1183,7 @@
     {
       "id": "TL-007",
       "title": "Timestamp Metrics v0.8",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": [
         "IN-007"
       ],
@@ -1204,14 +1204,30 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "a4b2787",
+          "message": "feat: add GitHub timestamp metrics",
+          "url": "https://github.com/dayainow/goodz/commit/a4b2787b945617a45cec2e0212728fa4342cb11c",
+          "committedAt": "2026-07-13T01:59:47Z"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29218560782",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29218560782",
+          "createdAt": "2026-07-13T01:59:58Z",
+          "startedAt": "2026-07-13T01:59:58Z",
+          "completedAt": "2026-07-13T02:00:54Z"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
       "summary": "GitHub timestamp를 traceLinks에 저장하고 Metrics 대시보드에서 단계별 시간을 계산하도록 고도화",
-      "nextAction": "커밋과 GitHub Actions CI run을 연결"
+      "nextAction": "metrics snapshot 저장과 trend 분석으로 확장"
     }
   ],
   "features": [
