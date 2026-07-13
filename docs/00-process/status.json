@@ -687,7 +687,7 @@
     {
       "id": "TL-005",
       "title": "GitHub Trace Sync + Evidence Alerts v0.6",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": ["IN-005"],
       "changeIds": ["CR-005"],
       "deliverableIds": ["D-18", "D-19", "D-20"],
@@ -700,8 +700,20 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "dbfdb72",
+          "message": "feat: GitHub trace sync와 증거 경고 추가",
+          "url": "https://github.com/dayainow/goodz/commit/dbfdb72"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29217600997",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29217600997"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
@@ -712,8 +724,8 @@
         "checkedAt": "2026-07-13",
         "summary": "API, web-shop(:3001), admin-dashboard, process-dashboard smoke passed"
       },
-      "summary": "GitHub trace 자동 동기화, 대시보드 증거 누락 경고, release/smoke 증거 필드를 v0.6로 추가",
-      "nextAction": "커밋과 GitHub Actions CI run을 sync:github-trace 또는 수동 증거로 연결"
+      "summary": "GitHub trace 자동 동기화, 대시보드 증거 누락 경고, release/smoke 증거 필드가 커밋·CI green·smoke pass 증거와 연결됨",
+      "nextAction": "DORA/Delivery Metrics 초안 검토"
     }
   ],
   "features": [
