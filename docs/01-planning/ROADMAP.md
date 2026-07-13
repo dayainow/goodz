@@ -21,6 +21,7 @@
 | **v0.11** | 운영자 관점 사이드 메뉴 + Overview UX 고도화 | ✅ |
 | **v0.12** | 검색/접힘 사이드바 + Quick jump + 콘솔형 헤더 UI 고급화 | ✅ |
 | **v0.13** | Design OS: 레퍼런스 + 와이어프레임 + 스토리보드 + Design 메뉴 | ✅ |
+| **v0.14** | Premium White UI: 화이트 표면 + grouped metrics + Phase flow | ✅ |
 | **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
 
 ## 전체 타임라인
@@ -28,7 +29,7 @@
 ```text
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
-S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS
+S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI
 ```
 
 ---
@@ -78,7 +79,7 @@ S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11
 | F-09 | Search · About | — | P1 | ✅ |
 | F-10 | 프로세스 대시보드 | — | P0 | ✅ |
 
-**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계, 증거 자동화, 시간 단위 Delivery Metrics, snapshot trend, 문서 뷰어/이용 가이드, 운영자 UX, 프리미엄 대시보드 UX, Design OS 완료
+**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계, 증거 자동화, 시간 단위 Delivery Metrics, snapshot trend, 문서 뷰어/이용 가이드, 운영자 UX, 프리미엄 대시보드 UX, Design OS, Premium White UI 완료
 
 ---
 
@@ -218,6 +219,14 @@ Week 1
 - `status.json`에 `designReferences`, `wireframes`, `storyboards` 추가
 - process-dashboard `디자인` 메뉴 추가
 
+### Sprint S16 — Premium White UI
+
+- process-dashboard 카드 표면을 white/#FAFAFA + 미세 보더 중심으로 정리
+- pastel 배경은 일반 카드 장식에서 제거하고 상태 신호에만 사용
+- Overview metric을 Completion, Delivery Health, Operations 그룹으로 압축
+- P0-P4 운영 맵을 선형 phase flow로 개선
+- `PROCESS_DASHBOARD.md`, `DESIGN_SYSTEM.md`, `status.json`에 UI 원칙과 증거 연결
+
 ---
 
 ## 의존성 그래프
@@ -257,7 +266,8 @@ flowchart LR
 16. ✅ v0.11: 운영자 UX 고도화
 17. ✅ v0.12: 프리미엄 대시보드 UX 고도화
 18. ✅ v0.13: Design OS 산출물 체계
-19. ⚪ v1.0 후보: 문서 검색, guided workflow, incident/MTTR 기록 + PR review lead time
+19. ✅ v0.14: Premium White UI 고도화
+20. ⚪ v1.0 후보: 문서 검색, guided workflow, incident/MTTR 기록 + PR review lead time
 
 ---
 
@@ -276,3 +286,4 @@ flowchart LR
 | 2026-07-13 | v0.11 — 운영자 관점 사이드 메뉴 + Overview UX 고도화 |
 | 2026-07-13 | v0.12 — 프리미엄 대시보드 UX 고도화 |
 | 2026-07-13 | v0.13 — Design OS 산출물 체계 |
+| 2026-07-13 | v0.14 — Premium White UI 고도화 |

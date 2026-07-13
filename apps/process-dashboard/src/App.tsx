@@ -265,11 +265,20 @@ const EVIDENCE_SEVERITY_CLASS: Record<EvidenceSeverity, string> = {
 };
 
 const DELIVERY_METRIC_TONE_CLASS: Record<DeliveryMetricTone, string> = {
-  neutral: "border-zinc-200 bg-white text-zinc-950",
-  good: "border-emerald-200 bg-emerald-50 text-emerald-950",
-  watch: "border-amber-200 bg-amber-50 text-amber-950",
-  risk: "border-rose-200 bg-rose-50 text-rose-950",
+  neutral: "border-zinc-200 border-l-zinc-300 bg-white text-zinc-950",
+  good: "border-zinc-200 border-l-emerald-500 bg-white text-zinc-950",
+  watch: "border-zinc-200 border-l-amber-500 bg-white text-zinc-950",
+  risk: "border-zinc-200 border-l-rose-500 bg-white text-zinc-950",
 };
+
+const CARD_SURFACE =
+  "rounded-xl border border-zinc-200/80 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]";
+const META_LABEL =
+  "text-[12px] font-semibold uppercase tracking-wider text-zinc-500";
+const PRIMARY_ACTION =
+  "border-zinc-950 bg-zinc-950 text-white hover:border-zinc-800 hover:bg-zinc-800";
+const QUIET_ACTION =
+  "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400 hover:bg-zinc-50 hover:text-zinc-950";
 
 function parseTimestamp(value?: string, boundary: "start" | "end" = "start") {
   if (!value) return null;
@@ -619,10 +628,10 @@ function Sidebar({
   const normalizedQuery = query.trim().toLowerCase();
 
   return (
-    <aside className="border-b border-zinc-200 bg-zinc-50 px-4 py-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[340px] lg:flex-col lg:border-b-0 lg:border-r">
+    <aside className="border-b border-zinc-200 bg-[#F7F7F7] px-4 py-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[340px] lg:flex-col lg:border-b-0 lg:border-r">
       <div className="flex items-center justify-between gap-4 lg:block">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
+          <p className={META_LABEL}>
             Goodz System
           </p>
           <h1 className="mt-1 text-2xl font-bold text-zinc-950">
@@ -632,7 +641,7 @@ function Sidebar({
         <StatusBadge status={status.sprint.status} />
       </div>
 
-      <div className="mt-5 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+      <div className={["mt-5 p-4", CARD_SURFACE].join(" ")}>
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium text-zinc-600">전체 진행률</span>
           <span className="font-bold text-zinc-950">{overallProgress}%</span>
@@ -646,33 +655,33 @@ function Sidebar({
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700">
+        <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
             Trace
           </p>
-          <p className="mt-1 text-lg font-bold text-emerald-950">
+          <p className="mt-1 text-lg font-bold text-zinc-950">
             {linkedTraces}/{status.traceLinks.length}
           </p>
         </div>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-700">
+        <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
             Evidence
           </p>
-          <p className="mt-1 text-lg font-bold text-amber-950">
+          <p className={["mt-1 text-lg font-bold", evidenceIssueCount ? "text-amber-700" : "text-zinc-950"].join(" ")}>
             {evidenceIssueCount}
           </p>
         </div>
-        <div className="rounded-lg border border-violet-200 bg-violet-50 p-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-violet-700">
+        <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
             Sprint
           </p>
-          <p className="mt-1 text-lg font-bold text-violet-950">
+          <p className="mt-1 text-lg font-bold text-zinc-950">
             {status.sprint.id}
           </p>
         </div>
       </div>
 
-      <div className="mt-5 rounded-xl border border-zinc-200 bg-white p-3 shadow-sm">
+      <div className={["mt-5 p-3", CARD_SURFACE].join(" ")}>
         <label htmlFor="nav-search" className="sr-only">
           메뉴 검색
         </label>
@@ -681,10 +690,10 @@ function Sidebar({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="메뉴 검색"
-          className="h-10 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 text-sm font-medium text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-brand-violet focus:bg-white focus:ring-2 focus:ring-violet-100"
+          className="h-10 w-full rounded-lg border border-zinc-200 bg-[#FAFAFA] px-3 text-sm font-medium text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-950 focus:bg-white focus:ring-2 focus:ring-zinc-200"
         />
         <div className="mt-3">
-          <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
             Quick jump
           </p>
           <div className="grid grid-cols-4 gap-2">
@@ -699,9 +708,7 @@ function Sidebar({
                   onClick={() => onSelect(id)}
                   className={[
                     "rounded-lg border px-2 py-2 text-xs font-bold transition",
-                    isActive
-                      ? "border-brand-violet bg-brand-violet text-white"
-                      : "border-zinc-200 bg-white text-zinc-600 hover:border-violet-200 hover:bg-violet-50 hover:text-brand-violet",
+                    isActive ? PRIMARY_ACTION : QUIET_ACTION,
                   ].join(" ")}
                 >
                   {section.label}
@@ -733,76 +740,74 @@ function Sidebar({
           return (
             <section
               key={group.title}
-              className="rounded-xl border border-zinc-200 bg-white p-2 shadow-sm"
+              className={["p-2", CARD_SURFACE].join(" ")}
             >
-            <button
-              type="button"
-              aria-expanded={!isCollapsed}
-              onClick={() =>
-                setCollapsedGroups((current) => ({
-                  ...current,
-                  [group.title]: !current[group.title],
-                }))
-              }
-              className="flex w-full items-end justify-between gap-2 rounded-lg px-2 py-2 text-left hover:bg-zinc-50"
-            >
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                  {group.title}
-                </p>
-                <p className="text-[11px] text-zinc-400">{group.summary}</p>
-              </div>
-              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-500">
-                {isCollapsed ? "열기" : `${visibleItems.length}/${group.items.length}`}
-              </span>
-            </button>
-            {!isCollapsed && (
-              <div className="mt-1 grid grid-cols-2 gap-2 lg:grid-cols-1">
-                {visibleItems.map((id) => {
-                  const section = SECTIONS.find((item) => item.id === id);
-                  if (!section) return null;
-                  const isActive = section.id === activeSection;
-                  return (
-                    <button
-                      key={section.id}
-                      type="button"
-                      onClick={() => onSelect(section.id)}
-                      className={[
-                        "flex min-h-14 items-center justify-between rounded-lg border px-3 text-left transition",
-                        isActive
-                          ? "border-brand-violet bg-brand-violet text-white shadow-sm"
-                          : "border-zinc-200 bg-white text-zinc-700 hover:border-violet-200 hover:bg-violet-50",
-                      ].join(" ")}
-                    >
-                      <span className="min-w-0">
-                        <span
-                          className={[
-                            "block text-[11px] font-semibold uppercase tracking-wider",
-                            isActive ? "text-white/70" : "text-zinc-400",
-                          ].join(" ")}
-                        >
-                          {section.eyebrow}
+              <button
+                type="button"
+                aria-expanded={!isCollapsed}
+                onClick={() =>
+                  setCollapsedGroups((current) => ({
+                    ...current,
+                    [group.title]: !current[group.title],
+                  }))
+                }
+                className="flex w-full items-end justify-between gap-2 rounded-lg px-2 py-2 text-left hover:bg-zinc-50"
+              >
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+                    {group.title}
+                  </p>
+                  <p className="text-[11px] text-zinc-500">{group.summary}</p>
+                </div>
+                <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-500">
+                  {isCollapsed ? "열기" : `${visibleItems.length}/${group.items.length}`}
+                </span>
+              </button>
+              {!isCollapsed && (
+                <div className="mt-1 grid grid-cols-2 gap-2 lg:grid-cols-1">
+                  {visibleItems.map((id) => {
+                    const section = SECTIONS.find((item) => item.id === id);
+                    if (!section) return null;
+                    const isActive = section.id === activeSection;
+                    return (
+                      <button
+                        key={section.id}
+                        type="button"
+                        onClick={() => onSelect(section.id)}
+                        className={[
+                          "flex min-h-14 items-center justify-between rounded-lg border px-3 text-left transition",
+                          isActive ? PRIMARY_ACTION : QUIET_ACTION,
+                        ].join(" ")}
+                      >
+                        <span className="min-w-0">
+                          <span
+                            className={[
+                              "block text-[11px] font-semibold uppercase tracking-wider",
+                              isActive ? "text-white/70" : "text-zinc-500",
+                            ].join(" ")}
+                          >
+                            {section.eyebrow}
+                          </span>
+                          <span className="block text-sm font-semibold">
+                            {section.label}
+                          </span>
+                          <span
+                            className={[
+                              "mt-1 hidden truncate text-xs lg:block",
+                              isActive ? "text-white/70" : "text-zinc-500",
+                            ].join(" ")}
+                          >
+                            {SECTION_COPY[section.id]}
+                          </span>
                         </span>
-                        <span className="block text-sm font-semibold">
-                          {section.label}
+                        <span aria-hidden="true" className="text-lg leading-none">
+                          ›
                         </span>
-                        <span
-                          className={[
-                            "mt-1 hidden truncate text-xs lg:block",
-                            isActive ? "text-white/70" : "text-zinc-400",
-                          ].join(" ")}
-                        >
-                          {SECTION_COPY[section.id]}
-                        </span>
-                      </span>
-                      <span aria-hidden="true" className="text-lg leading-none">
-                        ›
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </section>
           );
         })}
@@ -826,18 +831,23 @@ function Metric({
   tone?: "neutral" | "violet" | "green" | "amber";
 }) {
   const toneClass = {
-    neutral: "border-zinc-200 bg-white text-zinc-950",
-    violet: "border-violet-200 bg-violet-50 text-violet-900",
-    green: "border-emerald-200 bg-emerald-50 text-emerald-900",
-    amber: "border-amber-200 bg-amber-50 text-amber-900",
+    neutral: "border-l-zinc-300",
+    violet: "border-l-zinc-950",
+    green: "border-l-emerald-500",
+    amber: "border-l-amber-500",
   }[tone];
 
   return (
-    <div className={["rounded-xl border p-4 shadow-sm", toneClass].join(" ")}>
-      <p className="text-xs font-semibold uppercase tracking-wider opacity-70">
+    <div
+      className={[
+        "rounded-xl border border-zinc-200 border-l-2 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+        toneClass,
+      ].join(" ")}
+    >
+      <p className={META_LABEL}>
         {label}
       </p>
-      <p className="mt-2 text-2xl font-bold">{value}</p>
+      <p className="mt-2 text-2xl font-bold text-zinc-950">{value}</p>
     </div>
   );
 }
@@ -858,10 +868,10 @@ function ActionCard({
   onClick: () => void;
 }) {
   const toneClass = {
-    neutral: "border-zinc-200 bg-white",
-    violet: "border-violet-200 bg-violet-50",
-    green: "border-emerald-200 bg-emerald-50",
-    amber: "border-amber-200 bg-amber-50",
+    neutral: "border-l-zinc-300",
+    violet: "border-l-zinc-950",
+    green: "border-l-emerald-500",
+    amber: "border-l-amber-500",
   }[tone];
 
   return (
@@ -869,16 +879,16 @@ function ActionCard({
       type="button"
       onClick={onClick}
       className={[
-        "rounded-lg border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm",
+        "rounded-lg border border-zinc-200 border-l-2 bg-white p-4 text-left shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]",
         toneClass,
       ].join(" ")}
     >
-      <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
+      <p className={META_LABEL}>
         {eyebrow}
       </p>
       <h3 className="mt-2 font-bold text-zinc-950">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-zinc-600">{summary}</p>
-      <p className="mt-4 text-sm font-semibold text-brand-violet">
+      <p className="mt-4 text-sm font-semibold text-zinc-950">
         {action} →
       </p>
     </button>
@@ -886,21 +896,35 @@ function ActionCard({
 }
 
 function PhaseSignal({ phase }: { phase: ProcessPhase }) {
+  const isDone = phase.status === "done";
+
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-4">
+    <div
+      className={[
+        "h-full rounded-xl border p-4 transition",
+        isDone
+          ? "border-zinc-950 bg-zinc-950 text-white shadow-[0_1px_3px_rgba(0,0,0,0.05),0_8px_24px_rgba(0,0,0,0.08)]"
+          : "border-zinc-300 bg-white text-zinc-950 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+      ].join(" ")}
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-xs font-semibold text-brand-violet">
+          <p
+            className={[
+              "font-mono text-xs font-semibold",
+              isDone ? "text-white/70" : "text-zinc-500",
+            ].join(" ")}
+          >
             {phase.id}
           </p>
-          <h3 className="mt-1 font-bold text-zinc-950">{phase.name}</h3>
+          <h3 className="mt-1 font-bold">{phase.name}</h3>
         </div>
         <StatusBadge status={phase.status} />
       </div>
       <div className="mt-4">
         <ProgressBar value={phase.progress} />
       </div>
-      <p className="mt-2 text-xs text-zinc-500">
+      <p className={["mt-2 text-xs", isDone ? "text-white/60" : "text-zinc-500"].join(" ")}>
         {phase.items.filter((item) => item.status === "done").length}/
         {phase.items.length} 항목 완료
       </p>
@@ -925,6 +949,55 @@ function QueueRow({
       <p className="truncate text-xs text-zinc-500">{item.doc ?? item.url ?? "-"}</p>
       <StatusBadge status={item.status} />
     </li>
+  );
+}
+
+function OverviewMetricGroup({
+  title,
+  value,
+  summary,
+  rows,
+  tone = "neutral",
+}: {
+  title: string;
+  value: string | number;
+  summary: string;
+  rows: Array<{ label: string; value: string | number }>;
+  tone?: "neutral" | "green" | "amber";
+}) {
+  const toneClass = {
+    neutral: "border-l-zinc-950",
+    green: "border-l-emerald-500",
+    amber: "border-l-amber-500",
+  }[tone];
+
+  return (
+    <article
+      className={[
+        "rounded-xl border border-zinc-200 border-l-2 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]",
+        toneClass,
+      ].join(" ")}
+    >
+      <p className={META_LABEL}>{title}</p>
+      <div className="mt-3 flex items-end justify-between gap-4">
+        <p className="text-3xl font-bold tracking-tight text-zinc-950">
+          {value}
+        </p>
+        <p className="max-w-40 text-right text-xs leading-5 text-zinc-500">
+          {summary}
+        </p>
+      </div>
+      <dl className="mt-5 grid grid-cols-2 gap-2">
+        {rows.map((row) => (
+          <div key={row.label} className="rounded-lg border border-zinc-100 bg-[#FAFAFA] p-3">
+            <dt className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+              {row.label}
+            </dt>
+            <dd className="mt-1 text-sm font-bold text-zinc-950">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </article>
   );
 }
 
@@ -967,29 +1040,32 @@ function OverviewSection({
   const ciMetric = deliveryMetrics.cards.find(
     (metric) => metric.label === "CI success rate",
   );
+  const deliveryMetric = deliveryMetrics.cards.find(
+    (metric) => metric.label === "Deployment frequency",
+  );
 
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
+      <section className={["overflow-hidden", CARD_SURFACE].join(" ")}>
         <div className="grid gap-0 xl:grid-cols-[1.35fr_0.65fr]">
           <div className="p-6">
             <p className="text-sm font-semibold text-brand-violet">
               현재 Sprint · {status.sprint.id}
             </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-zinc-950">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-zinc-950 lg:text-[32px]">
               {status.sprint.name}
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-zinc-600">
               {status.sprint.goal}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-brand-violet">
+              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold text-zinc-700">
                 Command center
               </span>
-              <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
+              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold text-zinc-700">
                 SSOT · status.json
               </span>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold text-zinc-700">
                 Operator ready
               </span>
             </div>
@@ -1028,7 +1104,7 @@ function OverviewSection({
               />
             </div>
           </div>
-          <div className="border-t border-zinc-100 bg-zinc-50 p-6 xl:border-l xl:border-t-0">
+          <div className="border-t border-zinc-100 bg-[#FAFAFA] p-6 xl:border-l xl:border-t-0">
             <div className="flex items-center justify-between text-sm">
               <span className="font-semibold text-zinc-600">전체 진행률</span>
               <span className="text-2xl font-bold text-zinc-950">
@@ -1078,40 +1154,63 @@ function OverviewSection({
         </div>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-3 xl:grid-cols-9">
-        <Metric label="Phase" value={`${donePhases.length}/${status.phases.length}`} tone="violet" />
-        <Metric
-          label="Deliverable"
-          value={`${doneDeliverables.length}/${status.deliverables.length}`}
-          tone="violet"
-        />
-        <Metric
-          label="Approval"
-          value={`${approvedCount}/${status.approvals.length}`}
+      <section className="grid gap-4 xl:grid-cols-3">
+        <OverviewMetricGroup
+          title="Completion"
+          value={`${donePhases.length}/${status.phases.length}`}
+          summary="단계와 산출물 완료 기준"
+          rows={[
+            {
+              label: "Deliverable",
+              value: `${doneDeliverables.length}/${status.deliverables.length}`,
+            },
+            {
+              label: "Feature",
+              value: `${doneFeatures.length}/${status.features.length}`,
+            },
+            {
+              label: "Approval",
+              value: `${approvedCount}/${status.approvals.length}`,
+            },
+            {
+              label: "Change",
+              value: `${appliedChanges}/${status.planningChanges.length}`,
+            },
+          ]}
           tone="green"
         />
-        <Metric
-          label="Change"
-          value={`${appliedChanges}/${status.planningChanges.length}`}
-          tone="green"
-        />
-        <Metric
-          label="Trace"
-          value={`${linkedTraces}/${status.traceLinks.length}`}
-          tone={linkedTraces === status.traceLinks.length ? "green" : "amber"}
-        />
-        <Metric
-          label="Evidence"
-          value={evidenceIssues.length}
-          tone={evidenceIssues.length ? "amber" : "green"}
-        />
-        <Metric
-          label="Delivery"
+        <OverviewMetricGroup
+          title="Delivery Health"
           value={formatPercent(deliveryMetrics.traceCoverage)}
+          summary="trace와 CI 기반 운영 건강도"
+          rows={[
+            { label: "Lead", value: leadMetric?.value ?? "N/A" },
+            { label: "CI", value: ciMetric?.value ?? "N/A" },
+            { label: "Ready", value: deliveryMetric?.value ?? "0" },
+            { label: "Snapshot", value: metricSnapshots.length },
+          ]}
           tone={deliveryMetrics.traceCoverage >= 95 ? "green" : "amber"}
         />
-        <Metric label="Feature" value={`${doneFeatures.length}/${status.features.length}`} tone="green" />
-        <Metric label="Queue" value={pendingWork.length} tone={pendingWork.length ? "amber" : "green"} />
+        <OverviewMetricGroup
+          title="Operations"
+          value={pendingWork.length}
+          summary="오늘 먼저 확인할 운영 신호"
+          rows={[
+            { label: "Queue", value: pendingWork.length },
+            { label: "Evidence", value: evidenceIssues.length },
+            {
+              label: "Trace",
+              value: `${linkedTraces}/${status.traceLinks.length}`,
+            },
+            {
+              label: "Latest",
+              value: latestSnapshot
+                ? formatTimestamp(latestSnapshot.capturedAt)
+                : "-",
+            },
+          ]}
+          tone={pendingWork.length || evidenceIssues.length ? "amber" : "green"}
+        />
       </section>
 
       <section>
@@ -1127,19 +1226,29 @@ function OverviewSection({
           <button
             type="button"
             onClick={() => onSelect("phases")}
-            className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:border-brand-violet hover:text-brand-violet"
+            className={["rounded-lg px-4 py-2 text-sm font-semibold", QUIET_ACTION].join(" ")}
           >
             Gate 보기
           </button>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-          {status.phases.map((phase) => (
-            <PhaseSignal key={phase.id} phase={phase} />
+          {status.phases.map((phase, index) => (
+            <div key={phase.id} className="relative">
+              <PhaseSignal phase={phase} />
+              {index < status.phases.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white text-sm font-bold text-zinc-500 shadow-[0_1px_3px_rgba(0,0,0,0.04)] xl:flex"
+                >
+                  →
+                </span>
+              )}
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="rounded-lg border border-zinc-200 bg-white">
+      <section className={CARD_SURFACE}>
         <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
           <h3 className="font-bold text-zinc-950">우선 처리 작업</h3>
           <StatusBadge status={pendingWork.length ? "in_progress" : "done"} />
@@ -1352,15 +1461,27 @@ function GuideSection() {
               type="button"
               onClick={() => setSelectedPath(doc.path)}
               className={[
-                "block w-full px-4 py-4 text-left hover:bg-violet-50",
-                selectedPath === doc.path ? "bg-violet-50" : "bg-white",
+                "block w-full px-4 py-4 text-left hover:bg-zinc-50",
+                selectedPath === doc.path ? "bg-zinc-950 text-white" : "bg-white",
               ].join(" ")}
             >
-              <p className="font-semibold text-zinc-950">{doc.title}</p>
-              <p className="mt-1 text-sm leading-5 text-zinc-500">
+              <p className={["font-semibold", selectedPath === doc.path ? "text-white" : "text-zinc-950"].join(" ")}>
+                {doc.title}
+              </p>
+              <p
+                className={[
+                  "mt-1 text-sm leading-5",
+                  selectedPath === doc.path ? "text-white/70" : "text-zinc-500",
+                ].join(" ")}
+              >
                 {doc.summary}
               </p>
-              <p className="mt-2 truncate font-mono text-xs text-zinc-400">
+              <p
+                className={[
+                  "mt-2 truncate font-mono text-xs",
+                  selectedPath === doc.path ? "text-white/60" : "text-zinc-400",
+                ].join(" ")}
+              >
                 {doc.path}
               </p>
             </button>
@@ -1411,7 +1532,7 @@ function DeliverablesSection({
                 key={item.id}
                 className={[
                   "grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_120px_140px_110px] lg:items-center",
-                  selectedPath === item.doc ? "bg-violet-50" : "",
+                  selectedPath === item.doc ? "bg-zinc-50" : "",
                 ].join(" ")}
               >
                 <span className="font-mono text-xs font-semibold text-zinc-500">
@@ -1426,7 +1547,7 @@ function DeliverablesSection({
                   <button
                     type="button"
                     onClick={() => setSelectedPath(item.doc)}
-                    className="mt-2 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-600 hover:border-brand-violet hover:text-brand-violet"
+                    className="mt-2 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-600 hover:border-zinc-400 hover:text-zinc-950"
                   >
                     문서 보기
                   </button>
@@ -1507,19 +1628,19 @@ function ApprovalsSection({ approvals }: { approvals: ProcessApproval[] }) {
                 {approval.driver}
               </p>
             </div>
-            <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-3">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-500">
+            <div className="rounded-lg border border-zinc-100 bg-[#FAFAFA] p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
                 Approver
               </p>
-              <p className="mt-1 text-sm font-semibold text-emerald-900">
+              <p className="mt-1 text-sm font-semibold text-zinc-900">
                 {approval.approver}
               </p>
             </div>
-            <div className="rounded-lg border border-violet-100 bg-violet-50 p-3">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-violet-500">
+            <div className="rounded-lg border border-zinc-100 bg-[#FAFAFA] p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
                 Contributors
               </p>
-              <p className="mt-1 text-sm font-semibold text-violet-900">
+              <p className="mt-1 text-sm font-semibold text-zinc-900">
                 {approval.contributors.join(", ")}
               </p>
             </div>
@@ -1899,7 +2020,7 @@ function DeliveryMetricsSection({
           <article
             key={metric.label}
             className={[
-              "rounded-lg border p-4",
+              "rounded-lg border border-l-2 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
               DELIVERY_METRIC_TONE_CLASS[metric.tone],
             ].join(" ")}
           >
@@ -2118,7 +2239,7 @@ function TraceabilitySection({
                 {[...trace.sourceIds, ...trace.changeIds].map((id) => (
                   <span
                     key={id}
-                    className="rounded-md bg-violet-50 px-2 py-1 font-mono text-[11px] font-semibold text-violet-700"
+                    className="rounded-md bg-zinc-100 px-2 py-1 font-mono text-[11px] font-semibold text-zinc-600"
                   >
                     {id}
                   </span>
@@ -2303,7 +2424,7 @@ function DesignReferenceCard({
   reference: ProcessDesignReference;
 }) {
   return (
-    <article className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+    <article className={["p-5", CARD_SURFACE].join(" ")}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-mono text-xs font-semibold text-brand-violet">
@@ -2314,7 +2435,7 @@ function DesignReferenceCard({
           </h3>
           <p className="mt-1 text-sm text-zinc-500">{reference.source}</p>
         </div>
-        <span className="rounded-full border border-violet-200 bg-violet-50 px-2.5 py-0.5 text-xs font-semibold text-brand-violet">
+        <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-xs font-semibold text-zinc-600">
           {DESIGN_CATEGORY_LABEL[reference.category]}
         </span>
       </div>
@@ -2391,7 +2512,7 @@ function DesignSection({
 }) {
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+      <section className={["p-5", CARD_SURFACE].join(" ")}>
         <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold text-brand-violet">
@@ -2430,7 +2551,7 @@ function DesignSection({
       </section>
 
       <section className="grid gap-4 xl:grid-cols-2">
-        <article className="rounded-xl border border-zinc-200 bg-white shadow-sm">
+        <article className={CARD_SURFACE}>
           <div className="border-b border-zinc-100 px-4 py-3">
             <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
               Wireframes
@@ -2446,7 +2567,7 @@ function DesignSection({
           </ul>
         </article>
 
-        <article className="rounded-xl border border-zinc-200 bg-white shadow-sm">
+        <article className={CARD_SURFACE}>
           <div className="border-b border-zinc-100 px-4 py-3">
             <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
               Storyboards
@@ -2488,7 +2609,7 @@ function AppsSection({ apps }: { apps: ProcessApp[] }) {
               href={app.url}
               target="_blank"
               rel="noreferrer"
-              className="rounded-lg border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-700 hover:border-brand-violet hover:text-brand-violet"
+              className="rounded-lg border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-700 hover:border-zinc-400 hover:text-zinc-950"
             >
               열기
             </a>
@@ -2586,7 +2707,7 @@ export default function App() {
   const active = SECTIONS.find((section) => section.id === activeSection);
 
   return (
-    <div className="min-h-screen bg-zinc-100 text-zinc-950 lg:flex">
+    <div className="min-h-screen bg-[#F4F4F5] text-zinc-950 lg:flex">
       <Sidebar
         activeSection={activeSection}
         onSelect={setActiveSection}
@@ -2596,7 +2717,7 @@ export default function App() {
       />
 
       <main className="min-w-0 flex-1 px-5 py-6 lg:px-8">
-        <header className="mb-6 rounded-2xl border border-zinc-200 bg-white px-5 py-4 shadow-sm">
+        <header className={["mb-6 px-5 py-4", CARD_SURFACE].join(" ")}>
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-sm font-semibold text-brand-violet">
@@ -2616,7 +2737,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => void load()}
-                className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:border-brand-violet hover:text-brand-violet"
+                className={["rounded-lg px-4 py-2 text-sm font-semibold", QUIET_ACTION].join(" ")}
               >
                 새로고침
               </button>

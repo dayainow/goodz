@@ -23,6 +23,21 @@
 | text | `slate-900` | — | 본문 |
 | danger | `rose-600` | — | 삭제·경고 |
 
+## Premium White UI 원칙
+
+v0.14부터 프로세스 대시보드는 쇼핑몰의 pastel merchandising 톤과 분리된 운영 콘솔 테마를 사용합니다.
+
+| 항목 | 기준 |
+|------|------|
+| 기본 표면 | `white`, `#FAFAFA`, `zinc-100` 계열 |
+| 구분선 | `zinc-200` 1px 보더 중심 |
+| 그림자 | 낮은 two-layer shadow: `0 1px 3px` + `0 8px 24px` |
+| 주요 액센트 | near-black active state + 제한적 `brand-violet` |
+| 상태 색상 | emerald(success), amber(warning), rose(risk)만 의미 기반으로 사용 |
+| metadata | 12-13px, uppercase, `zinc-500` |
+
+운영 대시보드에서 pastel 배경은 일반 카드 장식으로 쓰지 않습니다. 색은 상태, 위험도, 다음 액션을 구분하는 신호로만 사용합니다.
+
 ### 코드 헬퍼
 
 `apps/web-shop/src/lib/categories.ts` — 카테고리별 Tailwind 클래스 매핑

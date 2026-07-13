@@ -5,13 +5,13 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S15 Design OS v0.13** ✅
+## 현재 스프린트: **S16 Premium White UI v0.14** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
 | **P1 디자인** | ✅ 12화면 · Design OS · 레퍼런스/와이어프레임/스토리보드 |
 | **P2 레퍼런스 데모** | ✅ 쇼핑·어드민·Search/About UI |
-| **프로세스 대시보드** | ✅ Design 메뉴·검색/접힘 사이드바·Quick jump·콘솔형 헤더·가이드·산출물·DACI 승인·추적·Phase 관리 UI |
+| **프로세스 대시보드** | ✅ Premium White UI·Design 메뉴·검색/접힘 사이드바·Quick jump·콘솔형 헤더·가이드·산출물·DACI 승인·추적·Phase 관리 UI |
 | **품질 게이트** | ✅ `pnpm verify` + GA harness + 브라우저 육안 QA |
 | **산출물 레지스트리** | ✅ [deliverables](./docs/deliverables/README.md) |
 | **승인 로그** | ✅ [APPROVALS](./docs/00-process/APPROVALS.md) · [DECISIONS](./docs/00-process/DECISIONS.md) |
@@ -21,6 +21,7 @@
 | **Delivery Metrics** | ✅ [METRICS](./docs/00-process/METRICS.md) + 시간 단위 DORA 베이스라인 + snapshot trend |
 | **서비스 매뉴얼** | ✅ [USER_MANUAL](./docs/00-process/USER_MANUAL.md) + 대시보드 문서 뷰어 |
 | **Design OS** | ✅ [DESIGN_OS](./docs/02-design/DESIGN_OS.md) + [REFERENCES](./docs/02-design/REFERENCES.md) + Wireframes/Storyboards |
+| **Premium White UI** | ✅ [PROCESS_DASHBOARD](./docs/00-process/PROCESS_DASHBOARD.md) + grouped metrics + Phase flow |
 
 ## 현재 단계
 
@@ -83,6 +84,9 @@
 - [x] S15: Design OS 문서 구조
 - [x] S15: 레퍼런스 보드·와이어프레임·스토리보드
 - [x] S15: 대시보드 Design 메뉴
+- [x] S16: Premium White UI 원칙 반영
+- [x] S16: grouped metrics + P0-P4 phase flow
+- [x] S16: 사이드바/카드 표면 고급화
 
 ## 풀 프로세스
 
