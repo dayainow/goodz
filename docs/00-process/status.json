@@ -2083,7 +2083,7 @@
     {
       "id": "TL-013",
       "title": "Premium White UI v0.14",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": [
         "IN-013"
       ],
@@ -2104,14 +2104,37 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "68f1f4c",
+          "message": "feat: refine process dashboard premium white ui",
+          "url": "https://github.com/dayainow/goodz/commit/68f1f4c3ad7d17df862ba9ecbbf8e9ed52c48cd7",
+          "committedAt": "2026-07-13T04:35:44Z"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29224347995",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29224347995",
+          "createdAt": "2026-07-13T04:35:53Z",
+          "startedAt": "2026-07-13T04:35:53Z",
+          "completedAt": "2026-07-13T04:36:40Z"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
+      "smoke": {
+        "status": "passed",
+        "command": "curl -s http://localhost:4000/api/process/status",
+        "checkedAt": "2026-07-13T04:35:00Z",
+        "url": "http://localhost:4000/api/process/status",
+        "summary": "API smoke returned systemVersion v0.14 after Premium White UI status update"
+      },
       "summary": "프리미엄 화이트 테마, grouped metrics, P0-P4 phase flow, 중립 sidebar UI를 프로세스 대시보드에 반영",
-      "nextAction": "commit, CI, smoke 증거를 연결하고 브라우저 육안 QA로 마감"
+      "nextAction": "브라우저 육안 QA 후 role-based view와 guided workflow로 확장"
     }
   ],
   "features": [
