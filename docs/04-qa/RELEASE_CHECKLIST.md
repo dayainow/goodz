@@ -9,6 +9,10 @@
 - [x] API health check
 - [x] 스테이징 smoke 명령 준비 (`pnpm smoke:staging`)
 - [x] Release/Smoke evidence 기록 규칙 (`traceLinks[].release`, `traceLinks[].smoke`)
+- [x] SQLite migration·seed·incident lifecycle 검증 (`pnpm check:sqlite`)
+- [x] Process OS 단일 서비스 Render Blueprint 준비
+- [x] 외부 Process OS Basic Auth 필수 환경 변수 구성
+- [ ] Render 유료 영구 디스크 비용 승인과 외부 URL 생성
 
 ### 2026-07-10 확인 메모
 
@@ -34,3 +38,5 @@
 - [x] `PROJECT.md` Phase 상태 갱신
 - [x] 회고 메모: v0.2는 외부 호스팅 연결 전 release-ready 기준으로 완료
 - [x] GitHub trace sync 명령 문서화 (`pnpm sync:github-trace`)
+- [ ] `/api/process/operations`의 durability `persistent` 확인
+- [ ] incident 재배포 보존 smoke와 외부 release URL 기록

@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S18 White Premium Detail Tuning v0.16** ✅
+## 현재 스프린트: **S20 SQLite Operations v0.18** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -24,6 +24,8 @@
 | **Premium White UI** | ✅ [PROCESS_DASHBOARD](./docs/00-process/PROCESS_DASHBOARD.md) + grouped metrics + Phase flow |
 | **Template Onboarding** | ✅ [ONBOARDING](./docs/00-process/ONBOARDING.md) + template contract + standalone install |
 | **White Premium Detail** | ✅ Quick Jump·CTA·metrics·phase·metadata·typography hierarchy |
+| **Sidebar Comfort** | ✅ active disclosure·20px padding·fixed footer·custom scrollbar |
+| **SQLite Operations** | ✅ 문서 인덱스·incident/MTTR·Render 영구 디스크 배포 구성 |
 
 ## 현재 단계
 
@@ -95,6 +97,12 @@
 - [x] S18: Quick Jump와 사이드바 navigation cue 고도화
 - [x] S18: CTA·metrics 역할별 시각 위계와 운영 문구 개선
 - [x] S18: Noto Sans KR·line-height·scrollbar·hover detail tuning
+- [x] S19: 활성 그룹 중심 sidebar disclosure
+- [x] S19: 중첩 카드 제거와 navigation/footer 영역 분리
+- [x] S19: stable gutter 기반 전용 scrollbar
+- [x] S20: SQLite schema migration과 문서 인덱스 seed
+- [x] S20: 운영 incident 생성·종료·MTTR API/UI
+- [x] S20: Process OS 단일 서비스 Render Blueprint와 영구 디스크 런북
 
 ## 풀 프로세스
 

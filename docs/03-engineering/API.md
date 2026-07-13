@@ -4,7 +4,7 @@ Base URL: `http://localhost:4000` (개발)
 
 ## 공통 타입
 
-`@goodz/types` — `Product`, `ProductListResponse`, `CreateProductRequest`, `Cart`, `CartView`, `CheckoutResult`
+`@goodz/types` — `Product`, `ProductListResponse`, `CreateProductRequest`, `Cart`, `CartView`, `CheckoutResult`, `ProcessOperationsOverview`, `ProcessIncident`
 
 ## Endpoints
 
@@ -133,6 +133,51 @@ Delivery Metrics 추세용 snapshot — `docs/00-process/metrics-snapshots.json`
   "updatedAt": "2026-07-13T02:30:00.000Z"
 }
 ```
+
+### `GET /api/process/operations`
+
+**Response:** `ProcessOperationsOverview` (`@goodz/types`)
+
+SQLite 저장 엔진·내구성·schema version, 문서 인덱스 수, incident/MTTR 요약과 최근 사건을 반환합니다.
+
+### `GET /api/process/incidents`
+
+**Response:** `ProcessIncident[]`
+
+최근 운영 사건을 최신순으로 반환합니다.
+
+### `POST /api/process/incidents`
+
+**Body:** `CreateProcessIncidentRequest`
+
+```json
+{
+  "title": "배포 smoke 실패",
+  "summary": "Process Dashboard health check가 실패했습니다.",
+  "severity": "high"
+}
+```
+
+**Response:** `201` + `ProcessIncident`
+
+### `PATCH /api/process/incidents/:id/resolve`
+
+열린 사건을 종료하고 `resolvedAt`을 기록합니다.
+
+**Response:** `ProcessIncident`
+**404:** `{ "message": "Incident not found" }`
+
+## SQLite 설정
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `GOODZ_DB_PATH` | `data/goodz.db` | DB 파일 경로. `:memory:`는 검증용 |
+| `GOODZ_DB_DURABILITY` | 경로 기반 자동 판정 | `memory`, `local`, `persistent` 운영 표기 |
+| `GOODZ_BASIC_AUTH_USER` | 없음 | 외부 Process OS 보호 계정 |
+| `GOODZ_BASIC_AUTH_PASSWORD` | 없음 | 외부 Process OS 보호 비밀번호 |
+
+API 시작 시 schema migration과 `docs/**/*.md` 문서 인덱스 동기화를 수행합니다.
+Basic Auth 값은 둘 다 있을 때 전체 서비스에 적용되고, 하나만 있으면 설정 오류로 503을 반환합니다.
 
 ## 변경 절차
 

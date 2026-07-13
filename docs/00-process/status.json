@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.16",
+  "systemVersion": "v0.18",
   "sprint": {
-    "id": "S18",
-    "name": "시스템 v0.16 — White Premium Detail Tuning",
+    "id": "S20",
+    "name": "시스템 v0.18 — SQLite Operations",
     "status": "done",
-    "goal": "색 온도, 타이포 계층, 카드 깊이와 운영 문구를 조정해 화이트 프리미엄 완성도 강화"
+    "goal": "문서 SSOT를 유지하면서 incident와 MTTR을 SQLite에 기록하고 영구 배포 기반 확보"
   },
   "phases": [
     {
@@ -417,6 +417,24 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-13-white-premium-detail-v016.md",
       "nextAction": "1440px와 1024px 브라우저 육안 QA 후 spacing 미세 조정"
+    },
+    {
+      "id": "IN-016",
+      "title": "Sidebar Comfort v0.17",
+      "source": "사용자 스크린샷 리뷰 · 사이드바 여백과 스크롤 불편 개선",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-13-sidebar-comfort-v017.md",
+      "nextAction": "브라우저에서 768px 높이와 긴 메뉴 스크롤 육안 확인"
+    },
+    {
+      "id": "IN-017",
+      "title": "SQLite Operations v0.18",
+      "source": "사용자 요청 · SQLite 적용, 배포, README 업데이트",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-13-sqlite-operations-v018.md",
+      "nextAction": "비용 승인 후 Render 영구 디스크 배포와 외부 재배포 보존 smoke"
     }
   ],
   "deliverables": [
@@ -759,6 +777,36 @@
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
       "owner": "Product/Design/Engineering",
       "summary": "Quick Jump, CTA, metric, phase, metadata, typography의 역할별 시각 위계"
+    },
+    {
+      "id": "D-35",
+      "title": "Sidebar Comfort Guidelines",
+      "type": "design",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/PROCESS_DASHBOARD.md",
+      "owner": "Product/Design/Engineering",
+      "summary": "360px sidebar, active disclosure, fixed footer, dedicated scrollbar 기준"
+    },
+    {
+      "id": "D-36",
+      "title": "SQLite Operations Store",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/OPERATIONS_STORE.md",
+      "owner": "Product/Engineering",
+      "summary": "문서 인덱스, incident lifecycle, MTTR을 담당하는 SQLite 실행 계층"
+    },
+    {
+      "id": "D-37",
+      "title": "Persistent Process OS Deployment",
+      "type": "release",
+      "phase": "P4",
+      "status": "in_progress",
+      "doc": "docs/04-qa/STAGING_RUNBOOK.md",
+      "owner": "Engineering/DevOps",
+      "summary": "Process Dashboard와 API 단일 서비스, Render 1GB 영구 디스크 배포 구성"
     }
   ],
   "approvals": [
@@ -1213,6 +1261,60 @@
       "traceLinkIds": [
         "TL-015"
       ]
+    },
+    {
+      "id": "AP-016",
+      "target": "S19 Sidebar Comfort v0.17",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": [
+        "Product",
+        "Design",
+        "Engineering"
+      ],
+      "informed": [
+        "Goodz operators"
+      ],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "사이드바를 활성 그룹 중심 disclosure와 단일 navigation scroll 영역으로 재구성",
+      "criteria": [
+        "사이드바 좌우 여백이 20px 이상임",
+        "비활성 메뉴 그룹은 기본 접힘 상태임",
+        "그룹 카드 중첩이 제거됨",
+        "SSOT footer는 navigation 스크롤 밖에 유지됨",
+        "전용 scrollbar track과 thumb가 적용됨"
+      ],
+      "summary": "Sidebar spacing, disclosure, scrollbar 개선 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": [
+        "TL-016"
+      ]
+    },
+    {
+      "id": "AP-017",
+      "target": "S20 SQLite Operations v0.18",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Product", "Engineering", "DevOps"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "문서 SSOT를 유지하고 가변 운영 데이터만 SQLite 실행 계층에 저장",
+      "criteria": [
+        "SQLite migration과 문서 인덱스 seed가 자동 실행됨",
+        "incident 생성·종료와 MTTR 계산이 API와 UI에서 동작함",
+        "Process Dashboard와 API를 같은 origin으로 배포할 수 있음",
+        "외부 배포가 Basic Auth로 보호됨",
+        "영구 디스크와 비용 승인 경계가 문서화됨"
+      ],
+      "summary": "SQLite 운영 저장소와 persistent deployment 구성 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": ["TL-017"]
     }
   ],
   "planningChanges": [
@@ -1465,6 +1567,41 @@
       "doc": "docs/01-planning/changes/2026-07-13-white-premium-detail-v016.md",
       "summary": "색 온도, 타이포 계층, 카드 깊이, 운영 문구, navigation cue를 세부 조정",
       "decision": "동일한 카드 무게 대신 primary, signal, health와 completion, delivery, operations 역할을 명시"
+    },
+    {
+      "id": "CR-016",
+      "title": "Sidebar Comfort 개선",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 스크린샷 리뷰",
+      "targetDocs": [
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/status.json",
+        "apps/process-dashboard/src/App.tsx",
+        "apps/process-dashboard/src/index.css"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-13-sidebar-comfort-v017.md",
+      "summary": "sidebar 여백, disclosure, group surface, navigation scroll, scrollbar를 개선",
+      "decision": "활성 그룹만 열고 navigation만 스크롤하며 footer는 고정"
+    },
+    {
+      "id": "CR-017",
+      "title": "SQLite Operations 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/OPERATIONS_STORE.md",
+        "docs/03-engineering/API.md",
+        "docs/03-engineering/ARCHITECTURE.md",
+        "docs/00-process/status.json",
+        "apps/api-server/src/data/operationsStore.ts",
+        "apps/process-dashboard/src/App.tsx",
+        "render.yaml"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-13-sqlite-operations-v018.md",
+      "summary": "SQLite migration, 문서 seed, incident/MTTR, 운영 화면, 영구 디스크 배포 구성 추가",
+      "decision": "문서 SSOT와 SQLite 실행 계층을 분리하고 same-origin 단일 서비스로 배포"
     }
   ],
   "designReferences": [
@@ -2358,6 +2495,76 @@
       },
       "summary": "Quick Jump, CTA, metric semantics, current phase, metadata, typography와 micro interaction 고도화",
       "nextAction": "인앱 브라우저가 가능한 세션에서 1440px와 1024px 육안 QA"
+    },
+    {
+      "id": "TL-016",
+      "title": "Sidebar Comfort v0.17",
+      "status": "partial",
+      "sourceIds": [
+        "IN-016"
+      ],
+      "changeIds": [
+        "CR-016"
+      ],
+      "deliverableIds": [
+        "D-35"
+      ],
+      "approvalIds": [
+        "AP-016"
+      ],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm --filter @goodz/process-dashboard build && pnpm --filter @goodz/process-dashboard lint",
+        "checkedAt": "2026-07-13T06:00:00Z",
+        "summary": "Sidebar Comfort build and TypeScript validation passed"
+      },
+      "summary": "활성 그룹 disclosure, 20px padding, fixed footer, dedicated scrollbar를 사이드바에 반영",
+      "nextAction": "인앱 브라우저가 가능한 세션에서 768px 높이 스크롤 육안 QA"
+    },
+    {
+      "id": "TL-017",
+      "title": "SQLite Operations v0.18",
+      "status": "partial",
+      "sourceIds": ["IN-017"],
+      "changeIds": ["CR-017"],
+      "deliverableIds": ["D-36", "D-37"],
+      "approvalIds": ["AP-017"],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Render Blueprint",
+        "status": "pending"
+      },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:sqlite + built API production smoke",
+        "checkedAt": "2026-07-13T07:00:00Z",
+        "summary": "SQLite migration, document seed, incident lifecycle, MTTR, same-origin dashboard smoke passed"
+      },
+      "summary": "문서 SSOT 위에 SQLite 운영 실행 계층과 persistent deployment 구성을 추가",
+      "nextAction": "비용 승인 후 Render 외부 URL, durability persistent, 재배포 보존 증거 연결"
     }
   ],
   "features": [
@@ -2464,6 +2671,16 @@
     {
       "id": "F-21",
       "label": "White Premium Detail Tuning",
+      "status": "done"
+    },
+    {
+      "id": "F-22",
+      "label": "Sidebar Comfort",
+      "status": "done"
+    },
+    {
+      "id": "F-23",
+      "label": "SQLite Operations Store",
       "status": "done"
     }
   ],

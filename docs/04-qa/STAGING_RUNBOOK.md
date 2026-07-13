@@ -1,6 +1,6 @@
 # Goodz 스테이징 런북
 
-Goodz v0.2의 P4 기준은 **외부 호스팅 연결 전에도 반복 가능한 release-ready 절차**를 저장소 안에 남기는 것입니다.
+Goodz P4 기준은 외부 호스팅 연결 전에도 반복 가능한 release-ready 절차를 저장소 안에 남기고, Process OS는 SQLite 영구 디스크 구성까지 검증하는 것입니다.
 
 ## 환경 변수
 
@@ -10,6 +10,31 @@ Goodz v0.2의 P4 기준은 **외부 호스팅 연결 전에도 반복 가능한 
 | admin-dashboard | `VITE_API_URL` | `https://goodz-api-staging.example.com` |
 | process-dashboard | `VITE_API_URL` | `https://goodz-api-staging.example.com` |
 | api-server | `PORT` | `4000` |
+| api-server | `GOODZ_DB_PATH` | `/var/data/goodz.db` |
+| api-server | `GOODZ_DB_DURABILITY` | `persistent` |
+| api-server | `GOODZ_BASIC_AUTH_USER` | Render secret 입력 |
+| api-server | `GOODZ_BASIC_AUTH_PASSWORD` | Render secret 입력 |
+
+## Process OS 단일 서비스 배포
+
+`render.yaml`은 Process Dashboard를 빌드한 뒤 API 서버가 정적 파일과 API를 같은 origin에서 제공하도록 정의합니다.
+
+1. GitHub 저장소의 Render Blueprint를 적용합니다.
+2. Basic Auth 사용자명·비밀번호를 secret으로 입력하고, `goodz-process-os` 서비스가 `starter` 플랜과 1GB `/var/data` disk를 사용하는지 확인합니다.
+3. 배포 후 `/health`와 `/api/process/operations`를 확인합니다.
+4. `storage.engine`이 `sqlite`, `storage.durability`가 `persistent`인지 확인합니다.
+5. incident 하나를 생성·종료하고 재배포 뒤에도 남는지 확인합니다.
+
+배포 URL의 기본 스모크는 다음 명령으로 실행합니다.
+
+```bash
+GOODZ_PROCESS_OS_URL=https://your-service.onrender.com \
+GOODZ_PROCESS_OS_USER=your-user \
+GOODZ_PROCESS_OS_PASSWORD=your-password \
+pnpm smoke:process-os
+```
+
+영구 디스크는 유료 리소스입니다. 계정 소유자의 비용 승인 없이 Blueprint를 실제 적용하지 않습니다.
 
 ## 배포 순서
 
@@ -37,6 +62,7 @@ pnpm smoke:staging
 - API `/health` 응답이 `ok: true`
 - API `/api/products` 상품 1개 이상
 - API `/api/process/status` phase 1개 이상
+- API `/api/process/operations` storage engine이 `sqlite`
 - web-shop, admin-dashboard, process-dashboard HTML 응답이 비어 있지 않음
 
 ## Trace Evidence 기록

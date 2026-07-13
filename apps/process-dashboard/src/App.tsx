@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import type {
   ProcessApp,
   ProcessApproval,
@@ -8,8 +9,10 @@ import type {
   ProcessDeliverableType,
   ProcessDocumentResponse,
   ProcessIntake,
+  ProcessIncidentSeverity,
   ProcessItemStatus,
   ProcessMetricSnapshot,
+  ProcessOperationsOverview,
   ProcessPhase,
   ProcessPlanningChange,
   ProcessPlanningChangeStatus,
@@ -21,9 +24,12 @@ import type {
   ProcessStoryboard,
 } from "@goodz/types";
 import {
+  createProcessIncident,
   fetchProcessDocument,
   fetchProcessMetricSnapshots,
+  fetchProcessOperations,
   fetchProcessStatus,
+  resolveProcessIncident,
 } from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
 import { ProgressBar, StatusBadge } from "./components/StatusBadge";
@@ -42,6 +48,7 @@ type SectionId =
   | "phases"
   | "queue"
   | "features"
+  | "operations"
   | "apps";
 
 const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
@@ -58,6 +65,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "phases", label: "Phase Gate", eyebrow: "P0-P4" },
   { id: "queue", label: "작업 큐", eyebrow: "Tasks" },
   { id: "features", label: "기능", eyebrow: "Backlog" },
+  { id: "operations", label: "운영 DB", eyebrow: "SQLite" },
   { id: "apps", label: "앱", eyebrow: "Services" },
 ];
 
@@ -77,6 +85,7 @@ const SECTION_COPY: Record<SectionId, string> = {
   phases: "P0-P4 Gate",
   queue: "미완료 작업 흐름",
   features: "기능 백로그",
+  operations: "Incident와 문서 인덱스",
   apps: "로컬 서비스 링크",
 };
 
@@ -103,7 +112,7 @@ const MENU_GROUPS: Array<{
   {
     title: "System",
     summary: "실행 상태",
-    items: ["phases", "queue", "features", "apps"],
+    items: ["phases", "queue", "features", "operations", "apps"],
   },
 ];
 
@@ -625,13 +634,15 @@ function Sidebar({
   ).length;
   const [query, setQuery] = useState("");
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({
+    Plan: true,
+    Control: true,
     System: true,
   });
   const normalizedQuery = query.trim().toLowerCase();
 
   return (
-    <aside className="border-b border-zinc-200 bg-[#F7F7F7] px-4 py-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[340px] lg:flex-col lg:border-b-0 lg:border-r">
-      <div className="flex items-center justify-between gap-4 lg:block">
+    <aside className="border-b border-zinc-200 bg-[#F7F7F7] px-5 py-5 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[360px] lg:shrink-0 lg:flex-col lg:overflow-hidden lg:border-b-0 lg:border-r lg:px-5 lg:py-6">
+      <div className="flex shrink-0 items-start justify-between gap-4">
         <div>
           <p className={META_LABEL}>
             Goodz System
@@ -640,10 +651,12 @@ function Sidebar({
             프로세스 관리
           </h1>
         </div>
-        <StatusBadge status={status.sprint.status} />
+        <div className="pt-1">
+          <StatusBadge status={status.sprint.status} />
+        </div>
       </div>
 
-      <div className={["mt-5 p-4", CARD_SURFACE].join(" ")}>
+      <div className={["mt-5 shrink-0 p-4", CARD_SURFACE].join(" ")}>
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium text-zinc-600">전체 진행률</span>
           <span className="font-bold text-zinc-950">{overallProgress}%</span>
@@ -656,8 +669,8 @@ function Sidebar({
         </p>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+      <div className="mt-3 grid shrink-0 grid-cols-3 gap-2.5">
+        <div className="rounded-xl border border-zinc-200 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
             Trace
           </p>
@@ -665,7 +678,7 @@ function Sidebar({
             {linkedTraces}/{status.traceLinks.length}
           </p>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+        <div className="rounded-xl border border-zinc-200 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
             Evidence
           </p>
@@ -673,7 +686,7 @@ function Sidebar({
             {evidenceIssueCount}
           </p>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+        <div className="rounded-xl border border-zinc-200 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
             Sprint
           </p>
@@ -683,7 +696,7 @@ function Sidebar({
         </div>
       </div>
 
-      <div className={["mt-5 p-3", CARD_SURFACE].join(" ")}>
+      <div className={["mt-4 shrink-0 p-4", CARD_SURFACE].join(" ")}>
         <label htmlFor="nav-search" className="sr-only">
           메뉴 검색
         </label>
@@ -723,7 +736,7 @@ function Sidebar({
         </div>
       </div>
 
-      <nav className="mt-4 space-y-4 overflow-y-auto pr-1">
+      <nav className="sidebar-scroll mt-4 min-h-0 flex-1 space-y-3 overflow-y-auto pb-8 pr-3">
         {MENU_GROUPS.map((group) => {
           const visibleItems = group.items.filter((id) => {
             const section = SECTION_MAP.get(id);
@@ -744,7 +757,7 @@ function Sidebar({
           return (
             <section
               key={group.title}
-              className={["p-2", CARD_SURFACE].join(" ")}
+              className="border-b border-zinc-200 pb-3 last:border-b-0"
             >
               <button
                 type="button"
@@ -755,7 +768,7 @@ function Sidebar({
                     [group.title]: !current[group.title],
                   }))
                 }
-                className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2 text-left transition hover:bg-zinc-200"
+                className="flex w-full items-center justify-between gap-2 rounded-xl px-2 py-2.5 text-left transition hover:bg-zinc-200/80"
               >
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
@@ -777,7 +790,7 @@ function Sidebar({
                 </span>
               </button>
               {!isCollapsed && (
-                <div className="mt-1 grid grid-cols-2 gap-2 lg:grid-cols-1">
+                <div className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-1">
                   {visibleItems.map((id) => {
                     const section = SECTION_MAP.get(id);
                     if (!section) return null;
@@ -788,7 +801,7 @@ function Sidebar({
                         type="button"
                         onClick={() => onSelect(section.id)}
                         className={[
-                          "flex min-h-14 items-center justify-between rounded-xl border px-3 text-left transition duration-200",
+                          "flex min-h-14 items-center justify-between rounded-xl border px-3.5 py-2.5 text-left transition duration-200",
                           isActive
                             ? PRIMARY_ACTION
                             : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-200 hover:text-zinc-950",
@@ -828,7 +841,7 @@ function Sidebar({
         })}
       </nav>
 
-      <div className="mt-auto hidden border-t border-zinc-200 pt-4 text-xs text-zinc-500 lg:block">
+      <div className="mt-3 hidden shrink-0 border-t border-zinc-200 bg-[#F7F7F7] pt-4 text-xs text-zinc-500 lg:block">
         <p className="font-semibold text-zinc-600">SSOT</p>
         <p className="mt-1 font-mono">docs/00-process/status.json</p>
       </div>
@@ -2654,6 +2667,194 @@ function DesignSection({
   );
 }
 
+const INCIDENT_SEVERITY_LABEL: Record<ProcessIncidentSeverity, string> = {
+  low: "낮음",
+  medium: "보통",
+  high: "높음",
+  critical: "심각",
+};
+
+const INCIDENT_SEVERITY_CLASS: Record<ProcessIncidentSeverity, string> = {
+  low: "border-sky-200 bg-sky-50 text-sky-700",
+  medium: "border-amber-200 bg-amber-50 text-amber-700",
+  high: "border-orange-200 bg-orange-50 text-orange-700",
+  critical: "border-rose-200 bg-rose-50 text-rose-700",
+};
+
+function OperationsSection({
+  operations,
+  onRefresh,
+}: {
+  operations: ProcessOperationsOverview;
+  onRefresh: () => Promise<void>;
+}) {
+  const [title, setTitle] = useState("");
+  const [summary, setSummary] = useState("");
+  const [severity, setSeverity] = useState<ProcessIncidentSeverity>("medium");
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitting(true);
+    setMessage(null);
+    try {
+      await createProcessIncident({ title, summary, severity });
+      setTitle("");
+      setSummary("");
+      setSeverity("medium");
+      await onRefresh();
+      setMessage("Incident가 SQLite에 기록되었습니다.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Incident 기록 실패");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleResolve = async (id: string) => {
+    setSubmitting(true);
+    setMessage(null);
+    try {
+      await resolveProcessIncident(id);
+      await onRefresh();
+      setMessage(`${id}가 해결 상태로 변경되었습니다.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Incident 해결 실패");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <section className="grid gap-4 md:grid-cols-3">
+        <Metric label="Open incidents" value={operations.incidents.open} tone={operations.incidents.open ? "amber" : "green"} />
+        <Metric
+          label="MTTR"
+          value={
+            operations.incidents.mttrHours === null
+              ? "N/A"
+              : `${operations.incidents.mttrHours.toFixed(1)}h`
+          }
+          tone="violet"
+        />
+        <Metric label="Indexed docs" value={operations.documents.indexed} tone="neutral" />
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
+        <form onSubmit={(event) => void handleSubmit(event)} className={["p-5", CARD_SURFACE].join(" ")}>
+          <p className={META_LABEL}>Local operations store</p>
+          <h3 className="mt-2 text-lg font-bold text-zinc-950">Incident 기록</h3>
+          <p className="mt-2 text-sm leading-6 text-zinc-600">
+            문서 SSOT는 유지하고 운영 사건과 복구 시간만 SQLite에 기록합니다.
+          </p>
+
+          <label className="mt-5 block text-xs font-semibold text-zinc-600" htmlFor="incident-title">
+            제목
+          </label>
+          <input
+            id="incident-title"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            required
+            className="mt-2 h-11 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm outline-none focus:border-zinc-950 focus:bg-white"
+            placeholder="예: 배포 smoke 실패"
+          />
+
+          <label className="mt-4 block text-xs font-semibold text-zinc-600" htmlFor="incident-summary">
+            요약
+          </label>
+          <textarea
+            id="incident-summary"
+            value={summary}
+            onChange={(event) => setSummary(event.target.value)}
+            required
+            rows={4}
+            className="mt-2 w-full resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3 text-sm leading-6 outline-none focus:border-zinc-950 focus:bg-white"
+            placeholder="영향과 확인할 내용을 기록하세요."
+          />
+
+          <label className="mt-4 block text-xs font-semibold text-zinc-600" htmlFor="incident-severity">
+            심각도
+          </label>
+          <select
+            id="incident-severity"
+            value={severity}
+            onChange={(event) => setSeverity(event.target.value as ProcessIncidentSeverity)}
+            className="mt-2 h-11 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-zinc-950"
+          >
+            {Object.entries(INCIDENT_SEVERITY_LABEL).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="mt-5 w-full rounded-xl bg-zinc-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {submitting ? "저장 중…" : "Incident 저장"}
+          </button>
+          {message ? <p className="mt-3 text-xs leading-5 text-zinc-600">{message}</p> : null}
+        </form>
+
+        <div className={CARD_SURFACE}>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 px-5 py-4">
+            <div>
+              <p className={META_LABEL}>SQLite · schema v{operations.storage.schemaVersion}</p>
+              <h3 className="mt-1 font-bold text-zinc-950">Incident timeline</h3>
+            </div>
+            <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-semibold text-zinc-600">
+              {operations.storage.durability}
+            </span>
+          </div>
+          {operations.incidents.items.length ? (
+            <ul>
+              {operations.incidents.items.map((incident) => (
+                <li key={incident.id} className="border-b border-zinc-100 px-5 py-4 last:border-b-0">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={["rounded-full border px-2.5 py-0.5 text-xs font-semibold", INCIDENT_SEVERITY_CLASS[incident.severity]].join(" ")}>
+                          {INCIDENT_SEVERITY_LABEL[incident.severity]}
+                        </span>
+                        <span className="font-mono text-xs text-zinc-400">{incident.id}</span>
+                      </div>
+                      <h4 className="mt-2 font-bold text-zinc-950">{incident.title}</h4>
+                      <p className="mt-1 text-sm leading-6 text-zinc-600">{incident.summary}</p>
+                      <p className="mt-2 font-mono text-xs text-zinc-400">{formatTimestamp(incident.occurredAt)}</p>
+                    </div>
+                    {incident.status === "open" ? (
+                      <button
+                        type="button"
+                        disabled={submitting}
+                        onClick={() => void handleResolve(incident.id)}
+                        className={["rounded-lg px-3 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}
+                      >
+                        해결 처리
+                      </button>
+                    ) : (
+                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                        해결됨
+                      </span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="px-5 py-12 text-center">
+              <p className="font-semibold text-zinc-800">기록된 Incident가 없습니다.</p>
+              <p className="mt-2 text-sm text-zinc-500">운영 상태가 깨끗합니다.</p>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function AppsSection({ apps }: { apps: ProcessApp[] }) {
   return (
     <section className="grid gap-4 lg:grid-cols-2">
@@ -2693,6 +2894,7 @@ function AppsSection({ apps }: { apps: ProcessApp[] }) {
 export default function App() {
   const [status, setStatus] = useState<ProcessStatus | null>(null);
   const [metricSnapshots, setMetricSnapshots] = useState<ProcessMetricSnapshot[]>([]);
+  const [operations, setOperations] = useState<ProcessOperationsOverview | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<SectionId>("overview");
@@ -2700,17 +2902,23 @@ export default function App() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const [data, snapshots] = await Promise.all([
+      const [data, snapshots, operationsData] = await Promise.all([
         fetchProcessStatus(),
         fetchProcessMetricSnapshots(),
+        fetchProcessOperations(),
       ]);
       setStatus(data);
       setMetricSnapshots(snapshots.snapshots);
+      setOperations(operationsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  const refreshOperations = useCallback(async () => {
+    setOperations(await fetchProcessOperations());
   }, []);
 
   useEffect(() => {
@@ -2910,6 +3118,13 @@ export default function App() {
 
         {activeSection === "features" && (
           <FeaturesSection features={status.features} />
+        )}
+
+        {activeSection === "operations" && operations && (
+          <OperationsSection
+            operations={operations}
+            onRefresh={refreshOperations}
+          />
         )}
 
         {activeSection === "apps" && <AppsSection apps={status.apps} />}

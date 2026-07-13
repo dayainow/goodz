@@ -8,3 +8,6 @@ dist
 .DS_Store
 *.tsbuildinfo
 tsconfig.tsbuildinfo
+data/*.db
+data/*.db-shm
+data/*.db-wal

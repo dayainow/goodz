@@ -16,12 +16,14 @@
     "check:deps": "node scripts/check-phantom-deps.mjs",
     "check:process": "node scripts/validate-process.mjs",
     "check:template": "node scripts/validate-template.mjs",
+    "check:sqlite": "pnpm --filter @goodz/api-server check:sqlite",
     "sync:github-trace": "node scripts/sync-github-trace.mjs",
     "sync:github-trace:check": "node scripts/sync-github-trace.mjs --check",
     "snapshot:metrics": "node scripts/snapshot-metrics.mjs",
     "snapshot:metrics:check": "node scripts/snapshot-metrics.mjs --check",
     "smoke:staging": "node scripts/smoke-staging.mjs",
-    "verify": "pnpm check:workspace && pnpm check:deps && pnpm check:process && pnpm check:template && turbo build && turbo lint"
+    "smoke:process-os": "node scripts/smoke-process-os.mjs",
+    "verify": "pnpm check:workspace && pnpm check:deps && pnpm check:process && pnpm check:template && pnpm check:sqlite && turbo build && turbo lint"
   },
   "devDependencies": {
     "@manypkg/cli": "^0.25.1",
@@ -31,6 +33,6 @@
   },
   "packageManager": "pnpm@9.15.9",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13"
   }
 }

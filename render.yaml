@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: goodz-process-os
+    runtime: node
+    plan: starter
+    region: singapore
+    autoDeployTrigger: checksPass
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm turbo build --filter=@goodz/process-dashboard --filter=@goodz/api-server
+    startCommand: pnpm --filter @goodz/api-server start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: GOODZ_DB_PATH
+        value: /var/data/goodz.db
+      - key: GOODZ_DB_DURABILITY
+        value: persistent
+      - key: GOODZ_BASIC_AUTH_USER
+        sync: false
+      - key: GOODZ_BASIC_AUTH_PASSWORD
+        sync: false
+    disk:
+      name: goodz-data
+      mountPath: /var/data
+      sizeGB: 1

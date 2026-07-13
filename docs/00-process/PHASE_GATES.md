@@ -32,6 +32,9 @@
 - [x] `RELEASE_CHECKLIST.md` 스테이징 항목 완료
 - [x] GA compliance (해당 시)
 - [x] `STAGING_RUNBOOK.md` + `pnpm smoke:staging` 준비
+- [x] SQLite migration·seed·incident lifecycle 로컬 검증
+- [x] Process OS 영구 디스크 배포 구성 문서화
+- [ ] 외부 URL에서 durability `persistent`와 재배포 보존 확인
 
 ## 승인
 

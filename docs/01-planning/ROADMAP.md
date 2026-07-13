@@ -24,6 +24,8 @@
 | **v0.14** | Premium White UI: 화이트 표면 + grouped metrics + Phase flow | ✅ |
 | **v0.15** | Template Onboarding Baseline: fork 런북 + template contract + standalone 의존성 | ✅ |
 | **v0.16** | White Premium Detail: navigation + CTA + metrics + typography hierarchy | ✅ |
+| **v0.17** | Sidebar Comfort: active disclosure + spacing + fixed footer + scrollbar | ✅ |
+| **v0.18** | SQLite Operations: 문서 인덱스 + incident/MTTR + 영구 디스크 배포 | ✅ |
 | **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
 
 ## 전체 타임라인
@@ -31,7 +33,7 @@
 ```text
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
-S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail
+S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
 ```
 
 ---
@@ -252,6 +254,27 @@ Week 1
 
 ---
 
+### Sprint S19 — Sidebar Comfort
+
+- sidebar width 360px과 horizontal padding 20px 적용
+- 활성 메뉴 그룹 자동 열기, Plan/Control/System 기본 접힘
+- 그룹 외곽 카드 제거와 divider 기반 구분
+- navigation scroll과 SSOT footer 영역 분리
+- 8px rounded scrollbar와 stable gutter 적용
+- 후속 Gate: 768px 높이 브라우저 육안 QA
+
+---
+
+### Sprint S20 — SQLite Operations
+
+- Node 내장 SQLite schema migration과 문서 인덱스 seed
+- incident 생성·종료와 MTTR 계산 API
+- Process Dashboard 운영 DB 메뉴와 same-origin production serving
+- Render 단일 서비스 Blueprint와 1GB 영구 디스크 구성
+- 후속 Gate: 비용 승인 후 외부 URL과 재배포 보존 smoke 기록
+
+---
+
 ## 의존성 그래프
 
 ```mermaid
@@ -292,8 +315,10 @@ flowchart LR
 19. ✅ v0.14: Premium White UI 고도화
 20. ✅ v0.15: Template Onboarding Baseline + standalone 의존성
 21. ✅ v0.16: White Premium Detail Tuning
-22. ⚪ v1.0 Gate: clean-clone CI + rebrand 리허설 + 배포 증거
-23. ⚪ v1.x 후보: 문서 검색, guided workflow, incident/MTTR 기록 + PR review lead time
+22. ✅ v0.17: Sidebar Comfort
+23. ✅ v0.18: SQLite Operations
+24. ⚪ v1.0 Gate: clean-clone CI + rebrand 리허설 + 외부 배포 증거
+25. ⚪ v1.x 후보: guided workflow + PR review lead time + server DB 전환 기준
 
 ---
 
@@ -315,3 +340,5 @@ flowchart LR
 | 2026-07-13 | v0.14 — Premium White UI 고도화 |
 | 2026-07-13 | v0.15 — Template Onboarding Baseline + standalone 의존성 |
 | 2026-07-13 | v0.16 — White Premium Detail Tuning |
+| 2026-07-13 | v0.17 — Sidebar Comfort |
+| 2026-07-13 | v0.18 — SQLite Operations + persistent deployment blueprint |

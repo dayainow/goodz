@@ -243,6 +243,46 @@ export interface ProcessDocumentResponse {
   updatedAt: string;
 }
 
+export type ProcessIncidentSeverity = "low" | "medium" | "high" | "critical";
+export type ProcessIncidentStatus = "open" | "resolved";
+
+export interface ProcessIncident {
+  id: string;
+  title: string;
+  severity: ProcessIncidentSeverity;
+  status: ProcessIncidentStatus;
+  summary: string;
+  occurredAt: string;
+  resolvedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateProcessIncidentRequest {
+  title: string;
+  severity: ProcessIncidentSeverity;
+  summary: string;
+  occurredAt?: string;
+}
+
+export interface ProcessOperationsOverview {
+  storage: {
+    engine: "sqlite";
+    durability: "memory" | "local" | "persistent";
+    schemaVersion: number;
+  };
+  documents: {
+    indexed: number;
+    syncedAt: string | null;
+  };
+  incidents: {
+    open: number;
+    resolved: number;
+    mttrHours: number | null;
+    items: ProcessIncident[];
+  };
+}
+
 export interface ProcessStatus {
   version: number;
   updatedAt: string;

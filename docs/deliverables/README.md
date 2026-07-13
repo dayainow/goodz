@@ -41,6 +41,9 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-32 | P0 | Template Onboarding Runbook | [ONBOARDING.md](../00-process/ONBOARDING.md) | Product/Engineering | 완료 |
 | D-33 | P3 | Template Contract Validator | [ONBOARDING.md](../00-process/ONBOARDING.md) | Engineering/QA | 완료 |
 | D-34 | P2 | White Premium Detail Guidelines | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Design/Engineering | 완료 |
+| D-35 | P2 | Sidebar Comfort Guidelines | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Design/Engineering | 완료 |
+| D-36 | P2 | SQLite Operations Store | [OPERATIONS_STORE.md](../00-process/OPERATIONS_STORE.md) | Product/Engineering | 완료 |
+| D-37 | P4 | Persistent Process OS Deployment | [STAGING_RUNBOOK.md](../04-qa/STAGING_RUNBOOK.md) | Engineering/DevOps | 구성 완료·비용 승인 대기 |
 
 ## 운영 규칙
 

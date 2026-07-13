@@ -140,6 +140,23 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 
 브라우저 육안 QA에서는 1440px 데스크톱과 1024px 이하 반응형에서 CTA 높이, metadata 줄바꿈, Operating map ring 잘림을 확인합니다.
 
+## v0.17 Sidebar Comfort
+
+- **Layout**: sidebar는 360px, 좌우 20px padding을 사용하고 header, summary, navigation, footer를 분리합니다.
+- **Disclosure**: 현재 메뉴가 속한 그룹만 자동으로 열며 Plan, Control, System은 초기 접힘 상태로 시작합니다.
+- **Surface**: 그룹 외곽 카드와 메뉴 카드의 중첩을 제거하고 section divider로 그룹 경계를 표현합니다.
+- **Scroll area**: navigation만 min-height 0, flex 1, overflow-y auto로 스크롤하고 SSOT footer는 고정합니다.
+- **Scrollbar**: 8px 폭, zinc-200 track, zinc-400 thumb, 48px minimum thumb, stable gutter를 사용합니다.
+- **Spacing**: navigation 오른쪽 12px, 아래 32px 여백을 두어 thumb와 마지막 메뉴가 경계에 붙지 않게 합니다.
+
+## v0.18 SQLite Operations
+
+- **운영 메뉴**: System 그룹에서 Open incident, MTTR, indexed docs를 확인합니다.
+- **책임 분리**: Phase·승인·산출물은 문서 SSOT, 사건·종료 시각은 SQLite 실행 계층으로 구분합니다.
+- **Incident workflow**: severity와 설명으로 사건을 생성하고 타임라인에서 종료합니다.
+- **Durability cue**: storage durability와 schema version을 노출해 영구 디스크 누락을 발견할 수 있게 합니다.
+- **Deployment**: 프로덕션에서는 API가 대시보드 정적 빌드를 같은 origin으로 제공합니다.
+
 ## 참고한 UI 레퍼런스
 
 - Atlassian Design System — Side navigation: 제품 영역 안에서 중첩 뷰와 섹션 이동을 다루는 좌측 내비게이션 패턴
