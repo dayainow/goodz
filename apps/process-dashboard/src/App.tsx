@@ -99,6 +99,8 @@ const MENU_GROUPS: Array<{
   },
 ];
 
+const QUICK_SECTIONS: SectionId[] = ["overview", "guide", "evidence", "metrics"];
+
 const GUIDE_DOCS = [
   {
     path: "docs/00-process/USER_MANUAL.md",
@@ -604,9 +606,14 @@ function Sidebar({
   const linkedTraces = status.traceLinks.filter((trace) =>
     ["linked", "released"].includes(trace.status),
   ).length;
+  const [query, setQuery] = useState("");
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({
+    System: true,
+  });
+  const normalizedQuery = query.trim().toLowerCase();
 
   return (
-    <aside className="border-b border-zinc-200 bg-white px-4 py-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-80 lg:flex-col lg:border-b-0 lg:border-r">
+    <aside className="border-b border-zinc-200 bg-zinc-50 px-4 py-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[340px] lg:flex-col lg:border-b-0 lg:border-r">
       <div className="flex items-center justify-between gap-4 lg:block">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
@@ -619,7 +626,7 @@ function Sidebar({
         <StatusBadge status={status.sprint.status} />
       </div>
 
-      <div className="mt-5 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+      <div className="mt-5 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium text-zinc-600">전체 진행률</span>
           <span className="font-bold text-zinc-950">{overallProgress}%</span>
@@ -659,64 +666,140 @@ function Sidebar({
         </div>
       </div>
 
-      <nav className="mt-5 space-y-5 overflow-y-auto pr-1">
-        {MENU_GROUPS.map((group) => (
-          <section key={group.title}>
-            <div className="mb-2 flex items-end justify-between gap-2 px-1">
+      <div className="mt-5 rounded-xl border border-zinc-200 bg-white p-3 shadow-sm">
+        <label htmlFor="nav-search" className="sr-only">
+          메뉴 검색
+        </label>
+        <input
+          id="nav-search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="메뉴 검색"
+          className="h-10 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 text-sm font-medium text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-brand-violet focus:bg-white focus:ring-2 focus:ring-violet-100"
+        />
+        <div className="mt-3">
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+            Quick jump
+          </p>
+          <div className="grid grid-cols-4 gap-2">
+            {QUICK_SECTIONS.map((id) => {
+              const section = SECTIONS.find((item) => item.id === id);
+              if (!section) return null;
+              const isActive = activeSection === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => onSelect(id)}
+                  className={[
+                    "rounded-lg border px-2 py-2 text-xs font-bold transition",
+                    isActive
+                      ? "border-brand-violet bg-brand-violet text-white"
+                      : "border-zinc-200 bg-white text-zinc-600 hover:border-violet-200 hover:bg-violet-50 hover:text-brand-violet",
+                  ].join(" ")}
+                >
+                  {section.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <nav className="mt-4 space-y-4 overflow-y-auto pr-1">
+        {MENU_GROUPS.map((group) => {
+          const visibleItems = group.items.filter((id) => {
+            const section = SECTIONS.find((item) => item.id === id);
+            if (!section) return false;
+            return (
+              !normalizedQuery ||
+              section.label.toLowerCase().includes(normalizedQuery) ||
+              section.eyebrow.toLowerCase().includes(normalizedQuery) ||
+              SECTION_COPY[section.id].toLowerCase().includes(normalizedQuery)
+            );
+          });
+          const hasActiveItem = group.items.includes(activeSection);
+          const isCollapsed =
+            collapsedGroups[group.title] && !hasActiveItem && !normalizedQuery;
+
+          if (normalizedQuery && visibleItems.length === 0) return null;
+
+          return (
+            <section
+              key={group.title}
+              className="rounded-xl border border-zinc-200 bg-white p-2 shadow-sm"
+            >
+            <button
+              type="button"
+              aria-expanded={!isCollapsed}
+              onClick={() =>
+                setCollapsedGroups((current) => ({
+                  ...current,
+                  [group.title]: !current[group.title],
+                }))
+              }
+              className="flex w-full items-end justify-between gap-2 rounded-lg px-2 py-2 text-left hover:bg-zinc-50"
+            >
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                   {group.title}
                 </p>
                 <p className="text-[11px] text-zinc-400">{group.summary}</p>
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
-              {group.items.map((id) => {
-                const section = SECTIONS.find((item) => item.id === id);
-                if (!section) return null;
-                const isActive = section.id === activeSection;
-                return (
-                  <button
-                    key={section.id}
-                    type="button"
-                    onClick={() => onSelect(section.id)}
-                    className={[
-                      "flex min-h-14 items-center justify-between rounded-lg border px-3 text-left transition",
-                      isActive
-                        ? "border-brand-violet bg-brand-violet text-white shadow-sm"
-                        : "border-zinc-200 bg-white text-zinc-700 hover:border-violet-200 hover:bg-violet-50",
-                    ].join(" ")}
-                  >
-                    <span className="min-w-0">
-                      <span
-                        className={[
-                          "block text-[11px] font-semibold uppercase tracking-wider",
-                          isActive ? "text-white/70" : "text-zinc-400",
-                        ].join(" ")}
-                      >
-                        {section.eyebrow}
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-500">
+                {isCollapsed ? "열기" : `${visibleItems.length}/${group.items.length}`}
+              </span>
+            </button>
+            {!isCollapsed && (
+              <div className="mt-1 grid grid-cols-2 gap-2 lg:grid-cols-1">
+                {visibleItems.map((id) => {
+                  const section = SECTIONS.find((item) => item.id === id);
+                  if (!section) return null;
+                  const isActive = section.id === activeSection;
+                  return (
+                    <button
+                      key={section.id}
+                      type="button"
+                      onClick={() => onSelect(section.id)}
+                      className={[
+                        "flex min-h-14 items-center justify-between rounded-lg border px-3 text-left transition",
+                        isActive
+                          ? "border-brand-violet bg-brand-violet text-white shadow-sm"
+                          : "border-zinc-200 bg-white text-zinc-700 hover:border-violet-200 hover:bg-violet-50",
+                      ].join(" ")}
+                    >
+                      <span className="min-w-0">
+                        <span
+                          className={[
+                            "block text-[11px] font-semibold uppercase tracking-wider",
+                            isActive ? "text-white/70" : "text-zinc-400",
+                          ].join(" ")}
+                        >
+                          {section.eyebrow}
+                        </span>
+                        <span className="block text-sm font-semibold">
+                          {section.label}
+                        </span>
+                        <span
+                          className={[
+                            "mt-1 hidden truncate text-xs lg:block",
+                            isActive ? "text-white/70" : "text-zinc-400",
+                          ].join(" ")}
+                        >
+                          {SECTION_COPY[section.id]}
+                        </span>
                       </span>
-                      <span className="block text-sm font-semibold">
-                        {section.label}
+                      <span aria-hidden="true" className="text-lg leading-none">
+                        ›
                       </span>
-                      <span
-                        className={[
-                          "mt-1 hidden truncate text-xs lg:block",
-                          isActive ? "text-white/70" : "text-zinc-400",
-                        ].join(" ")}
-                      >
-                        {SECTION_COPY[section.id]}
-                      </span>
-                    </span>
-                    <span aria-hidden="true" className="text-lg leading-none">
-                      ›
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            </section>
+          );
+        })}
       </nav>
 
       <div className="mt-auto hidden border-t border-zinc-200 pt-4 text-xs text-zinc-500 lg:block">
@@ -744,7 +827,7 @@ function Metric({
   }[tone];
 
   return (
-    <div className={["rounded-lg border p-4", toneClass].join(" ")}>
+    <div className={["rounded-xl border p-4 shadow-sm", toneClass].join(" ")}>
       <p className="text-xs font-semibold uppercase tracking-wider opacity-70">
         {label}
       </p>
@@ -881,7 +964,7 @@ function OverviewSection({
 
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-lg border border-zinc-200 bg-white">
+      <section className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
         <div className="grid gap-0 xl:grid-cols-[1.35fr_0.65fr]">
           <div className="p-6">
             <p className="text-sm font-semibold text-brand-violet">
@@ -893,6 +976,17 @@ function OverviewSection({
             <p className="mt-3 max-w-3xl text-sm leading-6 text-zinc-600">
               {status.sprint.goal}
             </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-brand-violet">
+                Command center
+              </span>
+              <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
+                SSOT · status.json
+              </span>
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                Operator ready
+              </span>
+            </div>
             <div className="mt-6 grid gap-3 md:grid-cols-3">
               <ActionCard
                 eyebrow="Start here"
@@ -2319,22 +2413,60 @@ export default function App() {
       />
 
       <main className="min-w-0 flex-1 px-5 py-6 lg:px-8">
-        <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold text-brand-violet">
-              {active?.eyebrow}
-            </p>
-            <h2 className="mt-1 text-3xl font-bold tracking-tight">
-              {active?.label}
-            </h2>
+        <header className="mb-6 rounded-2xl border border-zinc-200 bg-white px-5 py-4 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-brand-violet">
+                {active?.eyebrow}
+              </p>
+              <h2 className="mt-1 text-3xl font-bold tracking-tight">
+                {active?.label}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-zinc-500">
+                {active ? SECTION_COPY[active.id] : "프로세스 상태 확인"}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                {status.sprint.status === "done" ? "완료" : status.sprint.status}
+              </span>
+              <button
+                type="button"
+                onClick={() => void load()}
+                className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:border-brand-violet hover:text-brand-violet"
+              >
+                새로고침
+              </button>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={() => void load()}
-            className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:border-brand-violet hover:text-brand-violet"
-          >
-            새로고침
-          </button>
+          <div className="mt-4 grid gap-3 border-t border-zinc-100 pt-4 text-xs text-zinc-500 md:grid-cols-4">
+            <div>
+              <p className="font-semibold uppercase tracking-wider text-zinc-400">
+                Sprint
+              </p>
+              <p className="mt-1 font-bold text-zinc-800">{status.sprint.id}</p>
+            </div>
+            <div>
+              <p className="font-semibold uppercase tracking-wider text-zinc-400">
+                Version
+              </p>
+              <p className="mt-1 font-bold text-zinc-800">{status.systemVersion}</p>
+            </div>
+            <div>
+              <p className="font-semibold uppercase tracking-wider text-zinc-400">
+                Updated
+              </p>
+              <p className="mt-1 font-mono font-semibold text-zinc-700">
+                {status.updatedAt}
+              </p>
+            </div>
+            <div>
+              <p className="font-semibold uppercase tracking-wider text-zinc-400">
+                Section
+              </p>
+              <p className="mt-1 font-bold text-zinc-800">{active?.label}</p>
+            </div>
+          </div>
         </header>
 
         {activeSection === "overview" && (

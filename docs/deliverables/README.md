@@ -32,6 +32,7 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-23 | P2 | Metrics Snapshot Trend | [METRICS.md](../00-process/METRICS.md) | PM/Engineering/DevOps | 완료 |
 | D-24 | P2 | User Manual + In-dashboard Docs Viewer | [USER_MANUAL.md](../00-process/USER_MANUAL.md) | PM/Engineering | 완료 |
 | D-25 | P2 | Operator UX | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Engineering | 완료 |
+| D-26 | P2 | Premium Dashboard UX | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Engineering | 완료 |
 
 ## 운영 규칙
 

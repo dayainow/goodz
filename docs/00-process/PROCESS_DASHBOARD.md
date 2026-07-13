@@ -28,7 +28,7 @@ process-dashboard (:5180)       ← 모니터링 UI
 | `metrics-snapshots.json` | Delivery Metrics 추세를 위한 저장 시점별 기준점 |
 | `@goodz/types` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
-| `process-dashboard` | 30초 폴링 · 그룹형 사이드바 · 운영 브리핑 Overview · Guide/Intake/Change/Deliverable/DACI Approval/Evidence/Metrics/Trace/Phase/Queue/Feature/App 관리 뷰 |
+| `process-dashboard` | 30초 폴링 · 검색/접힘 사이드바 · 운영 브리핑 Overview · 콘솔형 헤더 · Guide/Intake/Change/Deliverable/DACI Approval/Evidence/Metrics/Trace/Phase/Queue/Feature/App 관리 뷰 |
 
 ## 접속
 
@@ -81,6 +81,7 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 ## 사이드바 정보 구조
 
 메뉴가 많아졌기 때문에 v0.11부터 기능 목록을 단순 나열하지 않고 업무 흐름별로 묶습니다.
+v0.12부터는 검색, quick jump, 접힘 그룹을 추가해 자주 쓰는 메뉴와 깊은 운영 메뉴를 분리합니다.
 
 | 그룹 | 메뉴 | 의도 |
 |------|------|------|
@@ -89,12 +90,26 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 | Control | 승인, 증거, 지표, 추적 | 운영 통제와 품질 신호 확인 |
 | System | Phase Gate, 작업 큐, 기능, 앱 | 실행 상태와 서비스 링크 확인 |
 
+### v0.12 Sidebar UX
+
+- **메뉴 검색**: `label`, `eyebrow`, 설명 문구를 기준으로 메뉴를 필터링합니다.
+- **Quick jump**: 개요, 가이드, 증거, 지표처럼 자주 쓰는 메뉴를 상단에 고정합니다.
+- **접힘 그룹**: System처럼 빈번하지 않은 그룹은 접어두고, 활성 메뉴가 있는 그룹은 자동으로 펼칩니다.
+- **운영 수치 고정**: Trace, Evidence, Sprint 신호는 메뉴 스크롤과 무관하게 상단에서 확인합니다.
+
 ## Overview UX 기준
 
 - 숫자 카드보다 먼저 `Start here`, `Next signal`, `Health` 액션을 제시합니다.
 - evidence issue가 있으면 증거 메뉴로 자연스럽게 이동할 수 있어야 합니다.
 - P0-P4 진행 상태는 개요에서 바로 볼 수 있어야 합니다.
 - 기존 status, trace, metrics 데이터 모델은 유지하고 화면 구성만 더 운영자 친화적으로 만듭니다.
+- 메인 헤더는 현재 섹션 설명, sprint, system version, updated date를 보여주는 command header 역할을 합니다.
+
+## 참고한 UI 레퍼런스
+
+- Atlassian Design System — Side navigation: 제품 영역 안에서 중첩 뷰와 섹션 이동을 다루는 좌측 내비게이션 패턴
+- IBM Carbon — UI shell left panel: 5개 이상의 보조 항목을 자주 전환할 때 고정 left panel을 쓰는 패턴, 3단계 이상 깊이는 탭/본문으로 분리하는 원칙
+- Material Design — Navigation drawer: 주요 목적지 이동과 앱 구조를 담는 내비게이션 서피스 원칙
 
 ## 관련 문서
 
