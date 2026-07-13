@@ -10,6 +10,7 @@ import { addCartItem, buildCartView, getCart } from "./data/cart.js";
 import { checkout } from "./data/checkout.js";
 import { createProduct, getProductById, listProducts } from "./data/products.js";
 import {
+  loadProcessDocument,
   loadProcessMetricSnapshots,
   loadProcessStatus,
 } from "./data/processStatus.js";
@@ -48,6 +49,23 @@ app.get("/api/process/metrics-snapshots", (_req, res) => {
     const message =
       error instanceof Error ? error.message : "Failed to load metric snapshots";
     res.status(500).json({ message });
+  }
+});
+
+app.get("/api/process/document", (req, res) => {
+  const docPath = typeof req.query.path === "string" ? req.query.path : "";
+
+  if (!docPath) {
+    res.status(400).json({ message: "path is required" });
+    return;
+  }
+
+  try {
+    res.json(loadProcessDocument(docPath));
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to load process document";
+    res.status(404).json({ message });
   }
 });
 

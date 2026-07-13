@@ -117,6 +117,23 @@ Delivery Metrics 추세용 snapshot — `docs/00-process/metrics-snapshots.json`
 | `snapshots[].totals` | trace 수, linked/released 수, evidence issue 수 |
 | `snapshots[].delivery` | lead time, CI success, change failure, smoke pass, trace coverage, evidence completeness |
 
+### `GET /api/process/document`
+
+**Query:** `path=docs/.../*.md`
+
+**Response:** `ProcessDocumentResponse` (`@goodz/types`)
+
+대시보드 안에서 Markdown 문서 원문을 확인하기 위한 읽기 전용 endpoint입니다. 보안상 `docs/` 아래 `.md` 파일만 읽습니다.
+
+```json
+{
+  "path": "docs/00-process/USER_MANUAL.md",
+  "title": "Goodz Process Dashboard 이용 매뉴얼",
+  "content": "# Goodz Process Dashboard 이용 매뉴얼...",
+  "updatedAt": "2026-07-13T02:30:00.000Z"
+}
+```
+
 ## 변경 절차
 
 1. `packages/types` 수정

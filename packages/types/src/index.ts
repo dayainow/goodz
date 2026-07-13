@@ -69,6 +69,7 @@ export type {
   ProcessCheckItem,
   ProcessDeliverable,
   ProcessDeliverableType,
+  ProcessDocumentResponse,
   ProcessIntake,
   ProcessItemStatus,
   ProcessMetricSnapshot,

@@ -5,13 +5,13 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S11 Metrics Snapshots v0.9** ✅
+## 현재 스프린트: **S12 Docs Viewer Guide v0.10** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
 | **P1 디자인** | ✅ 12화면 · Gate 통과 |
 | **P2 레퍼런스 데모** | ✅ 쇼핑·어드민·Search/About UI |
-| **프로세스 대시보드** | ✅ 기획·변경·산출물·DACI 승인·추적·Phase 관리 UI |
+| **프로세스 대시보드** | ✅ 기획·변경·가이드·산출물·DACI 승인·추적·Phase 관리 UI |
 | **품질 게이트** | ✅ `pnpm verify` + GA harness + 브라우저 육안 QA |
 | **산출물 레지스트리** | ✅ [deliverables](./docs/deliverables/README.md) |
 | **승인 로그** | ✅ [APPROVALS](./docs/00-process/APPROVALS.md) · [DECISIONS](./docs/00-process/DECISIONS.md) |
@@ -19,6 +19,7 @@
 | **CI 런타임** | ✅ GitHub Actions Node 24 + 최신 major actions |
 | **증거 자동화** | ✅ [GITHUB_TRACE_SYNC](./docs/00-process/GITHUB_TRACE_SYNC.md) + 대시보드 누락 경고 |
 | **Delivery Metrics** | ✅ [METRICS](./docs/00-process/METRICS.md) + 시간 단위 DORA 베이스라인 + snapshot trend |
+| **서비스 매뉴얼** | ✅ [USER_MANUAL](./docs/00-process/USER_MANUAL.md) + 대시보드 문서 뷰어 |
 
 ## 현재 단계
 
@@ -72,6 +73,8 @@
 - [x] S10: 요청→커밋→CI→증거 시간 단위 metrics
 - [x] S11: Metrics snapshot 저장
 - [x] S11: 대시보드 지표 추세 그래프
+- [x] S12: 서비스 이용 매뉴얼
+- [x] S12: 대시보드 문서 뷰어와 가이드 메뉴
 
 ## 풀 프로세스
 

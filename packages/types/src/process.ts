@@ -202,6 +202,13 @@ export interface ProcessMetricSnapshotsFile {
   snapshots: ProcessMetricSnapshot[];
 }
 
+export interface ProcessDocumentResponse {
+  path: string;
+  title: string;
+  content: string;
+  updatedAt: string;
+}
+
 export interface ProcessStatus {
   version: number;
   updatedAt: string;

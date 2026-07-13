@@ -15,6 +15,7 @@ docs/00-process/metrics-snapshots.json   ← Metrics trend snapshot
         │
         ▼ GET /api/process/status
         ▼ GET /api/process/metrics-snapshots
+        ▼ GET /api/process/document?path=...
 api-server (:4000)
         │
         ▼ fetch
@@ -27,7 +28,7 @@ process-dashboard (:5180)       ← 모니터링 UI
 | `metrics-snapshots.json` | Delivery Metrics 추세를 위한 저장 시점별 기준점 |
 | `@goodz/types` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
-| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Intake/Change/Deliverable/DACI Approval/Evidence/Metrics/Trace/Phase/Queue/Feature/App 관리 뷰 |
+| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Guide/Intake/Change/Deliverable/DACI Approval/Evidence/Metrics/Trace/Phase/Queue/Feature/App 관리 뷰 |
 
 ## 접속
 
@@ -41,6 +42,7 @@ API 단독 확인:
 ```bash
 curl http://localhost:4000/api/process/status
 curl http://localhost:4000/api/process/metrics-snapshots
+curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUAL.md"
 ```
 
 ## status.json 갱신 규칙
@@ -65,6 +67,7 @@ curl http://localhost:4000/api/process/metrics-snapshots
 - **개요** — Sprint 목표·전체 진행률·우선 처리 작업
 - **기획** — 입력 요청·출처·다음 액션
 - **변경** — 기획 수정 요청·대상 문서·반영 상태
+- **가이드** — 서비스 이용 매뉴얼, 에이전트 가이드, 워크플로우, Metrics, CI/CD 문서 원문
 - **산출물** — PRD·화면설계·API·QA·릴리스 문서 레지스트리
 - **승인** — Driver·Approver·Contributors·Informed·승인 기준·결정 로그
 - **증거** — Issue/PR/Commit/CI/승인/릴리즈·스모크 누락 경고

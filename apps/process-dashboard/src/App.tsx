@@ -5,6 +5,7 @@ import type {
   ProcessCheckItem,
   ProcessDeliverable,
   ProcessDeliverableType,
+  ProcessDocumentResponse,
   ProcessIntake,
   ProcessItemStatus,
   ProcessMetricSnapshot,
@@ -16,7 +17,11 @@ import type {
   ProcessTraceReferenceStatus,
   ProcessTraceStatus,
 } from "@goodz/types";
-import { fetchProcessMetricSnapshots, fetchProcessStatus } from "./api/process";
+import {
+  fetchProcessDocument,
+  fetchProcessMetricSnapshots,
+  fetchProcessStatus,
+} from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
 import { ProgressBar, StatusBadge } from "./components/StatusBadge";
 
@@ -24,6 +29,7 @@ type SectionId =
   | "overview"
   | "intakes"
   | "changes"
+  | "guide"
   | "deliverables"
   | "approvals"
   | "evidence"
@@ -38,6 +44,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "overview", label: "개요", eyebrow: "Overview" },
   { id: "intakes", label: "기획", eyebrow: "Intake" },
   { id: "changes", label: "변경", eyebrow: "Change" },
+  { id: "guide", label: "가이드", eyebrow: "Manual" },
   { id: "deliverables", label: "산출물", eyebrow: "Docs" },
   { id: "approvals", label: "승인", eyebrow: "Approval" },
   { id: "evidence", label: "증거", eyebrow: "Evidence" },
@@ -47,6 +54,34 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "queue", label: "작업 큐", eyebrow: "Tasks" },
   { id: "features", label: "기능", eyebrow: "Backlog" },
   { id: "apps", label: "앱", eyebrow: "Services" },
+];
+
+const GUIDE_DOCS = [
+  {
+    path: "docs/00-process/USER_MANUAL.md",
+    title: "서비스 이용 매뉴얼",
+    summary: "Goodz Process Dashboard를 실제 운영에서 쓰는 방법",
+  },
+  {
+    path: "docs/00-process/AGENT_GUIDE.md",
+    title: "에이전트 가이드",
+    summary: "Codex/Cursor/Claude Code 협업 기준",
+  },
+  {
+    path: "docs/00-process/WORKFLOW.md",
+    title: "워크플로우",
+    summary: "P0 기획부터 P4 배포까지의 진행 흐름",
+  },
+  {
+    path: "docs/00-process/METRICS.md",
+    title: "Delivery Metrics",
+    summary: "지표와 snapshot trend 운영 기준",
+  },
+  {
+    path: "docs/00-process/CICD.md",
+    title: "CI/CD 운영",
+    summary: "검증, 증거 연결, 릴리스 운영 기준",
+  },
 ];
 
 const STATUS_ORDER: ProcessItemStatus[] = [
@@ -855,11 +890,119 @@ function PlanningChangesSection({
   );
 }
 
+function DocumentViewer({ docPath }: { docPath: string }) {
+  const [document, setDocument] = useState<ProcessDocumentResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadDocument() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchProcessDocument(docPath);
+        if (!cancelled) setDocument(data);
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "문서를 불러오지 못했습니다.");
+          setDocument(null);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    void loadDocument();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [docPath]);
+
+  return (
+    <section className="rounded-lg border border-zinc-200 bg-white">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-zinc-100 px-4 py-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
+            Document
+          </p>
+          <h3 className="mt-1 font-bold text-zinc-950">
+            {document?.title ?? docPath}
+          </h3>
+          <p className="mt-1 font-mono text-xs text-zinc-400">{docPath}</p>
+        </div>
+        <span className="rounded-full border border-zinc-200 px-3 py-1 text-xs font-semibold text-zinc-500">
+          {loading ? "loading" : document ? formatTimestamp(document.updatedAt) : "ready"}
+        </span>
+      </div>
+      <div className="max-h-[560px] overflow-auto px-5 py-4">
+        {error && (
+          <p className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            {error}
+          </p>
+        )}
+        {!error && loading && (
+          <p className="text-sm text-zinc-500">문서 불러오는 중…</p>
+        )}
+        {!error && !loading && document && (
+          <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-7 text-zinc-700">
+            {document.content}
+          </pre>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function GuideSection() {
+  const [selectedPath, setSelectedPath] = useState(GUIDE_DOCS[0].path);
+
+  return (
+    <div className="grid gap-4 xl:grid-cols-[360px_1fr]">
+      <section className="rounded-lg border border-zinc-200 bg-white">
+        <div className="border-b border-zinc-100 px-4 py-3">
+          <h3 className="font-bold text-zinc-950">운영 가이드</h3>
+          <p className="mt-1 text-sm leading-6 text-zinc-500">
+            서비스 사용과 운영에 필요한 문서입니다.
+          </p>
+        </div>
+        <div className="divide-y divide-zinc-100">
+          {GUIDE_DOCS.map((doc) => (
+            <button
+              key={doc.path}
+              type="button"
+              onClick={() => setSelectedPath(doc.path)}
+              className={[
+                "block w-full px-4 py-4 text-left hover:bg-violet-50",
+                selectedPath === doc.path ? "bg-violet-50" : "bg-white",
+              ].join(" ")}
+            >
+              <p className="font-semibold text-zinc-950">{doc.title}</p>
+              <p className="mt-1 text-sm leading-5 text-zinc-500">
+                {doc.summary}
+              </p>
+              <p className="mt-2 truncate font-mono text-xs text-zinc-400">
+                {doc.path}
+              </p>
+            </button>
+          ))}
+        </div>
+      </section>
+      <DocumentViewer docPath={selectedPath} />
+    </div>
+  );
+}
+
 function DeliverablesSection({
   deliverables,
 }: {
   deliverables: ProcessDeliverable[];
 }) {
+  const [selectedPath, setSelectedPath] = useState(
+    deliverables[0]?.doc ?? "docs/00-process/USER_MANUAL.md",
+  );
   const byPhase = deliverables.reduce<Record<string, ProcessDeliverable[]>>(
     (acc, deliverable) => {
       acc[deliverable.phase] ??= [];
@@ -871,6 +1014,7 @@ function DeliverablesSection({
 
   return (
     <div className="space-y-4">
+      <DocumentViewer docPath={selectedPath} />
       {Object.entries(byPhase).map(([phase, items]) => (
         <section key={phase} className="rounded-lg border border-zinc-200 bg-white">
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
@@ -888,7 +1032,10 @@ function DeliverablesSection({
             {items.map((item) => (
               <li
                 key={item.id}
-                className="grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_120px_140px_110px] lg:items-center"
+                className={[
+                  "grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_120px_140px_110px] lg:items-center",
+                  selectedPath === item.doc ? "bg-violet-50" : "",
+                ].join(" ")}
               >
                 <span className="font-mono text-xs font-semibold text-zinc-500">
                   {item.id}
@@ -899,6 +1046,13 @@ function DeliverablesSection({
                   <p className="mt-1 truncate font-mono text-xs text-zinc-400">
                     {item.doc}
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPath(item.doc)}
+                    className="mt-2 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-600 hover:border-brand-violet hover:text-brand-violet"
+                  >
+                    문서 보기
+                  </button>
                 </div>
                 <span className="w-fit rounded-md bg-zinc-100 px-2 py-1 text-xs font-semibold text-zinc-600">
                   {DELIVERABLE_TYPE_LABEL[item.type]}
@@ -1922,6 +2076,8 @@ export default function App() {
         {activeSection === "changes" && (
           <PlanningChangesSection changes={status.planningChanges} />
         )}
+
+        {activeSection === "guide" && <GuideSection />}
 
         {activeSection === "deliverables" && (
           <DeliverablesSection deliverables={status.deliverables} />
