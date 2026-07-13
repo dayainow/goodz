@@ -31,6 +31,7 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 | D-22 | P2 | Timestamp Metrics | [METRICS.md](../00-process/METRICS.md) | Engineering/DevOps | 완료 |
 | D-23 | P2 | Metrics Snapshot Trend | [METRICS.md](../00-process/METRICS.md) | PM/Engineering/DevOps | 완료 |
 | D-24 | P2 | User Manual + In-dashboard Docs Viewer | [USER_MANUAL.md](../00-process/USER_MANUAL.md) | PM/Engineering | 완료 |
+| D-25 | P2 | Operator UX | [PROCESS_DASHBOARD.md](../00-process/PROCESS_DASHBOARD.md) | Product/Engineering | 완료 |
 
 ## 운영 규칙
 
@@ -46,4 +47,4 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 
 - 산출물 승인자와 승인일
 - 변경 이력 요약
-- 문서 검색, 수정 요청 생성, incident/MTTR 기록과 snapshot 자동화
+- 문서 검색, guided workflow, 수정 요청 생성, incident/MTTR 기록과 snapshot 자동화

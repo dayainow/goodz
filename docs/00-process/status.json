@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.10",
+  "systemVersion": "v0.11",
   "sprint": {
-    "id": "S12",
-    "name": "시스템 v0.10 — Docs Viewer Guide",
+    "id": "S13",
+    "name": "시스템 v0.11 — Operator UX",
     "status": "done",
-    "goal": "문서와 이용 가이드를 프로세스 대시보드 안에서 확인"
+    "goal": "사이드 메뉴와 메인 개요를 실제 운영자 관점으로 고도화"
   },
   "phases": [
     {
@@ -157,6 +157,12 @@
           "label": "문서 뷰어와 이용 가이드",
           "status": "done",
           "doc": "docs/00-process/USER_MANUAL.md"
+        },
+        {
+          "id": "p2-operator-ux",
+          "label": "운영자 UX 고도화",
+          "status": "done",
+          "doc": "docs/00-process/PROCESS_DASHBOARD.md"
         },
         {
           "id": "p2-roadmap-sync",
@@ -333,6 +339,15 @@
       "phase": "P2",
       "doc": "docs/00-process/USER_MANUAL.md",
       "nextAction": "문서 검색과 수정 요청 생성으로 확장"
+    },
+    {
+      "id": "IN-010",
+      "title": "Operator UX v0.11",
+      "source": "사용자 요청 · 사이드 메뉴와 메인 대시보드 고도화",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/00-process/PROCESS_DASHBOARD.md",
+      "nextAction": "문서 검색과 guided workflow 생성으로 확장"
     }
   ],
   "deliverables": [
@@ -575,6 +590,16 @@
       "doc": "docs/00-process/USER_MANUAL.md",
       "owner": "PM/Engineering",
       "summary": "프로세스 대시보드에서 Markdown 문서와 서비스 이용 가이드를 읽을 수 있게 제공"
+    },
+    {
+      "id": "D-25",
+      "title": "Operator UX",
+      "type": "ops",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/00-process/PROCESS_DASHBOARD.md",
+      "owner": "Product/Engineering",
+      "summary": "사이드 메뉴를 업무 흐름별로 그룹화하고 개요를 운영 브리핑 화면으로 고도화"
     }
   ],
   "approvals": [
@@ -848,6 +873,36 @@
       "traceLinkIds": [
         "TL-009"
       ]
+    },
+    {
+      "id": "AP-010",
+      "target": "S13 Operator UX v0.11",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": [
+        "Product",
+        "Engineering",
+        "Operations"
+      ],
+      "informed": [
+        "Future Goodz operators"
+      ],
+      "status": "approved",
+      "requestedAt": "2026-07-13",
+      "approvedAt": "2026-07-13",
+      "decision": "프로세스 대시보드의 사이드 메뉴와 개요 화면을 운영자 관점으로 고도화",
+      "criteria": [
+        "사이드 메뉴가 업무 흐름별 그룹으로 정리됨",
+        "개요 화면이 오늘 볼 신호와 다음 액션을 먼저 제시함",
+        "P0-P4 운영 지도가 개요에서 확인됨",
+        "기존 메뉴와 데이터 접근성이 유지됨"
+      ],
+      "summary": "운영자 UX 고도화 승인",
+      "doc": "docs/00-process/APPROVALS.md",
+      "traceLinkIds": [
+        "TL-010"
+      ]
     }
   ],
   "planningChanges": [
@@ -999,6 +1054,22 @@
       "doc": "docs/00-process/USER_MANUAL.md",
       "summary": "프로세스 대시보드에서 docs Markdown 원문과 서비스 이용 가이드를 확인",
       "decision": "v0.10에서 읽기 전용 문서 API와 Guide 메뉴를 추가해 온보딩 가능성을 높임"
+    },
+    {
+      "id": "CR-010",
+      "title": "운영자 관점 대시보드 UX 고도화",
+      "status": "applied",
+      "requestedAt": "2026-07-13",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/USER_MANUAL.md",
+        "docs/00-process/status.json",
+        "apps/process-dashboard/src/App.tsx"
+      ],
+      "doc": "docs/00-process/PROCESS_DASHBOARD.md",
+      "summary": "사이드 메뉴를 그룹화하고 개요 화면을 운영 브리핑과 액션 카드 중심으로 개선",
+      "decision": "v0.11에서 메뉴 정보구조와 Overview UX를 운영자가 다음 행동을 판단할 수 있는 구조로 고도화"
     }
   ],
   "traceLinks": [
@@ -1469,6 +1540,39 @@
       },
       "summary": "대시보드에서 Markdown 문서 원문과 서비스 이용 가이드를 읽을 수 있도록 고도화",
       "nextAction": "문서 검색과 수정 요청 생성으로 확장"
+    },
+    {
+      "id": "TL-010",
+      "title": "Operator UX v0.11",
+      "status": "partial",
+      "sourceIds": [
+        "IN-010"
+      ],
+      "changeIds": [
+        "CR-010"
+      ],
+      "deliverableIds": [
+        "D-25"
+      ],
+      "approvalIds": [
+        "AP-010"
+      ],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "pending"
+      },
+      "summary": "사이드 메뉴 그룹화와 개요 운영 브리핑으로 프로세스 대시보드 사용성을 고도화",
+      "nextAction": "커밋과 GitHub Actions CI run을 연결"
     }
   ],
   "features": [
@@ -1545,6 +1649,11 @@
     {
       "id": "F-15",
       "label": "Docs Viewer + Guide",
+      "status": "done"
+    },
+    {
+      "id": "F-16",
+      "label": "Operator UX",
       "status": "done"
     }
   ],

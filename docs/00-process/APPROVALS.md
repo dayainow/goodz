@@ -25,6 +25,7 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-007 | S10 Timestamp Metrics v0.8 | Codex | 사용자 | approved | TL-007 |
 | AP-008 | S11 Metrics Snapshots v0.9 | Codex | 사용자 | approved | TL-008 |
 | AP-009 | S12 Docs Viewer Guide v0.10 | Codex | 사용자 | approved | TL-009 |
+| AP-010 | S13 Operator UX v0.11 | Codex | 사용자 | approved | TL-010 |
 
 ## 승인 기준
 

@@ -18,6 +18,7 @@
 | **v0.8** | GitHub timestamp 기반 시간 단위 Delivery Metrics | ✅ |
 | **v0.9** | Metrics snapshot 저장 + 대시보드 추세 그래프 | ✅ |
 | **v0.10** | 대시보드 문서 뷰어 + 서비스 이용 가이드 | ✅ |
+| **v0.11** | 운영자 관점 사이드 메뉴 + Overview UX 고도화 | ✅ |
 | **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
 
 ## 전체 타임라인
@@ -25,7 +26,7 @@
 ```text
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
-S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide
+S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX
 ```
 
 ---
@@ -74,7 +75,7 @@ S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11
 | F-09 | Search · About | — | P1 | ✅ |
 | F-10 | 프로세스 대시보드 | — | P0 | ✅ |
 
-**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계, 증거 자동화, 시간 단위 Delivery Metrics, snapshot trend, 문서 뷰어/이용 가이드 완료
+**현재 상태:** MVP 쇼핑 플로우, 어드민, Process Dashboard, Traceability, DACI 승인 체계, 증거 자동화, 시간 단위 Delivery Metrics, snapshot trend, 문서 뷰어/이용 가이드, 운영자 UX 완료
 
 ---
 
@@ -192,6 +193,13 @@ Week 1
 - process-dashboard `가이드` 메뉴에서 운영 문서 확인
 - process-dashboard `산출물` 메뉴에서 deliverable 원문 확인
 
+### Sprint S13 — Operator UX
+
+- 사이드 메뉴를 Start / Plan / Control / System 그룹으로 재구성
+- 개요 화면에 Start here, Next signal, Health 액션 카드 추가
+- P0-P4 Operating map을 개요에서 바로 확인
+- 사용자가 다음에 볼 메뉴를 판단할 수 있게 메인 대시보드 고도화
+
 ---
 
 ## 의존성 그래프
@@ -228,7 +236,8 @@ flowchart LR
 13. ✅ v0.8: GitHub timestamp 기반 시간 단위 metrics
 14. ✅ v0.9: Metrics snapshot + 추세 그래프
 15. ✅ v0.10: 문서 뷰어 + 서비스 이용 가이드
-16. ⚪ v1.0 후보: 문서 검색, incident/MTTR 기록 + PR review lead time
+16. ✅ v0.11: 운영자 UX 고도화
+17. ⚪ v1.0 후보: 문서 검색, guided workflow, incident/MTTR 기록 + PR review lead time
 
 ---
 
@@ -244,3 +253,4 @@ flowchart LR
 | 2026-07-13 | v0.8 — GitHub timestamp 기반 시간 단위 metrics |
 | 2026-07-13 | v0.9 — Metrics snapshot 저장 + 추세 그래프 |
 | 2026-07-13 | v0.10 — 대시보드 문서 뷰어 + 서비스 이용 가이드 |
+| 2026-07-13 | v0.11 — 운영자 관점 사이드 메뉴 + Overview UX 고도화 |

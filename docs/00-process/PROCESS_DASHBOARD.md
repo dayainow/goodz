@@ -28,7 +28,7 @@ process-dashboard (:5180)       ← 모니터링 UI
 | `metrics-snapshots.json` | Delivery Metrics 추세를 위한 저장 시점별 기준점 |
 | `@goodz/types` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
-| `process-dashboard` | 30초 폴링 · 사이드바 메뉴 · Guide/Intake/Change/Deliverable/DACI Approval/Evidence/Metrics/Trace/Phase/Queue/Feature/App 관리 뷰 |
+| `process-dashboard` | 30초 폴링 · 그룹형 사이드바 · 운영 브리핑 Overview · Guide/Intake/Change/Deliverable/DACI Approval/Evidence/Metrics/Trace/Phase/Queue/Feature/App 관리 뷰 |
 
 ## 접속
 
@@ -64,7 +64,7 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 
 ## UI 구성
 
-- **개요** — Sprint 목표·전체 진행률·우선 처리 작업
+- **개요** — Sprint 목표·오늘 볼 신호·권장 액션·P0-P4 운영 지도·우선 처리 작업
 - **기획** — 입력 요청·출처·다음 액션
 - **변경** — 기획 수정 요청·대상 문서·반영 상태
 - **가이드** — 서비스 이용 매뉴얼, 에이전트 가이드, 워크플로우, Metrics, CI/CD 문서 원문
@@ -77,6 +77,24 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 - **작업 큐** — 차단/진행/대기/완료 상태별 항목
 - **기능** — F-01… 기능 백로그 테이블
 - **앱** — 4앱 포트·역할·바로가기
+
+## 사이드바 정보 구조
+
+메뉴가 많아졌기 때문에 v0.11부터 기능 목록을 단순 나열하지 않고 업무 흐름별로 묶습니다.
+
+| 그룹 | 메뉴 | 의도 |
+|------|------|------|
+| Start | 개요, 가이드 | 새 사용자와 운영자가 처음 볼 화면 |
+| Plan | 기획, 변경, 산출물 | 요청과 문서 SSOT 확인 |
+| Control | 승인, 증거, 지표, 추적 | 운영 통제와 품질 신호 확인 |
+| System | Phase Gate, 작업 큐, 기능, 앱 | 실행 상태와 서비스 링크 확인 |
+
+## Overview UX 기준
+
+- 숫자 카드보다 먼저 `Start here`, `Next signal`, `Health` 액션을 제시합니다.
+- evidence issue가 있으면 증거 메뉴로 자연스럽게 이동할 수 있어야 합니다.
+- P0-P4 진행 상태는 개요에서 바로 볼 수 있어야 합니다.
+- 기존 status, trace, metrics 데이터 모델은 유지하고 화면 구성만 더 운영자 친화적으로 만듭니다.
 
 ## 관련 문서
 

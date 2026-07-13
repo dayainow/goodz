@@ -56,6 +56,49 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "apps", label: "앱", eyebrow: "Services" },
 ];
 
+const SECTION_COPY: Record<SectionId, string> = {
+  overview: "현재 상태와 오늘 볼 신호",
+  intakes: "요청과 아이디어 입력",
+  changes: "기획 수정과 의사결정",
+  guide: "사용법과 운영 기준",
+  deliverables: "문서 산출물 원문",
+  approvals: "DACI 승인 로그",
+  evidence: "누락된 운영 증거",
+  metrics: "Delivery health 추세",
+  traceability: "요청부터 CI까지 연결",
+  phases: "P0-P4 Gate",
+  queue: "미완료 작업 흐름",
+  features: "기능 백로그",
+  apps: "로컬 서비스 링크",
+};
+
+const MENU_GROUPS: Array<{
+  title: string;
+  summary: string;
+  items: SectionId[];
+}> = [
+  {
+    title: "Start",
+    summary: "처음 보는 화면",
+    items: ["overview", "guide"],
+  },
+  {
+    title: "Plan",
+    summary: "요청과 문서",
+    items: ["intakes", "changes", "deliverables"],
+  },
+  {
+    title: "Control",
+    summary: "승인·증거·지표",
+    items: ["approvals", "evidence", "metrics", "traceability"],
+  },
+  {
+    title: "System",
+    summary: "실행 상태",
+    items: ["phases", "queue", "features", "apps"],
+  },
+];
+
 const GUIDE_DOCS = [
   {
     path: "docs/00-process/USER_MANUAL.md",
@@ -550,14 +593,20 @@ function Sidebar({
   onSelect,
   status,
   overallProgress,
+  evidenceIssueCount,
 }: {
   activeSection: SectionId;
   onSelect: (section: SectionId) => void;
   status: ProcessStatus;
   overallProgress: number;
+  evidenceIssueCount: number;
 }) {
+  const linkedTraces = status.traceLinks.filter((trace) =>
+    ["linked", "released"].includes(trace.status),
+  ).length;
+
   return (
-    <aside className="border-b border-zinc-200 bg-white px-5 py-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-72 lg:flex-col lg:border-b-0 lg:border-r">
+    <aside className="border-b border-zinc-200 bg-white px-4 py-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-80 lg:flex-col lg:border-b-0 lg:border-r">
       <div className="flex items-center justify-between gap-4 lg:block">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
@@ -583,42 +632,96 @@ function Sidebar({
         </p>
       </div>
 
-      <nav className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-1">
-        {SECTIONS.map((section) => {
-          const isActive = section.id === activeSection;
-          return (
-            <button
-              key={section.id}
-              type="button"
-              onClick={() => onSelect(section.id)}
-              className={[
-                "flex min-h-14 items-center justify-between rounded-lg border px-3 text-left transition",
-                isActive
-                  ? "border-brand-violet bg-brand-violet text-white"
-                  : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50",
-              ].join(" ")}
-            >
-              <span>
-                <span
-                  className={[
-                    "block text-[11px] font-semibold uppercase tracking-wider",
-                    isActive ? "text-white/70" : "text-zinc-400",
-                  ].join(" ")}
-                >
-                  {section.eyebrow}
-                </span>
-                <span className="block text-sm font-semibold">
-                  {section.label}
-                </span>
-              </span>
-              <span aria-hidden="true">›</span>
-            </button>
-          );
-        })}
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700">
+            Trace
+          </p>
+          <p className="mt-1 text-lg font-bold text-emerald-950">
+            {linkedTraces}/{status.traceLinks.length}
+          </p>
+        </div>
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-700">
+            Evidence
+          </p>
+          <p className="mt-1 text-lg font-bold text-amber-950">
+            {evidenceIssueCount}
+          </p>
+        </div>
+        <div className="rounded-lg border border-violet-200 bg-violet-50 p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-violet-700">
+            Sprint
+          </p>
+          <p className="mt-1 text-lg font-bold text-violet-950">
+            {status.sprint.id}
+          </p>
+        </div>
+      </div>
+
+      <nav className="mt-5 space-y-5 overflow-y-auto pr-1">
+        {MENU_GROUPS.map((group) => (
+          <section key={group.title}>
+            <div className="mb-2 flex items-end justify-between gap-2 px-1">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                  {group.title}
+                </p>
+                <p className="text-[11px] text-zinc-400">{group.summary}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
+              {group.items.map((id) => {
+                const section = SECTIONS.find((item) => item.id === id);
+                if (!section) return null;
+                const isActive = section.id === activeSection;
+                return (
+                  <button
+                    key={section.id}
+                    type="button"
+                    onClick={() => onSelect(section.id)}
+                    className={[
+                      "flex min-h-14 items-center justify-between rounded-lg border px-3 text-left transition",
+                      isActive
+                        ? "border-brand-violet bg-brand-violet text-white shadow-sm"
+                        : "border-zinc-200 bg-white text-zinc-700 hover:border-violet-200 hover:bg-violet-50",
+                    ].join(" ")}
+                  >
+                    <span className="min-w-0">
+                      <span
+                        className={[
+                          "block text-[11px] font-semibold uppercase tracking-wider",
+                          isActive ? "text-white/70" : "text-zinc-400",
+                        ].join(" ")}
+                      >
+                        {section.eyebrow}
+                      </span>
+                      <span className="block text-sm font-semibold">
+                        {section.label}
+                      </span>
+                      <span
+                        className={[
+                          "mt-1 hidden truncate text-xs lg:block",
+                          isActive ? "text-white/70" : "text-zinc-400",
+                        ].join(" ")}
+                      >
+                        {SECTION_COPY[section.id]}
+                      </span>
+                    </span>
+                    <span aria-hidden="true" className="text-lg leading-none">
+                      ›
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </nav>
 
-      <div className="mt-auto hidden border-t border-zinc-200 pt-5 text-xs text-zinc-500 lg:block">
-        SSOT · docs/00-process/status.json
+      <div className="mt-auto hidden border-t border-zinc-200 pt-4 text-xs text-zinc-500 lg:block">
+        <p className="font-semibold text-zinc-600">SSOT</p>
+        <p className="mt-1 font-mono">docs/00-process/status.json</p>
       </div>
     </aside>
   );
@@ -650,6 +753,72 @@ function Metric({
   );
 }
 
+function ActionCard({
+  eyebrow,
+  title,
+  summary,
+  action,
+  tone = "neutral",
+  onClick,
+}: {
+  eyebrow: string;
+  title: string;
+  summary: string;
+  action: string;
+  tone?: "neutral" | "violet" | "green" | "amber";
+  onClick: () => void;
+}) {
+  const toneClass = {
+    neutral: "border-zinc-200 bg-white",
+    violet: "border-violet-200 bg-violet-50",
+    green: "border-emerald-200 bg-emerald-50",
+    amber: "border-amber-200 bg-amber-50",
+  }[tone];
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        "rounded-lg border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm",
+        toneClass,
+      ].join(" ")}
+    >
+      <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
+        {eyebrow}
+      </p>
+      <h3 className="mt-2 font-bold text-zinc-950">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-zinc-600">{summary}</p>
+      <p className="mt-4 text-sm font-semibold text-brand-violet">
+        {action} →
+      </p>
+    </button>
+  );
+}
+
+function PhaseSignal({ phase }: { phase: ProcessPhase }) {
+  return (
+    <div className="rounded-lg border border-zinc-200 bg-white p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-mono text-xs font-semibold text-brand-violet">
+            {phase.id}
+          </p>
+          <h3 className="mt-1 font-bold text-zinc-950">{phase.name}</h3>
+        </div>
+        <StatusBadge status={phase.status} />
+      </div>
+      <div className="mt-4">
+        <ProgressBar value={phase.progress} />
+      </div>
+      <p className="mt-2 text-xs text-zinc-500">
+        {phase.items.filter((item) => item.status === "done").length}/
+        {phase.items.length} 항목 완료
+      </p>
+    </div>
+  );
+}
+
 function QueueRow({
   item,
 }: {
@@ -676,12 +845,16 @@ function OverviewSection({
   queue,
   evidenceIssues,
   deliveryMetrics,
+  metricSnapshots,
+  onSelect,
 }: {
   status: ProcessStatus;
   overallProgress: number;
   queue: Array<ProcessCheckItem & { phaseId: string; phaseName: string }>;
   evidenceIssues: EvidenceIssue[];
   deliveryMetrics: DeliveryMetrics;
+  metricSnapshots: ProcessMetricSnapshot[];
+  onSelect: (section: SectionId) => void;
 }) {
   const pendingWork = getPrimaryWork(queue);
   const donePhases = status.phases.filter((phase) => phase.status === "done");
@@ -698,30 +871,109 @@ function OverviewSection({
   const linkedTraces = status.traceLinks.filter((item) =>
     ["linked", "released"].includes(item.status),
   ).length;
+  const latestSnapshot = metricSnapshots.at(-1);
+  const leadMetric = deliveryMetrics.cards.find(
+    (metric) => metric.label === "Lead time",
+  );
+  const ciMetric = deliveryMetrics.cards.find(
+    (metric) => metric.label === "CI success rate",
+  );
 
   return (
     <div className="space-y-6">
-      <section className="rounded-lg border border-zinc-200 bg-white p-6">
-        <div className="flex flex-wrap items-start justify-between gap-6">
-          <div>
+      <section className="overflow-hidden rounded-lg border border-zinc-200 bg-white">
+        <div className="grid gap-0 xl:grid-cols-[1.35fr_0.65fr]">
+          <div className="p-6">
             <p className="text-sm font-semibold text-brand-violet">
               현재 Sprint · {status.sprint.id}
             </p>
-            <h2 className="mt-2 text-2xl font-bold text-zinc-950">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-zinc-950">
               {status.sprint.name}
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600">
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-zinc-600">
               {status.sprint.goal}
             </p>
-          </div>
-          <div className="w-full max-w-sm">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium text-zinc-600">전체 진행률</span>
-              <span className="font-bold text-zinc-950">{overallProgress}%</span>
+            <div className="mt-6 grid gap-3 md:grid-cols-3">
+              <ActionCard
+                eyebrow="Start here"
+                title="서비스 이용법 확인"
+                summary="새 사용자는 가이드에서 흐름과 운영 명령을 먼저 확인합니다."
+                action="가이드 열기"
+                tone="violet"
+                onClick={() => onSelect("guide")}
+              />
+              <ActionCard
+                eyebrow="Next signal"
+                title={
+                  evidenceIssues.length
+                    ? `증거 ${evidenceIssues.length}건 보강`
+                    : "증거 상태 양호"
+                }
+                summary={
+                  evidenceIssues.length
+                    ? "Issue, CI, Release, Smoke 증거 중 빠진 항목을 먼저 정리합니다."
+                    : "현재 필수 증거 연결은 안정적입니다. 추세 지표를 확인하세요."
+                }
+                action="증거 보기"
+                tone={evidenceIssues.length ? "amber" : "green"}
+                onClick={() => onSelect("evidence")}
+              />
+              <ActionCard
+                eyebrow="Health"
+                title={`Delivery ${formatPercent(deliveryMetrics.traceCoverage)}`}
+                summary="trace coverage, lead time, snapshot trend로 운영 건강도를 확인합니다."
+                action="지표 보기"
+                tone="green"
+                onClick={() => onSelect("metrics")}
+              />
             </div>
-            <div className="mt-2">
+          </div>
+          <div className="border-t border-zinc-100 bg-zinc-50 p-6 xl:border-l xl:border-t-0">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-semibold text-zinc-600">전체 진행률</span>
+              <span className="text-2xl font-bold text-zinc-950">
+                {overallProgress}%
+              </span>
+            </div>
+            <div className="mt-3">
               <ProgressBar value={overallProgress} />
             </div>
+            <dl className="mt-6 grid grid-cols-2 gap-3 text-sm">
+              <div className="rounded-md bg-white p-3">
+                <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  Lead
+                </dt>
+                <dd className="mt-1 font-bold text-zinc-950">
+                  {leadMetric?.value ?? "N/A"}
+                </dd>
+              </div>
+              <div className="rounded-md bg-white p-3">
+                <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  CI
+                </dt>
+                <dd className="mt-1 font-bold text-zinc-950">
+                  {ciMetric?.value ?? "N/A"}
+                </dd>
+              </div>
+              <div className="rounded-md bg-white p-3">
+                <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  Snapshot
+                </dt>
+                <dd className="mt-1 font-bold text-zinc-950">
+                  {metricSnapshots.length}
+                </dd>
+              </div>
+              <div className="rounded-md bg-white p-3">
+                <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  Latest
+                </dt>
+                <dd className="mt-1 truncate font-mono text-xs font-semibold text-zinc-600">
+                  {latestSnapshot
+                    ? formatTimestamp(latestSnapshot.capturedAt)
+                    : "-"}
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
       </section>
@@ -760,6 +1012,31 @@ function OverviewSection({
         />
         <Metric label="Feature" value={`${doneFeatures.length}/${status.features.length}`} tone="green" />
         <Metric label="Queue" value={pendingWork.length} tone={pendingWork.length ? "amber" : "green"} />
+      </section>
+
+      <section>
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-brand-violet">
+              Operating map
+            </p>
+            <h3 className="mt-1 text-xl font-bold text-zinc-950">
+              P0부터 P4까지 한눈에 보기
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={() => onSelect("phases")}
+            className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:border-brand-violet hover:text-brand-violet"
+          >
+            Gate 보기
+          </button>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+          {status.phases.map((phase) => (
+            <PhaseSignal key={phase.id} phase={phase} />
+          ))}
+        </div>
       </section>
 
       <section className="rounded-lg border border-zinc-200 bg-white">
@@ -2038,6 +2315,7 @@ export default function App() {
         onSelect={setActiveSection}
         status={status}
         overallProgress={overallProgress}
+        evidenceIssueCount={evidenceIssues.length}
       />
 
       <main className="min-w-0 flex-1 px-5 py-6 lg:px-8">
@@ -2066,6 +2344,8 @@ export default function App() {
             queue={queue}
             evidenceIssues={evidenceIssues}
             deliveryMetrics={deliveryMetrics}
+            metricSnapshots={metricSnapshots}
+            onSelect={setActiveSection}
           />
         )}
 
