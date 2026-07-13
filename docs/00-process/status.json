@@ -569,7 +569,7 @@
     {
       "id": "TL-004",
       "title": "Roadmap + CI Runtime Maintenance v0.5.1",
-      "status": "partial",
+      "status": "linked",
       "sourceIds": ["IN-004"],
       "changeIds": ["CR-004"],
       "deliverableIds": ["D-16", "D-17"],
@@ -582,14 +582,26 @@
         "label": "Pull Request",
         "status": "not_required"
       },
-      "commits": [],
-      "ciRuns": [],
+      "commits": [
+        {
+          "sha": "530faee",
+          "message": "chore: ROADMAP 정합성 및 CI Node 24 전환",
+          "url": "https://github.com/dayainow/goodz/commit/530faee"
+        }
+      ],
+      "ciRuns": [
+        {
+          "id": "29215956559",
+          "status": "success",
+          "url": "https://github.com/dayainow/goodz/actions/runs/29215956559"
+        }
+      ],
       "release": {
         "label": "Release",
         "status": "pending"
       },
-      "summary": "ROADMAP v0.5 정합성과 CI Node 24 전환이 반영되었고, 이번 커밋·CI 성공 후 linked로 승격 예정",
-      "nextAction": "커밋 후 sha와 GitHub Actions run id를 traceLinks에 반영"
+      "summary": "ROADMAP v0.5.1 정합성과 CI Node 24 전환이 커밋·CI green 증거와 연결됨",
+      "nextAction": "v0.6에서 GitHub Issue/PR 자동 연결과 대시보드 누락 경고 착수"
     }
   ],
   "features": [
