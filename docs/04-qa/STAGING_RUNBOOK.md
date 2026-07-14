@@ -47,6 +47,12 @@ pnpm smoke:process-os
 5. `GOODZ_BASIC_AUTH_USER`, `GOODZ_BASIC_AUTH_PASSWORD`를 입력하고 Blueprint를 적용합니다.
 6. 서비스가 Live가 되면 생성된 `https://...onrender.com` URL로 아래 smoke를 실행합니다.
 
+비밀번호 없이 공개 health와 인증 경계만 확인합니다.
+
+```bash
+pnpm smoke:render-preview
+```
+
 ```bash
 GOODZ_PROCESS_OS_URL=https://your-preview.onrender.com \
 GOODZ_PROCESS_OS_USER=your-user \
@@ -57,6 +63,8 @@ pnpm smoke:process-os
 무료 프리뷰의 `GOODZ_DB_PATH`는 `/tmp/goodz.db`, `GOODZ_DB_DURABILITY`는 `local`입니다. Dashboard·API·SQLite schema·Template/Project 화면은 확인할 수 있지만, 인스턴스 절전·재시작·재배포 후 데이터 보존은 합격 기준에서 제외합니다. 최초 요청은 인스턴스 기동 때문에 늦을 수 있습니다.
 
 Render Node runtime이 제공하는 `pnpm`을 그대로 사용합니다. build command에 `corepack enable`을 추가하면 읽기 전용 `/usr/bin/pnpm`을 교체하려다 `EROFS`로 실패할 수 있습니다.
+
+현재 무료 프리뷰 URL은 `https://goodz-process-os-preview.onrender.com`입니다. 2026-07-14에 `/health` 200, Dashboard/API 401 Basic challenge와 인증 후 Dashboard 렌더링을 확인했습니다.
 
 ## 배포 순서
 

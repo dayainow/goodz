@@ -12,6 +12,8 @@
 - [x] SQLite migration·seed·incident lifecycle 검증 (`pnpm check:sqlite`)
 - [x] Process OS 단일 서비스 Render Blueprint 준비
 - [x] 외부 Process OS Basic Auth 필수 환경 변수 구성
+- [x] Render 무료 프리뷰 외부 URL 생성
+- [x] 무료 프리뷰 health·Basic Auth·Dashboard 렌더링 확인
 - [ ] Render 유료 영구 디스크 비용 승인과 외부 URL 생성
 
 ### 2026-07-10 확인 메모
@@ -48,6 +50,7 @@
 - [x] Core/CLI v1.0 package build
 - [x] local production API·Dashboard smoke
 - [x] `main` 단계별 push와 `v1.0.0` Git tag 계획
+- [x] Render 무료 Web Service provisioning과 외부 preview smoke
 - [ ] Render 서비스 provisioning·유료 persistent disk 승인·외부 URL smoke
 
-Render 외부 배포는 `render.yaml` Blueprint까지 준비되어 있으나 현재 실행 환경에는 Render API key/deploy hook과 생성된 서비스 URL이 없다. 따라서 Core v1.0 코드·태그 배포와 외부 호스팅 provisioning을 구분해 기록한다.
+무료 외부 프리뷰 `https://goodz-process-os-preview.onrender.com`에서 `/health` 200, Dashboard/API Basic Auth 경계와 인증 후 Dashboard 렌더링을 확인했다. 이 증거는 외부 호스팅·기동·인증 검증이며, 무료 임시 파일시스템이므로 `durability=persistent`와 재배포 데이터 보존 Gate를 대신하지 않는다.

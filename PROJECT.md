@@ -26,7 +26,7 @@
 | **Template Onboarding** | ✅ [ONBOARDING](./docs/00-process/ONBOARDING.md) + template contract + standalone install |
 | **White Premium Detail** | ✅ Quick Jump·CTA·metrics·phase·metadata·typography hierarchy |
 | **Sidebar Comfort** | ✅ active disclosure·20px padding·fixed footer·custom scrollbar |
-| **SQLite Operations** | ✅ 문서 인덱스·incident/MTTR·Render 영구 디스크 배포 구성 |
+| **SQLite Operations** | ✅ 문서 인덱스·incident/MTTR·Render 무료 프리뷰 배포 · 영구 디스크 운영 구성 |
 | **Platform Boundary** | ✅ `@goodz/process` Core 계약·Commerce Reference·API 라우터 경계·설정 스키마 |
 | **Portability Proof** | ✅ Internal Service Reference·Core SHA-256 기준선·`check:portability` |
 | **Writable Process** | ✅ Project·Run·Stage·Task·Gate command·SQLite audit |
