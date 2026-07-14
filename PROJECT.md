@@ -1,6 +1,6 @@
 # Goodz 프로젝트 허브
 
-> **Goodz는 쇼핑몰이 아니라, 쇼핑몰로 증명하는 풀 프로세스 모노레포 시스템입니다.**
+> **Goodz는 새로운 제품·서비스를 아이디어부터 배포까지 실행·관리하는 풀프로세스 모노레포 시스템입니다.**
 
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
@@ -11,7 +11,7 @@
 |---------------|------|
 | **P1 디자인** | ✅ 12화면 · Design OS · 레퍼런스/와이어프레임/스토리보드 |
 | **Dashboard Redesign PRD** | ✅ v1.0 승인 · Hero/Sidebar/Phase/Metrics 핵심 AC 반영 |
-| **P2 레퍼런스 데모** | ✅ 쇼핑·어드민·Search/About UI |
+| **Commerce Reference** | ✅ 쇼핑·어드민·Search/About 실행 흐름 |
 | **프로세스 대시보드** | ✅ Premium White UI·Design 메뉴·검색/접힘 사이드바·Quick jump·콘솔형 헤더·가이드·산출물·DACI 승인·추적·Phase 관리 UI |
 | **품질 게이트** | ✅ `pnpm verify` + GA harness + 브라우저 육안 QA |
 | **산출물 레지스트리** | ✅ [deliverables](./docs/deliverables/README.md) |
@@ -41,16 +41,16 @@
 |-------|------|----------------------|
 | **P0 기획** | 🟢 Gate 통과 | PRD · 유저스토리 · GA4 템플릿 |
 | **P1 디자인** | 🟢 Gate 통과 | Claude Design · Tailwind 토큰 · Design OS · 와이어프레임 · 스토리보드 |
-| **P2 개발** | 🟢 데모 + 대시보드 | Sticky Lemon UI · process-dashboard |
+| **P2 개발** | 🟢 Reference + 대시보드 | Sticky Lemon UI · process-dashboard |
 | **P3 QA** | 🟢 TEST_PLAN 통과 | 브라우저 QA · GA compliance |
 | **P4 배포** | 🟢 release-ready | RELEASE_CHECKLIST · 스테이징 런북 · smoke · CI/CD evidence |
 
-## 레퍼런스 구현체 (데모 — 최종 제품 아님)
+## 도메인별 Reference Implementation
 
 | 앱 | 역할 |
 |----|------|
-| web-shop | B2C 퍼널 데모 |
-| admin-dashboard | 운영 UI 데모 |
+| web-shop | B2C 구매 퍼널 Reference |
+| admin-dashboard | 운영자 상품 관리 Reference |
 | api-server | 현재 process/commerce 모듈을 함께 제공하는 전환 런타임 |
 | internal-service | 비커머스 서비스 카탈로그 API와 독립 타입 패턴 |
 

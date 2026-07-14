@@ -7,14 +7,13 @@
 
 ## 한 줄 정의
 
-**Goodz는 굿즈 쇼핑몰이 아닙니다.**  
-**기획 → 디자인 → 개발 → QA → 배포**를 문서·게이트·모노레포·CI·AI 스킬로 묶은 **풀 프로세스 모노레포 시스템**입니다.
+**Goodz는 새로운 제품·서비스 아이디어를 프로젝트로 시작해 기획 → 디자인 → 개발 → QA → 배포까지 직접 실행·관리하는 풀프로세스 모노레포 시스템입니다.**
 
-쇼핑몰(`web-shop` · `admin` · `api`)은 이 시스템이 **잘 돌아가는지 증명하는 레퍼런스 구현체**일 뿐입니다.
+문서·Phase Gate·모노레포·CI·AI 스킬을 하나의 운영 흐름으로 연결하며, Goodz Commerce와 Internal Service Reference로 서로 다른 도메인에 이식 가능한 구조를 검증합니다.
 
 ---
 
-## 원하는 최종 아웃풋 (진짜 제품)
+## 제품이 제공하는 풀프로세스 레이어
 
 | 레이어 | 산출물 | 위치 |
 |--------|--------|------|
@@ -31,12 +30,12 @@
 
 ---
 
-## 레퍼런스 도메인 (쇼핑몰)
+## 도메인별 Reference Implementation
 
 | 항목 | 역할 |
 |------|------|
-| `apps/web-shop` | B2C UX · GA4 퍼널 데모 |
-| `apps/admin-dashboard` | 운영 UI 데모 |
+| `apps/web-shop` | B2C UX · GA4 구매 퍼널 검증 |
+| `apps/admin-dashboard` | 운영자 상품 관리 흐름 검증 |
 | `apps/process-dashboard` | **풀 프로세스 진행도 모니터링** (시스템 제품 UI) |
 | `packages/process` | **Goodz Core**의 도메인 중립 Process OS 계약 |
 | `packages/types` | **Goodz Commerce Reference**의 커머스 타입 SSOT 패턴 시연 |
@@ -78,7 +77,7 @@
 
 | 단계 | 목표 |
 |------|------|
-| **v0.1** ✅ | 모노레포 + MVP 데모 + P0 Gate + CI |
+| **v0.1** ✅ | 모노레포 + MVP Reference + P0 Gate + CI |
 | **v0.2** ✅ | P1 디자인 파이프라인(Claude Design) + 확장 화면 스펙 |
 | **v0.3** ✅ | Process OS: 기획 입력 + 산출물 레지스트리 + 대시보드 추적 |
 | **v1.0** ⚪ | “템플릿으로 fork 가능” — 온보딩 가이드 + 시스템 패키지화 |

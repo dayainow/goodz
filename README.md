@@ -4,9 +4,9 @@
 [![pnpm](https://img.shields.io/badge/pnpm-workspace-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Turborepo](https://img.shields.io/badge/Turborepo-monorepo-EF4444?style=flat-square&logo=turborepo&logoColor=white)](https://turbo.build/)
 
-> **Goodz는 팀의 개발 프로세스를 재현 가능하고 추적 가능하게 만드는 Process Control Plane입니다.**
+> **Goodz는 새로운 제품·서비스를 처음 기획하는 순간부터 배포까지 실행·관리하는 Process Control Plane입니다.**
 >
-> 기획 → 디자인 → 개발 → QA → 배포를 문서·Phase Gate·코드·CI·승인·운영 지표로 연결합니다. 쇼핑몰과 Internal Service는 제품이 아니라 Goodz가 서로 다른 도메인에서도 작동함을 보여주는 Reference입니다.
+> 아이디어 → PRD → 디자인 → 개발 → QA → 배포를 문서·Phase Gate·코드·CI·승인·운영 지표로 연결합니다. Goodz Commerce와 Internal Service Reference는 같은 Core로 서로 다른 프로젝트를 운영할 수 있음을 검증합니다.
 
 👉 **[Process Dashboard](http://localhost:5180)** — 프로젝트·Stage·Task·GO/HOLD/KILL Gate를 실행하는 Process Control Plane (`pnpm dev`)
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 프로젝트 존재 이유 (에이전트 필독)  
@@ -21,7 +21,7 @@
 
 ## Goodz는 무엇을 하는가
 
-Goodz는 Jira, GitHub, Figma, CI를 새 도구 하나로 대체하려는 제품이 아닙니다. 각 단계에서 생성되는 요청·산출물·승인·코드·배포 증거를 하나의 운영 흐름으로 연결합니다.
+Goodz는 Jira, GitHub, Claude Design과 CI를 프로젝트의 단계별 실행 도구로 연결합니다. 사용자는 아이디어를 등록한 뒤 각 단계에서 생성되는 요청·산출물·승인·코드·배포 증거를 하나의 운영 흐름으로 관리합니다.
 
 ```text
 요청 → PRD → 디자인 → 타입/API/앱 → 테스트 → 승인 → CI → 배포
@@ -173,7 +173,7 @@ pnpm verify              # 전체 품질 Gate
 
 ## 이 프로젝트의 핵심 — 풀 프로세스 모노레포 시스템
 
-Goodz의 **진짜 제품**은 아래입니다. 쇼핑몰 앱은 **데모**입니다.
+Goodz 플랫폼은 아래 시스템 레이어로 구성됩니다. Commerce와 Internal Service 앱은 Core의 이식성과 실제 실행 흐름을 검증하는 Reference입니다.
 
 | 시스템 레이어 | 내용 |
 |---------------|------|
