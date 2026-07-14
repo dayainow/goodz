@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S32 Installable Goodz Core v1.0** ✅
+## 현재 스프린트: **S33 Workspace / Goodz Reference Boundary** 🚧
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -35,6 +35,7 @@
 | **PRD & Design Workbench** | ✅ 질문형 PRD·Markdown·승인·화면·스토리보드·콘셉트·Claude Design handoff |
 | **Design Job Connector** | ✅ prompt snapshot·작업 상태·결과 제출·수정 요청·승인·portable export |
 | **Goodz Core/CLI v1.0** | ✅ init·adopt·config/template migrate·project·export·Git publish·clean-clone verify |
+| **Workspace Boundary** | 🚧 사용자 프로젝트 기본 진입·Library 분리·Goodz 개발 기록 Reference 격리 · 육안 QA 대기 |
 
 ## 현재 단계
 
@@ -144,6 +145,9 @@
 - [x] S32: config v1→v2 dry-run·원자적·멱등 migration
 - [x] S32: 생성물 없는 clean-clone frozen install·CLI·Template·Portability Gate
 - [x] S32: `@goodz/process`, `@goodz/cli` v1.0 publish metadata
+- [x] S33: 사용자 프로젝트를 Dashboard 기본 진입점으로 전환
+- [x] S33: Goodz IN·CR·DR·TL·Sprint 기록을 Reference 관리자 영역으로 격리
+- [x] S33: Handoff command 후 Design 탭·스크롤 맥락 유지
 
 ## 풀 프로세스
 

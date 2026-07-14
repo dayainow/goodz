@@ -163,12 +163,22 @@ pnpm dev
 
 Dashboard는 Git 문서와 외부 증거의 원본을 대체하지 않지만 읽기 전용 화면도 아닙니다. 문서·증거를 보여주는 **운영 projection**과 프로젝트·단계·작업·Gate를 변경하는 **command UI**를 함께 제공합니다.
 
+Dashboard의 데이터는 세 범위로 나뉩니다.
+
+| 범위 | 역할 | 원본 |
+|---|---|---|
+| **Workspace** | 사용자가 생성한 프로젝트·PRD·Design Pack·Run·Task·Gate 실행 | Operations DB |
+| **Library** | 모든 프로젝트가 공유하는 이용 매뉴얼과 운영 기준 | Git 문서 |
+| **Goodz Reference** | Goodz 자체 업그레이드에 사용한 IN·CR·DR·TL·Sprint·지표 | `status.json`, Git 문서 |
+
+Goodz Reference는 제품이 어떻게 개발되고 검증됐는지 보여주는 관리자·레퍼런스 범위이며, 사용자가 만든 프로젝트 데이터가 아닙니다.
+
 ### 처음 접속했을 때
 
-1. **개요**에서 현재 Sprint, 권장 액션, P0–P4 Operating Map을 확인합니다.
-2. **프로젝트**에서 P0–P4 또는 Phase 0–8 Template을 선택하거나 Builder로 팀 템플릿을 만든 뒤 Process Run을 시작합니다.
-3. **가이드**에서 사용 매뉴얼과 Workflow를 읽습니다.
-4. **우선 처리 작업**에서 아직 완료되지 않은 항목을 확인합니다.
+1. 기본으로 열리는 **Workspace → 프로젝트**에서 새 프로젝트를 생성하거나 기존 프로젝트를 선택합니다.
+2. P0–P4 또는 Phase 0–8 Template을 선택하거나 Builder로 팀 템플릿을 만든 뒤 Process Run을 시작합니다.
+3. 프로젝트 Workbench에서 PRD와 Design Pack을 만들고, 현재 Stage의 Task·산출물·Evidence·Gate를 운영합니다.
+4. 공통 사용법이 필요하면 **Library → 가이드**를 열고, Goodz 자체 개발 현황이 필요할 때만 **Goodz Reference**를 펼칩니다.
 
 ### 프로젝트를 진행할 때
 
@@ -176,8 +186,9 @@ Dashboard는 Git 문서와 외부 증거의 원본을 대체하지 않지만 읽
 
 | 메뉴 그룹 | 확인하는 것 |
 |---|---|
-| **Plan** | 기획 입력, 변경 요청, 디자인, PRD/API/QA 등 산출물 원문 |
-| **Control** | DACI 승인, Issue/PR/CI/Release 증거, Delivery Metrics와 추적 연결 |
+| **Workspace** | 사용자 프로젝트 생성, PRD·Design Pack·Stage·Task·산출물·Evidence·Gate 실행 |
+| **Library** | 공용 사용 매뉴얼과 운영 기준 |
+| **Goodz Reference** | Goodz 자체 기획·변경·디자인·승인·증거·Metrics·Phase 개발 기록 |
 | **System** | Phase Gate, 작업 큐, Reference 기능과 실행 앱 상태 |
 
 ### 매일 운영 루프

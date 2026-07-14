@@ -66,8 +66,10 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 
 ## UI 구성
 
-- **개요** — Sprint 목표·오늘 볼 신호·권장 액션·P0-P4 운영 지도·우선 처리 작업
-- **기획** — 입력 요청·출처·다음 액션
+- **Workspace / 프로젝트** — 사용자 프로젝트·PRD·Design Pack·Run·Task·산출물·Evidence·Gate command
+- **Library / 가이드** — 프로젝트 공용 매뉴얼과 운영 기준
+- **Goodz Reference / 시스템 개요** — Goodz Sprint 목표·오늘 볼 신호·P0-P4 운영 지도
+- **Goodz Reference / 기획** — Goodz 자체 입력 요청·출처·다음 액션
 - **변경** — 기획 수정 요청·대상 문서·반영 상태
 - **디자인** — 디자인 시스템, 레퍼런스, 와이어프레임, 스토리보드
 - **가이드** — 서비스 이용 매뉴얼, 에이전트 가이드, 워크플로우, Metrics, CI/CD 문서 원문
@@ -86,22 +88,20 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 
 ## 사이드바 정보 구조
 
-메뉴가 많아졌기 때문에 v0.11부터 기능 목록을 단순 나열하지 않고 업무 흐름별로 묶습니다.
-v0.12부터는 검색, quick jump, 접힘 그룹을 추가해 자주 쓰는 메뉴와 깊은 운영 메뉴를 분리합니다.
+메뉴가 많아졌기 때문에 v0.11부터 기능 목록을 단순 나열하지 않고 업무 흐름별로 묶습니다. 현재 구조는 사용자 프로젝트와 Goodz 자체 개발 기록의 소유권 경계를 우선합니다.
 
 | 그룹 | 메뉴 | 의도 |
 |------|------|------|
-| Start | 개요, 프로젝트, 가이드 | 새 사용자와 운영자가 프로세스를 시작하는 화면 |
-| Plan | 기획, 변경, 디자인, 산출물 | 요청, 설계, 문서 SSOT 확인 |
-| Control | 승인, 증거, 지표, 추적 | 운영 통제와 품질 신호 확인 |
-| System | Phase Gate, 작업 큐, 기능, 앱 | 실행 상태와 서비스 링크 확인 |
+| Workspace | 프로젝트 | 사용자 프로젝트 생성과 실행, Operations DB command |
+| Library | 가이드 | 모든 프로젝트가 공유하는 사용법과 운영 기준 |
+| Goodz Reference | 시스템 개요, 기획, 변경, 디자인, 산출물, 승인, 증거, 지표, 추적, Phase Gate, 작업 큐, 기능, 운영 DB, 앱 | Goodz 자체 개발 기록과 Git SSOT 진단 |
 
 ### v0.12 Sidebar UX
 
 - **메뉴 검색**: `label`, `eyebrow`, 설명 문구를 기준으로 메뉴를 필터링합니다.
-- **Quick jump**: 개요, 디자인, 가이드, 지표처럼 자주 쓰는 메뉴를 상단에 고정합니다.
-- **접힘 그룹**: System처럼 빈번하지 않은 그룹은 접어두고, 활성 메뉴가 있는 그룹은 자동으로 펼칩니다.
-- **운영 수치 고정**: Trace, Evidence, Sprint 신호는 메뉴 스크롤과 무관하게 상단에서 확인합니다.
+- **Quick jump**: 프로젝트와 가이드만 상단에 고정해 일반 사용자를 Workspace에 유지합니다.
+- **접힘 그룹**: Goodz Reference는 기본적으로 접고, 관리자가 선택했을 때만 펼칩니다.
+- **범위 표시**: 사이드바 하단에서 Workspace의 Operations DB와 Goodz Reference의 Git 문서를 구분합니다.
 
 ## Design 메뉴
 
@@ -221,6 +221,16 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - **Conflict guard**: 마지막 export 이후 사용자가 수정한 파일은 기본적으로 덮어쓰지 않습니다.
 - **Path guard**: 절대·상위 경로와 symbolic link write를 거부합니다.
 - **Command loop**: `goodz init`, `project create`, `export`, `verify`로 초기화부터 산출물 검증까지 연결합니다.
+
+## Workspace / Goodz Reference Boundary
+
+- **Default entry**: Dashboard의 초기 섹션은 시스템 개요가 아니라 사용자 `프로젝트`입니다.
+- **Workspace**: SQLite/PostgreSQL에 저장되는 사용자 Project·PRD·Design Pack·Run·Task·Deliverable·Evidence·Gate를 포함합니다.
+- **Library**: 프로젝트 공용 매뉴얼과 운영 기준만 제공합니다.
+- **Goodz Reference**: `status.json`과 Git 문서에서 읽은 IN·CR·DR·TL·Sprint·Metrics를 접힌 관리자 영역으로 격리합니다.
+- **Scope cue**: Reference 화면은 사용자 프로젝트 데이터가 아니라는 경고와 프로젝트 복귀 동선을 항상 표시합니다.
+- **Header metadata**: Workspace에서는 Goodz Sprint 대신 프로젝트·활성 Run·Operations DB 범위를 표시합니다.
+- **Workbench continuity**: PRD/Design command 갱신은 같은 프로젝트 Workbench를 재마운트하지 않아 활성 탭과 스크롤 맥락을 유지합니다.
 
 ## Redesign PRD v1.0
 

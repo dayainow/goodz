@@ -3,10 +3,10 @@
   "updatedAt": "2026-07-14",
   "systemVersion": "v1.0",
   "sprint": {
-    "id": "S32",
-    "name": "시스템 v1.0 — Installable Goodz Core",
-    "status": "done",
-    "goal": "기존 config 업그레이드와 clean-clone 설치를 보장하는 재현 가능한 Core/CLI 배포 계약 확정"
+    "id": "S33",
+    "name": "Workspace / Goodz Reference Boundary",
+    "status": "in_progress",
+    "goal": "사용자 프로젝트 실행 영역과 Goodz 자체 개발 기록을 명확한 제품 경계로 분리"
   },
   "phases": [
     {

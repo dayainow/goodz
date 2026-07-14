@@ -4,6 +4,18 @@ Goodz Process Dashboard는 새로운 제품·서비스 아이디어를 프로젝
 
 아이디어를 PRD로 구체화하고, 디자인 작업을 전달하며, Stage·Task·산출물·Phase Gate를 운영하고, GitHub·CI·배포 증거까지 같은 프로젝트 흐름에서 추적할 수 있습니다. Dashboard는 Git 문서와 외부 증거를 연결하는 **운영 projection**이자 실제 프로세스를 변경하는 **Process Control Plane command UI**입니다.
 
+## 데이터 범위 구분
+
+Dashboard는 사용자 프로젝트와 Goodz 자체 개발 기록을 명확히 분리합니다.
+
+| 범위 | 저장소 | 사용 대상 |
+|------|--------|----------|
+| **Workspace** | Operations DB(SQLite/PostgreSQL) | 사용자가 생성한 프로젝트·PRD·Design Pack·Run·Task·Gate |
+| **Library** | Git 문서 | 모든 프로젝트가 함께 쓰는 이용 매뉴얼과 운영 기준 |
+| **Goodz Reference** | `status.json`, `docs/` | Goodz 자체의 IN·CR·DR·TL·Sprint·지표·Phase 개발 기록 |
+
+로그인 후 기본 화면은 **Workspace → 프로젝트**입니다. `Goodz Reference`의 기존 기획·변경·디자인·증거는 현재 사용자 프로젝트의 데이터가 아니며, Goodz 제품을 업그레이드하는 관리자·예시 범위입니다.
+
 ## 프로젝트 프로세스 관리
 
 1. **프로젝트**에서 기존 Template을 선택하거나 **새 템플릿 만들기**로 팀 프로세스를 구성합니다.
@@ -56,19 +68,16 @@ pnpm dev
 
 ## 기본 사용 순서
 
-1. **개요**에서 현재 스프린트, 오늘 볼 신호, 권장 액션을 확인합니다.
-2. **프로젝트**에서 Process Run을 만들거나 현재 Stage를 운영합니다.
-3. **가이드**에서 이 매뉴얼과 운영 문서를 읽습니다.
-4. **기획**과 **변경**에서 요청과 수정 내역을 확인합니다.
-5. **디자인**에서 레퍼런스, 와이어프레임, 스토리보드를 확인합니다.
-6. **산출물**에서 PRD, API, QA, 릴리스 문서를 바로 열어봅니다.
-7. **승인**에서 DACI 역할과 승인 기준을 확인합니다.
-8. **증거**에서 Issue, PR, commit, CI, release, smoke 누락을 확인합니다.
-9. **지표**와 **추적**에서 흐름과 Delivery health를 확인합니다.
+1. **Workspace → 프로젝트**에서 Process Run을 만들거나 현재 Stage를 운영합니다.
+2. 프로젝트 안의 PRD Wizard, Design Workbench, Task, 산출물, Evidence와 Gate를 사용합니다.
+3. 공통 사용법이 필요하면 **Library → 가이드**를 엽니다.
+4. Goodz 자체 개발 현황을 확인할 때만 **Goodz Reference**를 펼칩니다.
 
-## 매일 운영하는 순서
+## Goodz 자체를 개발할 때
 
-1. **개요**의 Next signal과 우선 처리 작업을 확인합니다.
+다음 절차는 일반 프로젝트 사용자가 아니라 Goodz Core 관리자·개발자를 위한 Reference 운영 절차입니다.
+
+1. **Goodz Reference → 시스템 개요**의 Next signal과 우선 처리 작업을 확인합니다.
 2. 작업 후 intake, change, deliverable과 approval 원본을 갱신합니다.
 3. `pnpm sync:github-trace`로 Commit/CI 증거를 보강합니다.
 4. **증거**에서 누락된 Issue, PR, CI, Release, Smoke를 확인합니다.
@@ -77,22 +86,23 @@ pnpm dev
 
 ## 사이드 메뉴 구조
 
-메뉴는 실제 운영 흐름에 맞춰 네 그룹으로 나뉩니다.
+메뉴는 데이터 소유권과 사용 대상을 기준으로 세 그룹으로 나뉩니다.
 
 | 그룹 | 메뉴 | 용도 |
 |------|------|------|
-| Start | 개요, 프로젝트, 가이드 | 상태 확인, Process Run 시작과 사용법 확인 |
-| Plan | 기획, 변경, 디자인, 산출물 | 요청, 설계, 문서 원문 확인 |
-| Control | 승인, 증거, 지표, 추적 | 운영 통제와 품질 신호 확인 |
-| System | Phase Gate, 작업 큐, 기능, 앱 | 실행 상태와 로컬 서비스 확인 |
+| Workspace | 프로젝트 | 사용자 프로젝트 생성과 Process Run 실행 |
+| Library | 가이드 | 모든 프로젝트가 함께 쓰는 매뉴얼과 운영 기준 |
+| Goodz Reference | 시스템 개요, 기획, 변경, 디자인, 산출물, 승인, 증거, 지표, 추적, Phase Gate, 작업 큐, 기능, 운영 DB, 앱 | Goodz 자체 개발 기록과 관리자 진단 |
 
 ### 메뉴를 빠르게 찾는 법
 
 - 상단 **메뉴 검색**에 `증거`, `Metrics`, `앱`처럼 메뉴명이나 설명 키워드를 입력합니다.
-- **Quick jump**는 매일 가장 자주 쓰는 개요, 프로젝트, 가이드, 지표로 바로 이동합니다.
+- **Quick jump**는 사용자 작업 공간인 프로젝트와 공용 가이드로 바로 이동합니다.
 - 잘 쓰지 않는 그룹은 접어두고, 현재 보고 있는 메뉴가 포함된 그룹은 자동으로 펼쳐진 상태를 유지합니다.
 
 ## 디자인 메뉴 읽는 법
+
+이 메뉴는 **Goodz Reference**에 속하며 개별 사용자 프로젝트의 Design Pack과 다릅니다. 프로젝트별 화면·스토리보드·Claude Design Job은 **Workspace → 프로젝트 → Design Workbench**에서 관리합니다.
 
 - **Reference Board**: Atlassian, Carbon, Polaris, GOV.UK 같은 레퍼런스와 Goodz 적용 화면을 확인합니다.
 - **Wireframes**: 새 화면을 만들기 전 정보 구조와 우선순위를 확인합니다.

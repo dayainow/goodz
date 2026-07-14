@@ -78,7 +78,7 @@ type SectionId =
   | "apps";
 
 const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
-  { id: "overview", label: "개요", eyebrow: "Overview" },
+  { id: "overview", label: "시스템 개요", eyebrow: "Goodz Reference" },
   { id: "workspace", label: "프로젝트", eyebrow: "Control Plane" },
   { id: "intakes", label: "기획", eyebrow: "Intake" },
   { id: "changes", label: "변경", eyebrow: "Change" },
@@ -123,24 +123,34 @@ const MENU_GROUPS: Array<{
   items: SectionId[];
 }> = [
   {
-    title: "Start",
-    summary: "처음 보는 화면",
-    items: ["overview", "workspace", "guide"],
+    title: "Workspace",
+    summary: "내 프로젝트 실행",
+    items: ["workspace"],
   },
   {
-    title: "Plan",
-    summary: "요청과 설계",
-    items: ["intakes", "changes", "design", "deliverables"],
+    title: "Library",
+    summary: "공용 사용법과 기준",
+    items: ["guide"],
   },
   {
-    title: "Control",
-    summary: "승인·증거·지표",
-    items: ["approvals", "evidence", "metrics", "traceability"],
-  },
-  {
-    title: "System",
-    summary: "실행 상태",
-    items: ["phases", "queue", "features", "operations", "apps"],
+    title: "Goodz Reference",
+    summary: "Goodz 자체 개발 기록",
+    items: [
+      "overview",
+      "intakes",
+      "changes",
+      "design",
+      "deliverables",
+      "approvals",
+      "evidence",
+      "metrics",
+      "traceability",
+      "phases",
+      "queue",
+      "features",
+      "operations",
+      "apps",
+    ],
   },
 ];
 
@@ -150,7 +160,24 @@ const SECTION_GROUP = new Map<SectionId, string>(
   ),
 );
 
-const QUICK_SECTIONS: SectionId[] = ["overview", "workspace", "guide", "metrics"];
+const QUICK_SECTIONS: SectionId[] = ["workspace", "guide"];
+
+const REFERENCE_SECTIONS = new Set<SectionId>([
+  "overview",
+  "intakes",
+  "changes",
+  "design",
+  "deliverables",
+  "approvals",
+  "evidence",
+  "metrics",
+  "traceability",
+  "phases",
+  "queue",
+  "features",
+  "operations",
+  "apps",
+]);
 
 const GUIDE_DOCS = [
   {
@@ -656,11 +683,11 @@ function getPrimaryWork(
 function Sidebar({
   activeSection,
   onSelect,
-  status,
+  workspace,
 }: {
   activeSection: SectionId;
   onSelect: (section: SectionId) => void;
-  status: ProcessStatus;
+  workspace: ProcessWorkspaceOverview;
 }) {
   const [query, setQuery] = useState("");
   const activeGroupTitle = SECTION_GROUP.get(activeSection) ?? null;
@@ -683,14 +710,16 @@ function Sidebar({
       <div className="flex shrink-0 items-start justify-between gap-4">
         <div>
           <p className={META_LABEL}>
-            Goodz System
+            Goodz Workspace
           </p>
           <h1 className="mt-1 text-2xl font-bold text-zinc-950">
-            프로세스 관리
+            프로젝트 관리
           </h1>
         </div>
         <div className="pt-1">
-          <StatusBadge status={status.sprint.status} />
+          <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-bold text-violet-700">
+            {workspace.projects.length} 프로젝트
+          </span>
         </div>
       </div>
 
@@ -709,7 +738,7 @@ function Sidebar({
           <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
             Quick jump
           </p>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {QUICK_SECTIONS.map((id) => {
               const section = SECTION_MAP.get(id);
               if (!section) return null;
@@ -844,8 +873,14 @@ function Sidebar({
       </nav>
 
       <div className="mt-3 hidden shrink-0 border-t border-zinc-200 bg-[#F7F7F7] pt-4 text-xs text-zinc-500 lg:block">
-        <p className="font-semibold text-zinc-600">SSOT</p>
-        <p className="mt-1 font-mono">Git documents + Operations DB</p>
+        <div className="flex items-center justify-between gap-3">
+          <span className="font-semibold text-zinc-700">Workspace</span>
+          <span className="font-mono text-[11px]">Operations DB</span>
+        </div>
+        <div className="mt-1 flex items-center justify-between gap-3">
+          <span className="font-semibold text-zinc-500">Goodz Reference</span>
+          <span className="font-mono text-[11px]">Git documents</span>
+        </div>
       </div>
     </aside>
   );
@@ -3351,7 +3386,7 @@ function WorkspaceSection({
             </section>
 
             <ProjectWorkbench
-              key={`${selectedProject.id}-${selectedBrief.updatedAt}-${selectedDesignPack.updatedAt}-${selectedDesignJobs[0]?.updatedAt ?? "no-job"}`}
+              key={selectedProject.id}
               project={selectedProject}
               brief={selectedBrief}
               designPack={selectedDesignPack}
@@ -3701,6 +3736,31 @@ function AppsSection({ apps }: { apps: ProcessApp[] }) {
   );
 }
 
+function ReferenceScopeNotice({ onOpenWorkspace }: { onOpenWorkspace: () => void }) {
+  return (
+    <section className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4">
+      <div>
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-amber-700">
+          Goodz Reference · Git SSOT
+        </p>
+        <p className="mt-1 text-sm font-bold text-zinc-900">
+          Goodz 자체의 개발 기록입니다. 현재 사용자 프로젝트 데이터가 아닙니다.
+        </p>
+        <p className="mt-1 text-xs leading-5 text-zinc-600">
+          IN·CR·DR·TL과 시스템 지표는 Goodz를 업그레이드하는 관리자·레퍼런스 범위에 속합니다.
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={onOpenWorkspace}
+        className="rounded-xl bg-zinc-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-zinc-800"
+      >
+        내 프로젝트로 돌아가기
+      </button>
+    </section>
+  );
+}
+
 export default function App() {
   const [status, setStatus] = useState<ProcessStatus | null>(null);
   const [metricSnapshots, setMetricSnapshots] = useState<ProcessMetricSnapshot[]>([]);
@@ -3708,7 +3768,7 @@ export default function App() {
   const [workspace, setWorkspace] = useState<ProcessWorkspaceOverview | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState<SectionId>("overview");
+  const [activeSection, setActiveSection] = useState<SectionId>("workspace");
 
   const load = useCallback(async () => {
     setError(null);
@@ -3797,13 +3857,15 @@ export default function App() {
       status.phases.length,
   );
   const active = SECTION_MAP.get(activeSection);
+  const isReferenceSection = REFERENCE_SECTIONS.has(activeSection);
+  const activeRunCount = workspace.runs.filter((run) => run.status === "active").length;
 
   return (
     <div className="min-h-screen bg-[#F4F4F5] text-zinc-950 lg:flex">
       <Sidebar
         activeSection={activeSection}
         onSelect={setActiveSection}
-        status={status}
+        workspace={workspace}
       />
 
       <main className="min-w-0 flex-1 px-5 py-6 lg:px-8">
@@ -3821,8 +3883,19 @@ export default function App() {
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                {status.sprint.status === "done" ? "완료" : status.sprint.status}
+              <span className={[
+                "rounded-full border px-3 py-1 text-xs font-semibold",
+                isReferenceSection
+                  ? "border-amber-200 bg-amber-50 text-amber-700"
+                  : activeSection === "workspace"
+                    ? "border-violet-200 bg-violet-50 text-violet-700"
+                    : "border-zinc-200 bg-zinc-50 text-zinc-700",
+              ].join(" ")}>
+                {isReferenceSection
+                  ? "Goodz 개발 기록"
+                  : activeSection === "workspace"
+                    ? "사용자 프로젝트"
+                    : "공용 라이브러리"}
               </span>
               <button
                 type="button"
@@ -3833,37 +3906,50 @@ export default function App() {
               </button>
             </div>
           </div>
-          <div className="mt-4 grid gap-4 border-t border-zinc-100 pt-4 text-xs md:grid-cols-[1.1fr_1fr_1.2fr_auto] md:items-end">
-            <div className="border-l-2 border-zinc-950 pl-3">
-              <p className="font-semibold uppercase tracking-wider text-zinc-400">
-                Sprint
-              </p>
-              <p className="mt-1 text-sm font-extrabold text-zinc-950">{status.sprint.id}</p>
+          {isReferenceSection ? (
+            <div className="mt-4 grid gap-4 border-t border-zinc-100 pt-4 text-xs md:grid-cols-[1.1fr_1fr_1.2fr_auto] md:items-end">
+              <div className="border-l-2 border-amber-500 pl-3">
+                <p className="font-semibold uppercase tracking-wider text-zinc-400">Goodz Sprint</p>
+                <p className="mt-1 text-sm font-extrabold text-zinc-950">{status.sprint.id}</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wider text-zinc-400">System Version</p>
+                <p className="mt-1 font-mono font-bold text-zinc-800">{status.systemVersion}</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wider text-zinc-400">Updated</p>
+                <p className="mt-1 font-mono font-medium text-zinc-500">{status.updatedAt}</p>
+              </div>
+              <div>
+                <p className="mb-1 font-semibold uppercase tracking-wider text-zinc-400">Scope</p>
+                <p className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-3 py-1 font-bold text-amber-800">Reference</p>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold uppercase tracking-wider text-zinc-400">
-                Version
-              </p>
-              <p className="mt-1 font-mono font-bold text-zinc-800">{status.systemVersion}</p>
+          ) : activeSection === "workspace" ? (
+            <div className="mt-4 grid gap-4 border-t border-zinc-100 pt-4 text-xs sm:grid-cols-3">
+              <div className="border-l-2 border-violet-500 pl-3">
+                <p className="font-semibold uppercase tracking-wider text-zinc-400">Projects</p>
+                <p className="mt-1 text-sm font-extrabold text-zinc-950">{workspace.projects.length}</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wider text-zinc-400">Active Runs</p>
+                <p className="mt-1 text-sm font-bold text-zinc-800">{activeRunCount}</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wider text-zinc-400">Data Scope</p>
+                <p className="mt-1 font-mono font-bold text-zinc-700">Operations DB</p>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold uppercase tracking-wider text-zinc-400">
-                Updated
-              </p>
-              <p className="mt-1 font-mono font-medium text-zinc-500">
-                {status.updatedAt}
-              </p>
+          ) : (
+            <div className="mt-4 border-t border-zinc-100 pt-4 text-xs text-zinc-500">
+              프로젝트 실행에 공통으로 사용하는 매뉴얼과 운영 기준입니다.
             </div>
-            <div>
-              <p className="mb-1 font-semibold uppercase tracking-wider text-zinc-400">
-                Section
-              </p>
-              <p className="inline-flex rounded-full border border-zinc-300 bg-zinc-100 px-3 py-1 font-bold text-zinc-800">
-                {active?.label}
-              </p>
-            </div>
-          </div>
+          )}
         </header>
+
+        {isReferenceSection ? (
+          <ReferenceScopeNotice onOpenWorkspace={() => setActiveSection("workspace")} />
+        ) : null}
 
         {activeSection === "overview" && (
           <OverviewSection
