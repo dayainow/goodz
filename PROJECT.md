@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S24 Process Template Catalog v0.22** ✅
+## 현재 스프린트: **S25 Visual Template Builder v0.23** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -31,6 +31,7 @@
 | **Portability Proof** | ✅ Internal Service Reference·Core SHA-256 기준선·`check:portability` |
 | **Writable Process** | ✅ Project·Run·Stage·Task·Gate command·SQLite audit |
 | **Process Template Catalog** | ✅ 파일 기반 P0–P4·Phase 0–8·Template Builder·산출물/증거 command |
+| **Visual Template Builder** | ✅ 기존 Template 복제·Stage 정렬·Task/산출물 편집·Live Blueprint·저장 검증 |
 
 ## 현재 단계
 
@@ -119,6 +120,9 @@
 - [x] S24: Core 밖 파일 기반 P0–P4·Phase 0–8 Template Catalog
 - [x] S24: 필수 산출물 제출·승인과 증거 연결 command
 - [x] S24: Dashboard JSON Template Builder와 SQLite schema v3
+- [x] S25: JSON 입력을 구조화된 Visual Template Builder로 교체
+- [x] S25: Catalog 복제 편집과 Stage 순서 변경
+- [x] S25: Live Blueprint·필수 필드·개수 제한 검증
 
 ## 풀 프로세스
 

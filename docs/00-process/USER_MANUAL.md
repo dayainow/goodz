@@ -6,13 +6,16 @@ Dashboard는 원본 문서 편집기나 Jira/GitHub의 대체물이 아닙니다
 
 ## 프로젝트 프로세스 관리
 
-1. **프로젝트**에서 이름, 목표, Owner와 Template을 선택해 Process Run을 만듭니다.
-2. 현재 Stage의 Task 상태와 담당자를 저장합니다.
-3. 모든 Task를 완료한 뒤 결정 근거를 입력합니다.
-4. **GO**는 다음 Stage를 자동 시작하고, **HOLD**는 차단하며, **KILL**은 Run을 종료합니다.
-5. 최근 실행 이력에서 프로젝트 생성, 작업 변경과 Gate 결정을 확인합니다.
+1. **프로젝트**에서 기존 Template을 선택하거나 **새 템플릿 만들기**로 팀 프로세스를 구성합니다.
+2. Visual Builder에서 Stage·Task·산출물을 추가하고 순서와 필수 여부를 정한 뒤 Catalog에 저장합니다. 기존 Template은 **복제 편집**으로 시작할 수 있습니다.
+3. 이름, 목표, Owner와 Template을 선택해 Process Run을 만듭니다.
+4. 현재 Stage의 Task 상태와 담당자를 저장합니다.
+5. 필수 산출물에 Owner와 URI를 입력하고 승인 상태로 변경하며, 필요하면 CI·PR·문서 증거를 연결합니다.
+6. 모든 Task와 필수 산출물 조건을 충족한 뒤 결정 근거를 입력합니다.
+7. **GO**는 다음 Stage를 자동 시작하고, **HOLD**는 차단하며, **KILL**은 Run을 종료합니다.
+8. 최근 실행 이력에서 Template·프로젝트·작업·산출물·증거와 Gate 결정을 확인합니다.
 
-GO는 현재 Stage의 모든 Task가 `done`이어야 합니다. HOLD와 KILL은 반드시 근거를 입력합니다. 실행 상태와 감사 이력은 SQLite에 저장되고, 장문 산출물과 외부 증거는 Git/GitHub 원본을 유지합니다.
+GO는 현재 Stage의 모든 Task가 `done`이고 필수 산출물이 `approved`여야 합니다. HOLD와 KILL은 반드시 근거를 입력합니다. 실행 상태와 감사 이력은 SQLite에 저장되고, 장문 산출물과 외부 증거는 Git/GitHub 원본을 유지합니다.
 
 ## 접속
 

@@ -180,10 +180,19 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 
 - **파일 기반 Catalog**: `templates/process/*.json`이 기본 Template 정의의 SSOT입니다.
 - **기본 Template 2종**: 제품 전달 P0–P4와 서비스 전달 Phase 0–8을 제공합니다.
-- **Template Builder**: Dashboard에서 JSON 정의를 검증·저장하고 즉시 새 프로젝트에 사용합니다.
+- **Template Builder**: Dashboard에서 구조화된 폼으로 정의를 검증·저장하고 즉시 새 프로젝트에 사용합니다.
 - **Deliverable command**: Stage별 산출물 상태, Owner, URI와 검토 메모를 저장합니다.
 - **Evidence command**: 문서, Issue, PR, Commit, CI, Release 링크를 현재 Stage에 연결합니다.
 - **Gate guard**: 모든 Task 완료와 모든 필수 산출물 승인 전에는 GO를 거부합니다.
+
+## v0.23 Visual Template Builder
+
+- **No JSON required**: 사용자는 원시 JSON을 편집하지 않고 Template 이름과 Stage 구조를 폼에서 작성합니다.
+- **Structured editing**: Stage·Task·Deliverable을 추가·삭제하고 Stage 순서를 위/아래로 이동합니다.
+- **Clone workflow**: Catalog의 기본/사용자 Template을 복제해 새 버전 후보를 만듭니다.
+- **Live Blueprint**: Stage, Task, 필수 산출물 수와 단계 흐름을 편집 중 즉시 확인합니다.
+- **Inline validation**: 중복/잘못된 Stage code, 누락 필드와 빈 Task를 저장 전에 안내합니다.
+- **API guard**: 최대 20 Stage, Stage당 50 Task·20 Deliverable과 필드 길이를 서버에서도 검증합니다.
 
 ## Redesign PRD v1.0
 

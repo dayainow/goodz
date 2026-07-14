@@ -504,6 +504,7 @@ interface TemplateRow {
 interface TemplateStageRow {
   id: string;
   template_id: string;
+  code: string;
   name: string;
   summary: string;
   position: number;
@@ -660,6 +661,7 @@ function listProcessTemplates(): ProcessTemplate[] {
       .filter((stage) => stage.template_id === template.id)
       .map((stage) => ({
         id: stage.id,
+        code: stage.code,
         name: stage.name,
         summary: stage.summary,
         position: stage.position,
@@ -810,6 +812,13 @@ export function createProcessTemplate(
   input: CreateProcessTemplateRequest,
 ): ProcessTemplate {
   if (input.stages.length === 0) throw new Error("At least one stage is required");
+  if (input.stages.length > 20) throw new Error("A template can contain up to 20 stages");
+  if (input.stages.some((stage) => !stage || !Array.isArray(stage.tasks) || !Array.isArray(stage.deliverables))) {
+    throw new Error("Every stage requires task and deliverable arrays");
+  }
+  if (input.name.trim().length > 80 || input.summary.trim().length > 240) {
+    throw new Error("Template name or summary is too long");
+  }
   const codes = input.stages.map((stage) => stage.code.trim().toUpperCase());
   if (codes.some((code) => !/^[A-Z][A-Z0-9_-]{0,15}$/.test(code))) {
     throw new Error("Stage codes must use 1-16 uppercase letters, numbers, _ or -");
@@ -817,6 +826,24 @@ export function createProcessTemplate(
   if (new Set(codes).size !== codes.length) throw new Error("Stage codes must be unique");
   if (input.stages.some((stage) => !stage.name.trim() || !stage.summary.trim() || stage.tasks.length === 0)) {
     throw new Error("Every stage requires a name, summary, and at least one task");
+  }
+  if (input.stages.some((stage) => stage.name.trim().length > 80 || stage.summary.trim().length > 240)) {
+    throw new Error("Stage name or summary is too long");
+  }
+  if (input.stages.some((stage) => stage.tasks.length > 50 || stage.deliverables.length > 20)) {
+    throw new Error("Each stage supports up to 50 tasks and 20 deliverables");
+  }
+  if (input.stages.some((stage) =>
+    stage.tasks.some((task) => !task.title.trim() || !task.summary.trim()) ||
+    stage.deliverables.some((deliverable) => !deliverable.title.trim() || !deliverable.summary.trim())
+  )) {
+    throw new Error("Every task and deliverable requires a title and summary");
+  }
+  if (input.stages.some((stage) =>
+    stage.tasks.some((task) => task.title.trim().length > 120 || task.summary.trim().length > 240) ||
+    stage.deliverables.some((item) => item.title.trim().length > 120 || item.summary.trim().length > 240)
+  )) {
+    throw new Error("Task or deliverable content is too long");
   }
   const definition: TemplateDefinition = {
     ...input,

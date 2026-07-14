@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { FormEvent } from "react";
 import type {
+  CreateProcessTemplateRequest,
   ProcessApp,
   ProcessApproval,
   ProcessCheckItem,
@@ -28,6 +29,7 @@ import type {
   ProcessPlanningChangeStatus,
   ProcessRun,
   ProcessStatus,
+  ProcessTemplate,
   ProcessTraceLink,
   ProcessTraceReferenceStatus,
   ProcessTraceStatus,
@@ -2772,26 +2774,182 @@ function WorkspaceTaskRow({
   );
 }
 
-const TEMPLATE_BUILDER_SAMPLE = JSON.stringify({
-  name: "팀 맞춤 Delivery",
-  summary: "우리 팀의 판단부터 배포까지 관리하는 템플릿",
-  stages: [
-    {
-      code: "P0",
-      name: "판단",
-      summary: "문제와 진행 기준을 잠급니다.",
-      tasks: [{ title: "판단 근거 작성", summary: "고객, 문제와 성공 기준을 기록합니다." }],
-      deliverables: [{ title: "Decision Brief", summary: "승인 가능한 판단 문서", required: true }],
-    },
-    {
-      code: "P1",
-      name: "실행",
-      summary: "승인된 범위를 구현하고 검증합니다.",
-      tasks: [{ title: "구현과 검증", summary: "코드와 자동 검증을 완료합니다." }],
-      deliverables: [{ title: "Release Evidence", summary: "변경과 검증 증거", required: true }],
-    },
-  ],
-}, null, 2);
+interface BuilderTask {
+  key: string;
+  title: string;
+  summary: string;
+}
+
+interface BuilderDeliverable extends BuilderTask {
+  required: boolean;
+}
+
+interface BuilderStage {
+  key: string;
+  code: string;
+  name: string;
+  summary: string;
+  tasks: BuilderTask[];
+  deliverables: BuilderDeliverable[];
+}
+
+interface TemplateDraft {
+  name: string;
+  summary: string;
+  stages: BuilderStage[];
+}
+
+let builderKeySequence = 0;
+const nextBuilderKey = (prefix: string) => `${prefix}-${builderKeySequence += 1}`;
+
+function newBuilderTask(): BuilderTask {
+  return { key: nextBuilderKey("task"), title: "", summary: "" };
+}
+
+function newBuilderDeliverable(): BuilderDeliverable {
+  return { key: nextBuilderKey("deliverable"), title: "", summary: "", required: true };
+}
+
+function newBuilderStage(position: number): BuilderStage {
+  return {
+    key: nextBuilderKey("stage"),
+    code: `P${position}`,
+    name: "",
+    summary: "",
+    tasks: [newBuilderTask()],
+    deliverables: [newBuilderDeliverable()],
+  };
+}
+
+function initialTemplateDraft(): TemplateDraft {
+  return {
+    name: "팀 맞춤 Delivery",
+    summary: "우리 팀의 판단부터 배포까지 관리하는 프로세스",
+    stages: [
+      {
+        ...newBuilderStage(0),
+        name: "판단",
+        summary: "문제와 진행 기준을 잠급니다.",
+        tasks: [{ ...newBuilderTask(), title: "판단 근거 작성", summary: "고객, 문제와 성공 기준을 기록합니다." }],
+        deliverables: [{ ...newBuilderDeliverable(), title: "Decision Brief", summary: "승인 가능한 판단 문서" }],
+      },
+    ],
+  };
+}
+
+function draftFromTemplate(template: ProcessTemplate): TemplateDraft {
+  return {
+    name: `${template.name} Copy`,
+    summary: template.summary,
+    stages: template.stages.map((stage) => ({
+      key: nextBuilderKey("stage"),
+      code: stage.code,
+      name: stage.name,
+      summary: stage.summary,
+      tasks: stage.tasks.map((task) => ({
+        key: nextBuilderKey("task"),
+        title: task.title,
+        summary: task.summary,
+      })),
+      deliverables: stage.deliverables.map((deliverable) => ({
+        key: nextBuilderKey("deliverable"),
+        title: deliverable.title,
+        summary: deliverable.summary,
+        required: deliverable.required,
+      })),
+    })),
+  };
+}
+
+function toTemplateRequest(draft: TemplateDraft): CreateProcessTemplateRequest {
+  return {
+    name: draft.name.trim(),
+    summary: draft.summary.trim(),
+    stages: draft.stages.map((stage) => ({
+      code: stage.code.trim().toUpperCase(),
+      name: stage.name.trim(),
+      summary: stage.summary.trim(),
+      tasks: stage.tasks.map(({ title, summary }) => ({ title: title.trim(), summary: summary.trim() })),
+      deliverables: stage.deliverables.map(({ title, summary, required }) => ({ title: title.trim(), summary: summary.trim(), required })),
+    })),
+  };
+}
+
+function validateTemplateDraft(draft: TemplateDraft): string | null {
+  if (!draft.name.trim() || !draft.summary.trim()) return "템플릿 이름과 설명을 입력하세요.";
+  if (draft.stages.length === 0) return "Stage를 하나 이상 추가하세요.";
+  const codes = draft.stages.map((stage) => stage.code.trim().toUpperCase());
+  if (codes.some((code) => !/^[A-Z][A-Z0-9_-]{0,15}$/.test(code))) return "Stage 코드는 영문자로 시작하는 1–16자 코드여야 합니다.";
+  if (new Set(codes).size !== codes.length) return "Stage 코드는 서로 달라야 합니다.";
+  for (const stage of draft.stages) {
+    if (!stage.name.trim() || !stage.summary.trim()) return `${stage.code || "Stage"}의 이름과 설명을 입력하세요.`;
+    if (stage.tasks.length === 0) return `${stage.code}에 Task를 하나 이상 추가하세요.`;
+    if (stage.tasks.some((task) => !task.title.trim() || !task.summary.trim())) return `${stage.code}의 모든 Task 제목과 설명을 입력하세요.`;
+    if (stage.deliverables.some((item) => !item.title.trim() || !item.summary.trim())) return `${stage.code}의 모든 산출물 제목과 설명을 입력하세요.`;
+  }
+  return null;
+}
+
+function TemplateStageEditor({
+  stage,
+  position,
+  total,
+  onChange,
+  onMove,
+  onRemove,
+}: {
+  stage: BuilderStage;
+  position: number;
+  total: number;
+  onChange: (stage: BuilderStage) => void;
+  onMove: (direction: -1 | 1) => void;
+  onRemove: () => void;
+}) {
+  const updateTask = (key: string, change: Partial<BuilderTask>) => {
+    onChange({ ...stage, tasks: stage.tasks.map((task) => task.key === key ? { ...task, ...change } : task) });
+  };
+  const updateDeliverable = (key: string, change: Partial<BuilderDeliverable>) => {
+    onChange({ ...stage, deliverables: stage.deliverables.map((item) => item.key === key ? { ...item, ...change } : item) });
+  };
+
+  return (
+    <article className="rounded-2xl border border-zinc-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 px-4 py-3">
+        <div className="flex items-center gap-3">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-950 font-mono text-xs font-bold text-white">{position + 1}</span>
+          <div><p className="text-xs font-bold text-zinc-950">{stage.name || "이름 없는 Stage"}</p><p className="mt-0.5 font-mono text-[10px] text-violet-700">{stage.code || "CODE"}</p></div>
+        </div>
+        <div className="flex gap-1">
+          <button type="button" aria-label={`${stage.code} 위로 이동`} disabled={position === 0} onClick={() => onMove(-1)} className={["h-8 rounded-lg border px-2.5 text-xs font-bold disabled:opacity-30", QUIET_ACTION].join(" ")}>↑</button>
+          <button type="button" aria-label={`${stage.code} 아래로 이동`} disabled={position === total - 1} onClick={() => onMove(1)} className={["h-8 rounded-lg border px-2.5 text-xs font-bold disabled:opacity-30", QUIET_ACTION].join(" ")}>↓</button>
+          <button type="button" disabled={total === 1} onClick={onRemove} className="h-8 rounded-lg border border-rose-200 bg-rose-50 px-2.5 text-xs font-bold text-rose-700 hover:bg-rose-100 disabled:opacity-30">삭제</button>
+        </div>
+      </header>
+      <div className="space-y-5 p-4">
+        <div className="grid gap-3 md:grid-cols-[120px_1fr]">
+          <label className="text-xs font-bold text-zinc-600">Stage 코드<input value={stage.code} onChange={(event) => onChange({ ...stage, code: event.target.value.toUpperCase() })} maxLength={16} className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 font-mono text-xs uppercase" /></label>
+          <label className="text-xs font-bold text-zinc-600">Stage 이름<input value={stage.name} onChange={(event) => onChange({ ...stage, name: event.target.value })} maxLength={80} className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" /></label>
+        </div>
+        <label className="block text-xs font-bold text-zinc-600">Stage 설명<textarea value={stage.summary} onChange={(event) => onChange({ ...stage, summary: event.target.value })} rows={2} maxLength={240} className="mt-2 w-full resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm leading-6" /></label>
+
+        <div>
+          <div className="flex items-center justify-between gap-3"><div><p className={META_LABEL}>Tasks</p><p className="mt-1 text-xs text-zinc-500">GO 전에 완료할 실행 항목</p></div><button type="button" disabled={stage.tasks.length >= 50} onClick={() => onChange({ ...stage, tasks: [...stage.tasks, newBuilderTask()] })} className={["rounded-lg border px-3 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>+ Task</button></div>
+          <div className="mt-3 space-y-2">
+            {stage.tasks.map((task, index) => <div key={task.key} className="grid gap-2 rounded-xl border border-zinc-200 bg-zinc-50 p-3 md:grid-cols-[28px_1fr_1.4fr_auto] md:items-center"><span className="font-mono text-xs font-bold text-zinc-400">T{index + 1}</span><input aria-label={`${stage.code} Task ${index + 1} 제목`} value={task.title} onChange={(event) => updateTask(task.key, { title: event.target.value })} maxLength={120} placeholder="Task 제목" className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-xs" /><input aria-label={`${stage.code} Task ${index + 1} 설명`} value={task.summary} onChange={(event) => updateTask(task.key, { summary: event.target.value })} maxLength={240} placeholder="완료 기준과 설명" className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-xs" /><button type="button" aria-label={`${stage.code} Task ${index + 1} 삭제`} disabled={stage.tasks.length === 1} onClick={() => onChange({ ...stage, tasks: stage.tasks.filter((item) => item.key !== task.key) })} className="h-9 rounded-lg px-2 text-xs font-bold text-rose-600 hover:bg-rose-50 disabled:opacity-25">삭제</button></div>)}
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between gap-3"><div><p className={META_LABEL}>Deliverables</p><p className="mt-1 text-xs text-zinc-500">Gate에서 제출·승인할 산출물</p></div><button type="button" disabled={stage.deliverables.length >= 20} onClick={() => onChange({ ...stage, deliverables: [...stage.deliverables, newBuilderDeliverable()] })} className={["rounded-lg border px-3 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>+ 산출물</button></div>
+          <div className="mt-3 space-y-2">
+            {stage.deliverables.map((item, index) => <div key={item.key} className="grid gap-2 rounded-xl border border-zinc-200 bg-zinc-50 p-3 md:grid-cols-[28px_1fr_1.4fr_auto_auto] md:items-center"><span className="font-mono text-xs font-bold text-zinc-400">D{index + 1}</span><input aria-label={`${stage.code} 산출물 ${index + 1} 제목`} value={item.title} onChange={(event) => updateDeliverable(item.key, { title: event.target.value })} maxLength={120} placeholder="산출물 제목" className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-xs" /><input aria-label={`${stage.code} 산출물 ${index + 1} 설명`} value={item.summary} onChange={(event) => updateDeliverable(item.key, { summary: event.target.value })} maxLength={240} placeholder="승인 기준과 설명" className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-xs" /><label className="flex items-center gap-2 whitespace-nowrap text-xs font-semibold text-zinc-600"><input type="checkbox" checked={item.required} onChange={(event) => updateDeliverable(item.key, { required: event.target.checked })} className="h-4 w-4 accent-violet-600" />필수</label><button type="button" aria-label={`${stage.code} 산출물 ${index + 1} 삭제`} onClick={() => onChange({ ...stage, deliverables: stage.deliverables.filter((deliverable) => deliverable.key !== item.key) })} className="h-9 rounded-lg px-2 text-xs font-bold text-rose-600 hover:bg-rose-50">삭제</button></div>)}
+            {stage.deliverables.length === 0 ? <p className="rounded-xl border border-dashed border-zinc-300 px-4 py-5 text-center text-xs text-zinc-500">산출물 없이 Task 완료만으로 Gate를 운영합니다.</p> : null}
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
 
 function TemplateCatalog({
   workspace,
@@ -2801,7 +2959,7 @@ function TemplateCatalog({
   onRefresh: () => Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
-  const [definition, setDefinition] = useState(TEMPLATE_BUILDER_SAMPLE);
+  const [draft, setDraft] = useState<TemplateDraft>(() => initialTemplateDraft());
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -2810,8 +2968,9 @@ function TemplateCatalog({
     setSaving(true);
     setMessage(null);
     try {
-      const input = JSON.parse(definition) as Parameters<typeof createProcessTemplate>[0];
-      const template = await createProcessTemplate(input);
+      const validationMessage = validateTemplateDraft(draft);
+      if (validationMessage) throw new Error(validationMessage);
+      const template = await createProcessTemplate(toTemplateRequest(draft));
       await onRefresh();
       setMessage(`${template.name} 템플릿을 저장했습니다.`);
     } catch (error) {
@@ -2821,6 +2980,37 @@ function TemplateCatalog({
     }
   };
 
+  const startNew = () => {
+    setDraft(initialTemplateDraft());
+    setMessage(null);
+    setOpen(true);
+  };
+
+  const cloneTemplate = (template: ProcessTemplate) => {
+    setDraft(draftFromTemplate(template));
+    setMessage(`${template.name}을 복제했습니다. 이름과 단계를 편집해 저장하세요.`);
+    setOpen(true);
+  };
+
+  const updateStage = (key: string, nextStage: BuilderStage) => {
+    setDraft((current) => ({ ...current, stages: current.stages.map((stage) => stage.key === key ? nextStage : stage) }));
+  };
+
+  const moveStage = (index: number, direction: -1 | 1) => {
+    setDraft((current) => {
+      const target = index + direction;
+      if (target < 0 || target >= current.stages.length) return current;
+      const stages = [...current.stages];
+      [stages[index], stages[target]] = [stages[target]!, stages[index]!];
+      return { ...current, stages };
+    });
+  };
+
+  const taskCount = draft.stages.reduce((sum, stage) => sum + stage.tasks.length, 0);
+  const deliverableCount = draft.stages.reduce((sum, stage) => sum + stage.deliverables.length, 0);
+  const requiredCount = draft.stages.reduce((sum, stage) => sum + stage.deliverables.filter((item) => item.required).length, 0);
+  const validationMessage = validateTemplateDraft(draft);
+
   return (
     <section className={CARD_SURFACE}>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 px-5 py-4">
@@ -2828,7 +3018,7 @@ function TemplateCatalog({
           <p className={META_LABEL}>Template catalog</p>
           <h3 className="mt-1 text-lg font-bold text-zinc-950">실행 가능한 프로세스 템플릿</h3>
         </div>
-        <button type="button" onClick={() => setOpen((value) => !value)} className={["rounded-xl border px-4 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>
+        <button type="button" onClick={open ? () => setOpen(false) : startNew} className={["rounded-xl border px-4 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>
           {open ? "Builder 닫기" : "새 템플릿 만들기"}
         </button>
       </div>
@@ -2840,18 +3030,27 @@ function TemplateCatalog({
               <span className="whitespace-nowrap font-mono text-[11px] text-violet-700">{template.stages.length} stages</span>
             </div>
             <p className="mt-2 text-xs leading-5 text-zinc-500">{template.summary}</p>
-            <p className="mt-3 font-mono text-[10px] text-zinc-400">{template.id}</p>
+            <div className="mt-3 flex items-center justify-between gap-3"><p className="truncate font-mono text-[10px] text-zinc-400">{template.id}</p><button type="button" onClick={() => cloneTemplate(template)} className="whitespace-nowrap rounded-lg px-2 py-1 text-[11px] font-bold text-violet-700 hover:bg-violet-50">복제 편집</button></div>
           </article>
         ))}
       </div>
       {open ? (
-        <form onSubmit={(event) => void handleCreate(event)} className="border-t border-zinc-100 p-5">
-          <label htmlFor="template-definition" className="text-xs font-bold text-zinc-700">Template definition JSON</label>
-          <p className="mt-1 text-xs leading-5 text-zinc-500">Stage, Task, 필수 산출물을 편집해 SQLite Catalog에 저장합니다.</p>
-          <textarea id="template-definition" value={definition} onChange={(event) => setDefinition(event.target.value)} rows={18} spellCheck={false} className="mt-3 w-full rounded-xl border border-zinc-200 bg-zinc-950 px-4 py-3 font-mono text-xs leading-5 text-zinc-100" />
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs text-zinc-500">코드 변경 없이 저장 즉시 프로젝트 생성에 사용할 수 있습니다.</p>
-            <button type="submit" disabled={saving} className="rounded-xl bg-zinc-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-zinc-800 disabled:opacity-40">{saving ? "저장 중…" : "Catalog에 저장"}</button>
+        <form onSubmit={(event) => void handleCreate(event)} className="border-t border-zinc-100 bg-zinc-50/70 p-5">
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px]">
+            <div className="space-y-4">
+              <section className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                <p className={META_LABEL}>Template identity</p>
+                <div className="mt-3 grid gap-3 md:grid-cols-2"><label className="text-xs font-bold text-zinc-600">템플릿 이름<input value={draft.name} onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))} maxLength={80} className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" /></label><label className="text-xs font-bold text-zinc-600">템플릿 설명<input value={draft.summary} onChange={(event) => setDraft((current) => ({ ...current, summary: event.target.value }))} maxLength={240} className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" /></label></div>
+              </section>
+              {draft.stages.map((stage, index) => <TemplateStageEditor key={stage.key} stage={stage} position={index} total={draft.stages.length} onChange={(nextStage) => updateStage(stage.key, nextStage)} onMove={(direction) => moveStage(index, direction)} onRemove={() => setDraft((current) => ({ ...current, stages: current.stages.filter((item) => item.key !== stage.key) }))} />)}
+              <button type="button" disabled={draft.stages.length >= 20} onClick={() => setDraft((current) => ({ ...current, stages: [...current.stages, newBuilderStage(current.stages.length)] }))} className="w-full rounded-2xl border border-dashed border-zinc-300 bg-white px-4 py-5 text-sm font-bold text-zinc-700 hover:border-violet-300 hover:text-violet-700 disabled:opacity-40">+ Stage 추가</button>
+            </div>
+            <aside className="h-fit rounded-2xl border border-zinc-200 bg-zinc-950 p-5 text-white xl:sticky xl:top-5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-violet-300">Live blueprint</p><h4 className="mt-2 text-lg font-bold">{draft.name || "새 프로세스"}</h4><p className="mt-2 text-xs leading-5 text-zinc-400">{draft.summary || "템플릿 설명을 입력하세요."}</p>
+              <dl className="mt-5 grid grid-cols-3 gap-2"><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">STAGE</dt><dd className="mt-1 font-mono text-lg font-bold">{draft.stages.length}</dd></div><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">TASK</dt><dd className="mt-1 font-mono text-lg font-bold">{taskCount}</dd></div><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">REQUIRED</dt><dd className="mt-1 font-mono text-lg font-bold">{requiredCount}</dd></div></dl>
+              <ol className="mt-5 space-y-2">{draft.stages.map((stage, index) => <li key={stage.key} className="flex items-center gap-3 rounded-xl border border-white/10 px-3 py-2"><span className="font-mono text-[10px] font-bold text-violet-300">{stage.code || `S${index + 1}`}</span><span className="min-w-0 flex-1 truncate text-xs font-semibold">{stage.name || "이름 없는 Stage"}</span><span className="font-mono text-[10px] text-zinc-500">{stage.tasks.length}T · {stage.deliverables.length}D</span></li>)}</ol>
+              <div className="mt-5 border-t border-white/10 pt-4"><p className={["text-xs leading-5", validationMessage ? "text-amber-300" : "text-emerald-300"].join(" ")}>{validationMessage ?? `${deliverableCount}개 산출물과 ${taskCount}개 Task가 저장 준비되었습니다.`}</p><button type="submit" disabled={saving || Boolean(validationMessage)} className="mt-3 w-full rounded-xl bg-white px-4 py-3 text-xs font-bold text-zinc-950 hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-35">{saving ? "저장 중…" : "Catalog에 저장"}</button><p className="mt-3 text-center text-[10px] leading-4 text-zinc-500">저장 즉시 프로젝트 생성에 사용할 수 있습니다.</p></div>
+            </aside>
           </div>
           {message ? <p className="mt-3 rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-700">{message}</p> : null}
         </form>

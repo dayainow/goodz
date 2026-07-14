@@ -41,6 +41,9 @@
 - [x] 필수 산출물 승인 전 GO 차단 검증
 - [x] 산출물 제출·승인과 Stage 증거 저장 lifecycle 검증
 - [x] 사용자 Template 생성·SQLite 저장·실행 가능성 검증
+- [x] Template Stage code가 Catalog 응답에 보존되는지 검증
+- [x] 중복 Stage code Template 생성 차단 검증
+- [x] Visual Builder 필수 필드·개수·길이 제한의 client/server 이중 검증
 - [x] Process OS 영구 디스크 배포 구성 문서화
 - [ ] 외부 URL에서 durability `persistent`와 재배포 보존 확인
 

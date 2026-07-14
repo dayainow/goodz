@@ -284,6 +284,7 @@ export interface ProcessDeliverableTemplate {
 
 export interface ProcessStageTemplate {
   id: string;
+  code: string;
   name: string;
   summary: string;
   position: number;

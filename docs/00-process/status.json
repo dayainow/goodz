@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.22",
+  "systemVersion": "v0.23",
   "sprint": {
-    "id": "S24",
-    "name": "시스템 v0.22 — Process Template Catalog",
+    "id": "S25",
+    "name": "시스템 v0.23 — Visual Template Builder",
     "status": "done",
-    "goal": "사용자가 프로세스 Template, 산출물과 증거를 정의·실행·검증하는 Control Plane 제공"
+    "goal": "JSON 없이 조직의 Stage·Task·산출물 Template을 구성·복제·검증하는 관리 UX 제공"
   },
   "phases": [
     {
@@ -477,6 +477,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-process-template-catalog-v022.md",
       "nextAction": "시각적 Template Builder와 Template version migration 설계"
+    },
+    {
+      "id": "IN-022",
+      "title": "Visual Template Builder v0.23",
+      "source": "사용자 요청 · 다음 우선순위 작업 진행",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-visual-template-builder-v023.md",
+      "nextAction": "Template version migration과 Draft 저장 설계"
     }
   ],
   "deliverables": [
@@ -899,6 +908,16 @@
       "doc": "docs/03-engineering/ADR/005-process-template-catalog.md",
       "owner": "Product/Engineering",
       "summary": "파일 기반 P0-P4·Phase 0-8, Template Builder와 Deliverable/Evidence command"
+    },
+    {
+      "id": "D-43",
+      "title": "Visual Template Builder",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/006-visual-template-builder.md",
+      "owner": "Product/Engineering",
+      "summary": "Template 복제, Stage 정렬, Task/산출물 구조화 편집과 Live Blueprint"
     }
   ],
   "approvals": [
@@ -1499,6 +1518,29 @@
       "summary": "Process Template Catalog와 산출물·증거 관리 승인",
       "doc": "docs/03-engineering/ADR/005-process-template-catalog.md",
       "traceLinkIds": ["TL-021"]
+    },
+    {
+      "id": "AP-022",
+      "target": "S25 Visual Template Builder v0.23",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Product", "Design", "Engineering", "QA"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "JSON Builder를 구조화된 Visual Builder와 Template 복제 흐름으로 전환",
+      "criteria": [
+        "JSON 없이 Stage, Task와 Deliverable을 편집할 수 있음",
+        "기존 Template을 code 손실 없이 복제할 수 있음",
+        "Stage 순서를 변경하고 Live Blueprint에서 확인할 수 있음",
+        "client와 server가 동일한 핵심 제약을 검증함",
+        "전체 pnpm verify가 통과함"
+      ],
+      "summary": "Visual Template Builder 운영 UX 승인",
+      "doc": "docs/03-engineering/ADR/006-visual-template-builder.md",
+      "traceLinkIds": ["TL-022"]
     }
   ],
   "planningChanges": [
@@ -1853,6 +1895,22 @@
       "doc": "docs/01-planning/changes/2026-07-14-process-template-catalog-v022.md",
       "summary": "Template 정의를 파일 Catalog로 분리하고 Deliverable/Evidence command를 추가",
       "decision": "Task 완료와 필수 산출물 승인을 함께 GO 조건으로 사용"
+    },
+    {
+      "id": "CR-022",
+      "title": "JSON Builder를 Visual Template Builder로 전환",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/USER_MANUAL.md",
+        "docs/03-engineering/API.md",
+        "docs/03-engineering/ADR/006-visual-template-builder.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-visual-template-builder-v023.md",
+      "summary": "Template 생성과 복제를 구조화된 카드·폼·미리보기 UX로 변경",
+      "decision": "기존 Template은 불변으로 두고 변경안을 새 Copy로 저장"
     }
   ],
   "designReferences": [
@@ -2929,6 +2987,28 @@
       },
       "summary": "파일 기반 Process Template과 실행 산출물·증거 관리 loop",
       "nextAction": "시각적 Builder, Template version migration과 정책 팩"
+    },
+    {
+      "id": "TL-022",
+      "title": "Visual Template Builder v0.23",
+      "status": "partial",
+      "sourceIds": ["IN-022"],
+      "changeIds": ["CR-022"],
+      "deliverableIds": ["D-43"],
+      "approvalIds": ["AP-022"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "not_required" },
+      "commits": [],
+      "ciRuns": [],
+      "release": { "label": "Release", "status": "pending" },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:sqlite && pnpm verify",
+        "checkedAt": "2026-07-14T14:00:00Z",
+        "summary": "Stage code 보존, 중복 차단, Template 생성과 Dashboard production build 통과"
+      },
+      "summary": "JSON 없이 Process Template을 구성·복제·검증하는 관리 UI",
+      "nextAction": "Template version migration, Draft 저장과 goodz CLI"
     }
   ],
   "features": [

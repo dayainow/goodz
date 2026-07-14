@@ -41,6 +41,26 @@ const phase08Template = workspace.templates.find((item) => item.id === "TPL-SERV
 if (!template || template.stages.length !== 5 || !phase08Template || phase08Template.stages.length !== 9) {
   throw new Error("File-based P0-P4 and Phase 0-8 templates are not ready");
 }
+if (phase08Template.stages[0]?.code !== "P0" || phase08Template.stages[8]?.code !== "P8") {
+  throw new Error("Template stage codes are not exposed for visual cloning");
+}
+
+let invalidTemplateRejected = false;
+try {
+  createProcessTemplate({
+    name: "Invalid visual template",
+    summary: "duplicate stage code must be rejected",
+    stages: [
+      { code: "P0", name: "One", summary: "first", tasks: [{ title: "Task", summary: "Task summary" }], deliverables: [] },
+      { code: "P0", name: "Two", summary: "second", tasks: [{ title: "Task", summary: "Task summary" }], deliverables: [] },
+    ],
+  });
+} catch {
+  invalidTemplateRejected = true;
+}
+if (!invalidTemplateRejected) {
+  throw new Error("Duplicate stage codes were allowed");
+}
 
 const customTemplate = createProcessTemplate({
   name: "Validation template",

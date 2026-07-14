@@ -159,6 +159,8 @@ SQLite 저장 엔진·내구성·schema version, 문서 인덱스 수, incident/
 
 Stage code/name/summary, 1개 이상의 Task와 선택적 Deliverable 정의를 전달합니다. 검증된 Template은 SQLite Catalog에 저장되고 즉시 프로젝트 생성에 사용할 수 있습니다. 저장소 기본 Template은 `templates/process/*.json`에서 seed합니다.
 
+Template 조회 응답의 각 Stage는 Visual Builder 복제를 위한 `code`를 포함합니다. 서버는 Stage code 중복·형식, 최대 20 Stage, Stage당 50 Task·20 Deliverable, 필수 필드와 길이 제한을 검증합니다.
+
 ### `POST /api/process/projects`
 
 **Body:** `CreateProcessProjectRequest`

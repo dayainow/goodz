@@ -30,6 +30,7 @@
 | **v0.20** | Portability Proof: 비커머스 Internal Service Reference + Core 무변경 검증 | ✅ |
 | **v0.21** | Writable Process MVP: Project·Run·Task·Gate command + audit | ✅ |
 | **v0.22** | Process Template Catalog: Phase 0–8 + Deliverable/Evidence command + Builder | ✅ |
+| **v0.23** | Visual Template Builder: clone + structured editing + live validation | ✅ |
 | **v1.0** | 설치 가능한 Goodz Core: CLI + config migration + clean-clone 도입 | ⚪ |
 
 ## 전체 타임라인
@@ -38,7 +39,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder
 ```
 
 ---
@@ -317,7 +318,17 @@ Week 1
 - 문서·Issue·PR·Commit·CI·Release 증거 제출 command
 - Dashboard JSON Template Builder와 실행 가능한 Catalog UI
 - `pnpm check:sqlite`에서 작업 완료 → GO → 다음 단계 시작 lifecycle 검증
-- 다음 Gate: Phase 0–8 사용자 Template과 산출물·증거 command 추가
+- 다음 Gate: JSON 입력 없이 Template을 구성하는 Visual Builder
+
+### Sprint S25 — Visual Template Builder
+
+- Template 이름·설명과 Stage code/name/summary 구조화 편집
+- Stage 추가·삭제·위/아래 순서 변경
+- Stage별 Task와 Deliverable 추가·삭제, 필수 산출물 설정
+- P0–P4·Phase 0–8·사용자 Template 복제 편집
+- Stage/Task/필수 산출물 수와 저장 가능 상태를 보여주는 Live Blueprint
+- Core Template Stage의 `code` 계약 노출과 API 길이·개수·중복 검증
+- 다음 Gate: Template version migration과 `goodz init/adopt/verify`
 
 ---
 
@@ -369,8 +380,9 @@ flowchart LR
 25. ✅ v0.20: Internal Service Reference + Core 무변경 이식성 증거
 26. ✅ v0.21: Writable Process Project/Task/Gate lifecycle
 27. ✅ v0.22: 파일 기반 Process Template Catalog + Deliverable/Evidence command
-28. ⚪ v1.0 Gate: `goodz init/adopt/verify` + config migration + clean-clone CI
-29. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
+28. ✅ v0.23: Visual Template Builder + clone + live validation
+29. ⚪ v1.0 Gate: `goodz init/adopt/verify` + config migration + clean-clone CI
+30. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
 
 ---
 
@@ -398,3 +410,4 @@ flowchart LR
 | 2026-07-14 | v0.20 — 비커머스 Internal Service Reference와 Core 무변경 이식성 검증 |
 | 2026-07-14 | v0.21 — 프로젝트·작업·Gate를 관리하는 Writable Process MVP |
 | 2026-07-14 | v0.22 — Phase 0–8 Template Catalog와 산출물·증거 관리 |
+| 2026-07-14 | v0.23 — JSON 없는 Visual Template Builder와 복제 편집 |
