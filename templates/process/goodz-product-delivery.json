@@ -1,0 +1,13 @@
+{
+  "id": "TPL-GOODZ-P0-P4-V1",
+  "name": "Goodz Product Delivery P0-P4",
+  "version": 1,
+  "summary": "기획부터 배포까지 Gate로 연결하는 기본 제품 전달 프로세스",
+  "stages": [
+    { "code": "P0", "name": "기획", "summary": "문제, 사용자, 범위와 성공 기준을 잠급니다.", "tasks": [{ "title": "기획 입력 등록", "summary": "요청의 출처와 해결할 문제를 기록합니다." }, { "title": "PRD 승인 준비", "summary": "범위와 인수 기준을 검토 가능한 상태로 만듭니다." }], "deliverables": [{ "title": "PRD", "summary": "범위와 성공 기준이 승인된 제품 요구사항", "required": true }] },
+    { "code": "P1", "name": "디자인", "summary": "정보 구조와 핵심 화면의 handoff를 확정합니다.", "tasks": [{ "title": "화면 흐름 설계", "summary": "핵심 사용자 흐름과 화면 구조를 정의합니다." }, { "title": "디자인 Gate 준비", "summary": "스펙, 상태, 접근성 기준을 연결합니다." }], "deliverables": [{ "title": "화면 스펙", "summary": "상태와 상호작용이 명시된 handoff", "required": true }] },
+    { "code": "P2", "name": "개발", "summary": "계약, 코드와 CI 증거를 연결해 구현합니다.", "tasks": [{ "title": "구현 작업 연결", "summary": "Issue, PR과 담당자를 실행 항목에 연결합니다." }, { "title": "CI 검증", "summary": "타입, 빌드, 린트와 테스트 증거를 확인합니다." }], "deliverables": [{ "title": "구현 변경", "summary": "검토 가능한 PR 또는 변경 세트", "required": true }] },
+    { "code": "P3", "name": "QA", "summary": "기능, UX, 데이터와 회귀 위험을 검증합니다.", "tasks": [{ "title": "테스트 플랜 실행", "summary": "필수 시나리오와 회귀 항목을 확인합니다." }, { "title": "릴리스 결함 정리", "summary": "차단 결함과 잔여 위험을 기록합니다." }], "deliverables": [{ "title": "QA 결과", "summary": "테스트 결과와 잔여 위험", "required": true }] },
+    { "code": "P4", "name": "배포", "summary": "승인, 배포와 smoke 증거로 작업을 닫습니다.", "tasks": [{ "title": "릴리스 승인", "summary": "릴리스 체크리스트와 승인자를 확인합니다." }, { "title": "배포 증거 연결", "summary": "Release와 smoke 결과를 기록합니다." }], "deliverables": [{ "title": "릴리스 기록", "summary": "배포 버전과 smoke 결과", "required": true }] }
+  ]
+}

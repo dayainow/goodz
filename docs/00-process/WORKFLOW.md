@@ -7,7 +7,9 @@
 
 ## Dashboard 실행 루프
 
-v0.21부터 이 문서의 P0–P4 정의는 Dashboard에서 실행 가능한 기본 Template로 제공됩니다.
+v0.22부터 P0–P4와 확장 Phase 0–8 정의는 `templates/process/`의 실행 가능한 Template로 제공됩니다.
+
+프로젝트 운영 순서는 `Template 선택 → Task 완료 → 필수 산출물 제출·승인 → 증거 연결 → GO/HOLD/KILL`입니다. GO는 Task와 필수 산출물 조건을 모두 충족해야 다음 Stage를 시작합니다.
 
 1. **프로젝트** 메뉴에서 이름, 목표, Owner와 Template을 선택합니다.
 2. 현재 Stage의 Task 상태와 담당자를 갱신합니다.

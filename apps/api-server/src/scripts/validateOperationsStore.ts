@@ -1,16 +1,19 @@
 import {
   createProcessProject,
+  createProcessEvidence,
+  createProcessTemplate,
   createIncident,
   decideProcessGate,
   loadOperationsOverview,
   loadProcessWorkspace,
   resolveIncident,
   updateProcessStage,
+  updateProcessDeliverable,
   updateProcessTask,
 } from "../data/operationsStore.js";
 
 const before = loadOperationsOverview();
-if (before.storage.engine !== "sqlite" || before.storage.schemaVersion !== 2) {
+if (before.storage.engine !== "sqlite" || before.storage.schemaVersion !== 3) {
   throw new Error("SQLite schema is not ready");
 }
 if (before.documents.indexed === 0) {
@@ -33,9 +36,25 @@ if (after.incidents.resolved !== 1 || after.incidents.mttrHours === null) {
 }
 
 const workspace = loadProcessWorkspace();
-const template = workspace.templates[0];
-if (!template || template.stages.length !== 5) {
-  throw new Error("Default P0-P4 process template is not ready");
+const template = workspace.templates.find((item) => item.id === "TPL-GOODZ-P0-P4-V1");
+const phase08Template = workspace.templates.find((item) => item.id === "TPL-SERVICE-P0-P8-V1");
+if (!template || template.stages.length !== 5 || !phase08Template || phase08Template.stages.length !== 9) {
+  throw new Error("File-based P0-P4 and Phase 0-8 templates are not ready");
+}
+
+const customTemplate = createProcessTemplate({
+  name: "Validation template",
+  summary: "verify SQLite Template Builder persistence",
+  stages: [{
+    code: "V0",
+    name: "검증",
+    summary: "custom template validation stage",
+    tasks: [{ title: "검증 작업", summary: "complete validation" }],
+    deliverables: [{ title: "검증 기록", summary: "validation evidence", required: true }],
+  }],
+});
+if (customTemplate.stages.length !== 1 || customTemplate.stages[0]?.deliverables.length !== 1) {
+  throw new Error("Template Builder persistence validation failed");
 }
 
 const createdProject = createProcessProject({
@@ -68,6 +87,35 @@ for (const task of firstStage.tasks) {
     assignee: "Goodz QA",
   });
 }
+let deliverableGuardRejected = false;
+try {
+  decideProcessGate(run.id, firstStage.id, {
+    decision: "go",
+    note: "must be rejected before deliverable approval",
+  });
+} catch {
+  deliverableGuardRejected = true;
+}
+if (!deliverableGuardRejected) {
+  throw new Error("GO was allowed before required deliverable approval");
+}
+const requiredDeliverable = firstStage.deliverables[0];
+if (!requiredDeliverable) throw new Error("Required deliverable run was not created");
+run = updateProcessDeliverable(run.id, firstStage.id, requiredDeliverable.id, {
+  status: "approved",
+  owner: "Goodz QA",
+  uri: "docs/01-planning/PRD.md",
+  note: "validation approved",
+});
+run = createProcessEvidence(run.id, firstStage.id, {
+  type: "ci",
+  label: "SQLite lifecycle",
+  url: "https://example.com/ci/validation",
+  summary: "verifies evidence submission",
+});
+if (run.stages[0]?.evidence.length !== 1) {
+  throw new Error("Process evidence submission validation failed");
+}
 run = decideProcessGate(run.id, firstStage.id, {
   decision: "go",
   note: "P0 validation passed",
@@ -81,8 +129,8 @@ if (
 }
 
 const validatedWorkspace = loadProcessWorkspace();
-if (validatedWorkspace.projects.length !== 1 || validatedWorkspace.auditEvents.length < 4) {
+if (validatedWorkspace.projects.length !== 1 || validatedWorkspace.templates.length !== 3 || validatedWorkspace.auditEvents.length < 7) {
   throw new Error("Writable process audit validation failed");
 }
 
-console.log("sqlite operations store and writable process lifecycle ok");
+console.log("sqlite template catalog, deliverable, evidence, and gate lifecycle ok");

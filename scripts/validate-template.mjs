@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -80,4 +80,26 @@ for (const path of packagePaths) {
   }
 }
 
-console.log("template contract ok");
+const processTemplatePaths = readdirSync(resolve(root, "templates/process"))
+  .filter((file) => file.endsWith(".json"))
+  .map((file) => `templates/process/${file}`);
+assert(processTemplatePaths.length >= 2, "P0-P4 and Phase 0-8 process templates are required");
+for (const path of processTemplatePaths) {
+  const template = readJson(path);
+  assert(template.id && template.name && template.summary, `${path} requires id, name, and summary`);
+  assert(Number.isInteger(template.version) && template.version > 0, `${path} requires a positive version`);
+  assert(Array.isArray(template.stages) && template.stages.length > 0, `${path} requires stages`);
+  const stageCodes = new Set();
+  for (const stage of template.stages) {
+    assert(/^[A-Z][A-Z0-9_-]{0,15}$/.test(stage.code), `${path} has invalid stage code: ${stage.code}`);
+    assert(!stageCodes.has(stage.code), `${path} has duplicate stage code: ${stage.code}`);
+    stageCodes.add(stage.code);
+    assert(stage.name && stage.summary, `${path} stage ${stage.code} requires name and summary`);
+    assert(Array.isArray(stage.tasks) && stage.tasks.length > 0, `${path} stage ${stage.code} requires tasks`);
+    assert(Array.isArray(stage.deliverables), `${path} stage ${stage.code} requires deliverables`);
+  }
+}
+const phase08 = readJson("templates/process/service-delivery-phase-0-8.json");
+assert(phase08.stages.length === 9, "Phase 0-8 template must contain exactly 9 stages");
+
+console.log(`template contract ok (${processTemplatePaths.length} process templates)`);

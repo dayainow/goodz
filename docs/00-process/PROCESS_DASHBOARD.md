@@ -12,7 +12,7 @@ Phase Gate·Sprint·기획 입력·산출물·기능 백로그·개발 증거를
 ```text
 docs/00-process/status.json              ← SSOT (수동·에이전트 갱신)
 docs/00-process/metrics-snapshots.json   ← Metrics trend snapshot
-SQLite schema v2                         ← Project·Run·Stage·Task·Gate·Audit SSOT
+SQLite schema v3                         ← Project·Run·Stage·Task·Deliverable·Evidence·Gate·Audit SSOT
         │
         ▼ GET /api/process/status
         ▼ GET /api/process/metrics-snapshots
@@ -175,6 +175,15 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - **Automatic advance**: GO 시 현재 Stage를 완료하고 다음 Stage를 자동 시작합니다.
 - **Audit**: 프로젝트 생성과 모든 상태 변경을 append-only 이력으로 표시합니다.
 - **SSOT 분리**: 장문 문서·증거는 Git, 가변 Process Run은 SQLite가 기준입니다.
+
+## v0.22 Process Template Catalog
+
+- **파일 기반 Catalog**: `templates/process/*.json`이 기본 Template 정의의 SSOT입니다.
+- **기본 Template 2종**: 제품 전달 P0–P4와 서비스 전달 Phase 0–8을 제공합니다.
+- **Template Builder**: Dashboard에서 JSON 정의를 검증·저장하고 즉시 새 프로젝트에 사용합니다.
+- **Deliverable command**: Stage별 산출물 상태, Owner, URI와 검토 메모를 저장합니다.
+- **Evidence command**: 문서, Issue, PR, Commit, CI, Release 링크를 현재 Stage에 연결합니다.
+- **Gate guard**: 모든 Task 완료와 모든 필수 산출물 승인 전에는 GO를 거부합니다.
 
 ## Redesign PRD v1.0
 

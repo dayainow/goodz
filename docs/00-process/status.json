@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.21",
+  "systemVersion": "v0.22",
   "sprint": {
-    "id": "S23",
-    "name": "시스템 v0.21 — Writable Process MVP",
+    "id": "S24",
+    "name": "시스템 v0.22 — Process Template Catalog",
     "status": "done",
-    "goal": "사용자가 프로젝트·단계·작업·Gate를 Dashboard에서 직접 관리하는 실행 루프 제공"
+    "goal": "사용자가 프로세스 Template, 산출물과 증거를 정의·실행·검증하는 Control Plane 제공"
   },
   "phases": [
     {
@@ -468,6 +468,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-writable-process-v021.md",
       "nextAction": "Phase 0-8 Template과 산출물·증거 command 추가"
+    },
+    {
+      "id": "IN-021",
+      "title": "Process Template Catalog v0.22",
+      "source": "사용자 요청 · v0.21 커밋 후 Phase 0-8과 관리 command 작업 지속",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-process-template-catalog-v022.md",
+      "nextAction": "시각적 Template Builder와 Template version migration 설계"
     }
   ],
   "deliverables": [
@@ -880,6 +889,16 @@
       "doc": "docs/03-engineering/ADR/004-writable-process-control-plane.md",
       "owner": "Product/Engineering",
       "summary": "Template 기반 Project Run, Task command, GO/HOLD/KILL와 audit 실행 모델"
+    },
+    {
+      "id": "D-42",
+      "title": "Process Template Catalog",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/005-process-template-catalog.md",
+      "owner": "Product/Engineering",
+      "summary": "파일 기반 P0-P4·Phase 0-8, Template Builder와 Deliverable/Evidence command"
     }
   ],
   "approvals": [
@@ -1457,6 +1476,29 @@
       "summary": "Writable Process 최소 실행 루프 승인",
       "doc": "docs/03-engineering/ADR/004-writable-process-control-plane.md",
       "traceLinkIds": ["TL-020"]
+    },
+    {
+      "id": "AP-021",
+      "target": "S24 Process Template Catalog v0.22",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Product", "Engineering", "QA"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "Template을 Core 밖 Catalog로 분리하고 산출물 승인을 Gate 조건으로 적용",
+      "criteria": [
+        "P0-P4와 Phase 0-8 Template이 파일에서 seed됨",
+        "사용자 Template을 SQLite에 저장할 수 있음",
+        "필수 산출물 승인 전 GO가 차단됨",
+        "Stage에 검증 증거를 연결할 수 있음",
+        "전체 pnpm verify가 통과함"
+      ],
+      "summary": "Process Template Catalog와 산출물·증거 관리 승인",
+      "doc": "docs/03-engineering/ADR/005-process-template-catalog.md",
+      "traceLinkIds": ["TL-021"]
     }
   ],
   "planningChanges": [
@@ -1795,6 +1837,22 @@
       "doc": "docs/01-planning/changes/2026-07-14-writable-process-v021.md",
       "summary": "Project, Run, Stage, Task와 Gate를 SQLite command model로 추가",
       "decision": "문서 projection은 유지하고 가변 실행 상태만 DB command로 관리"
+    },
+    {
+      "id": "CR-021",
+      "title": "Process Template Catalog와 산출물 Gate 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/OPERATIONS_STORE.md",
+        "docs/03-engineering/API.md",
+        "docs/03-engineering/ADR/005-process-template-catalog.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-process-template-catalog-v022.md",
+      "summary": "Template 정의를 파일 Catalog로 분리하고 Deliverable/Evidence command를 추가",
+      "decision": "Task 완료와 필수 산출물 승인을 함께 GO 조건으로 사용"
     }
   ],
   "designReferences": [
@@ -2849,6 +2907,28 @@
       },
       "summary": "Dashboard에서 Process Run을 생성하고 Task·Gate를 관리하는 command loop",
       "nextAction": "Phase 0-8 Template과 Deliverable/Evidence command 추가"
+    },
+    {
+      "id": "TL-021",
+      "title": "Process Template Catalog v0.22",
+      "status": "partial",
+      "sourceIds": ["IN-021"],
+      "changeIds": ["CR-021"],
+      "deliverableIds": ["D-42"],
+      "approvalIds": ["AP-021"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "not_required" },
+      "commits": [],
+      "ciRuns": [],
+      "release": { "label": "Release", "status": "pending" },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:template && pnpm check:sqlite && pnpm verify",
+        "checkedAt": "2026-07-14T12:00:00Z",
+        "summary": "Template 2종, 사용자 Builder, 산출물 Gate, 증거 제출과 Stage 자동 진행 통과"
+      },
+      "summary": "파일 기반 Process Template과 실행 산출물·증거 관리 loop",
+      "nextAction": "시각적 Builder, Template version migration과 정책 팩"
     }
   ],
   "features": [

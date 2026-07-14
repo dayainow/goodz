@@ -1,0 +1,17 @@
+{
+  "id": "TPL-SERVICE-P0-P8-V1",
+  "name": "Service Delivery Phase 0-8",
+  "version": 1,
+  "summary": "판단부터 설계·구현·검증·배포·시장 검증까지 관리하는 서비스 전달 프로세스",
+  "stages": [
+    { "code": "P0", "name": "판단", "summary": "GO/HOLD/KILL 기준과 지금 할 일·미룰 일을 구분합니다.", "tasks": [{ "title": "문제와 고객 정의", "summary": "해결할 문제와 대상 사용자를 명시합니다." }, { "title": "Decision Gate 준비", "summary": "진행·보류·중단 기준을 기록합니다." }], "deliverables": [{ "title": "Decision Brief", "summary": "판단 근거와 결정 기준", "required": true }] },
+    { "code": "P1", "name": "범위 잠금", "summary": "만들 범위와 만들지 않을 범위를 잠급니다.", "tasks": [{ "title": "MVP 범위 정의", "summary": "핵심 사용자 결과 중심으로 범위를 정합니다." }, { "title": "Out of scope 기록", "summary": "과도한 기능 추가를 막을 제외 범위를 정합니다." }], "deliverables": [{ "title": "MVP Scope", "summary": "포함·제외 범위와 성공 기준", "required": true }] },
+    { "code": "P2", "name": "아키텍처", "summary": "구조와 실행 순서를 구현 전에 고정합니다.", "tasks": [{ "title": "시스템 경계 정의", "summary": "앱, 패키지, 데이터와 외부 연동 경계를 정합니다." }, { "title": "실행 경로 승인", "summary": "구현 순서와 주요 위험을 검토합니다." }], "deliverables": [{ "title": "Architecture Decision", "summary": "구조도와 핵심 ADR", "required": true }] },
+    { "code": "P3", "name": "작업 분해", "summary": "우선순위, 근거와 완료 기준을 가진 실행 단위로 나눕니다.", "tasks": [{ "title": "P0/P1/P2 우선순위", "summary": "가치와 위험 기준으로 작업을 정렬합니다." }, { "title": "완료 기준 연결", "summary": "각 Task에 검증 가능한 인수 기준을 붙입니다." }], "deliverables": [{ "title": "Execution Backlog", "summary": "우선순위와 완료 기준이 있는 작업 목록", "required": true }] },
+    { "code": "P4", "name": "구현", "summary": "코드, 서비스와 자동화 증거를 실제로 만듭니다.", "tasks": [{ "title": "기능 구현", "summary": "승인된 범위와 구조에 맞춰 구현합니다." }, { "title": "자동 검증 연결", "summary": "빌드, 린트, 테스트와 CI를 연결합니다." }], "deliverables": [{ "title": "Implementation", "summary": "검토 가능한 코드와 CI 결과", "required": true }] },
+    { "code": "P5", "name": "품질 검증", "summary": "문서-구현 일치, UX, 보안, 데이터와 출시 준비를 검증합니다.", "tasks": [{ "title": "QA·UX Gate", "summary": "핵심 시나리오와 사용성을 검증합니다." }, { "title": "Data·Security Gate", "summary": "데이터 정합성과 보안 위험을 점검합니다." }], "deliverables": [{ "title": "QA Report", "summary": "결함, 결과와 잔여 위험", "required": true }] },
+    { "code": "P6", "name": "배포", "summary": "릴리스와 운영 준비를 검증 가능한 방식으로 수행합니다.", "tasks": [{ "title": "Production 배포", "summary": "승인된 버전을 운영 환경에 배포합니다." }, { "title": "Smoke와 복구 확인", "summary": "핵심 경로와 rollback 절차를 검증합니다." }], "deliverables": [{ "title": "Release Evidence", "summary": "릴리스, smoke와 복구 증거", "required": true }] },
+    { "code": "P7", "name": "시장 검증", "summary": "타깃 고객 반응과 메시지 적합성을 검증합니다.", "tasks": [{ "title": "고객 인터뷰", "summary": "타깃 세그먼트의 실제 반응을 수집합니다." }, { "title": "메시지 QA", "summary": "제안 가치와 구매 신호를 평가합니다." }], "deliverables": [{ "title": "Validation Report", "summary": "인터뷰와 시장 반응 요약", "required": true }] },
+    { "code": "P8", "name": "사업 산출물", "summary": "운영 결과를 제안서, 보고서와 다음 실행으로 전환합니다.", "tasks": [{ "title": "RFP·보고서 패키지", "summary": "재사용 가능한 사업 산출물을 정리합니다." }, { "title": "회고와 다음 결정", "summary": "학습, 지표와 후속 결정을 기록합니다." }], "deliverables": [{ "title": "Delivery Package", "summary": "RFP·PPT·보고서 또는 최종 운영 패키지", "required": true }] }
+  ]
+}

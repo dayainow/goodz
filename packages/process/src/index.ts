@@ -275,12 +275,20 @@ export interface ProcessTaskTemplate {
   summary: string;
 }
 
+export interface ProcessDeliverableTemplate {
+  id: string;
+  title: string;
+  summary: string;
+  required: boolean;
+}
+
 export interface ProcessStageTemplate {
   id: string;
   name: string;
   summary: string;
   position: number;
   tasks: ProcessTaskTemplate[];
+  deliverables: ProcessDeliverableTemplate[];
 }
 
 export interface ProcessTemplate {
@@ -321,6 +329,44 @@ export interface ProcessGateRun {
   updatedAt: string;
 }
 
+export type ProcessDeliverableRunStatus =
+  | "pending"
+  | "submitted"
+  | "approved"
+  | "changes_requested";
+
+export interface ProcessDeliverableRun {
+  id: string;
+  templateDeliverableId: string;
+  title: string;
+  summary: string;
+  required: boolean;
+  status: ProcessDeliverableRunStatus;
+  owner: string;
+  uri: string;
+  note: string;
+  position: number;
+  updatedAt: string;
+}
+
+export type ProcessEvidenceType =
+  | "document"
+  | "issue"
+  | "pr"
+  | "commit"
+  | "ci"
+  | "release"
+  | "link";
+
+export interface ProcessEvidence {
+  id: string;
+  type: ProcessEvidenceType;
+  label: string;
+  url: string;
+  summary: string;
+  createdAt: string;
+}
+
 export interface ProcessStageRun {
   id: string;
   templateStageId: string;
@@ -329,6 +375,8 @@ export interface ProcessStageRun {
   status: ProcessItemStatus;
   position: number;
   tasks: ProcessTaskRun[];
+  deliverables: ProcessDeliverableRun[];
+  evidence: ProcessEvidence[];
   gate: ProcessGateRun;
   updatedAt: string;
 }
@@ -347,7 +395,7 @@ export interface ProcessRun {
 
 export interface ProcessAuditEvent {
   id: string;
-  entityType: "project" | "run" | "stage" | "task" | "gate";
+  entityType: "project" | "run" | "stage" | "task" | "gate" | "template" | "deliverable" | "evidence";
   entityId: string;
   action: string;
   detail: string;
@@ -368,6 +416,22 @@ export interface CreateProcessProjectRequest {
   templateId: string;
 }
 
+export interface CreateProcessTemplateRequest {
+  name: string;
+  summary: string;
+  stages: Array<{
+    code: string;
+    name: string;
+    summary: string;
+    tasks: Array<{ title: string; summary: string }>;
+    deliverables: Array<{
+      title: string;
+      summary: string;
+      required: boolean;
+    }>;
+  }>;
+}
+
 export interface CreateProcessProjectResponse {
   project: ProcessProject;
   run: ProcessRun;
@@ -380,6 +444,20 @@ export interface UpdateProcessTaskRequest {
 
 export interface UpdateProcessStageRequest {
   status: "in_progress" | "blocked";
+}
+
+export interface UpdateProcessDeliverableRequest {
+  status: ProcessDeliverableRunStatus;
+  owner?: string;
+  uri?: string;
+  note?: string;
+}
+
+export interface CreateProcessEvidenceRequest {
+  type: ProcessEvidenceType;
+  label: string;
+  url: string;
+  summary: string;
 }
 
 export interface DecideProcessGateRequest {

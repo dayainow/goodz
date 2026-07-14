@@ -6,9 +6,13 @@ import { fileURLToPath } from "node:url";
 import type {
   CreateProcessProjectRequest,
   CreateProcessProjectResponse,
+  CreateProcessEvidenceRequest,
+  CreateProcessTemplateRequest,
   CreateProcessIncidentRequest,
   DecideProcessGateRequest,
   ProcessAuditEvent,
+  ProcessDeliverableRun,
+  ProcessEvidence,
   ProcessGateDecision,
   ProcessIncident,
   ProcessOperationsOverview,
@@ -19,6 +23,7 @@ import type {
   ProcessTemplate,
   ProcessWorkspaceOverview,
   UpdateProcessStageRequest,
+  UpdateProcessDeliverableRequest,
   UpdateProcessTaskRequest,
 } from "@goodz/process";
 
@@ -27,6 +32,7 @@ const repoRoot = path.resolve(
   "../../../..",
 );
 const docsRoot = path.join(repoRoot, "docs");
+const templatesRoot = path.join(repoRoot, "templates/process");
 const defaultDatabasePath = path.join(repoRoot, "data/goodz.db");
 const databasePath = process.env.GOODZ_DB_PATH ?? defaultDatabasePath;
 const durability =
@@ -100,6 +106,16 @@ database.exec(`
     UNIQUE(stage_id, position)
   ) STRICT;
 
+  CREATE TABLE IF NOT EXISTS process_template_deliverables (
+    id TEXT PRIMARY KEY,
+    stage_id TEXT NOT NULL REFERENCES process_template_stages(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    required INTEGER NOT NULL CHECK (required IN (0, 1)),
+    position INTEGER NOT NULL,
+    UNIQUE(stage_id, position)
+  ) STRICT;
+
   CREATE TABLE IF NOT EXISTS process_projects (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
@@ -146,6 +162,32 @@ database.exec(`
     UNIQUE(stage_run_id, position)
   ) STRICT;
 
+  CREATE TABLE IF NOT EXISTS process_deliverable_runs (
+    id TEXT PRIMARY KEY,
+    stage_run_id TEXT NOT NULL REFERENCES process_stage_runs(id) ON DELETE CASCADE,
+    template_deliverable_id TEXT NOT NULL REFERENCES process_template_deliverables(id),
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    required INTEGER NOT NULL CHECK (required IN (0, 1)),
+    status TEXT NOT NULL CHECK (status IN ('pending', 'submitted', 'approved', 'changes_requested')),
+    owner TEXT NOT NULL,
+    uri TEXT NOT NULL,
+    note TEXT NOT NULL,
+    position INTEGER NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(stage_run_id, position)
+  ) STRICT;
+
+  CREATE TABLE IF NOT EXISTS process_evidence (
+    id TEXT PRIMARY KEY,
+    stage_run_id TEXT NOT NULL REFERENCES process_stage_runs(id) ON DELETE CASCADE,
+    type TEXT NOT NULL CHECK (type IN ('document', 'issue', 'pr', 'commit', 'ci', 'release', 'link')),
+    label TEXT NOT NULL,
+    url TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  ) STRICT;
+
   CREATE TABLE IF NOT EXISTS process_gate_decisions (
     id TEXT PRIMARY KEY,
     stage_run_id TEXT NOT NULL UNIQUE REFERENCES process_stage_runs(id) ON DELETE CASCADE,
@@ -157,7 +199,7 @@ database.exec(`
 
   CREATE TABLE IF NOT EXISTS process_audit_events (
     id TEXT PRIMARY KEY,
-    entity_type TEXT NOT NULL CHECK (entity_type IN ('project', 'run', 'stage', 'task', 'gate')),
+    entity_type TEXT NOT NULL CHECK (entity_type IN ('project', 'run', 'stage', 'task', 'gate', 'template', 'deliverable', 'evidence')),
     entity_id TEXT NOT NULL,
     action TEXT NOT NULL,
     detail TEXT NOT NULL,
@@ -169,75 +211,50 @@ database.exec(`
 
   INSERT OR IGNORE INTO schema_migrations(version, applied_at)
   VALUES (2, datetime('now'));
+
+  INSERT OR IGNORE INTO schema_migrations(version, applied_at)
+  VALUES (3, datetime('now'));
 `);
 
-const DEFAULT_TEMPLATE_ID = "TPL-GOODZ-P0-P4-V1";
-const DEFAULT_TEMPLATE_STAGES = [
-  {
-    code: "P0",
-    name: "기획",
-    summary: "문제, 사용자, 범위와 성공 기준을 잠급니다.",
-    tasks: [
-      ["기획 입력 등록", "요청의 출처와 해결할 문제를 기록합니다."],
-      ["PRD 승인 준비", "범위와 인수 기준을 검토 가능한 상태로 만듭니다."],
-    ],
-  },
-  {
-    code: "P1",
-    name: "디자인",
-    summary: "정보 구조와 핵심 화면의 handoff를 확정합니다.",
-    tasks: [
-      ["화면 흐름 설계", "핵심 사용자 흐름과 화면 구조를 정의합니다."],
-      ["디자인 Gate 준비", "스펙, 상태, 접근성 기준을 연결합니다."],
-    ],
-  },
-  {
-    code: "P2",
-    name: "개발",
-    summary: "계약, 코드와 CI 증거를 연결해 구현합니다.",
-    tasks: [
-      ["구현 작업 연결", "Issue, PR과 담당자를 실행 항목에 연결합니다."],
-      ["CI 검증", "타입, 빌드, 린트와 테스트 증거를 확인합니다."],
-    ],
-  },
-  {
-    code: "P3",
-    name: "QA",
-    summary: "기능, UX, 데이터와 회귀 위험을 검증합니다.",
-    tasks: [
-      ["테스트 플랜 실행", "필수 시나리오와 회귀 항목을 확인합니다."],
-      ["릴리스 결함 정리", "차단 결함과 잔여 위험을 기록합니다."],
-    ],
-  },
-  {
-    code: "P4",
-    name: "배포",
-    summary: "승인, 배포와 smoke 증거로 작업을 닫습니다.",
-    tasks: [
-      ["릴리스 승인", "릴리스 체크리스트와 승인자를 확인합니다."],
-      ["배포 증거 연결", "Release와 smoke 결과를 기록합니다."],
-    ],
-  },
-] as const;
+const auditSchema = database
+  .prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'process_audit_events'")
+  .get() as unknown as { sql: string };
+if (!auditSchema.sql.includes("'template'")) {
+  database.exec(`
+    BEGIN IMMEDIATE;
+    ALTER TABLE process_audit_events RENAME TO process_audit_events_v2;
+    CREATE TABLE process_audit_events (
+      id TEXT PRIMARY KEY,
+      entity_type TEXT NOT NULL CHECK (entity_type IN ('project', 'run', 'stage', 'task', 'gate', 'template', 'deliverable', 'evidence')),
+      entity_id TEXT NOT NULL,
+      action TEXT NOT NULL,
+      detail TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    ) STRICT;
+    INSERT INTO process_audit_events SELECT * FROM process_audit_events_v2;
+    DROP TABLE process_audit_events_v2;
+    COMMIT;
+  `);
+}
 
-function seedDefaultProcessTemplate() {
+interface TemplateDefinition extends CreateProcessTemplateRequest {
+  id: string;
+  version: number;
+}
+
+function insertProcessTemplate(definition: TemplateDefinition, ignoreExisting: boolean) {
   const now = new Date().toISOString();
   database.exec("BEGIN IMMEDIATE");
   try {
     database
       .prepare(`
-        INSERT OR IGNORE INTO process_templates(id, name, version, summary, created_at)
-        VALUES (?, ?, 1, ?, ?)
+        INSERT ${ignoreExisting ? "OR IGNORE" : ""} INTO process_templates(id, name, version, summary, created_at)
+        VALUES (?, ?, ?, ?, ?)
       `)
-      .run(
-        DEFAULT_TEMPLATE_ID,
-        "Goodz Product Delivery P0-P4",
-        "기획부터 배포까지 Gate로 연결하는 기본 제품 전달 프로세스",
-        now,
-      );
+      .run(definition.id, definition.name.trim(), definition.version, definition.summary.trim(), now);
 
-    DEFAULT_TEMPLATE_STAGES.forEach((stage, stageIndex) => {
-      const stageId = `${DEFAULT_TEMPLATE_ID}-${stage.code}`;
+    definition.stages.forEach((stage, stageIndex) => {
+      const stageId = `${definition.id}-${stage.code.trim().toUpperCase()}`;
       database
         .prepare(`
           INSERT OR IGNORE INTO process_template_stages(
@@ -246,14 +263,14 @@ function seedDefaultProcessTemplate() {
         `)
         .run(
           stageId,
-          DEFAULT_TEMPLATE_ID,
+          definition.id,
           stage.code,
           stage.name,
           stage.summary,
           stageIndex,
         );
 
-      stage.tasks.forEach(([title, summary], taskIndex) => {
+      stage.tasks.forEach((task, taskIndex) => {
         database
           .prepare(`
             INSERT OR IGNORE INTO process_template_tasks(
@@ -263,12 +280,78 @@ function seedDefaultProcessTemplate() {
           .run(
             `${stageId}-T${taskIndex + 1}`,
             stageId,
-            title,
-            summary,
+            task.title.trim(),
+            task.summary.trim(),
             taskIndex,
           );
       });
+      stage.deliverables.forEach((deliverable, deliverableIndex) => {
+        database
+          .prepare(`
+            INSERT OR IGNORE INTO process_template_deliverables(
+              id, stage_id, title, summary, required, position
+            ) VALUES (?, ?, ?, ?, ?, ?)
+          `)
+          .run(
+            `${stageId}-D${deliverableIndex + 1}`,
+            stageId,
+            deliverable.title.trim(),
+            deliverable.summary.trim(),
+            deliverable.required ? 1 : 0,
+            deliverableIndex,
+          );
+      });
     });
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+}
+
+function seedProcessTemplates() {
+  const files = fs.readdirSync(templatesRoot).filter((file) => file.endsWith(".json")).sort();
+  for (const file of files) {
+    const definition = JSON.parse(
+      fs.readFileSync(path.join(templatesRoot, file), "utf8"),
+    ) as TemplateDefinition;
+    insertProcessTemplate(definition, true);
+  }
+}
+
+function backfillProcessDeliverables() {
+  const missing = database
+    .prepare(`
+      SELECT sr.id AS stage_run_id, td.*
+      FROM process_stage_runs sr
+      JOIN process_template_deliverables td ON td.stage_id = sr.template_stage_id
+      LEFT JOIN process_deliverable_runs dr
+        ON dr.stage_run_id = sr.id AND dr.template_deliverable_id = td.id
+      WHERE dr.id IS NULL
+      ORDER BY sr.id, td.position
+    `)
+    .all() as unknown as Array<TemplateDeliverableRow & { stage_run_id: string }>;
+  const now = new Date().toISOString();
+  const insert = database.prepare(`
+    INSERT INTO process_deliverable_runs(
+      id, stage_run_id, template_deliverable_id, title, summary,
+      required, status, owner, uri, note, position, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, 'pending', '', '', '', ?, ?)
+  `);
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    for (const deliverable of missing) {
+      insert.run(
+        `DEL-${randomUUID().slice(0, 8).toUpperCase()}`,
+        deliverable.stage_run_id,
+        deliverable.id,
+        deliverable.title,
+        deliverable.summary,
+        deliverable.required,
+        deliverable.position,
+        now,
+      );
+    }
     database.exec("COMMIT");
   } catch (error) {
     database.exec("ROLLBACK");
@@ -434,6 +517,15 @@ interface TemplateTaskRow {
   position: number;
 }
 
+interface TemplateDeliverableRow {
+  id: string;
+  stage_id: string;
+  title: string;
+  summary: string;
+  required: number;
+  position: number;
+}
+
 interface ProjectRow {
   id: string;
   name: string;
@@ -476,6 +568,31 @@ interface TaskRunRow {
   assignee: string;
   position: number;
   updated_at: string;
+}
+
+interface DeliverableRunRow {
+  id: string;
+  stage_run_id: string;
+  template_deliverable_id: string;
+  title: string;
+  summary: string;
+  required: number;
+  status: ProcessDeliverableRun["status"];
+  owner: string;
+  uri: string;
+  note: string;
+  position: number;
+  updated_at: string;
+}
+
+interface EvidenceRow {
+  id: string;
+  stage_run_id: string;
+  type: ProcessEvidence["type"];
+  label: string;
+  url: string;
+  summary: string;
+  created_at: string;
 }
 
 interface GateRow {
@@ -529,6 +646,9 @@ function listProcessTemplates(): ProcessTemplate[] {
   const tasks = database
     .prepare("SELECT * FROM process_template_tasks ORDER BY stage_id, position")
     .all() as unknown as TemplateTaskRow[];
+  const deliverables = database
+    .prepare("SELECT * FROM process_template_deliverables ORDER BY stage_id, position")
+    .all() as unknown as TemplateDeliverableRow[];
 
   return templates.map((template) => ({
     id: template.id,
@@ -549,6 +669,14 @@ function listProcessTemplates(): ProcessTemplate[] {
             id: task.id,
             title: task.title,
             summary: task.summary,
+          })),
+        deliverables: deliverables
+          .filter((deliverable) => deliverable.stage_id === stage.id)
+          .map((deliverable) => ({
+            id: deliverable.id,
+            title: deliverable.title,
+            summary: deliverable.summary,
+            required: deliverable.required === 1,
           })),
       })),
   }));
@@ -587,6 +715,12 @@ function loadProcessRun(row: RunRow): ProcessRun {
       const gate = database
         .prepare("SELECT * FROM process_gate_decisions WHERE stage_run_id = ?")
         .get(stage.id) as unknown as GateRow;
+      const deliverables = database
+        .prepare("SELECT * FROM process_deliverable_runs WHERE stage_run_id = ? ORDER BY position")
+        .all(stage.id) as unknown as DeliverableRunRow[];
+      const evidence = database
+        .prepare("SELECT * FROM process_evidence WHERE stage_run_id = ? ORDER BY created_at DESC")
+        .all(stage.id) as unknown as EvidenceRow[];
       return {
         id: stage.id,
         templateStageId: stage.template_stage_id,
@@ -604,6 +738,27 @@ function loadProcessRun(row: RunRow): ProcessRun {
           assignee: task.assignee,
           position: task.position,
           updatedAt: task.updated_at,
+        })),
+        deliverables: deliverables.map((deliverable) => ({
+          id: deliverable.id,
+          templateDeliverableId: deliverable.template_deliverable_id,
+          title: deliverable.title,
+          summary: deliverable.summary,
+          required: deliverable.required === 1,
+          status: deliverable.status,
+          owner: deliverable.owner,
+          uri: deliverable.uri,
+          note: deliverable.note,
+          position: deliverable.position,
+          updatedAt: deliverable.updated_at,
+        })),
+        evidence: evidence.map((item) => ({
+          id: item.id,
+          type: item.type,
+          label: item.label,
+          url: item.url,
+          summary: item.summary,
+          createdAt: item.created_at,
         })),
         gate: {
           id: gate.id,
@@ -649,6 +804,30 @@ export function loadProcessWorkspace(): ProcessWorkspaceOverview {
       createdAt: audit.created_at,
     })),
   };
+}
+
+export function createProcessTemplate(
+  input: CreateProcessTemplateRequest,
+): ProcessTemplate {
+  if (input.stages.length === 0) throw new Error("At least one stage is required");
+  const codes = input.stages.map((stage) => stage.code.trim().toUpperCase());
+  if (codes.some((code) => !/^[A-Z][A-Z0-9_-]{0,15}$/.test(code))) {
+    throw new Error("Stage codes must use 1-16 uppercase letters, numbers, _ or -");
+  }
+  if (new Set(codes).size !== codes.length) throw new Error("Stage codes must be unique");
+  if (input.stages.some((stage) => !stage.name.trim() || !stage.summary.trim() || stage.tasks.length === 0)) {
+    throw new Error("Every stage requires a name, summary, and at least one task");
+  }
+  const definition: TemplateDefinition = {
+    ...input,
+    id: `TPL-${randomUUID().slice(0, 8).toUpperCase()}-V1`,
+    version: 1,
+  };
+  insertProcessTemplate(definition, false);
+  recordAudit("template", definition.id, "created", `${definition.name} 템플릿 생성`);
+  const template = listProcessTemplates().find((item) => item.id === definition.id);
+  if (!template) throw new Error("Created template could not be loaded");
+  return template;
 }
 
 export function createProcessProject(
@@ -725,6 +904,25 @@ export function createProcessProject(
             now,
           );
       });
+      stage.deliverables.forEach((deliverable, deliverableIndex) => {
+        database
+          .prepare(`
+            INSERT INTO process_deliverable_runs(
+              id, stage_run_id, template_deliverable_id, title, summary,
+              required, status, owner, uri, note, position, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, 'pending', '', '', '', ?, ?)
+          `)
+          .run(
+            `DEL-${randomUUID().slice(0, 8).toUpperCase()}`,
+            stageRunId,
+            deliverable.id,
+            deliverable.title,
+            deliverable.summary,
+            deliverable.required ? 1 : 0,
+            deliverableIndex,
+            now,
+          );
+      });
     });
     database
       .prepare("UPDATE process_runs SET current_stage_id = ? WHERE id = ?")
@@ -783,6 +981,91 @@ export function updateProcessTask(
       .prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?")
       .run(now, run.project_id);
     recordAudit("task", taskId, "status_changed", `${task.title}: ${input.status}`, now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  return loadProcessRun(getRunRow(runId));
+}
+
+function assertCurrentMutableStage(runId: string, stageId: string) {
+  const run = getRunRow(runId);
+  if (run.status === "completed" || run.status === "cancelled") {
+    throw new Error("Completed or cancelled run cannot be changed");
+  }
+  const stage = database
+    .prepare("SELECT * FROM process_stage_runs WHERE id = ? AND run_id = ?")
+    .get(stageId, runId) as unknown as StageRunRow | undefined;
+  if (!stage) throw new Error("Process stage not found");
+  if (run.current_stage_id !== stageId) throw new Error("Only the current stage can be changed");
+  if (stage.status === "done") throw new Error("Completed stage cannot be changed");
+  return { run, stage };
+}
+
+export function updateProcessDeliverable(
+  runId: string,
+  stageId: string,
+  deliverableId: string,
+  input: UpdateProcessDeliverableRequest,
+): ProcessRun {
+  const { run } = assertCurrentMutableStage(runId, stageId);
+  const deliverable = database
+    .prepare("SELECT * FROM process_deliverable_runs WHERE id = ? AND stage_run_id = ?")
+    .get(deliverableId, stageId) as unknown as DeliverableRunRow | undefined;
+  if (!deliverable) throw new Error("Process deliverable not found");
+  const now = new Date().toISOString();
+  const owner = input.owner === undefined ? deliverable.owner : input.owner.trim();
+  const uri = input.uri === undefined ? deliverable.uri : input.uri.trim();
+  const note = input.note === undefined ? deliverable.note : input.note.trim();
+  if (input.status !== "pending" && !owner) throw new Error("Submitted deliverable requires an owner");
+  if (input.status !== "pending" && !uri) throw new Error("Submitted deliverable requires a URI");
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database
+      .prepare(`
+        UPDATE process_deliverable_runs
+        SET status = ?, owner = ?, uri = ?, note = ?, updated_at = ? WHERE id = ?
+      `)
+      .run(input.status, owner, uri, note, now, deliverableId);
+    database.prepare("UPDATE process_runs SET updated_at = ? WHERE id = ?").run(now, runId);
+    database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, run.project_id);
+    recordAudit("deliverable", deliverableId, "status_changed", `${deliverable.title}: ${input.status}`, now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  return loadProcessRun(getRunRow(runId));
+}
+
+export function createProcessEvidence(
+  runId: string,
+  stageId: string,
+  input: CreateProcessEvidenceRequest,
+): ProcessRun {
+  const { run } = assertCurrentMutableStage(runId, stageId);
+  const now = new Date().toISOString();
+  const evidenceId = `EVD-${randomUUID().slice(0, 8).toUpperCase()}`;
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database
+      .prepare(`
+        INSERT INTO process_evidence(id, stage_run_id, type, label, url, summary, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `)
+      .run(
+        evidenceId,
+        stageId,
+        input.type,
+        input.label.trim(),
+        input.url.trim(),
+        input.summary.trim(),
+        now,
+      );
+    database.prepare("UPDATE process_runs SET updated_at = ? WHERE id = ?").run(now, runId);
+    database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, run.project_id);
+    recordAudit("evidence", evidenceId, "submitted", `${input.type}: ${input.label.trim()}`, now);
     database.exec("COMMIT");
   } catch (error) {
     database.exec("ROLLBACK");
@@ -850,6 +1133,19 @@ export function decideProcessGate(
     .get(stageId) as unknown as { total: number; done: number };
   if (input.decision === "go" && taskCount.done !== taskCount.total) {
     throw new Error("All stage tasks must be done before GO");
+  }
+  const deliverableCount = database
+    .prepare(`
+      SELECT COUNT(*) AS total,
+             SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) AS approved
+      FROM process_deliverable_runs WHERE stage_run_id = ? AND required = 1
+    `)
+    .get(stageId) as unknown as { total: number; approved: number | null };
+  if (
+    input.decision === "go" &&
+    (deliverableCount.approved ?? 0) !== deliverableCount.total
+  ) {
+    throw new Error("All required deliverables must be approved before GO");
   }
   if (input.decision !== "go" && !input.note.trim()) {
     throw new Error("HOLD and KILL decisions require a note");
@@ -936,7 +1232,7 @@ export function loadOperationsOverview(): ProcessOperationsOverview {
     storage: {
       engine: "sqlite",
       durability,
-      schemaVersion: 2,
+      schemaVersion: 3,
     },
     documents: {
       indexed: documentCount.count,
@@ -951,5 +1247,6 @@ export function loadOperationsOverview(): ProcessOperationsOverview {
   };
 }
 
-seedDefaultProcessTemplate();
+seedProcessTemplates();
+backfillProcessDeliverables();
 syncDocumentIndex();

@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S23 Writable Process MVP v0.21** ✅
+## 현재 스프린트: **S24 Process Template Catalog v0.22** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -30,6 +30,7 @@
 | **Platform Boundary** | ✅ `@goodz/process` Core 계약·Commerce Reference·API 라우터 경계·설정 스키마 |
 | **Portability Proof** | ✅ Internal Service Reference·Core SHA-256 기준선·`check:portability` |
 | **Writable Process** | ✅ Project·Run·Stage·Task·Gate command·SQLite audit |
+| **Process Template Catalog** | ✅ 파일 기반 P0–P4·Phase 0–8·Template Builder·산출물/증거 command |
 
 ## 현재 단계
 
@@ -115,6 +116,9 @@
 - [x] S23: 프로젝트 생성과 P0–P4 Template 실행
 - [x] S23: Task 담당자·상태와 Stage 시작·차단 command
 - [x] S23: GO/HOLD/KILL Gate guard·자동 진행·감사 이력
+- [x] S24: Core 밖 파일 기반 P0–P4·Phase 0–8 Template Catalog
+- [x] S24: 필수 산출물 제출·승인과 증거 연결 command
+- [x] S24: Dashboard JSON Template Builder와 SQLite schema v3
 
 ## 풀 프로세스
 

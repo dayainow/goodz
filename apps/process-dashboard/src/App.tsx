@@ -14,6 +14,7 @@ import type {
   ProcessCheckItem,
   ProcessDesignReference,
   ProcessDeliverable,
+  ProcessDeliverableRun,
   ProcessDeliverableType,
   ProcessDocumentResponse,
   ProcessIntake,
@@ -36,6 +37,8 @@ import type {
 } from "@goodz/process";
 import {
   createProcessProject,
+  createProcessEvidence,
+  createProcessTemplate,
   createProcessIncident,
   decideProcessGate,
   fetchProcessDocument,
@@ -45,6 +48,7 @@ import {
   fetchProcessWorkspace,
   resolveProcessIncident,
   updateProcessStage,
+  updateProcessDeliverable,
   updateProcessTask,
 } from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
@@ -2768,6 +2772,149 @@ function WorkspaceTaskRow({
   );
 }
 
+const TEMPLATE_BUILDER_SAMPLE = JSON.stringify({
+  name: "팀 맞춤 Delivery",
+  summary: "우리 팀의 판단부터 배포까지 관리하는 템플릿",
+  stages: [
+    {
+      code: "P0",
+      name: "판단",
+      summary: "문제와 진행 기준을 잠급니다.",
+      tasks: [{ title: "판단 근거 작성", summary: "고객, 문제와 성공 기준을 기록합니다." }],
+      deliverables: [{ title: "Decision Brief", summary: "승인 가능한 판단 문서", required: true }],
+    },
+    {
+      code: "P1",
+      name: "실행",
+      summary: "승인된 범위를 구현하고 검증합니다.",
+      tasks: [{ title: "구현과 검증", summary: "코드와 자동 검증을 완료합니다." }],
+      deliverables: [{ title: "Release Evidence", summary: "변경과 검증 증거", required: true }],
+    },
+  ],
+}, null, 2);
+
+function TemplateCatalog({
+  workspace,
+  onRefresh,
+}: {
+  workspace: ProcessWorkspaceOverview;
+  onRefresh: () => Promise<void>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [definition, setDefinition] = useState(TEMPLATE_BUILDER_SAMPLE);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSaving(true);
+    setMessage(null);
+    try {
+      const input = JSON.parse(definition) as Parameters<typeof createProcessTemplate>[0];
+      const template = await createProcessTemplate(input);
+      await onRefresh();
+      setMessage(`${template.name} 템플릿을 저장했습니다.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "템플릿 생성 실패");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <section className={CARD_SURFACE}>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 px-5 py-4">
+        <div>
+          <p className={META_LABEL}>Template catalog</p>
+          <h3 className="mt-1 text-lg font-bold text-zinc-950">실행 가능한 프로세스 템플릿</h3>
+        </div>
+        <button type="button" onClick={() => setOpen((value) => !value)} className={["rounded-xl border px-4 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>
+          {open ? "Builder 닫기" : "새 템플릿 만들기"}
+        </button>
+      </div>
+      <div className="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
+        {workspace.templates.map((template) => (
+          <article key={template.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <h4 className="font-bold text-zinc-950">{template.name}</h4>
+              <span className="whitespace-nowrap font-mono text-[11px] text-violet-700">{template.stages.length} stages</span>
+            </div>
+            <p className="mt-2 text-xs leading-5 text-zinc-500">{template.summary}</p>
+            <p className="mt-3 font-mono text-[10px] text-zinc-400">{template.id}</p>
+          </article>
+        ))}
+      </div>
+      {open ? (
+        <form onSubmit={(event) => void handleCreate(event)} className="border-t border-zinc-100 p-5">
+          <label htmlFor="template-definition" className="text-xs font-bold text-zinc-700">Template definition JSON</label>
+          <p className="mt-1 text-xs leading-5 text-zinc-500">Stage, Task, 필수 산출물을 편집해 SQLite Catalog에 저장합니다.</p>
+          <textarea id="template-definition" value={definition} onChange={(event) => setDefinition(event.target.value)} rows={18} spellCheck={false} className="mt-3 w-full rounded-xl border border-zinc-200 bg-zinc-950 px-4 py-3 font-mono text-xs leading-5 text-zinc-100" />
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs text-zinc-500">코드 변경 없이 저장 즉시 프로젝트 생성에 사용할 수 있습니다.</p>
+            <button type="submit" disabled={saving} className="rounded-xl bg-zinc-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-zinc-800 disabled:opacity-40">{saving ? "저장 중…" : "Catalog에 저장"}</button>
+          </div>
+          {message ? <p className="mt-3 rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-700">{message}</p> : null}
+        </form>
+      ) : null}
+    </section>
+  );
+}
+
+function WorkspaceDeliverableRow({
+  run,
+  stageId,
+  deliverable,
+  disabled,
+  onSaved,
+}: {
+  run: ProcessRun;
+  stageId: string;
+  deliverable: ProcessDeliverableRun;
+  disabled: boolean;
+  onSaved: (message: string) => Promise<void>;
+}) {
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setSaving(true);
+    setError(null);
+    try {
+      await updateProcessDeliverable(run.id, stageId, deliverable.id, {
+        status: String(form.get("status")) as ProcessDeliverableRun["status"],
+        owner: String(form.get("owner") ?? ""),
+        uri: String(form.get("uri") ?? ""),
+        note: String(form.get("note") ?? ""),
+      });
+      await onSaved(`${deliverable.title} 산출물을 저장했습니다.`);
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "산출물 저장 실패");
+    } finally {
+      setSaving(false);
+    }
+  };
+  return (
+    <form onSubmit={(event) => void handleSubmit(event)} className="border-t border-zinc-100 px-5 py-4 first:border-t-0">
+      <div className="flex flex-wrap items-center gap-2">
+        <strong className="text-sm text-zinc-950">{deliverable.title}</strong>
+        {deliverable.required ? <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-700">필수</span> : null}
+      </div>
+      <p className="mt-1 text-xs text-zinc-500">{deliverable.summary}</p>
+      <div className="mt-3 grid gap-2 lg:grid-cols-[150px_160px_minmax(200px,1fr)_auto]">
+        <select name="status" defaultValue={deliverable.status} disabled={disabled || saving} className="h-10 rounded-xl border border-zinc-200 bg-white px-3 text-xs">
+          <option value="pending">대기</option><option value="submitted">제출</option><option value="approved">승인</option><option value="changes_requested">수정 요청</option>
+        </select>
+        <input name="owner" defaultValue={deliverable.owner} disabled={disabled || saving} placeholder="Owner" className="h-10 rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-xs" />
+        <input name="uri" defaultValue={deliverable.uri} disabled={disabled || saving} placeholder="docs/... 또는 https://..." className="h-10 rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-xs" />
+        <button type="submit" disabled={disabled || saving} className={["h-10 rounded-xl border px-4 text-xs font-bold disabled:opacity-40", QUIET_ACTION].join(" ")}>{saving ? "저장 중" : "저장"}</button>
+      </div>
+      <input name="note" defaultValue={deliverable.note} disabled={disabled || saving} placeholder="검토 메모 (선택)" className="mt-2 h-9 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-xs" />
+      {error ? <p className="mt-2 text-xs text-rose-600">{error}</p> : null}
+    </form>
+  );
+}
+
 function WorkspaceSection({
   workspace,
   onRefresh,
@@ -2861,6 +3008,29 @@ function WorkspaceSection({
     }
   };
 
+  const handleEvidence = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!selectedRun || !selectedStage) return;
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
+    setSubmitting(true);
+    setMessage(null);
+    try {
+      await createProcessEvidence(selectedRun.id, selectedStage.id, {
+        type: String(form.get("type")) as Parameters<typeof createProcessEvidence>[2]["type"],
+        label: String(form.get("label") ?? ""),
+        url: String(form.get("url") ?? ""),
+        summary: String(form.get("summary") ?? ""),
+      });
+      formElement.reset();
+      await refreshWithMessage("검증 증거를 제출했습니다.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "증거 제출 실패");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const completedTasks = selectedRun
     ? selectedRun.stages.flatMap((stage) => stage.tasks).filter((task) => task.status === "done").length
     : 0;
@@ -2868,9 +3038,14 @@ function WorkspaceSection({
     ? selectedRun.stages.reduce((sum, stage) => sum + stage.tasks.length, 0)
     : 0;
   const allStageTasksDone = selectedStage?.tasks.every((task) => task.status === "done") ?? false;
+  const requiredDeliverablesApproved = selectedStage?.deliverables
+    .filter((deliverable) => deliverable.required)
+    .every((deliverable) => deliverable.status === "approved") ?? false;
 
   return (
     <div className="space-y-6">
+      <TemplateCatalog workspace={workspace} onRefresh={onRefresh} />
+
       <section className="grid gap-4 md:grid-cols-3">
         <Metric label="Projects" value={workspace.projects.length} tone="violet" />
         <Metric label="Active runs" value={workspace.runs.filter((run) => run.status === "active").length} tone="green" />
@@ -2997,16 +3172,53 @@ function WorkspaceSection({
               </div>
             </section>
 
+            <section className={CARD_SURFACE}>
+              <div className="border-b border-zinc-100 px-5 py-4">
+                <p className={META_LABEL}>Deliverable command</p>
+                <h3 className="mt-1 text-lg font-bold text-zinc-950">산출물 제출과 승인</h3>
+                <p className="mt-1 text-xs leading-5 text-zinc-500">필수 산출물은 URI와 Owner를 제출하고 승인되어야 GO할 수 있습니다.</p>
+              </div>
+              {selectedStage.deliverables.length ? selectedStage.deliverables.map((deliverable) => (
+                <WorkspaceDeliverableRow
+                  key={`${deliverable.id}-${deliverable.updatedAt}`}
+                  run={selectedRun}
+                  stageId={selectedStage.id}
+                  deliverable={deliverable}
+                  disabled={runIsTerminal || selectedStage.status === "done"}
+                  onSaved={refreshWithMessage}
+                />
+              )) : <p className="px-5 py-6 text-sm text-zinc-500">이 단계에 정의된 산출물이 없습니다.</p>}
+            </section>
+
+            <section className={CARD_SURFACE}>
+              <div className="border-b border-zinc-100 px-5 py-4">
+                <p className={META_LABEL}>Evidence command</p>
+                <h3 className="mt-1 text-lg font-bold text-zinc-950">검증 증거 연결</h3>
+              </div>
+              <form onSubmit={(event) => void handleEvidence(event)} className="grid gap-2 p-5 lg:grid-cols-[130px_180px_minmax(200px,1fr)_auto]">
+                <select name="type" aria-label="증거 유형" disabled={submitting || runIsTerminal} className="h-10 rounded-xl border border-zinc-200 bg-white px-3 text-xs"><option value="document">문서</option><option value="issue">Issue</option><option value="pr">PR</option><option value="commit">Commit</option><option value="ci">CI</option><option value="release">Release</option><option value="link">Link</option></select>
+                <input name="label" required disabled={submitting || runIsTerminal} placeholder="증거 이름" className="h-10 rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-xs" />
+                <input name="url" required disabled={submitting || runIsTerminal} placeholder="URL 또는 docs/... 경로" className="h-10 rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-xs" />
+                <button type="submit" disabled={submitting || runIsTerminal} className="h-10 rounded-xl bg-zinc-950 px-4 text-xs font-bold text-white hover:bg-zinc-800 disabled:opacity-40">증거 제출</button>
+                <input name="summary" required disabled={submitting || runIsTerminal} placeholder="이 증거가 검증하는 내용" className="h-9 rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-xs lg:col-span-4" />
+              </form>
+              {selectedStage.evidence.length ? (
+                <ul className="border-t border-zinc-100 px-5 py-3">
+                  {selectedStage.evidence.map((item) => <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 py-3 text-xs last:border-b-0"><span><strong className="uppercase text-violet-700">{item.type}</strong> · {item.label}<span className="ml-2 text-zinc-400">{item.summary}</span></span><a href={item.url} target="_blank" rel="noreferrer" className="font-semibold text-zinc-700 underline decoration-zinc-300 underline-offset-4">열기</a></li>)}
+                </ul>
+              ) : null}
+            </section>
+
             <section className={["p-5", CARD_SURFACE].join(" ")}>
               <p className={META_LABEL}>Decision gate</p>
               <div className="mt-2 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
                 <div>
                   <h3 className="text-lg font-bold text-zinc-950">GO / HOLD / KILL</h3>
-                  <p className="mt-1 text-sm leading-6 text-zinc-500">GO는 모든 작업이 완료되어야 하며 다음 단계를 자동으로 시작합니다. HOLD와 KILL은 사유가 필요합니다.</p>
+                  <p className="mt-1 text-sm leading-6 text-zinc-500">GO는 모든 작업 완료와 필수 산출물 승인을 확인한 뒤 다음 단계를 자동 시작합니다. HOLD와 KILL은 사유가 필요합니다.</p>
                   <textarea value={gateNote} onChange={(event) => setGateNote(event.target.value)} disabled={runIsTerminal || selectedStage.status === "done"} rows={2} className="mt-3 w-full resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm leading-6" placeholder="결정 근거 또는 보완 조건" />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <button type="button" disabled={submitting || runIsTerminal || selectedStage.status === "done" || !allStageTasksDone} onClick={() => void handleGateDecision("go")} className="rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-35">GO</button>
+                  <button type="button" disabled={submitting || runIsTerminal || selectedStage.status === "done" || !allStageTasksDone || !requiredDeliverablesApproved} onClick={() => void handleGateDecision("go")} className="rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-35">GO</button>
                   <button type="button" disabled={submitting || runIsTerminal || selectedStage.status === "done"} onClick={() => void handleGateDecision("hold")} className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700 hover:bg-amber-100 disabled:opacity-35">HOLD</button>
                   <button type="button" disabled={submitting || runIsTerminal || selectedStage.status === "done"} onClick={() => void handleGateDecision("kill")} className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-bold text-rose-700 hover:bg-rose-100 disabled:opacity-35">KILL</button>
                 </div>

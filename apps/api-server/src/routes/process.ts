@@ -2,13 +2,18 @@ import { Router } from "express";
 import type { Router as ExpressRouter } from "express";
 import type {
   CreateProcessIncidentRequest,
+  CreateProcessEvidenceRequest,
   CreateProcessProjectRequest,
+  CreateProcessTemplateRequest,
   DecideProcessGateRequest,
   UpdateProcessStageRequest,
+  UpdateProcessDeliverableRequest,
   UpdateProcessTaskRequest,
 } from "@goodz/process";
 import {
   createProcessProject,
+  createProcessEvidence,
+  createProcessTemplate,
   createIncident,
   decideProcessGate,
   listIncidents,
@@ -16,6 +21,7 @@ import {
   loadProcessWorkspace,
   resolveIncident,
   updateProcessStage,
+  updateProcessDeliverable,
   updateProcessTask,
 } from "../data/operationsStore.js";
 import {
@@ -28,6 +34,8 @@ const incidentSeverities = new Set(["low", "medium", "high", "critical"]);
 const taskStatuses = new Set(["done", "in_progress", "pending", "blocked"]);
 const stageStatuses = new Set(["in_progress", "blocked"]);
 const gateDecisions = new Set(["go", "hold", "kill"]);
+const deliverableStatuses = new Set(["pending", "submitted", "approved", "changes_requested"]);
+const evidenceTypes = new Set(["document", "issue", "pr", "commit", "ci", "release", "link"]);
 
 export const processRouter: ExpressRouter = Router();
 
@@ -57,6 +65,20 @@ processRouter.get("/process/operations", (_req, res) => {
 
 processRouter.get("/process/workspace", (_req, res) => {
   res.json(loadProcessWorkspace());
+});
+
+processRouter.post("/process/templates", (req, res) => {
+  const body = req.body as CreateProcessTemplateRequest;
+  if (!body?.name?.trim() || !body?.summary?.trim() || !Array.isArray(body.stages)) {
+    res.status(400).json({ message: "name, summary, and stages are required" });
+    return;
+  }
+  try {
+    res.status(201).json(createProcessTemplate(body));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to create process template";
+    res.status(400).json({ message });
+  }
 });
 
 processRouter.post("/process/projects", (req, res) => {
@@ -111,6 +133,50 @@ processRouter.patch(
       );
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to update process task";
+      res.status(400).json({ message });
+    }
+  },
+);
+
+processRouter.patch(
+  "/process/runs/:runId/stages/:stageId/deliverables/:deliverableId",
+  (req, res) => {
+    const body = req.body as UpdateProcessDeliverableRequest;
+    if (!body || !deliverableStatuses.has(body.status)) {
+      res.status(400).json({ message: "valid deliverable status is required" });
+      return;
+    }
+    try {
+      res.json(updateProcessDeliverable(
+        req.params.runId,
+        req.params.stageId,
+        req.params.deliverableId,
+        body,
+      ));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to update process deliverable";
+      res.status(400).json({ message });
+    }
+  },
+);
+
+processRouter.post(
+  "/process/runs/:runId/stages/:stageId/evidence",
+  (req, res) => {
+    const body = req.body as CreateProcessEvidenceRequest;
+    if (
+      !body?.label?.trim() ||
+      !body?.url?.trim() ||
+      !body?.summary?.trim() ||
+      !evidenceTypes.has(body.type)
+    ) {
+      res.status(400).json({ message: "type, label, url, and summary are required" });
+      return;
+    }
+    try {
+      res.status(201).json(createProcessEvidence(req.params.runId, req.params.stageId, body));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to submit process evidence";
       res.status(400).json({ message });
     }
   },
