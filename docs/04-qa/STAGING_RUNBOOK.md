@@ -36,6 +36,26 @@ pnpm smoke:process-os
 
 영구 디스크는 유료 리소스입니다. 계정 소유자의 비용 승인 없이 Blueprint를 실제 적용하지 않습니다.
 
+## 무료 프리뷰 배포
+
+외부 URL과 주요 Process command를 비용 없이 확인할 때는 `render.free.yaml`을 사용합니다. 운영용 `render.yaml`을 수정하거나 disk 설정을 제거하지 않습니다.
+
+1. Render Dashboard에서 **New → Blueprint**를 선택합니다.
+2. GitHub 저장소 `dayainow/goodz`와 `main` 브랜치를 연결합니다.
+3. Blueprint Path에 `render.free.yaml`을 입력합니다.
+4. Preview에서 `goodz-process-os-preview`, `free`, `singapore`, disk 없음인지 확인합니다.
+5. `GOODZ_BASIC_AUTH_USER`, `GOODZ_BASIC_AUTH_PASSWORD`를 입력하고 Blueprint를 적용합니다.
+6. 서비스가 Live가 되면 생성된 `https://...onrender.com` URL로 아래 smoke를 실행합니다.
+
+```bash
+GOODZ_PROCESS_OS_URL=https://your-preview.onrender.com \
+GOODZ_PROCESS_OS_USER=your-user \
+GOODZ_PROCESS_OS_PASSWORD=your-password \
+pnpm smoke:process-os
+```
+
+무료 프리뷰의 `GOODZ_DB_PATH`는 `/tmp/goodz.db`, `GOODZ_DB_DURABILITY`는 `local`입니다. Dashboard·API·SQLite schema·Template/Project 화면은 확인할 수 있지만, 인스턴스 절전·재시작·재배포 후 데이터 보존은 합격 기준에서 제외합니다. 최초 요청은 인스턴스 기동 때문에 늦을 수 있습니다.
+
 ## 배포 순서
 
 1. `api-server`를 먼저 배포하고 `/health`가 `{ "ok": true }`를 반환하는지 확인합니다.

@@ -484,6 +484,8 @@ Node.js 22.13 이상이 필요하며 배포 런타임은 Node 24를 사용합니
 
 [Render Blueprint로 배포](https://render.com/deploy?repo=https://github.com/dayainow/goodz)하면 Process Dashboard와 API가 같은 도메인에서 실행됩니다. `render.yaml`은 SQLite 보존을 위해 1GB 영구 디스크가 포함된 유료 `starter` 플랜을 사용합니다. 비용이 없는 임시 파일시스템 배포에서는 재시작 시 운영 사건이 사라질 수 있습니다.
 
+비용 없이 기능과 외부 접속만 검증하려면 Render Dashboard에서 Blueprint를 만들 때 Blueprint Path를 `render.free.yaml`로 지정합니다. 이 구성은 `goodz-process-os-preview` 무료 Web Service를 만들고 `/tmp/goodz.db`를 사용합니다. Dashboard·API·프로젝트 command·Gate 흐름은 검증할 수 있지만, 무료 인스턴스의 절전·재시작·재배포 뒤에는 SQLite 데이터가 초기화될 수 있으므로 영구 저장 검증에는 사용하지 않습니다.
+
 운영 구조와 백업 기준은 [OPERATIONS_STORE.md](./docs/00-process/OPERATIONS_STORE.md)를 확인하세요.
 
 ---

@@ -52,6 +52,8 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 
 영구 디스크 없이 실행하면 배포·재시작 때 SQLite 데이터가 사라질 수 있다. Render Blueprint의 `starter` 플랜과 disk 항목을 임의로 제거하지 않는다.
 
+비용 없는 외부 기능 검증은 별도 `render.free.yaml`을 사용한다. 무료 프리뷰는 `/tmp/goodz.db`와 `GOODZ_DB_DURABILITY=local`로 실행하며 외부 URL, Dashboard/API, schema migration과 Process command smoke만 검증한다. 절전·재시작·재배포 후 데이터 보존은 검증 범위가 아니며 운영 데이터 입력에 사용하지 않는다.
+
 외부 배포에서는 두 Basic Auth 환경 변수를 모두 설정해야 한다. 하나만 설정되면 서버는 안전하게 503을 반환한다. 로컬 개발은 두 변수가 모두 없을 때 인증 없이 실행된다.
 
 ## 장애와 백업
