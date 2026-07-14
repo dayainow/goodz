@@ -46,3 +46,17 @@
 | P3→P4 | PM + QA |
 
 개인 프로젝트에서는 본인이 체크리스트만 충족하면 진행 가능합니다.
+
+## Goodz Core v1.0 Portability Gate
+
+Goodz Commerce Reference 외 두 번째 도메인을 도입 가능한 플랫폼으로 판단하기 위한 별도 제품 Gate다.
+
+- [x] Process OS 계약이 `@goodz/process`로 분리됨
+- [x] Commerce 계약이 `@goodz/types`와 commerce route/data에 한정됨
+- [x] `goodz.config.json`과 JSON Schema가 플랫폼/Reference 경계를 선언함
+- [x] `pnpm check:template`이 경계 경로를 검증함
+- [ ] 비커머스 Reference 1종이 `@goodz/process` 수정 0건으로 동작함
+- [ ] `goodz init`, `goodz adopt`, `goodz verify` 기본 흐름이 동작함
+- [ ] clean clone에서 설치·마이그레이션·전체 검증이 통과함
+
+위 미완료 항목이 끝나기 전에는 Goodz Core를 v1.0 또는 Enterprise-ready로 표시하지 않는다.

@@ -21,13 +21,14 @@ Claude Code 전용: [CLAUDE.md](./CLAUDE.md)
 | `apps/api-server` | Express API | 4000 |
 | `apps/web-shop` | Next.js 쇼핑몰 | 3000 |
 | `apps/admin-dashboard` | Vite + React 어드민 | 5173 |
-| `packages/types` | **SSOT** API 타입 | — |
+| `packages/process` | Goodz Core Process OS 타입 | — |
+| `packages/types` | Goodz Commerce Reference 타입 | — |
 | `packages/ui` | 공통 UI + Tailwind preset | — |
 
 ## 절대 규칙
 
 1. **패키지 매니저는 pnpm만**
-2. **타입은 `@goodz/types`에 먼저**
+2. **플랫폼 타입은 `@goodz/process`, 커머스 예제 타입은 `@goodz/types`에 먼저**
 3. **UI는 `@goodz/ui`에 먼저**
 4. **작업 완료 전 `pnpm verify`**
 5. **기능 변경 시 프로세스 문서 동반 갱신** (`API.md`, `screens/`, Gate 등)
@@ -36,7 +37,8 @@ Claude Code 전용: [CLAUDE.md](./CLAUDE.md)
 ## 타입·API 워크플로우
 
 ```text
-packages/types  →  apps/api-server  →  apps/web-shop / admin-dashboard
+packages/process → process route/data → process-dashboard
+packages/types   → commerce route/data → web-shop / admin-dashboard
 ```
 
 - mock: `apps/api-server/src/data/`

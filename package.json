@@ -2,7 +2,7 @@
   "name": "goodz",
   "version": "0.1.0",
   "private": true,
-  "description": "굿즈 이커머스 풀스택 모노레포 — Turborepo + pnpm",
+  "description": "기획부터 배포까지 연결하는 Goodz 풀 프로세스 운영 시스템",
   "repository": {
     "type": "git",
     "url": "https://github.com/dayainow/goodz.git"

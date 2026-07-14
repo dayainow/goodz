@@ -1,4 +1,4 @@
-import type { ProcessItemStatus } from "@goodz/types";
+import type { ProcessItemStatus } from "@goodz/process";
 
 const STATUS_LABEL: Record<ProcessItemStatus, string> = {
   done: "완료",

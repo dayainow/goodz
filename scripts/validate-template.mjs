@@ -9,11 +9,33 @@ const assert = (condition, message) => {
 };
 
 const config = readJson("template.config.json");
+const productConfig = readJson("goodz.config.json");
 const rootPackage = readJson("package.json");
 
 assert(config.version >= 1, "template config version must be >= 1");
 assert(config.packageManager === "pnpm", "template package manager must be pnpm");
 assert(rootPackage.packageManager?.startsWith("pnpm@"), "package.json must pin pnpm");
+assert(productConfig.product?.name === "Goodz", "product name must remain Goodz");
+assert(
+  productConfig.platform?.modelPackage === "@goodz/process",
+  "platform model package must be @goodz/process",
+);
+assert(
+  productConfig.platform?.apiPrefix === "/api/process",
+  "platform API prefix must be /api/process",
+);
+assert(
+  productConfig.portability?.coreChangesAllowedForNewReference === false,
+  "new references must not require Goodz Core changes",
+);
+
+for (const boundary of ["platform", "reference"]) {
+  const paths = config.boundaries?.[boundary];
+  assert(Array.isArray(paths) && paths.length > 0, `${boundary} boundary is empty`);
+  for (const path of paths) {
+    assert(existsSync(resolve(root, path)), `${boundary} boundary path is missing: ${path}`);
+  }
+}
 
 for (const script of config.requiredScripts) {
   assert(rootPackage.scripts?.[script], `required root script is missing: ${script}`);
@@ -33,10 +55,12 @@ for (const item of config.customize) {
 
 const packagePaths = [
   "package.json",
+  "apps/landing/package.json",
   "apps/api-server/package.json",
   "apps/web-shop/package.json",
   "apps/admin-dashboard/package.json",
   "apps/process-dashboard/package.json",
+  "packages/process/package.json",
   "packages/types/package.json",
   "packages/ui/package.json",
   "packages/tsconfig/package.json"

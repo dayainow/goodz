@@ -12,6 +12,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@goodz/process": "workspace:*",
     "@goodz/types": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.21.2"

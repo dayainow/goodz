@@ -23,7 +23,7 @@
 | **디자인 파이프라인** | Claude Design handoff, 화면 스펙, DS 매핑 | `docs/02-design/` |
 | **엔지니어링 표준** | 아키텍처, API SSOT, ADR | `docs/03-engineering/` |
 | **품질 게이트** | TEST_PLAN, RELEASE_CHECKLIST, `pnpm verify`, CI | `docs/04-qa/`, `.github/` |
-| **모노레포 뼈대** | Turborepo + pnpm, `@goodz/types` SSOT, **4앱** 구조 | `apps/`, `packages/`, `turbo.json` |
+| **모노레포 뼈대** | Turborepo + pnpm, bounded-context 타입 SSOT, **4앱** 구조 | `apps/`, `packages/`, `turbo.json` |
 | **AI 협업 키트** | Phase별 스킬, `AGENTS.md`, 에이전트 역할 분리 | `skills/`, `AGENTS.md` |
 | **연동 패턴** | GA harness, (선택) Figma publish | 외부 repo + 문서 |
 
@@ -38,7 +38,10 @@
 | `apps/web-shop` | B2C UX · GA4 퍼널 데모 |
 | `apps/admin-dashboard` | 운영 UI 데모 |
 | `apps/process-dashboard` | **풀 프로세스 진행도 모니터링** (시스템 제품 UI) |
-| `packages/types` | 도메인 SSOT 패턴 시연 |
+| `packages/process` | **Goodz Core**의 도메인 중립 Process OS 계약 |
+| `packages/types` | **Goodz Commerce Reference**의 커머스 타입 SSOT 패턴 시연 |
+
+제품명은 **Goodz**다. 배포·판매 단위는 `Goodz Core`, `Goodz Cloud`, `Goodz Enterprise`로 구분하고, 쇼핑몰 예제는 **Goodz Commerce Reference**로 표기한다.
 
 도메인 기능(장바구니, 결제 mock 등)은 **시스템을 설명하기 위한 예시**입니다.  
 새 기능을 넣을 때 먼저 물을 것:
@@ -98,7 +101,7 @@
 ## 금지 (시스템 관점)
 
 - 쇼핑몰 기능만 키우고 **프로세스 문서·Gate를 갱신하지 않기**
-- 레퍼런스 앱에만 타입·UI를 두고 `@goodz/types` / `@goodz/ui` SSOT 깨기
+- 플랫폼 타입을 `@goodz/process` 밖에 중복하거나 Reference 타입·UI SSOT 깨기
 - Phase를 건너뛰고 “일단 코드만” merge
 - 에이전트가 git을 동시에 건드려 **작업 환경 혼선** 만들기 (→ `AGENTS.md` 다중 에이전트 규칙)
 

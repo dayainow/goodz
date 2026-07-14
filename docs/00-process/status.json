@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-13",
-  "systemVersion": "v0.18",
+  "systemVersion": "v0.19",
   "sprint": {
-    "id": "S20",
-    "name": "시스템 v0.18 — SQLite Operations",
+    "id": "S21",
+    "name": "시스템 v0.19 — Platform Boundary",
     "status": "done",
-    "goal": "문서 SSOT를 유지하면서 incident와 MTTR을 SQLite에 기록하고 영구 배포 기반 확보"
+    "goal": "Goodz Core와 Commerce Reference의 타입·API·설정 경계를 분리해 비커머스 이식성 기반 확보"
   },
   "phases": [
     {

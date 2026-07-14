@@ -1,4 +1,4 @@
-import type { ProcessPhase } from "@goodz/types";
+import type { ProcessPhase } from "@goodz/process";
 import { ProgressBar, StatusBadge } from "./StatusBadge";
 
 export function PhasePanel({ phase }: { phase: ProcessPhase }) {

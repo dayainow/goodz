@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { FormEvent } from "react";
 import type {
   ProcessApp,
@@ -22,7 +30,7 @@ import type {
   ProcessTraceStatus,
   ProcessWireframe,
   ProcessStoryboard,
-} from "@goodz/types";
+} from "@goodz/process";
 import {
   createProcessIncident,
   fetchProcessDocument,
@@ -33,6 +41,8 @@ import {
 } from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
 import { ProgressBar, StatusBadge } from "./components/StatusBadge";
+
+const MarkdownDocument = lazy(() => import("./components/MarkdownDocument"));
 
 type SectionId =
   | "overview"
@@ -115,6 +125,12 @@ const MENU_GROUPS: Array<{
     items: ["phases", "queue", "features", "operations", "apps"],
   },
 ];
+
+const SECTION_GROUP = new Map<SectionId, string>(
+  MENU_GROUPS.flatMap((group) =>
+    group.items.map((sectionId) => [sectionId, group.title] as const),
+  ),
+);
 
 const QUICK_SECTIONS: SectionId[] = ["overview", "design", "guide", "metrics"];
 
@@ -623,25 +639,26 @@ function Sidebar({
   activeSection,
   onSelect,
   status,
-  overallProgress,
-  evidenceIssueCount,
 }: {
   activeSection: SectionId;
   onSelect: (section: SectionId) => void;
   status: ProcessStatus;
-  overallProgress: number;
-  evidenceIssueCount: number;
 }) {
-  const linkedTraces = status.traceLinks.filter((trace) =>
-    ["linked", "released"].includes(trace.status),
-  ).length;
   const [query, setQuery] = useState("");
-  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({
-    Plan: true,
-    Control: true,
-    System: true,
-  });
+  const activeGroupTitle = SECTION_GROUP.get(activeSection) ?? null;
+  const [openGroup, setOpenGroup] = useState<string | null>(activeGroupTitle);
   const normalizedQuery = query.trim().toLowerCase();
+  const selectSection = useCallback(
+    (sectionId: SectionId) => {
+      setOpenGroup(SECTION_GROUP.get(sectionId) ?? null);
+      onSelect(sectionId);
+    },
+    [onSelect],
+  );
+
+  useEffect(() => {
+    setOpenGroup(activeGroupTitle);
+  }, [activeGroupTitle]);
 
   return (
     <aside className="border-b border-zinc-200 bg-[#F7F7F7] px-5 py-5 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[360px] lg:shrink-0 lg:flex-col lg:overflow-hidden lg:border-b-0 lg:border-r lg:px-5 lg:py-6">
@@ -660,46 +677,6 @@ function Sidebar({
       </div>
 
       <div className={["mt-5 shrink-0 p-4", CARD_SURFACE].join(" ")}>
-        <div className="flex items-center justify-between text-sm">
-          <span className="font-medium text-zinc-600">전체 진행률</span>
-          <span className="font-bold text-zinc-950">{overallProgress}%</span>
-        </div>
-        <div className="mt-2">
-          <ProgressBar value={overallProgress} />
-        </div>
-        <p className="mt-3 text-xs text-zinc-500">
-          {status.systemVersion} · {status.updatedAt}
-        </p>
-      </div>
-
-      <div className="mt-3 grid shrink-0 grid-cols-3 gap-2.5">
-        <div className="rounded-xl border border-zinc-200 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-            Trace
-          </p>
-          <p className="mt-1 text-lg font-bold text-zinc-950">
-            {linkedTraces}/{status.traceLinks.length}
-          </p>
-        </div>
-        <div className="rounded-xl border border-zinc-200 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-            Evidence
-          </p>
-          <p className={["mt-1 text-lg font-bold", evidenceIssueCount ? "text-amber-700" : "text-zinc-950"].join(" ")}>
-            {evidenceIssueCount}
-          </p>
-        </div>
-        <div className="rounded-xl border border-zinc-200 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-            Sprint
-          </p>
-          <p className="mt-1 text-lg font-bold text-zinc-950">
-            {status.sprint.id}
-          </p>
-        </div>
-      </div>
-
-      <div className={["mt-4 shrink-0 p-4", CARD_SURFACE].join(" ")}>
         <label htmlFor="nav-search" className="sr-only">
           메뉴 검색
         </label>
@@ -723,7 +700,7 @@ function Sidebar({
                 <button
                   key={id}
                   type="button"
-                  onClick={() => onSelect(id)}
+                  onClick={() => selectSection(id)}
                   className={[
                     "rounded-xl border px-2 py-2 text-xs font-bold transition duration-150",
                     isActive
@@ -751,9 +728,7 @@ function Sidebar({
               SECTION_COPY[section.id].toLowerCase().includes(normalizedQuery)
             );
           });
-          const hasActiveItem = group.items.includes(activeSection);
-          const isCollapsed =
-            collapsedGroups[group.title] && !hasActiveItem && !normalizedQuery;
+          const isCollapsed = !normalizedQuery && openGroup !== group.title;
 
           if (normalizedQuery && visibleItems.length === 0) return null;
 
@@ -766,12 +741,15 @@ function Sidebar({
                 type="button"
                 aria-expanded={!isCollapsed}
                 onClick={() =>
-                  setCollapsedGroups((current) => ({
-                    ...current,
-                    [group.title]: !current[group.title],
-                  }))
+                  setOpenGroup((current) =>
+                    current === group.title ? null : group.title,
+                  )
                 }
-                className="flex w-full items-center justify-between gap-2 rounded-xl px-2 py-2.5 text-left transition hover:bg-zinc-200/80"
+                aria-controls={`sidebar-group-${group.title.toLowerCase()}`}
+                className={[
+                  "flex w-full items-center justify-between gap-2 rounded-xl px-2 py-2.5 text-left transition duration-150 hover:bg-zinc-200/80",
+                  isCollapsed ? "" : "bg-zinc-100",
+                ].join(" ")}
               >
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
@@ -783,7 +761,7 @@ function Sidebar({
                   <span
                     aria-hidden="true"
                     className={[
-                      "inline-block text-sm transition-transform",
+                      "inline-block text-sm transition-transform duration-150",
                       isCollapsed ? "rotate-0" : "rotate-90",
                     ].join(" ")}
                   >
@@ -793,7 +771,10 @@ function Sidebar({
                 </span>
               </button>
               {!isCollapsed && (
-                <div className="mt-2 grid grid-cols-1 gap-2">
+                <div
+                  id={`sidebar-group-${group.title.toLowerCase()}`}
+                  className="mt-2 grid grid-cols-1 gap-2"
+                >
                   {visibleItems.map((id) => {
                     const section = SECTION_MAP.get(id);
                     if (!section) return null;
@@ -802,7 +783,7 @@ function Sidebar({
                       <button
                         key={section.id}
                         type="button"
-                        onClick={() => onSelect(section.id)}
+                        onClick={() => selectSection(section.id)}
                         className={[
                           "flex min-h-14 items-center justify-between rounded-xl border border-l-[3px] px-3.5 py-2.5 text-left transition duration-150",
                           isActive
@@ -1468,7 +1449,7 @@ function DocumentViewer({ docPath }: { docPath: string }) {
   }, [docPath]);
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white">
+    <section className="rounded-2xl border border-zinc-200 bg-white">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-zinc-100 px-4 py-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
@@ -1493,9 +1474,9 @@ function DocumentViewer({ docPath }: { docPath: string }) {
           <p className="text-sm text-zinc-500">문서 불러오는 중…</p>
         )}
         {!error && !loading && document && (
-          <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-7 text-zinc-700">
-            {document.content}
-          </pre>
+          <Suspense fallback={<p className="text-sm text-zinc-500">문서 스타일 적용 중…</p>}>
+            <MarkdownDocument content={document.content} />
+          </Suspense>
         )}
       </div>
     </section>
@@ -1521,8 +1502,10 @@ function GuideSection() {
               type="button"
               onClick={() => setSelectedPath(doc.path)}
               className={[
-                "block w-full px-4 py-4 text-left hover:bg-zinc-50",
-                selectedPath === doc.path ? "bg-zinc-950 text-white" : "bg-white",
+                "block w-full px-4 py-4 text-left transition-colors duration-150",
+                selectedPath === doc.path
+                  ? "bg-zinc-950 text-white hover:bg-zinc-800"
+                  : "bg-white hover:bg-zinc-50",
               ].join(" ")}
             >
               <p className={["font-semibold", selectedPath === doc.path ? "text-white" : "text-zinc-950"].join(" ")}>
@@ -1561,6 +1544,7 @@ function DeliverablesSection({
   const [selectedPath, setSelectedPath] = useState(
     deliverables[0]?.doc ?? "docs/00-process/USER_MANUAL.md",
   );
+  const viewerRef = useRef<HTMLDivElement>(null);
   const byPhase = deliverables.reduce<Record<string, ProcessDeliverable[]>>(
     (acc, deliverable) => {
       acc[deliverable.phase] ??= [];
@@ -1569,61 +1553,88 @@ function DeliverablesSection({
     },
     {},
   );
+  const openDocument = useCallback((docPath: string) => {
+    setSelectedPath(docPath);
+    window.requestAnimationFrame(() => {
+      if (window.matchMedia("(max-width: 1279px)").matches) {
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        viewerRef.current?.scrollIntoView({
+          behavior: reduceMotion ? "auto" : "smooth",
+          block: "start",
+        });
+      }
+    });
+  }, []);
 
   return (
-    <div className="space-y-4">
-      <DocumentViewer docPath={selectedPath} />
-      {Object.entries(byPhase).map(([phase, items]) => (
-        <section key={phase} className="rounded-lg border border-zinc-200 bg-white">
-          <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
-            <div>
-              <p className="font-mono text-xs font-semibold text-brand-violet">
-                {phase}
-              </p>
-              <h3 className="font-bold text-zinc-950">산출물</h3>
+    <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(440px,0.85fr)] xl:items-start">
+      <div className="space-y-4">
+        {Object.entries(byPhase).map(([phase, items]) => (
+          <section key={phase} className="rounded-2xl border border-zinc-200 bg-white">
+            <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
+              <div>
+                <p className="font-mono text-xs font-semibold text-brand-violet">
+                  {phase}
+                </p>
+                <h3 className="font-bold text-zinc-950">산출물</h3>
+              </div>
+              <span className="text-sm font-semibold text-zinc-500">
+                {items.filter((item) => item.status === "done").length}/{items.length}
+              </span>
             </div>
-            <span className="text-sm font-semibold text-zinc-500">
-              {items.filter((item) => item.status === "done").length}/{items.length}
-            </span>
-          </div>
-          <ul>
-            {items.map((item) => (
-              <li
-                key={item.id}
-                className={[
-                  "grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[90px_1fr_120px_140px_110px] lg:items-center",
-                  selectedPath === item.doc ? "bg-zinc-50" : "",
-                ].join(" ")}
-              >
-                <span className="font-mono text-xs font-semibold text-zinc-500">
-                  {item.id}
-                </span>
-                <div>
-                  <p className="font-semibold text-zinc-950">{item.title}</p>
-                  <p className="mt-1 text-xs text-zinc-500">{item.summary}</p>
-                  <p className="mt-1 truncate font-mono text-xs text-zinc-400">
-                    {item.doc}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPath(item.doc)}
-                    className="mt-2 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-600 hover:border-zinc-400 hover:text-zinc-950"
+            <ul>
+              {items.map((item) => {
+                const isSelected = selectedPath === item.doc;
+                return (
+                  <li
+                    key={item.id}
+                    className={[
+                      "grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[72px_1fr_90px_110px_90px] lg:items-center",
+                      isSelected ? "bg-zinc-50" : "",
+                    ].join(" ")}
                   >
-                    문서 보기
-                  </button>
-                </div>
-                <span className="w-fit rounded-md bg-zinc-100 px-2 py-1 text-xs font-semibold text-zinc-600">
-                  {DELIVERABLE_TYPE_LABEL[item.type]}
-                </span>
-                <span className="text-xs font-medium text-zinc-500">
-                  {item.owner}
-                </span>
-                <StatusBadge status={item.status} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+                    <span className="font-mono text-xs font-semibold text-zinc-500">
+                      {item.id}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-zinc-950">{item.title}</p>
+                      <p className="mt-1 text-xs text-zinc-500">{item.summary}</p>
+                      <p className="mt-1 truncate font-mono text-xs text-zinc-400">
+                        {item.doc}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => openDocument(item.doc)}
+                        aria-pressed={isSelected}
+                        className={[
+                          "mt-2 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-colors duration-150",
+                          isSelected
+                            ? "border-zinc-950 bg-zinc-950 text-white hover:bg-zinc-800"
+                            : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 hover:text-zinc-950",
+                        ].join(" ")}
+                      >
+                        {isSelected ? "열린 문서" : "문서 보기"}
+                      </button>
+                    </div>
+                    <span className="w-fit rounded-md bg-zinc-100 px-2 py-1 text-xs font-semibold text-zinc-600">
+                      {DELIVERABLE_TYPE_LABEL[item.type]}
+                    </span>
+                    <span className="text-xs font-medium text-zinc-500">
+                      {item.owner}
+                    </span>
+                    <StatusBadge status={item.status} />
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))}
+      </div>
+      <div ref={viewerRef} className="scroll-mt-6 xl:sticky xl:top-6 xl:self-start">
+        <DocumentViewer docPath={selectedPath} />
+      </div>
     </div>
   );
 }
@@ -2967,8 +2978,6 @@ export default function App() {
         activeSection={activeSection}
         onSelect={setActiveSection}
         status={status}
-        overallProgress={overallProgress}
-        evidenceIssueCount={evidenceIssues.length}
       />
 
       <main className="min-w-0 flex-1 px-5 py-6 lg:px-8">

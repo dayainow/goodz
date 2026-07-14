@@ -26,7 +26,7 @@ process-dashboard (:5180)       ← 모니터링 UI
 |--------|------|
 | `status.json` | Phase·Sprint·기획 입력·기획 변경·산출물·DACI 승인·추적 링크·기능·앱 목록의 기계 판독 가능 상태 |
 | `metrics-snapshots.json` | Delivery Metrics 추세를 위한 저장 시점별 기준점 |
-| `@goodz/types` | `ProcessStatus` 타입 SSOT |
+| `@goodz/process` | `ProcessStatus` 타입 SSOT |
 | `api-server` | JSON 파일 로드·API 제공 |
 | `process-dashboard` | 30초 폴링 · 검색/접힘 사이드바 · 프리미엄 화이트 Overview · 콘솔형 헤더 · Guide/Intake/Change/Deliverable/DACI Approval/Evidence/Metrics/Trace/Phase/Queue/Feature/App 관리 뷰 |
 
@@ -75,6 +75,9 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 - **지표** — DORA 원형 지표, Goodz delivery health, snapshot trend, 요청→커밋→CI→증거 시간
 - **추적** — 기획·변경·산출물·승인과 Issue/PR/Commit/CI/Release 증거 연결
 - **Phase Gate** — P0–P4 패널 + 문서 경로
+
+가이드와 산출물의 Markdown 원문은 GFM으로 렌더링합니다. 제목·본문은 대시보드 sans 폰트를 상속하고, 표·목록·인용·굵게·링크·코드만 각 의미에 맞는 스타일을 사용합니다. 원시 Markdown 기호를 그대로 노출하지 않습니다.
+산출물 화면은 데스크톱에서 목록과 sticky 문서 뷰어를 나란히 배치합니다. 작은 화면에서는 `문서 보기`를 누르면 뷰어 위치로 자동 이동하고, 선택된 버튼은 `열린 문서` 상태를 표시합니다.
 - **작업 큐** — 차단/진행/대기/완료 상태별 항목
 - **기능** — F-01… 기능 백로그 테이블
 - **앱** — 4앱 포트·역할·바로가기
@@ -144,6 +147,8 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 
 - **Layout**: sidebar는 360px, 좌우 20px padding을 사용하고 header, summary, navigation, footer를 분리합니다.
 - **Disclosure**: 현재 메뉴가 속한 그룹만 자동으로 열며 Plan, Control, System은 초기 접힘 상태로 시작합니다.
+- **Accordion**: 한 번에 한 그룹만 열고, 활성 메뉴가 든 그룹도 사용자가 직접 접을 수 있습니다. 다른 섹션으로 이동하면 새 활성 그룹만 자동으로 열립니다.
+- **Search disclosure**: 검색 중에는 일치하는 그룹을 임시로 펼치고, 검색을 지우면 마지막으로 열어 둔 단일 그룹 상태로 돌아갑니다.
 - **Surface**: 그룹 외곽 카드와 메뉴 카드의 중첩을 제거하고 section divider로 그룹 경계를 표현합니다.
 - **Scroll area**: navigation만 min-height 0, flex 1, overflow-y auto로 스크롤하고 SSOT footer는 고정합니다.
 - **Scrollbar**: 8px 폭, zinc-200 track, zinc-400 thumb, 48px minimum thumb, stable gutter를 사용합니다.
@@ -165,6 +170,7 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - Overview metric은 Completion과 Delivery Health만 유지하고 Queue는 Hero에서 자연어로 표현합니다.
 - core surface는 16px radius, L1/L2 shadow, 150ms transition을 사용합니다.
 - 키보드 focus-visible과 prefers-reduced-motion을 전역 기준으로 적용합니다.
+- 선택된 문서 항목은 hover에서도 dark surface와 white text 대비를 유지합니다.
 
 상세 AC: [PRD-PROCESS-DASHBOARD-REDESIGN.md](../01-planning/PRD-PROCESS-DASHBOARD-REDESIGN.md)
 

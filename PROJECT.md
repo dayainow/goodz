@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S20 SQLite Operations v0.18** ✅
+## 현재 스프린트: **S21 Platform Boundary v0.19** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -27,6 +27,7 @@
 | **White Premium Detail** | ✅ Quick Jump·CTA·metrics·phase·metadata·typography hierarchy |
 | **Sidebar Comfort** | ✅ active disclosure·20px padding·fixed footer·custom scrollbar |
 | **SQLite Operations** | ✅ 문서 인덱스·incident/MTTR·Render 영구 디스크 배포 구성 |
+| **Platform Boundary** | ✅ `@goodz/process` Core 계약·Commerce Reference·API 라우터 경계·설정 스키마 |
 
 ## 현재 단계
 
@@ -44,7 +45,7 @@
 |----|------|
 | web-shop | B2C 퍼널 데모 |
 | admin-dashboard | 운영 UI 데모 |
-| api-server | REST + mock 패턴 |
+| api-server | 현재 process/commerce 모듈을 함께 제공하는 전환 런타임 |
 
 ## S2 체크리스트
 
@@ -104,6 +105,8 @@
 - [x] S20: SQLite schema migration과 문서 인덱스 seed
 - [x] S20: 운영 incident 생성·종료·MTTR API/UI
 - [x] S20: Process OS 단일 서비스 Render Blueprint와 영구 디스크 런북
+- [x] S21: Goodz Core와 Commerce Reference 타입/API 경계 분리
+- [x] S21: `goodz.config.json` + JSON Schema + ADR-003
 
 ## 풀 프로세스
 

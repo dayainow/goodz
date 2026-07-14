@@ -5,7 +5,7 @@ import type {
   ProcessMetricSnapshotsFile,
   ProcessOperationsOverview,
   ProcessStatus,
-} from "@goodz/types";
+} from "@goodz/process";
 
 const API_URL =
   import.meta.env.VITE_API_URL ??

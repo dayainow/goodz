@@ -57,7 +57,9 @@ PRD / USER_STORIES / GA4 → Issue → PHASE_GATES P0 체크
 ### D. P2 개발 (레퍼런스 앱)
 
 ```text
-@goodz/types → api-server → @goodz/ui → apps → API.md → pnpm verify
+플랫폼: @goodz/process → process route/data → process-dashboard
+커머스 예제: @goodz/types → commerce route/data → web-shop/admin-dashboard
+공통 UI: @goodz/ui → apps → API.md → pnpm verify
 ```
 
 스킬: `skills/goodz-dev/`
@@ -66,7 +68,7 @@ PRD / USER_STORIES / GA4 → Issue → PHASE_GATES P0 체크
 
 | 함께 갱신 | 이유 |
 |-----------|------|
-| `docs/03-engineering/API.md` | API SSOT |
+| `docs/03-engineering/API.md` | API SSOT와 플랫폼/Reference 경계 |
 | `docs/01-planning/USER_STORIES.md` AC | 인수조건 추적 |
 | `docs/02-design/screens/*.md` (UI 변경 시) | 디자인–코드 정합 |
 | `PHASE_GATES` / `ROADMAP` (마일스톤 시) | 시스템 성숙도 |

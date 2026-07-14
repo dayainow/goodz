@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Goodz — 프로세스부터 코드까지, 하나의 시스템</title>
+  <meta name="description" content="기획→디자인→개발→QA→배포. 문서·게이트·모노레포·CI·AI로 묶은 풀 프로세스 시스템." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans KR', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              violet: '#7C3AED',
+              dark: '#171717',
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      html {
+        @apply scroll-smooth antialiased;
+      }
+      body {
+        @apply bg-white text-zinc-950 font-sans;
+        font-feature-settings: 'cv02', 'ss01';
+      }
+      h1, h2, h3 {
+        @apply tracking-tight;
+        line-height: 1.15;
+      }
+      p, li {
+        line-height: 1.6;
+      }
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #a1a1aa transparent;
+      }
+      *::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      *::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: #a1a1aa;
+      }
+    }
+    @layer components {
+      .section-label {
+        @apply text-[11px] font-bold uppercase tracking-widest text-zinc-500;
+      }
+      .card {
+        @apply rounded-2xl border border-zinc-200 bg-white p-6 transition duration-150;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 28px rgba(0,0,0,0.06);
+      }
+      .dark-section {
+        background:
+          radial-gradient(1200px 600px at 20% -10%, rgba(124,58,237,0.18), transparent 60%),
+          radial-gradient(900px 500px at 85% 110%, rgba(23,23,23,0.9), transparent 60%),
+          #0F0F0F;
+      }
+    }
+  </style>
+</head>
+<body class="text-zinc-800">
+
+  <!-- Nav -->
+  <nav class="sticky top-0 z-50 border-b border-zinc-200 bg-white/80 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
+      <a href="#" class="flex items-center gap-2 text-sm font-bold text-zinc-950">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-950 text-white text-xs font-bold">G</span>
+        Goodz
+      </a>
+      <div class="hidden items-center gap-6 text-sm text-zinc-600 md:flex">
+        <a href="#problem" class="hover:text-zinc-950">문제</a>
+        <a href="#system" class="hover:text-zinc-950">시스템</a>
+        <a href="#flow" class="hover:text-zinc-950">프로세스</a>
+        <a href="#pricing" class="hover:text-zinc-950">가격</a>
+      </div>
+      <a href="#cta" class="rounded-xl border border-zinc-950 bg-zinc-950 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800">
+        시작하기
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="relative overflow-hidden border-b border-zinc-100">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(124,58,237,0.08),transparent_55%)]"></div>
+    <div class="mx-auto max-w-6xl px-5 py-16 md:py-24">
+      <div class="max-w-3xl">
+        <p class="section-label text-brand-violet">프로세스 운영 시스템</p>
+        <h1 class="mt-3 text-4xl font-bold text-zinc-950 md:text-[56px]">
+          프로세스부터 코드까지,<br />하나의 시스템.
+        </h1>
+        <p class="mt-5 text-base leading-7 text-zinc-600 md:text-lg">
+          기획 → 디자인 → 개발 → QA → 배포.<br class="hidden md:block" />
+          문서·게이트·모노레포·CI·AI로 묶은 풀 프로세스 시스템.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href="#cta" class="rounded-xl border border-zinc-950 bg-zinc-950 px-5 py-3 text-sm font-semibold text-white hover:bg-zinc-800">
+            무료 Audit 신청하기
+          </a>
+          <a href="https://github.com/goodz-systems" target="_blank" rel="noreferrer" class="rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-800 hover:border-zinc-400">
+            GitHub에서 보기 →
+          </a>
+        </div>
+        <div class="mt-6 flex items-center gap-4 text-xs text-zinc-500">
+          <span class="inline-flex items-center gap-1">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            Core v0.19 · Boundary extraction
+          </span>
+          <span class="font-mono">Turborepo + pnpm + TypeScript</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Problem -->
+  <section id="problem" class="border-b border-zinc-100">
+    <div class="mx-auto max-w-6xl px-5 py-16">
+      <p class="section-label">문제</p>
+      <h2 class="mt-3 text-3xl font-bold text-zinc-950 md:text-[40px]">
+        팀에 필요한건 쇼핑몰이 아닙니다.
+      </h2>
+      <p class="mt-4 max-w-2xl text-base text-zinc-600">
+        대부분의 개발 조직은 "코드는 있는데 프로세스가 없다"는 동일한 문제를 반복합니다.
+      </p>
+      <div class="mt-10 grid gap-4 md:grid-cols-2">
+        <div class="card">
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold text-zinc-400">SSOT 부재</span>
+          </div>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">
+            PRD·API·ADR·QA가 각자 흩어져 있고, 코드가 실질적 명세가 됨.
+          </p>
+        </div>
+        <div class="card">
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold text-zinc-400">연결 단절</span>
+          </div>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">
+            기획→개발→배포의 흐름이 끊어져, 요청 추적과 책임 소재가 불투명함.
+          </p>
+        </div>
+        <div class="card">
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold text-zinc-400">게이트 없음</span>
+          </div>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">
+            품질 확인이 마지막에 발생하고, Phase별 산출물 기준이 없어 누락되기 쉬움.
+          </p>
+        </div>
+        <div class="card">
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold text-zinc-400">AI 협업 규칙 없음</span>
+          </div>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">
+            Cursor/Claude Code는 도구일 뿐. 역할·입출력·금지 규칙이 없어 혼란 부추김.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- System Layers -->
+  <section id="system" class="border-b border-zinc-100 bg-zinc-50/60">
+    <div class="mx-auto max-w-6xl px-5 py-16">
+      <p class="section-label">시스템</p>
+      <h2 class="mt-3 text-3xl font-bold text-zinc-950 md:text-[40px]">
+        Goodz가 연결하는 6개 레이어.
+      </h2>
+      <p class="mt-4 max-w-2xl text-base text-zinc-600">
+        프로세스부터 AI 협업까지. 팀이 실제로 돌아가는 데 필요한 모든 레이어를 하나로 묶었습니다.
+      </p>
+      <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <p class="section-label">01</p>
+            <span class="rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-semibold text-zinc-600">Process</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-zinc-950">프로세스</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">P0–P4 워크플로, Phase Gate, Sprint 로드맵</p>
+          <ul class="mt-3 space-y-1.5 text-xs leading-6 text-zinc-500">
+            <li>· Phase Gate 산출물·체크리스트</li>
+            <li>· Sprint ROADMAP</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <p class="section-label">02</p>
+            <span class="rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-semibold text-zinc-600">Planning</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-zinc-950">기획</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">PRD, 유저스토리, GA4 명세</p>
+          <ul class="mt-3 space-y-1.5 text-xs leading-6 text-zinc-500">
+            <li>· Intake → 변경 요청 → PRD</li>
+            <li>· GA4 이벤트 명세</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <p class="section-label">03</p>
+            <span class="rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-semibold text-zinc-600">Design</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-zinc-950">디자인</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">Claude Design handoff, 화면 스펙</p>
+          <ul class="mt-3 space-y-1.5 text-xs leading-6 text-zinc-500">
+            <li>· 12화면 스펙</li>
+            <li>· DS 매핑</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <p class="section-label">04</p>
+            <span class="rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-semibold text-zinc-600">Engineering</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-zinc-950">엔지니어링</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">API SSOT, ADR, Turborepo + pnpm</p>
+          <ul class="mt-3 space-y-1.5 text-xs leading-6 text-zinc-500">
+            <li>· 타입 우선 개발</li>
+            <li>· @goodz/process Core 계약</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <p class="section-label">05</p>
+            <span class="rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-semibold text-zinc-600">QA</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-zinc-950">품질</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">TEST_PLAN, RELEASE_CHECKLIST, CI</p>
+          <ul class="mt-3 space-y-1.5 text-xs leading-6 text-zinc-500">
+            <li>· pnpm verify</li>
+            <li>· QA harness</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <p class="section-label">06</p>
+            <span class="rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-semibold text-zinc-600">AI Skills</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-zinc-950">AI 협업</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-600">Phase별 스킬, 에이전트 역할 분리</p>
+          <ul class="mt-3 space-y-1.5 text-xs leading-6 text-zinc-500">
+            <li>· Cursor / Claude Code 규칙</li>
+            <li>· DACI 승인 로그</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flow -->
+  <section id="flow" class="dark-section border-b border-zinc-800">
+    <div class="mx-auto max-w-6xl px-5 py-16 text-white">
+      <p class="section-label text-white/60">프로세스</p>
+      <h2 class="mt-3 text-3xl font-bold md:text-[40px]">
+        P0 → P4, 명확한 흐름.
+      </h2>
+      <p class="mt-4 max-w-2xl text-sm leading-7 text-white/70">
+        각 Phase는 독립된 카드로 표현됩니다. 연결선은 단계 사이의 전환 조건을 의미합니다.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center gap-2">
+        <div class="flex-1 rounded-2xl border border-zinc-700 bg-zinc-900 p-5 min-w-[140px]">
+          <p class="font-mono text-xs text-white/55">P0</p>
+          <p class="mt-1 font-bold">기획</p>
+          <p class="mt-2 text-xs text-white/55">PRD · 유저스토리 · GA4</p>
+        </div>
+        <span class="text-white/40">→</span>
+        <div class="flex-1 rounded-2xl border border-zinc-700 bg-zinc-900 p-5 min-w-[140px]">
+          <p class="font-mono text-xs text-white/55">P1</p>
+          <p class="mt-1 font-bold">디자인</p>
+          <p class="mt-2 text-xs text-white/55">Claude Design · 스펙</p>
+        </div>
+        <span class="text-white/40">→</span>
+        <div class="flex-1 rounded-2xl border border-violet-400 bg-zinc-900 p-5 ring-2 ring-violet-400/70 min-w-[140px]">
+          <p class="font-mono text-xs text-white/55">P2</p>
+          <p class="mt-1 font-bold">개발</p>
+          <p class="mt-2 text-xs text-white/55">context types → API → 앱</p>
+        </div>
+        <span class="text-white/40">→</span>
+        <div class="flex-1 rounded-2xl border border-zinc-700 bg-zinc-900 p-5 min-w-[140px]">
+          <p class="font-mono text-xs text-white/55">P3</p>
+          <p class="mt-1 font-bold">QA</p>
+          <p class="mt-2 text-xs text-white/55">TEST_PLAN · CI · verify</p>
+        </div>
+        <span class="text-white/40">→</span>
+        <div class="flex-1 rounded-2xl border border-zinc-700 bg-zinc-900 p-5 min-w-[140px]">
+          <p class="font-mono text-xs text-white/55">P4</p>
+          <p class="mt-1 font-bold">배포</p>
+          <p class="mt-2 text-xs text-white/55">RELEASE_CHECKLIST · CI/CD</p>
+        </div>
+      </div>
+      <div class="mt-6 flex items-center gap-2 text-xs text-white/60">
+        <span class="inline-flex h-2 w-2 rounded-full bg-violet-400"></span>
+        현재 운영: P2 개발
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack -->
+  <section class="border-b border-zinc-100">
+    <div class="mx-auto max-w-6xl px-5 py-16">
+      <p class="section-label">스택</p>
+      <h2 class="mt-3 text-3xl font-bold text-zinc-950 md:text-[40px]">
+        검증된 스택 위에 시스템을 얹습니다.
+      </h2>
+      <div class="mt-10 flex flex-wrap gap-6 text-sm font-semibold text-zinc-600">
+        <span class="rounded-xl border border-zinc-200 bg-white px-4 py-3">Turborepo</span>
+        <span class="rounded-xl border border-zinc-200 bg-white px-4 py-3">pnpm</span>
+        <span class="rounded-xl border border-zinc-200 bg-white px-4 py-3">TypeScript</span>
+        <span class="rounded-xl border border-zinc-200 bg-white px-4 py-3">Tailwind CSS</span>
+        <span class="rounded-xl border border-zinc-200 bg-white px-4 py-3">React</span>
+        <span class="rounded-xl border border-zinc-200 bg-white px-4 py-3">GitHub Actions</span>
+        <span class="rounded-xl border border-zinc-200 bg-white px-4 py-3">Claude Code</span>
+        <span class="rounded-xl border border-zinc-200 bg-white px-4 py-3">Cursor</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof -->
+  <section class="border-b border-zinc-100 bg-zinc-50/60">
+    <div class="mx-auto max-w-6xl px-5 py-16">
+      <p class="section-label">증거</p>
+      <h2 class="mt-3 text-3xl font-bold text-zinc-950 md:text-[40px]">
+        각 Phase의 산출물이 시스템입니다.
+      </h2>
+      <div class="mt-10 grid gap-3 md:grid-cols-2">
+        <div class="card">
+          <p class="text-xs font-mono text-zinc-500">P0</p>
+          <p class="mt-1 text-sm font-bold text-zinc-900">기획 입력 · PRD · 유저스토리 · GA4 명세</p>
+        </div>
+        <div class="card">
+          <p class="text-xs font-mono text-zinc-500">P1</p>
+          <p class="mt-1 text-sm font-bold text-zinc-900">Claude Design 12화면 · screens/ 스펙 · DS 매핑</p>
+        </div>
+        <div class="card">
+          <p class="text-xs font-mono text-zinc-500">P2</p>
+          <p class="mt-1 text-sm font-bold text-zinc-900">@goodz/process → Process API → Console · pnpm verify</p>
+        </div>
+        <div class="card">
+          <p class="text-xs font-mono text-zinc-500">P3</p>
+          <p class="mt-1 text-sm font-bold text-zinc-900">TEST_PLAN · GA compliance · CI · QA harness</p>
+        </div>
+        <div class="card">
+          <p class="text-xs font-mono text-zinc-500">P4</p>
+          <p class="mt-1 text-sm font-bold text-zinc-900">RELEASE_CHECKLIST · 배포 · DACI 승인 · CI/CD evidence</p>
+        </div>
+        <div class="card">
+          <p class="text-xs font-mono text-zinc-500">System</p>
+          <p class="mt-1 text-sm font-bold text-zinc-900">Process Dashboard · AGENTS.md · Phase별 스킬 키트</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="border-b border-zinc-100">
+    <div class="mx-auto max-w-6xl px-5 py-16">
+      <p class="section-label">가격</p>
+      <h2 class="mt-3 text-3xl font-bold text-zinc-950 md:text-[40px]">
+        팀 규모에 맞게 시작하세요.
+      </h2>
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        <div class="card flex flex-col">
+          <p class="section-label">Core</p>
+          <p class="mt-2 text-2xl font-bold text-zinc-950">Open Core</p>
+          <p class="mt-1 text-sm text-zinc-600">도입 가능한 기본 플랫폼</p>
+          <ul class="mt-6 flex-1 space-y-2 text-sm text-zinc-600">
+            <li>· Turborepo 모노레포 스캐폴드</li>
+            <li>· @goodz/process 모델·스키마</li>
+            <li>· docs/00~04 기본 구조</li>
+            <li>· CI 기본 워크플로</li>
+            <li>· Community 지원</li>
+          </ul>
+          <a href="https://github.com/goodz-systems" target="_blank" rel="noreferrer" class="mt-6 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-zinc-800 hover:border-zinc-400">
+            Fork로 시작하기
+          </a>
+        </div>
+        <div class="card flex flex-col border-zinc-950">
+          <div class="flex items-center justify-between">
+            <p class="section-label">Cloud</p>
+            <span class="rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-[11px] font-semibold text-zinc-700">인기</span>
+          </div>
+          <p class="mt-2 text-2xl font-bold text-zinc-950">문의</p>
+          <p class="mt-1 text-sm text-zinc-600">관리형 구독</p>
+          <ul class="mt-6 flex-1 space-y-2 text-sm text-zinc-600">
+            <li>· 호스팅 Control Plane</li>
+            <li>· GitHub/Jira Connector</li>
+            <li>· 협업·운영 대시보드</li>
+            <li>· 관리형 백업</li>
+            <li>· 업데이트 자동 적용</li>
+          </ul>
+          <a href="#cta" class="mt-6 rounded-xl border border-zinc-950 bg-zinc-950 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-zinc-800">
+            Cloud 상담하기
+          </a>
+        </div>
+        <div class="card flex flex-col">
+          <p class="section-label">Enterprise</p>
+          <p class="mt-2 text-2xl font-bold text-zinc-950">문의</p>
+          <p class="mt-1 text-sm text-zinc-600">프로젝트 기반</p>
+          <ul class="mt-6 flex-1 space-y-2 text-sm text-zinc-600">
+            <li>· SSO/SCIM · RBAC</li>
+            <li>· 감사 로그 · 정책 팩</li>
+            <li>· VPC/온프레미스</li>
+            <li>· 백업·복구·업그레이드</li>
+            <li>· SLA · 전담 지원</li>
+          </ul>
+          <a href="#cta" class="mt-6 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-zinc-800 hover:border-zinc-400">
+            문의하기
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="relative overflow-hidden border-b border-zinc-100">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(124,58,237,0.08),transparent_55%)]"></div>
+    <div class="relative mx-auto max-w-6xl px-5 py-16">
+      <div class="grid items-center gap-10 md:grid-cols-2">
+        <div>
+          <p class="section-label text-brand-violet">시작</p>
+          <h2 class="mt-3 text-3xl font-bold text-zinc-950 md:text-[40px]">
+            첫 온보딩은 무료로.
+          </h2>
+          <p class="mt-4 text-base leading-7 text-zinc-600">
+            현재 팀의 프로세스를 진단하고, Goodz Core로 전환 가능한 범위를 제안드립니다.
+          </p>
+          <ul class="mt-6 space-y-2 text-sm text-zinc-600">
+            <li>· 30분 화상 진단</li>
+            <li>· 전환 로드맵 1page</li>
+            <li>· Phase 구조 샘플 제공</li>
+          </ul>
+        </div>
+        <form class="card flex flex-col gap-3" onsubmit="event.preventDefault(); alert('Audit 요청이 접수되었습니다.');">
+          <div>
+            <label class="block text-xs font-semibold text-zinc-700">이메일</label>
+            <input type="email" required class="mt-1 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-950" placeholder="you@team.dev" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-zinc-700">팀 규모</label>
+            <select class="mt-1 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-950">
+              <option>1~5</option>
+              <option>6~15</option>
+              <option>16~50</option>
+              <option>50+</option>
+            </select>
+          </div>
+          <button type="submit" class="mt-1 rounded-xl border border-zinc-950 bg-zinc-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800">
+            무료 Audit 신청하기
+          </button>
+        </form>
+      </div>
+      <div class="mt-8 flex flex-wrap items-center gap-6 text-xs text-zinc-500">
+        <a href="https://github.com/goodz-systems" target="_blank" rel="noreferrer" class="hover:text-zinc-900">GitHub</a>
+        <a href="mailto:hello@goodz.systems" class="hover:text-zinc-900">hello@goodz.systems</a>
+        <span>License: MIT</span>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

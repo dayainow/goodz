@@ -36,7 +36,7 @@
 
 ### P2 — 개발
 
-1. `@goodz/types` 타입 먼저
+1. 플랫폼은 `@goodz/process`, Commerce Reference는 `@goodz/types`에서 타입 먼저
 2. `api-server` → `web-shop` / `admin-dashboard`
 3. PR + `pnpm verify` 필수
 4. **Gate:** AC(인수조건) 충족 + CI green

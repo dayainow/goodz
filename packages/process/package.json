@@ -1,7 +1,6 @@
 {
-  "name": "@goodz/types",
-  "version": "0.0.0",
-  "description": "Goodz Commerce Reference domain contracts",
+  "name": "@goodz/process",
+  "version": "0.1.0",
   "private": true,
   "license": "MIT",
   "main": "./dist/index.js",

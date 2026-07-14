@@ -7,7 +7,7 @@ import type {
   CreateProcessIncidentRequest,
   ProcessIncident,
   ProcessOperationsOverview,
-} from "@goodz/types";
+} from "@goodz/process";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),

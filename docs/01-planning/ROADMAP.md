@@ -26,7 +26,8 @@
 | **v0.16** | White Premium Detail: navigation + CTA + metrics + typography hierarchy | ✅ |
 | **v0.17** | Sidebar Comfort: active disclosure + spacing + fixed footer + scrollbar | ✅ |
 | **v0.18** | SQLite Operations: 문서 인덱스 + incident/MTTR + 영구 디스크 배포 | ✅ |
-| **v1.0** | fork·판매 가능한 온보딩 패키지 (템플릿화) | ⚪ |
+| **v0.19** | Platform Boundary: Core 모델 + Commerce Reference + API 모듈 경계 | ✅ |
+| **v1.0** | 설치 가능한 Goodz Core: CLI + config migration + 비커머스 이식성 검증 | ⚪ |
 
 ## 전체 타임라인
 
@@ -34,6 +35,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
+S21 ✅ Platform Boundary
 ```
 
 ---
@@ -275,6 +277,17 @@ Week 1
 
 ---
 
+### Sprint S21 — Platform Boundary
+
+- 제품명은 Goodz로 유지하고 Core / Cloud / Enterprise 제품군 확정
+- Goodz Commerce Reference를 공식 예제 경계로 명시
+- Process OS 계약을 `@goodz/process`로 분리
+- API를 process/commerce 라우터로 모듈 분리
+- `goodz.config.json`, JSON Schema, ADR-003으로 기계 판독 경계 정의
+- 다음 Gate: 비커머스 Reference가 Core 수정 0건으로 `pnpm verify` 통과
+
+---
+
 ## 의존성 그래프
 
 ```mermaid
@@ -283,8 +296,10 @@ flowchart LR
   US --> Issues[GitHub Issues]
   US --> Screens[Screen Specs]
   Screens --> Dev[Development]
-  Types["@goodz/types"] --> API
-  API --> Dev
+  Process["@goodz/process"] --> ProcessAPI[Process API]
+  Commerce["@goodz/types"] --> CommerceAPI[Commerce API]
+  ProcessAPI --> Console[Process Dashboard]
+  CommerceAPI --> Dev
   Dev --> QA
   GA4[GA4 Spec] --> Dev
   QA --> Deploy
@@ -317,8 +332,9 @@ flowchart LR
 21. ✅ v0.16: White Premium Detail Tuning
 22. ✅ v0.17: Sidebar Comfort
 23. ✅ v0.18: SQLite Operations
-24. ⚪ v1.0 Gate: clean-clone CI + rebrand 리허설 + 외부 배포 증거
-25. ⚪ v1.x 후보: guided workflow + PR review lead time + server DB 전환 기준
+24. ✅ v0.19: Goodz Core / Commerce Reference 경계 추출
+25. ⚪ v1.0 Gate: 비커머스 Reference + `goodz init/adopt/verify` + clean-clone CI
+26. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
 
 ---
 
@@ -342,3 +358,4 @@ flowchart LR
 | 2026-07-13 | v0.16 — White Premium Detail Tuning |
 | 2026-07-13 | v0.17 — Sidebar Comfort |
 | 2026-07-13 | v0.18 — SQLite Operations + persistent deployment blueprint |
+| 2026-07-13 | v0.19 — Goodz Core 모델과 Commerce Reference/API 경계 분리 |

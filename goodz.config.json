@@ -1,0 +1,35 @@
+{
+  "$schema": "./schemas/goodz-config.schema.json",
+  "version": 1,
+  "product": {
+    "name": "Goodz",
+    "edition": "core",
+    "description": "기획부터 배포까지 연결하는 풀 프로세스 운영 시스템"
+  },
+  "platform": {
+    "modelPackage": "@goodz/process",
+    "consoleApp": "apps/process-dashboard",
+    "apiPrefix": "/api/process",
+    "sourceOfTruth": "docs/00-process/status.json"
+  },
+  "references": [
+    {
+      "id": "goodz-commerce",
+      "name": "Goodz Commerce Reference",
+      "domain": "commerce",
+      "typePackage": "@goodz/types",
+      "apps": [
+        "apps/web-shop",
+        "apps/admin-dashboard"
+      ],
+      "apiPrefix": "/api"
+    }
+  ],
+  "portability": {
+    "coreChangesAllowedForNewReference": false,
+    "requiredCommands": [
+      "pnpm check:template",
+      "pnpm verify"
+    ]
+  }
+}

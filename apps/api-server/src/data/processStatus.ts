@@ -5,7 +5,7 @@ import type {
   ProcessDocumentResponse,
   ProcessMetricSnapshotsFile,
   ProcessStatus,
-} from "@goodz/types";
+} from "@goodz/process";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),

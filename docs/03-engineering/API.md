@@ -2,9 +2,14 @@
 
 Base URL: `http://localhost:4000` (개발)
 
-## 공통 타입
+## 타입 경계
 
-`@goodz/types` — `Product`, `ProductListResponse`, `CreateProductRequest`, `Cart`, `CartView`, `CheckoutResult`, `ProcessOperationsOverview`, `ProcessIncident`
+| 컨텍스트 | 타입 SSOT | 주요 타입 |
+|---|---|---|
+| Goodz Core | `@goodz/process` | `ProcessStatus`, `ProcessOperationsOverview`, `ProcessIncident` |
+| Goodz Commerce Reference | `@goodz/types` | `Product`, `CartView`, `CheckoutResult` |
+
+현재 두 컨텍스트는 같은 Express 런타임을 사용하지만 `routes/process.ts`와 `routes/commerce.ts`로 분리되어 있다.
 
 ## Endpoints
 
@@ -80,7 +85,7 @@ Base URL: `http://localhost:4000` (개발)
 
 ### `GET /api/process/status`
 
-**Response:** `ProcessStatus` (`@goodz/types`)
+**Response:** `ProcessStatus` (`@goodz/process`)
 
 풀 프로세스 진행도 SSOT — `docs/00-process/status.json`을 로드합니다.
 
@@ -102,7 +107,7 @@ Base URL: `http://localhost:4000` (개발)
 
 ### `GET /api/process/metrics-snapshots`
 
-**Response:** `ProcessMetricSnapshotsFile` (`@goodz/types`)
+**Response:** `ProcessMetricSnapshotsFile` (`@goodz/process`)
 
 Delivery Metrics 추세용 snapshot — `docs/00-process/metrics-snapshots.json`을 로드합니다.
 
@@ -121,7 +126,7 @@ Delivery Metrics 추세용 snapshot — `docs/00-process/metrics-snapshots.json`
 
 **Query:** `path=docs/.../*.md`
 
-**Response:** `ProcessDocumentResponse` (`@goodz/types`)
+**Response:** `ProcessDocumentResponse` (`@goodz/process`)
 
 대시보드 안에서 Markdown 문서 원문을 확인하기 위한 읽기 전용 endpoint입니다. 보안상 `docs/` 아래 `.md` 파일만 읽습니다.
 
@@ -136,7 +141,7 @@ Delivery Metrics 추세용 snapshot — `docs/00-process/metrics-snapshots.json`
 
 ### `GET /api/process/operations`
 
-**Response:** `ProcessOperationsOverview` (`@goodz/types`)
+**Response:** `ProcessOperationsOverview` (`@goodz/process`)
 
 SQLite 저장 엔진·내구성·schema version, 문서 인덱스 수, incident/MTTR 요약과 최근 사건을 반환합니다.
 
@@ -181,7 +186,8 @@ Basic Auth 값은 둘 다 있을 때 전체 서비스에 적용되고, 하나만
 
 ## 변경 절차
 
-1. `packages/types` 수정
-2. `apps/api-server` 구현
-3. 프론트 fetch 갱신
-4. 이 문서 + PRD AC 동기화
+1. 플랫폼 변경은 `packages/process`, 커머스 예제 변경은 `packages/types`에서 계약을 먼저 수정
+2. 각각 `routes/process.ts` 또는 `routes/commerce.ts`와 data 모듈 구현
+3. 해당 소비 앱 fetch 갱신
+4. 이 문서 + PRD AC + 필요 시 ADR 동기화
+5. `pnpm verify`로 컨텍스트 경계와 전체 빌드 확인
