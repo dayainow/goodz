@@ -8,6 +8,8 @@ import type {
   CreateProcessProjectResponse,
   CreateProcessEvidenceRequest,
   CreateProcessTemplateRequest,
+  MigrateProcessTemplateRequest,
+  MigrateProcessTemplateResponse,
   CreateProcessIncidentRequest,
   DecideProcessGateRequest,
   ProcessAuditEvent,
@@ -1064,6 +1066,45 @@ export function createProcessTemplate(
   const template = listProcessTemplates().find((item) => item.id === definition.id);
   if (!template) throw new Error("Created template could not be loaded");
   return template;
+}
+
+export function migrateProcessTemplate(
+  templateId: string,
+  input: MigrateProcessTemplateRequest,
+): MigrateProcessTemplateResponse {
+  const source = listProcessTemplates().find((item) => item.id === templateId);
+  if (!source) throw new Error("Process template not found");
+  const lineage = source.id.match(/^(.*)-V(\d+)$/);
+  if (!lineage?.[1]) throw new Error("Template id does not contain a version suffix");
+  const name = input.name?.trim() || source.name;
+  const summary = input.summary?.trim() || source.summary;
+  if (name.length > 80 || summary.length > 240) throw new Error("Template name or summary is too long");
+  const versions = listProcessTemplates()
+    .filter((item) => item.id.startsWith(`${lineage[1]}-V`))
+    .map((item) => item.version);
+  const version = Math.max(...versions) + 1;
+  const definition: TemplateDefinition = {
+    id: `${lineage[1]}-V${version}`,
+    version,
+    name,
+    summary,
+    stages: source.stages.map((stage) => ({
+      code: stage.code,
+      name: stage.name,
+      summary: stage.summary,
+      tasks: stage.tasks.map((task) => ({ title: task.title, summary: task.summary })),
+      deliverables: stage.deliverables.map((deliverable) => ({
+        title: deliverable.title,
+        summary: deliverable.summary,
+        required: deliverable.required,
+      })),
+    })),
+  };
+  insertProcessTemplate(definition, false);
+  recordAudit("template", definition.id, "version_migrated", `${source.id} → ${definition.id}`);
+  const target = listProcessTemplates().find((item) => item.id === definition.id);
+  if (!target) throw new Error("Migrated template could not be loaded");
+  return { source, target };
 }
 
 export function createProcessProject(

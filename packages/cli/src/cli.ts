@@ -6,12 +6,13 @@ import { GoodzClient } from "./client.js";
 import { adoptGoodz, initializeGoodz, verifyGoodzWorkspace } from "./config.js";
 import { materializeProjectBundle } from "./materializer.js";
 
-const HELP = `Goodz CLI v0.2
+const HELP = `Goodz CLI v0.3
 
 Usage:
   goodz init --name <project> [--root <path>] [--force]
   goodz adopt [--name <project>] [--root <path>] [--apply] [--force]
   goodz project create --name <name> --summary <text> --owner <owner> [--template <id>] [--api <url>]
+  goodz template migrate --from <template-id> [--name <name>] [--summary <text>] [--api <url>]
   goodz export --project <id> [--root <path>] [--api <url>] [--dry-run] [--force]
   goodz verify [--root <path>] [--full]
 
@@ -92,6 +93,15 @@ async function main() {
     });
     console.log(`Project created: ${created.project.id}`);
     console.log(`Run started: ${created.run.id}`);
+    return;
+  }
+  if (command === "template" && args[1] === "migrate") {
+    const migrated = await client(args).migrateTemplate(required(args, "--from"), {
+      ...(option(args, "--name") ? { name: option(args, "--name") } : {}),
+      ...(option(args, "--summary") ? { summary: option(args, "--summary") } : {}),
+    });
+    console.log(`Template migrated: ${migrated.source.id} → ${migrated.target.id}`);
+    console.log(`Version: ${migrated.source.version} → ${migrated.target.version}`);
     return;
   }
   if (command === "export") {

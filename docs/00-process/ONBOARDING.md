@@ -115,6 +115,17 @@ pnpm goodz -- verify --root .
 
 생성 파일과 충돌 보호 규칙은 [CLI.md](./CLI.md)를 기준으로 합니다.
 
+팀 프로세스를 바꿀 때는 실행 중 Template을 덮어쓰지 않고 새 버전을 만듭니다.
+
+```bash
+pnpm goodz -- template migrate \
+  --from TPL-GOODZ-P0-P4-V1 \
+  --summary "팀 승인 정책 v2" \
+  --api http://localhost:4000
+```
+
+기존 프로젝트는 v1 실행 정의를 유지하고 이후 프로젝트부터 반환된 v2 ID를 선택합니다.
+
 ## 7. 외부 연동
 
 `ga-analytics-harness`는 기본 web-shop에 포함된 GA4 레퍼런스 연동이며 GitHub commit에 고정됩니다. 저장소 밖의 형제 폴더를 요구하지 않으므로 clean clone에서도 설치할 수 있습니다. 이 연동이 필요 없는 제품은 web-shop의 분석 코드와 dependency를 함께 제거합니다. 네트워크가 제한된 환경에서는 조직 내부 registry mirror로 바꾼 뒤 lockfile을 갱신합니다.

@@ -5,6 +5,7 @@ import type {
   CreateProcessEvidenceRequest,
   CreateProcessProjectRequest,
   CreateProcessTemplateRequest,
+  MigrateProcessTemplateRequest,
   DecideProcessGateRequest,
   UpdateProcessStageRequest,
   UpdateProcessDeliverableRequest,
@@ -18,6 +19,7 @@ import {
   createProcessProject,
   createProcessEvidence,
   createProcessTemplate,
+  migrateProcessTemplate,
   createIncident,
   decideProcessGate,
   listIncidents,
@@ -90,6 +92,18 @@ processRouter.post("/process/templates", (req, res) => {
     res.status(201).json(createProcessTemplate(body));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to create process template";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.post("/process/templates/:templateId/versions", (req, res) => {
+  try {
+    res.status(201).json(migrateProcessTemplate(
+      req.params.templateId,
+      (req.body ?? {}) as MigrateProcessTemplateRequest,
+    ));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to migrate process template";
     res.status(400).json({ message });
   }
 });

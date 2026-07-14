@@ -18,7 +18,7 @@
     "check:template": "node scripts/validate-template.mjs",
     "check:portability": "node scripts/validate-portability.mjs && pnpm --filter @goodz/internal-service-api check",
     "check:sqlite": "pnpm --filter @goodz/api-server check:sqlite",
-    "check:cli": "pnpm --filter @goodz/cli check",
+    "check:cli": "pnpm --filter @goodz/process build && pnpm --filter @goodz/cli check",
     "goodz": "pnpm --filter @goodz/cli start",
     "sync:github-trace": "node scripts/sync-github-trace.mjs",
     "sync:github-trace:check": "node scripts/sync-github-trace.mjs --check",

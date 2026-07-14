@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.27",
+  "systemVersion": "v0.28",
   "sprint": {
-    "id": "S29",
-    "name": "시스템 v0.27 — Existing Repository Adopt",
+    "id": "S30",
+    "name": "시스템 v0.28 — Immutable Template Migration",
     "status": "done",
-    "goal": "기존 모노레포 구조를 읽기 전용으로 탐지하고 명시적 승인 후 Goodz 설정 적용"
+    "goal": "Template 변경을 새 version으로 만들고 기존 Run의 실행 정의를 보존"
   },
   "phases": [
     {
@@ -522,6 +522,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-existing-repository-adopt-v027.md",
       "nextAction": "Template/config migration과 clean-clone 검증"
+    },
+    {
+      "id": "IN-027",
+      "title": "Immutable Template Migration v0.28",
+      "source": "사용자 요청 · 단계별 구현·배포",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-immutable-template-migration-v028.md",
+      "nextAction": "config migration, clean-clone과 Git Connector"
     }
   ],
   "deliverables": [
@@ -994,6 +1003,16 @@
       "doc": "docs/03-engineering/ADR/010-existing-repository-adopt.md",
       "owner": "Platform/Engineering",
       "summary": "기존 앱·타입 패키지 탐지와 read-only plan·explicit apply"
+    },
+    {
+      "id": "D-48",
+      "title": "Immutable Template Migration",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/011-immutable-template-migration.md",
+      "owner": "Platform/Engineering",
+      "summary": "Template 새 version 생성과 기존 Run version 고정"
     }
   ],
   "approvals": [
@@ -1708,6 +1727,28 @@
       "summary": "기존 저장소의 안전한 Goodz 도입 계획과 적용 승인",
       "doc": "docs/03-engineering/ADR/010-existing-repository-adopt.md",
       "traceLinkIds": ["TL-026"]
+    },
+    {
+      "id": "AP-027",
+      "target": "S30 Immutable Template Migration v0.28",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Platform", "Engineering", "QA"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "Template 변경은 새 immutable version으로 만들고 기존 Run은 생성 시점 version 유지",
+      "criteria": [
+        "v1에서 v2 Template을 생성함",
+        "원본 Template 정의를 변경하지 않음",
+        "기존 Run v1과 신규 Run v2 고정이 동작함",
+        "API·CLI smoke와 전체 pnpm verify가 통과함"
+      ],
+      "summary": "재현 가능한 Template version migration 승인",
+      "doc": "docs/03-engineering/ADR/011-immutable-template-migration.md",
+      "traceLinkIds": ["TL-027"]
     }
   ],
   "planningChanges": [
@@ -2144,6 +2185,22 @@
       "doc": "docs/01-planning/changes/2026-07-14-existing-repository-adopt-v027.md",
       "summary": "기존 모노레포 구조 탐지와 read-only plan·explicit apply 추가",
       "decision": "자동 탐지는 설정 초안만 만들고 애플리케이션과 workspace는 변경하지 않음"
+    },
+    {
+      "id": "CR-027",
+      "title": "Template 변경을 immutable version migration으로 전환",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/CLI.md",
+        "docs/00-process/PHASE_GATES.md",
+        "docs/03-engineering/API.md",
+        "docs/03-engineering/ADR/011-immutable-template-migration.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-immutable-template-migration-v028.md",
+      "summary": "Template v1→v2 생성 API·CLI와 Run version 고정 추가",
+      "decision": "실행 중 프로세스는 소급 변경하지 않고 새 프로젝트만 새 version 선택"
     }
   ],
   "designReferences": [
@@ -3330,6 +3387,28 @@
       },
       "summary": "기존 저장소를 변경 전에 분석하고 Goodz 설정 초안을 안전하게 적용",
       "nextAction": "Template/config migration과 clean-clone 검증"
+    },
+    {
+      "id": "TL-027",
+      "title": "Immutable Template Migration v0.28",
+      "status": "partial",
+      "sourceIds": ["IN-027"],
+      "changeIds": ["CR-027"],
+      "deliverableIds": ["D-48"],
+      "approvalIds": ["AP-027"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "not_required" },
+      "commits": [],
+      "ciRuns": [],
+      "release": { "label": "Release", "status": "pending" },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:sqlite && goodz template migrate && pnpm verify",
+        "checkedAt": "2026-07-14T22:00:00Z",
+        "summary": "v1→v2 생성, 기존 Run v1·신규 Run v2 고정과 API·CLI smoke 통과"
+      },
+      "summary": "프로세스 변경을 immutable Template version으로 관리",
+      "nextAction": "config migration, clean-clone과 Git branch/commit/PR Connector"
     }
   ],
   "features": [

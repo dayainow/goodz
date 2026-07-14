@@ -1,6 +1,7 @@
 import type {
   CreateProcessProjectRequest,
   CreateProcessProjectResponse,
+  MigrateProcessTemplateResponse,
   ProcessProjectExportBundle,
   ProcessWorkspaceOverview,
 } from "@goodz/process";
@@ -52,6 +53,14 @@ export class GoodzClient {
 
   createProject(input: CreateProcessProjectRequest) {
     return this.request<CreateProcessProjectResponse>("/projects", "POST", input);
+  }
+
+  migrateTemplate(templateId: string, input: { name?: string; summary?: string }) {
+    return this.request<MigrateProcessTemplateResponse>(
+      `/templates/${encodeURIComponent(templateId)}/versions`,
+      "POST",
+      input,
+    );
   }
 
   exportProject(projectId: string) {

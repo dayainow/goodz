@@ -35,6 +35,7 @@
 | **v0.25** | Design Job Connector & Export: 상태 추적 + prompt snapshot + portable bundle | ✅ |
 | **v0.26** | Git Materializer & Goodz CLI: init + project create + safe export + verify | ✅ |
 | **v0.27** | Existing Repository Adopt: 구조 탐지 + read-only plan + explicit apply | ✅ |
+| **v0.28** | Immutable Template Migration: 새 version 생성 + 기존 Run 고정 | ✅ |
 | **v1.0** | 설치 가능한 Goodz Core: adopt + Template/config migration + clean-clone 도입 | ⚪ |
 
 ## 전체 타임라인
@@ -43,7 +44,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt    S30 ✅ Template Migration
 ```
 
 ---
@@ -372,6 +373,15 @@ Week 1
 - 기존 `goodz.config.json` 보호와 명시적 `--force`
 - 다음 Gate: Template/config migration과 clean-clone 검증
 
+### Sprint S30 — Immutable Template Migration
+
+- `POST /api/process/templates/:templateId/versions`로 다음 버전 생성
+- Stage·Task·Deliverable 정의를 복제하고 원본 Template 불변 유지
+- 기존 Process Run은 생성 당시 version에 고정
+- `goodz template migrate` CLI와 v1/v2 실제 API smoke
+- Core 0.7.0 계약 갱신
+- 다음 Gate: config migration, clean-clone과 Git branch/commit/PR Connector
+
 ---
 
 ## 의존성 그래프
@@ -427,8 +437,9 @@ flowchart LR
 30. ✅ v0.25: Design Job Connector + prompt snapshot + portable export
 31. ✅ v0.26: Git Materializer + Goodz CLI init/project/export/verify
 32. ✅ v0.27: 기존 저장소 read-only adopt plan + explicit apply
-33. ⚪ v1.0 Gate: Template/config migration + clean-clone CI
-34. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
+33. ✅ v0.28: immutable Template version migration + 기존 Run 고정
+34. ⚪ v1.0 Gate: config migration + clean-clone CI
+35. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
 
 ---
 
@@ -461,3 +472,4 @@ flowchart LR
 | 2026-07-14 | v0.25 — Claude Design Job 상태 관리와 portable Markdown export |
 | 2026-07-14 | v0.26 — 안전한 Git Materializer와 Goodz CLI 기본 명령 |
 | 2026-07-14 | v0.27 — 기존 저장소 구조 탐지와 명시적 adopt 적용 |
+| 2026-07-14 | v0.28 — immutable Template migration과 Run version 고정 |

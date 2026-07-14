@@ -29,6 +29,7 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 ## Schema v5 실행 규칙
 
 - 프로젝트 생성 시 선택한 Template version을 독립적인 Process Run으로 복제한다.
+- Template migration은 원본을 수정하지 않고 다음 version을 만들며 기존 Run의 version은 유지한다.
 - 첫 단계만 `in_progress`, 나머지는 `pending`으로 시작한다.
 - 현재 Stage가 아닌 단계의 Task·Stage·Gate 변경은 거부한다.
 - Task는 `pending`, `in_progress`, `blocked`, `done` 상태와 담당자를 가진다.

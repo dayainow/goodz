@@ -161,6 +161,12 @@ Stage code/name/summary, 1개 이상의 Task와 선택적 Deliverable 정의를 
 
 Template 조회 응답의 각 Stage는 Visual Builder 복제를 위한 `code`를 포함합니다. 서버는 Stage code 중복·형식, 최대 20 Stage, Stage당 50 Task·20 Deliverable, 필수 필드와 길이 제한을 검증합니다.
 
+### `POST /api/process/templates/:templateId/versions`
+
+**Body:** `{ "name"?: string, "summary"?: string }`
+
+기존 Template의 Stage·Task·Deliverable 정의를 변경하지 않고 다음 immutable version으로 복제합니다. 응답은 `{ source, target }`이며 기존 Process Run은 생성 당시 `templateId`와 `templateVersion`에 계속 고정됩니다. 새 프로젝트만 새 Template ID를 선택합니다.
+
 ### `POST /api/process/projects`
 
 **Body:** `CreateProcessProjectRequest`

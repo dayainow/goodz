@@ -2,6 +2,7 @@ import {
   createProcessProject,
   createProcessEvidence,
   createProcessTemplate,
+  migrateProcessTemplate,
   updateProcessProjectBrief,
   approveProcessProjectBrief,
   updateProcessDesignPack,
@@ -95,6 +96,28 @@ const createdProject = createProcessProject({
 const firstStage = createdProject.run.stages[0];
 if (!firstStage || firstStage.status !== "in_progress") {
   throw new Error("First process stage did not start");
+}
+
+const migratedTemplate = migrateProcessTemplate(template.id, {
+  summary: "version 2 migration validation",
+});
+if (
+  migratedTemplate.source.version !== 1 ||
+  migratedTemplate.target.version !== 2 ||
+  migratedTemplate.target.id !== "TPL-GOODZ-P0-P4-V2" ||
+  migratedTemplate.target.stages.length !== migratedTemplate.source.stages.length ||
+  migratedTemplate.source.summary === migratedTemplate.target.summary
+) {
+  throw new Error("Template version migration failed");
+}
+const migratedProject = createProcessProject({
+  name: "Migrated template validation",
+  summary: "verify new projects can use the migrated immutable template",
+  owner: "Goodz QA",
+  templateId: migratedTemplate.target.id,
+});
+if (migratedProject.run.templateVersion !== 2 || createdProject.run.templateVersion !== 1) {
+  throw new Error("Template migration changed an existing run or failed to pin the new run");
 }
 
 let briefApprovalRejected = false;
@@ -267,10 +290,10 @@ if (
 
 const validatedWorkspace = loadProcessWorkspace();
 if (
-  validatedWorkspace.projects.length !== 1 ||
-  validatedWorkspace.templates.length !== 3 ||
-  validatedWorkspace.briefs[0]?.status !== "approved" ||
-  validatedWorkspace.designPacks[0]?.status !== "approved" ||
+  validatedWorkspace.projects.length !== 2 ||
+  validatedWorkspace.templates.length !== 4 ||
+  validatedWorkspace.briefs.find((item) => item.projectId === createdProject.project.id)?.status !== "approved" ||
+  validatedWorkspace.designPacks.find((item) => item.projectId === createdProject.project.id)?.status !== "approved" ||
   validatedWorkspace.designJobs[0]?.status !== "approved" ||
   validatedWorkspace.auditEvents.length < 11
 ) {

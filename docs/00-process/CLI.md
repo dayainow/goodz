@@ -49,6 +49,20 @@ pnpm goodz -- project create \
 
 `--template`을 생략하면 API가 제공하는 첫 Template을 사용합니다. 성공하면 Project ID와 Run ID를 출력합니다.
 
+### `goodz template migrate`
+
+```bash
+pnpm goodz -- template migrate \
+  --from TPL-GOODZ-P0-P4-V1 \
+  --summary "승인 정책이 추가된 v2" \
+  --api http://localhost:4000
+```
+
+- 원본 Template을 수정하지 않고 다음 version ID로 복제합니다.
+- 기존 Run은 원래 version에 고정됩니다.
+- 새 프로젝트는 반환된 새 Template ID를 명시해 시작합니다.
+- 이름과 요약만 CLI에서 선택적으로 바꾸며 Stage 편집은 Template Builder에서 새 초안을 구성한 뒤 별도 version 정책으로 관리합니다.
+
 ### `goodz export`
 
 ```bash

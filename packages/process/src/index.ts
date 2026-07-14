@@ -521,6 +521,16 @@ export interface CreateProcessTemplateRequest {
   }>;
 }
 
+export interface MigrateProcessTemplateRequest {
+  name?: string;
+  summary?: string;
+}
+
+export interface MigrateProcessTemplateResponse {
+  source: ProcessTemplate;
+  target: ProcessTemplate;
+}
+
 export interface CreateProcessProjectResponse {
   project: ProcessProject;
   run: ProcessRun;
