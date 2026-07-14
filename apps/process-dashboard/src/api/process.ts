@@ -13,6 +13,7 @@ import type {
   ProcessDocumentResponse,
   ProcessMetricSnapshotsFile,
   ProcessOperationsOverview,
+  ProcessReferenceCapability,
   ProcessRun,
   ProcessStatus,
   ProcessTemplate,
@@ -34,6 +35,12 @@ export async function fetchProcessStatus(): Promise<ProcessStatus> {
   const res = await fetch(`${API_URL}/api/process/status`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json() as Promise<ProcessStatus>;
+}
+
+export async function fetchProcessReference(): Promise<ProcessReferenceCapability> {
+  const res = await fetch(`${API_URL}/api/process/reference`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<ProcessReferenceCapability>;
 }
 
 export async function fetchProcessMetricSnapshots(): Promise<ProcessMetricSnapshotsFile> {

@@ -1,12 +1,13 @@
 # Goodz Operations Store
 
-Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다. 문서 SSOT에서 파생되는 검색 인덱스와 반복적으로 갱신되는 운영 사건·프로젝트 실행 상태를 SQLite에 저장하는 실행 계층이다.
+Goodz의 사용자 운영 저장소는 Project·PRD·Design Pack·Run·Task·Gate와 감사 이벤트의 실행 SSOT다. 승인 문서는 Git working tree로 materialize하며, Goodz 자체 `status.json`은 사용자 데이터가 아닌 선택적 내부 Reference다.
 
 ## 책임 경계
 
 | 데이터 | 기준 저장소 | SQLite 역할 |
 |---|---|---|
-| Phase, 승인, 산출물, 추적 링크 | Git으로 버전 관리되는 문서와 `status.json` | 읽기 모델과 문서 인덱스 |
+| 사용자 Phase, 승인, 산출물, 추적 링크 | 프로젝트별 SQLite | command와 감사 이력의 기준 저장소 |
+| Goodz 자체 Sprint·IN·CR·TL | `references/goodz-internal/status.json` | 내부 개발 저장소에서만 선택적으로 조회 |
 | 운영 사건 | SQLite | 생성·종료·MTTR 계산의 기준 저장소 |
 | 기본 프로세스 템플릿 | `templates/process/*.json` | 시작 시 검증·seed |
 | 사용자 프로세스 템플릿 | SQLite | Builder로 생성한 버전 고정 단계·작업·산출물 정의 |
@@ -18,13 +19,25 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 
 ## 로컬 실행
 
-- 기본 파일: `data/goodz.db`
+- 신규 Workspace 기본 파일: `.goodz/data/goodz.db`
+- Goodz 소스 저장소: `.goodz/workspace.json`이 기존 `data/goodz.db`를 명시해 내부 dogfooding 이력을 유지
 - 메모리 검증: `pnpm check:sqlite`
 - 경로 변경: `GOODZ_DB_PATH=/path/to/goodz.db`
+- 대상 저장소 연결: `GOODZ_WORKSPACE_ROOT=/path/to/project`
+- 별도 설정 파일: `GOODZ_CONFIG_PATH=/path/to/goodz.config.json` (선택)
 - 내구성 표기: `GOODZ_DB_DURABILITY=local|persistent`
 - 외부 접근 보호: `GOODZ_BASIC_AUTH_USER`, `GOODZ_BASIC_AUTH_PASSWORD`
 
-서버 시작 시 schema migration, P0–P4·Phase 0–8 Template seed와 문서 인덱스 동기화를 자동 수행한다. DB 파일과 WAL 파일은 Git에 포함하지 않는다.
+서버 시작 시 `.goodz/workspace.json` 또는 `GOODZ_DB_PATH`에서 Workspace별 DB를 선택하고 schema migration, P0–P4·Phase 0–8 Template seed와 문서 인덱스 동기화를 수행한다. DB 파일과 WAL 파일은 Git에 포함하지 않는다.
+
+Goodz 소스 checkout에서 다른 로컬 프로젝트를 시험할 때는 API만 대상 Workspace로 전환합니다.
+
+```bash
+GOODZ_WORKSPACE_ROOT=/path/to/project pnpm --filter @goodz/api-server dev
+pnpm --filter @goodz/process-dashboard dev
+```
+
+대상 프로젝트에 `templates/process`가 없으면 API 런타임에 포함된 기본 Template을 사용합니다. Reference capability는 대상 `goodz.config.json`에 `platform.internalReference`가 있을 때만 활성화됩니다.
 
 ## Schema v5 실행 규칙
 

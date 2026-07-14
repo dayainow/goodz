@@ -13,7 +13,13 @@ const CORE_SHA256 = packageMetadata.goodzCoreContract.sha256;
 interface GoodzConfig {
   version: number;
   product: { name: "Goodz"; edition: "core" | "cloud" | "enterprise"; description: string };
-  platform: { modelPackage: "@goodz/process"; consoleApp: string; apiPrefix: "/api/process"; sourceOfTruth: string };
+  platform: {
+    modelPackage: "@goodz/process";
+    consoleApp: string;
+    apiPrefix: "/api/process";
+    sourceOfTruth: string;
+    internalReference?: { id: string; name: string; statusPath: string; metricsPath: string };
+  };
   references: Array<{ id: string; name: string; domain: string; typePackage: string; apps: string[]; apiPrefix: string }>;
   portability: {
     coreChangesAllowedForNewReference: false;
@@ -63,6 +69,16 @@ async function readJsonOptional<T>(filePath: string): Promise<T | null> {
   }
 }
 
+async function writeTextIfMissing(filePath: string, content: string) {
+  try {
+    await readFile(filePath, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    await mkdir(path.dirname(filePath), { recursive: true });
+    await writeFile(filePath, content, "utf8");
+  }
+}
+
 function toDisplayName(value: string) {
   return value
     .replace(/^@[^/]+\//, "")
@@ -107,7 +123,7 @@ function buildConfig(projectName: string, references: GoodzConfig["references"])
       modelPackage: "@goodz/process",
       consoleApp: "apps/process-dashboard",
       apiPrefix: "/api/process",
-      sourceOfTruth: "docs/00-process/status.json",
+      sourceOfTruth: "operations-db",
     },
     references,
     portability: {
@@ -137,19 +153,66 @@ async function writeGoodzConfig(root: string, config: GoodzConfig, force: boolea
   return configPath;
 }
 
+async function writeWorkspaceIdentity(root: string, projectName: string) {
+  const workspacePath = path.join(root, ".goodz/workspace.json");
+  const existing = await readJsonOptional<unknown>(workspacePath);
+  if (!existing) {
+    await atomicJson(workspacePath, {
+      version: 1,
+      id: `WS-${randomUUID().slice(0, 8).toUpperCase()}`,
+      name: projectName,
+      createdAt: new Date().toISOString(),
+      storage: { engine: "sqlite", path: ".goodz/data/goodz.db" },
+    });
+  }
+  const dataIgnorePath = path.join(root, ".goodz/data/.gitignore");
+  await mkdir(path.dirname(dataIgnorePath), { recursive: true });
+  if (!(await readJsonOptional<Record<string, unknown>>(workspacePath))) {
+    throw new Error("Failed to create .goodz/workspace.json");
+  }
+  await writeTextIfMissing(dataIgnorePath, "*.db\n*.db-*\n");
+  await writeTextIfMissing(
+    path.join(root, "docs/00-process/README.md"),
+    `# ${projectName} Process Workspace\n\nGoodz가 이 프로젝트의 기획 → 디자인 → 개발 → QA → 배포 기록을 관리합니다.\n\n- 실행 상태와 감사 이력: \`.goodz/data/goodz.db\`\n- 승인 산출물: \`docs/projects/\`\n- Goodz 자체 개발 이력은 이 Workspace에 포함되지 않습니다.\n`,
+  );
+  await writeTextIfMissing(
+    path.join(root, "docs/projects/README.md"),
+    "# Project Deliverables\n\n승인된 PRD, Design Pack과 handoff 문서는 `goodz export`가 프로젝트별 디렉터리에 생성합니다.\n",
+  );
+  const processDocs = [
+    {
+      name: "USER_MANUAL.md",
+      content: `# ${projectName} Goodz 이용 매뉴얼\n\n1. Dashboard의 Workspace에서 첫 프로젝트를 생성합니다.\n2. PRD와 Design Pack을 승인합니다.\n3. 현재 Stage의 Task·산출물·Evidence를 완료하고 Gate를 결정합니다.\n4. 승인 결과는 \`goodz export\`로 \`docs/projects/\`에 생성합니다.\n\nGoodz 자체 개발 이력은 이 Workspace에 포함되지 않습니다.\n`,
+    },
+    {
+      name: "AGENT_GUIDE.md",
+      content: "# Agent Guide\n\n에이전트는 현재 Stage를 건너뛰지 않고 PRD·디자인·코드·QA·배포 산출물을 프로젝트 ID와 연결합니다. 변경 완료 전 저장소 검증 명령을 실행하고 생성 파일을 검토합니다.\n",
+    },
+    {
+      name: "WORKFLOW.md",
+      content: "# Workflow\n\n```text\nP0 기획 → P1 디자인 → P2 개발 → P3 QA → P4 배포\n```\n\n각 Gate는 현재 Stage의 Task 완료와 필수 산출물 승인을 요구합니다. GO는 다음 Stage를 시작하고 HOLD는 차단하며 KILL은 실행을 종료합니다.\n",
+    },
+    {
+      name: "METRICS.md",
+      content: "# Delivery Metrics\n\n프로젝트별 lead time, Gate 대기 시간, CI 성공률, 배포·smoke 증거를 추적합니다. 지표는 사용자 Workspace의 Run과 Evidence에서 계산하며 Goodz 내부 지표와 섞지 않습니다.\n",
+    },
+    {
+      name: "CICD.md",
+      content: "# CI/CD 운영\n\nPR·Commit·CI·Release·Smoke URL을 현재 프로젝트 Stage의 Evidence로 연결합니다. 배포 전 저장소 검증과 필수 산출물 승인을 완료합니다.\n",
+    },
+  ];
+  for (const doc of processDocs) {
+    await writeTextIfMissing(path.join(root, "docs/00-process", doc.name), doc.content);
+  }
+  return workspacePath;
+}
+
 export async function initializeGoodz(root: string, projectName: string, force = false) {
   const absoluteRoot = path.resolve(root);
-  const slug = slugify(projectName);
-  const config = buildConfig(projectName, [{
-      id: `${slug}-reference`,
-      name: `${projectName} Reference`,
-      domain: slug,
-      typePackage: `@${slug}/types`,
-      apps: ["apps/reference"],
-      apiPrefix: "/api",
-    }]);
+  const config = buildConfig(projectName, []);
   const configPath = await writeGoodzConfig(absoluteRoot, config, force);
-  return { root: absoluteRoot, configPath };
+  const workspacePath = await writeWorkspaceIdentity(absoluteRoot, projectName);
+  return { root: absoluteRoot, configPath, workspacePath };
 }
 
 export async function adoptGoodz(root: string, requestedName?: string, apply = false, force = false): Promise<GoodzAdoptionPlan> {
@@ -194,22 +257,17 @@ export async function adoptGoodz(root: string, requestedName?: string, apply = f
     });
   }
   if (references.length === 0) {
-    warnings.push("No application package was detected; a placeholder Reference was proposed.");
-    references.push({
-      id: `${projectSlug}-reference`,
-      name: `${projectName} Reference`,
-      domain: projectSlug,
-      typePackage: `@${projectSlug}/types`,
-      apps: ["apps/reference"],
-      apiPrefix: "/api",
-    });
+    warnings.push("No application package was detected; Goodz will start with an empty Workspace.");
   }
   if (!discovered.some((item) => item.path === "packages/process")) {
     warnings.push("Goodz Core source is not installed; verify will use the package-level contract only.");
   }
   const config = buildConfig(projectName, references);
   const configPath = path.join(absoluteRoot, "goodz.config.json");
-  if (apply) await writeGoodzConfig(absoluteRoot, config, force);
+  if (apply) {
+    await writeGoodzConfig(absoluteRoot, config, force);
+    await writeWorkspaceIdentity(absoluteRoot, projectName);
+  }
   return {
     root: absoluteRoot,
     projectName,
@@ -226,7 +284,7 @@ function assertConfig(value: unknown): asserts value is GoodzConfig {
   const config = value as Partial<GoodzConfig>;
   if ((config.version !== 1 && config.version !== 2) || config.product?.name !== "Goodz") throw new Error("Unsupported Goodz config version or product");
   if (config.platform?.modelPackage !== "@goodz/process" || config.platform.apiPrefix !== "/api/process") throw new Error("Invalid Goodz platform contract");
-  if (!Array.isArray(config.references) || config.references.length === 0) throw new Error("At least one Reference is required");
+  if (!Array.isArray(config.references)) throw new Error("Goodz references must be an array");
   if (config.portability?.coreChangesAllowedForNewReference !== false) throw new Error("Core changes must be disabled for new References");
   if (!/^[a-f0-9]{64}$/.test(config.portability.coreContract.sha256)) throw new Error("Invalid Core contract hash");
   if (config.version === 2 && (

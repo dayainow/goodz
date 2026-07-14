@@ -1,7 +1,7 @@
 # 기획 변경 로그
 
 Goodz는 기획을 대시보드 폼이 아니라 **문서 기반**으로 입력하고 수정합니다.  
-기획 변경이 필요할 때는 이 폴더에 변경 요청서를 만들고, `docs/00-process/status.json`의 `planningChanges`에 등록합니다.
+기획 변경이 필요할 때는 이 폴더에 변경 요청서를 만들고, `references/goodz-internal/status.json`의 `planningChanges`에 등록합니다.
 
 ## 변경 절차
 

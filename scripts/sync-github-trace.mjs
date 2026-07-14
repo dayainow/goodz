@@ -4,7 +4,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const statusPath = resolve(root, "docs/00-process/status.json");
+const statusPath = resolve(root, "references/goodz-internal/status.json");
 const args = new Set(process.argv.slice(2));
 const checkOnly = args.has("--check");
 const repo = process.env.GOODZ_GITHUB_REPO ?? "dayainow/goodz";

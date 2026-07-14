@@ -19,9 +19,11 @@ pnpm goodz -- init --name "Acme Portal" --root /path/to/repository
 ```
 
 - 기존 저장소에 `goodz.config.json`을 생성합니다.
+- Reference가 없는 빈 `.goodz/workspace.json`과 프로젝트 전용 SQLite 경로를 생성합니다.
+- `.goodz/data/.gitignore`, `docs/00-process/README.md`, `docs/projects/README.md`를 생성합니다.
 - `docs/projects/`와 `.goodz/exports/` materialization 경계를 준비합니다.
 - 이미 설정이 있으면 중단하며 명시적인 `--force`만 덮어씁니다.
-- 애플리케이션 코드를 복사하는 scaffold 명령은 아직 아닙니다.
+- Goodz Product Development의 Sprint·IN·CR·TL·Metrics는 생성하거나 복사하지 않습니다.
 
 ### `goodz adopt`
 
@@ -32,7 +34,7 @@ pnpm goodz -- adopt --root /path/to/existing-repository --apply
 
 - 기존 `package.json`, `apps/`, `packages/`, `references/`를 읽어 Reference와 타입 패키지 후보를 탐지합니다.
 - 기본 실행은 계획만 출력하며 파일을 변경하지 않습니다.
-- `--apply`를 지정해야 `goodz.config.json`, `docs/projects/`, `.goodz/exports/`를 생성합니다.
+- `--apply`를 지정해야 `goodz.config.json`, `.goodz/workspace.json`, `docs/projects/`, `.goodz/exports/`를 생성합니다.
 - 기존 설정은 보호하며 `--force`를 함께 지정한 경우에만 교체합니다.
 - 앱 코드, 의존성, workspace 설정은 자동 변경하지 않습니다.
 

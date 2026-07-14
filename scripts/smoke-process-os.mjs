@@ -25,11 +25,23 @@ async function main() {
     if (data?.ok !== true) throw new Error("health is not ok");
   });
 
-  await getJson("/api/process/status", (data) => {
-    if (!Array.isArray(data?.phases) || data.phases.length === 0) {
-      throw new Error("process status has no phases");
-    }
+  let referenceAvailable = false;
+  await getJson("/api/process/reference", (data) => {
+    if (typeof data?.available !== "boolean") throw new Error("Reference capability is invalid");
+    referenceAvailable = data.available;
   });
+
+  if (referenceAvailable) {
+    await getJson("/api/process/status", (data) => {
+      if (!Array.isArray(data?.phases) || data.phases.length === 0) {
+        throw new Error("process status has no phases");
+      }
+    });
+  } else {
+    const status = await request("/api/process/status");
+    if (status.status !== 404) throw new Error(`disabled Reference status returned ${status.status}`);
+    console.log("ok /api/process/status (404, Reference disabled)");
+  }
 
   await getJson("/api/process/operations", (data) => {
     if (data?.storage?.engine !== "sqlite") {

@@ -628,3 +628,9 @@ export interface ProcessStatus {
   features: ProcessCheckItem[];
   apps: ProcessApp[];
 }
+
+export interface ProcessReferenceCapability {
+  available: boolean;
+  id?: string;
+  name?: string;
+}

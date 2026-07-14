@@ -85,11 +85,17 @@ Base URL: `http://localhost:4000` (개발)
 }
 ```
 
+### `GET /api/process/reference`
+
+**Response:** `ProcessReferenceCapability` (`@goodz/process`)
+
+현재 Workspace가 Goodz 내부 개발 Reference를 명시적으로 활성화했는지 반환합니다. 신규 `goodz init` Workspace는 `{ "available": false }`이며 사용자 프로젝트 기능은 이 상태에서도 정상 동작합니다.
+
 ### `GET /api/process/status`
 
 **Response:** `ProcessStatus` (`@goodz/process`)
 
-풀 프로세스 진행도 SSOT — `docs/00-process/status.json`을 로드합니다.
+Goodz 제품 개발 저장소의 `platform.internalReference`가 활성화된 경우에만 `references/goodz-internal/status.json`을 로드합니다. 일반 사용자 Workspace에서는 `404`를 반환합니다.
 
 **소비자:** `process-dashboard` (:5180)
 
@@ -111,7 +117,7 @@ Base URL: `http://localhost:4000` (개발)
 
 **Response:** `ProcessMetricSnapshotsFile` (`@goodz/process`)
 
-Delivery Metrics 추세용 snapshot — `docs/00-process/metrics-snapshots.json`을 로드합니다.
+Delivery Metrics 추세용 snapshot — `references/goodz-internal/metrics-snapshots.json`을 로드합니다.
 
 **소비자:** `process-dashboard` (:5180) Metrics 메뉴
 

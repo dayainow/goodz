@@ -7,7 +7,7 @@ import { adoptGoodz, initializeGoodz, migrateGoodzConfig, verifyGoodzWorkspace }
 import { assertGitWorkspaceClean, publishGitChanges } from "./git.js";
 import { materializeProjectBundle } from "./materializer.js";
 
-const HELP = `Goodz CLI v1.0
+const HELP = `Goodz CLI v1.1
 
 Usage:
   goodz init --name <project> [--root <path>] [--force]
@@ -65,6 +65,7 @@ async function main() {
   if (command === "init") {
     const initialized = await initializeGoodz(workspaceRoot(args), required(args, "--name"), has(args, "--force"));
     console.log(`Goodz initialized: ${initialized.configPath}`);
+    console.log(`Empty Workspace created: ${initialized.workspacePath}`);
     return;
   }
   if (command === "adopt") {

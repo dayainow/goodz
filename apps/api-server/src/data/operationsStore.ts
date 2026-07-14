@@ -37,13 +37,38 @@ import type {
   UpdateProcessTaskRequest,
 } from "@goodz/process";
 
-const repoRoot = path.resolve(
+const sourceRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../../..",
 );
+const repoRoot = process.env.GOODZ_WORKSPACE_ROOT
+  ? path.resolve(process.env.GOODZ_WORKSPACE_ROOT)
+  : sourceRoot;
 const docsRoot = path.join(repoRoot, "docs");
-const templatesRoot = path.join(repoRoot, "templates/process");
-const defaultDatabasePath = path.join(repoRoot, "data/goodz.db");
+const workspaceTemplatesRoot = path.join(repoRoot, "templates/process");
+const templatesRoot = fs.existsSync(workspaceTemplatesRoot)
+  ? workspaceTemplatesRoot
+  : path.join(sourceRoot, "templates/process");
+const workspaceIdentityPath = path.join(repoRoot, ".goodz/workspace.json");
+
+function resolveWorkspaceDatabasePath() {
+  if (!fs.existsSync(workspaceIdentityPath)) {
+    return path.join(repoRoot, ".goodz/data/goodz.db");
+  }
+  const workspace = JSON.parse(fs.readFileSync(workspaceIdentityPath, "utf8")) as {
+    storage?: { engine?: string; path?: string };
+  };
+  if (workspace.storage?.engine !== "sqlite" || !workspace.storage.path) {
+    throw new Error(".goodz/workspace.json requires a SQLite storage path");
+  }
+  const resolved = path.resolve(repoRoot, workspace.storage.path);
+  if (resolved !== repoRoot && !resolved.startsWith(`${repoRoot}${path.sep}`)) {
+    throw new Error("Workspace database path must stay inside the repository");
+  }
+  return resolved;
+}
+
+const defaultDatabasePath = resolveWorkspaceDatabasePath();
 const databasePath = process.env.GOODZ_DB_PATH ?? defaultDatabasePath;
 const durability =
   databasePath === ":memory:"

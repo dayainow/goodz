@@ -3,10 +3,10 @@
   "updatedAt": "2026-07-14",
   "systemVersion": "v1.0",
   "sprint": {
-    "id": "S33",
-    "name": "Workspace / Goodz Reference Boundary",
+    "id": "S34",
+    "name": "Installable Empty Workspace",
     "status": "in_progress",
-    "goal": "사용자 프로젝트 실행 영역과 Goodz 자체 개발 기록을 명확한 제품 경계로 분리"
+    "goal": "신규 설치가 Goodz 자체 이력 없이 독립 Workspace와 프로젝트 파일을 처음부터 생성하도록 런타임 경계를 분리"
   },
   "phases": [
     {
@@ -1844,7 +1844,7 @@
       "targetDocs": [
         "docs/01-planning/intake/README.md",
         "docs/01-planning/changes/README.md",
-        "docs/00-process/status.json"
+        "references/goodz-internal/status.json"
       ],
       "doc": "docs/01-planning/changes/2026-07-10-planning-change-flow.md",
       "summary": "기획 변경 시 Markdown 변경 요청서를 작성하고 status.json으로 대시보드 추적",
@@ -1857,7 +1857,7 @@
       "requestedAt": "2026-07-10",
       "source": "사용자 요청",
       "targetDocs": [
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "docs/00-process/TRACEABILITY.md",
         "docs/00-process/CICD.md",
         "docs/00-process/PROCESS_DASHBOARD.md",
@@ -1874,7 +1874,7 @@
       "requestedAt": "2026-07-10",
       "source": "사용자 요청",
       "targetDocs": [
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "docs/00-process/APPROVALS.md",
         "docs/00-process/DECISIONS.md",
         "docs/00-process/PROCESS_DASHBOARD.md",
@@ -1895,7 +1895,7 @@
         "PROJECT.md",
         "docs/01-planning/ROADMAP.md",
         "docs/00-process/CICD.md",
-        "docs/00-process/status.json"
+        "references/goodz-internal/status.json"
       ],
       "doc": "docs/01-planning/ROADMAP.md",
       "summary": "ROADMAP의 과거 상태 표현을 정리하고 GitHub Actions Node 24 전환을 반영",
@@ -1912,7 +1912,7 @@
         "docs/00-process/PROCESS_DASHBOARD.md",
         "docs/00-process/CICD.md",
         "docs/04-qa/STAGING_RUNBOOK.md",
-        "docs/00-process/status.json"
+        "references/goodz-internal/status.json"
       ],
       "doc": "docs/00-process/GITHUB_TRACE_SYNC.md",
       "summary": "traceLinks의 GitHub 증거 수집을 gh CLI로 자동화하고 대시보드에 증거 누락 경고를 추가",
@@ -1927,7 +1927,7 @@
       "targetDocs": [
         "docs/00-process/METRICS.md",
         "docs/00-process/PROCESS_DASHBOARD.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "PROJECT.md",
         "README.md"
       ],
@@ -1944,7 +1944,7 @@
       "targetDocs": [
         "docs/00-process/METRICS.md",
         "docs/00-process/GITHUB_TRACE_SYNC.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx"
       ],
       "doc": "docs/00-process/METRICS.md",
@@ -1959,8 +1959,8 @@
       "source": "사용자 요청",
       "targetDocs": [
         "docs/00-process/METRICS.md",
-        "docs/00-process/metrics-snapshots.json",
-        "docs/00-process/status.json",
+        "references/goodz-internal/metrics-snapshots.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx"
       ],
       "doc": "docs/00-process/METRICS.md",
@@ -1977,7 +1977,7 @@
         "docs/00-process/USER_MANUAL.md",
         "docs/00-process/PROCESS_DASHBOARD.md",
         "docs/03-engineering/API.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx"
       ],
       "doc": "docs/00-process/USER_MANUAL.md",
@@ -1993,7 +1993,7 @@
       "targetDocs": [
         "docs/00-process/PROCESS_DASHBOARD.md",
         "docs/00-process/USER_MANUAL.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx"
       ],
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
@@ -2009,7 +2009,7 @@
       "targetDocs": [
         "docs/00-process/PROCESS_DASHBOARD.md",
         "docs/00-process/USER_MANUAL.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx"
       ],
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
@@ -2027,7 +2027,7 @@
         "docs/02-design/REFERENCES.md",
         "docs/02-design/wireframes/README.md",
         "docs/02-design/storyboards/README.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx"
       ],
       "doc": "docs/02-design/DESIGN_OS.md",
@@ -2043,7 +2043,7 @@
       "targetDocs": [
         "docs/00-process/PROCESS_DASHBOARD.md",
         "docs/02-design/DESIGN_SYSTEM.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx"
       ],
       "doc": "docs/00-process/PROCESS_DASHBOARD.md",
@@ -2061,7 +2061,7 @@
         "template.config.json",
         "scripts/validate-template.mjs",
         "docs/01-planning/ROADMAP.md",
-        "docs/00-process/status.json"
+        "references/goodz-internal/status.json"
       ],
       "doc": "docs/01-planning/changes/2026-07-13-template-onboarding-v015.md",
       "summary": "fork 런북, template contract, verify/CI 검사, standalone GA harness dependency를 추가",
@@ -2076,7 +2076,7 @@
       "targetDocs": [
         "docs/00-process/PROCESS_DASHBOARD.md",
         "docs/02-design/DESIGN_SYSTEM.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx",
         "apps/process-dashboard/src/index.css",
         "packages/ui/tailwind.config.ts"
@@ -2093,7 +2093,7 @@
       "source": "사용자 스크린샷 리뷰",
       "targetDocs": [
         "docs/00-process/PROCESS_DASHBOARD.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx",
         "apps/process-dashboard/src/index.css"
       ],
@@ -2111,7 +2111,7 @@
         "docs/00-process/OPERATIONS_STORE.md",
         "docs/03-engineering/API.md",
         "docs/03-engineering/ARCHITECTURE.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/api-server/src/data/operationsStore.ts",
         "apps/process-dashboard/src/App.tsx",
         "render.yaml"
@@ -2129,7 +2129,7 @@
       "targetDocs": [
         "docs/01-planning/PRD-PROCESS-DASHBOARD-REDESIGN.md",
         "docs/00-process/PROCESS_DASHBOARD.md",
-        "docs/00-process/status.json",
+        "references/goodz-internal/status.json",
         "apps/process-dashboard/src/App.tsx",
         "apps/process-dashboard/src/index.css"
       ],

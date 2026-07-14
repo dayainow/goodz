@@ -1,7 +1,7 @@
 # Traceability — 기획에서 CI 증거까지
 
 Goodz Process OS v0.4의 핵심은 **기획·변경·산출물·승인**을 실제 개발 증거와 연결하는 것입니다.  
-사람이 읽는 원본은 이 문서이고, 대시보드가 읽는 SSOT는 `docs/00-process/status.json`의 `traceLinks`입니다.
+사람이 읽는 원본은 이 문서이고, 대시보드가 읽는 SSOT는 `references/goodz-internal/status.json`의 `traceLinks`입니다.
 
 ## 추적 단위
 

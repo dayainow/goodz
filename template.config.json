@@ -6,6 +6,7 @@
     "dev",
     "build",
     "check:process",
+    "check:workspace-boundary",
     "check:template",
     "check:portability",
     "check:sqlite",
@@ -17,13 +18,15 @@
   "requiredPaths": [
     "AGENTS.md",
     "PROJECT.md",
+    ".goodz/workspace.json",
     "docs/00-process/NORTH_STAR.md",
     "docs/00-process/ONBOARDING.md",
     "docs/00-process/PHASE_GATES.md",
     "docs/00-process/OPERATIONS_STORE.md",
     "docs/00-process/PORTABILITY.md",
     "docs/00-process/CLI.md",
-    "docs/00-process/status.json",
+    "references/goodz-internal/README.md",
+    "references/goodz-internal/status.json",
     "docs/01-planning/ROADMAP.md",
     "docs/03-engineering/ADR/003-platform-commerce-boundary.md",
     "goodz.config.json",
@@ -91,6 +94,7 @@
       "apps/web-shop",
       "apps/admin-dashboard",
       "apps/api-server/src/routes/commerce.ts",
+      "references/goodz-internal",
       "references/internal-service/packages/types",
       "references/internal-service/apps/api"
     ]

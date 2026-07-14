@@ -11,7 +11,7 @@ Goodz Process OS의 시작점입니다.
 | 목표 | 어떤 상태가 되면 성공인가 |
 | 범위 | 이번 스프린트에서 할 일과 하지 않을 일 |
 | 산출물 | 생성·갱신될 문서 목록 |
-| 대시보드 반영 | `docs/00-process/status.json`의 `intakes`, `deliverables` |
+| 대시보드 반영 | `references/goodz-internal/status.json`의 `intakes`, `deliverables` |
 
 ## 현재 입력
 
@@ -22,4 +22,4 @@ Goodz Process OS의 시작점입니다.
 기존 기획을 직접 덮어쓰기 전에 변경 요청서를 먼저 작성합니다.
 
 - 변경 요청 위치: [`../changes/`](../changes/)
-- 대시보드 반영 필드: `docs/00-process/status.json`의 `planningChanges`
+- 대시보드 반영 필드: `references/goodz-internal/status.json`의 `planningChanges`

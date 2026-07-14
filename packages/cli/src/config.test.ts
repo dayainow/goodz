@@ -10,13 +10,26 @@ test("initializes and verifies Goodz metadata in an existing repository", async 
   try {
     const initialized = await initializeGoodz(root, "Acme Portal");
     assert.equal(initialized.configPath, path.join(root, "goodz.config.json"));
+    assert.equal(initialized.workspacePath, path.join(root, ".goodz/workspace.json"));
     const config = JSON.parse(await readFile(initialized.configPath, "utf8")) as {
+      platform: { sourceOfTruth: string };
       references: Array<{ id: string }>;
     };
-    assert.equal(config.references[0]?.id, "acme-portal-reference");
+    assert.equal(config.platform.sourceOfTruth, "operations-db");
+    assert.deepEqual(config.references, []);
+    const workspace = JSON.parse(await readFile(initialized.workspacePath, "utf8")) as {
+      name: string;
+      storage: { path: string };
+    };
+    assert.equal(workspace.name, "Acme Portal");
+    assert.equal(workspace.storage.path, ".goodz/data/goodz.db");
+    assert.match(await readFile(path.join(root, "docs/00-process/README.md"), "utf8"), /Acme Portal Process Workspace/);
+    assert.match(await readFile(path.join(root, "docs/projects/README.md"), "utf8"), /Project Deliverables/);
+    assert.match(await readFile(path.join(root, "docs/00-process/USER_MANUAL.md"), "utf8"), /Acme Portal Goodz/);
+    assert.match(await readFile(path.join(root, "docs/00-process/WORKFLOW.md"), "utf8"), /P0 기획/);
     const verified = await verifyGoodzWorkspace(root);
     assert.equal(verified.configVersion, 2);
-    assert.equal(verified.references, 1);
+    assert.equal(verified.references, 0);
     assert.equal(verified.exports.manifests, 0);
     assert.equal(verified.warnings.length, 1);
     await assert.rejects(initializeGoodz(root, "Acme Portal"), /already exists/);

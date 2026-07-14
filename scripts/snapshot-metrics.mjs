@@ -4,8 +4,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const statusPath = resolve(root, "docs/00-process/status.json");
-const snapshotsPath = resolve(root, "docs/00-process/metrics-snapshots.json");
+const statusPath = resolve(root, "references/goodz-internal/status.json");
+const snapshotsPath = resolve(root, "references/goodz-internal/metrics-snapshots.json");
 const checkOnly = process.argv.includes("--check");
 
 function parseTimestamp(value, boundary = "start") {
@@ -182,7 +182,7 @@ function buildSnapshot(status) {
       ),
       mttrHours: null,
     },
-    notes: "Generated from docs/00-process/status.json",
+    notes: "Generated from references/goodz-internal/status.json",
   };
 }
 

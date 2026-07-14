@@ -13,14 +13,14 @@
 
 - 기획 입력은 `docs/01-planning/intake/`에 유지합니다.
 - 기획 수정은 `docs/01-planning/changes/`에 변경 요청서로 작성합니다.
-- 변경 요청은 `docs/00-process/status.json`의 `planningChanges`에 등록합니다.
+- 변경 요청은 `references/goodz-internal/status.json`의 `planningChanges`에 등록합니다.
 - 대시보드는 `변경` 메뉴에서 변경 요청의 상태와 대상 문서를 보여줍니다.
 
 ## 대상 문서
 
 - `docs/01-planning/intake/README.md`
 - `docs/01-planning/changes/README.md`
-- `docs/00-process/status.json`
+- `references/goodz-internal/status.json`
 - `apps/process-dashboard/src/App.tsx`
 
 ## 반영 상태

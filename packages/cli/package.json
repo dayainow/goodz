@@ -1,6 +1,6 @@
 {
   "name": "@goodz/cli",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Goodz Process Control Plane CLI",
   "type": "module",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "node": ">=22.13"
   },
   "goodzCoreContract": {
-    "version": "1.0.0",
-    "sha256": "ab57654b042d87645fa5d44ca3db214cd3645ee7ea24550f7cd69cc54c3f15db"
+    "version": "1.1.0",
+    "sha256": "d0c413e97a85c2d9c7aa6cf96570ecda74372fc4467d124e12bec792c752faa0"
   }
 }

@@ -88,7 +88,7 @@ Smoke 기준:
 
 ## Traceability 반영 규칙
 
-CI가 성공하면 `docs/00-process/status.json`의 `traceLinks`에 아래 증거를 연결합니다.
+CI가 성공하면 `references/goodz-internal/status.json`의 `traceLinks`에 아래 증거를 연결합니다.
 
 | 필드 | 예시 |
 |------|------|

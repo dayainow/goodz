@@ -26,7 +26,7 @@
         "evidenceCompleteness": 73.47,
         "mttrHours": null
       },
-      "notes": "Generated from docs/00-process/status.json"
+      "notes": "Generated from references/goodz-internal/status.json"
     },
     {
       "id": "MS-20260713T021738Z",
@@ -52,7 +52,7 @@
         "evidenceCompleteness": 69.64,
         "mttrHours": null
       },
-      "notes": "Generated from docs/00-process/status.json"
+      "notes": "Generated from references/goodz-internal/status.json"
     },
     {
       "id": "MS-20260713T022056Z",
@@ -78,7 +78,7 @@
         "evidenceCompleteness": 73.21,
         "mttrHours": null
       },
-      "notes": "Generated from docs/00-process/status.json"
+      "notes": "Generated from references/goodz-internal/status.json"
     }
   ]
 }

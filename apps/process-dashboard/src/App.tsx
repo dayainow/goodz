@@ -24,6 +24,7 @@ import type {
   ProcessGateDecision,
   ProcessMetricSnapshot,
   ProcessOperationsOverview,
+  ProcessReferenceCapability,
   ProcessPhase,
   ProcessPlanningChange,
   ProcessPlanningChangeStatus,
@@ -46,6 +47,7 @@ import {
   fetchProcessDocument,
   fetchProcessMetricSnapshots,
   fetchProcessOperations,
+  fetchProcessReference,
   fetchProcessStatus,
   fetchProcessWorkspace,
   resolveProcessIncident,
@@ -684,10 +686,12 @@ function Sidebar({
   activeSection,
   onSelect,
   workspace,
+  referenceAvailable,
 }: {
   activeSection: SectionId;
   onSelect: (section: SectionId) => void;
   workspace: ProcessWorkspaceOverview;
+  referenceAvailable: boolean;
 }) {
   const [query, setQuery] = useState("");
   const activeGroupTitle = SECTION_GROUP.get(activeSection) ?? null;
@@ -764,7 +768,7 @@ function Sidebar({
       </div>
 
       <nav className="sidebar-scroll mt-4 min-h-0 flex-1 space-y-3 overflow-y-auto pb-8 pr-3">
-        {MENU_GROUPS.map((group) => {
+        {MENU_GROUPS.filter((group) => referenceAvailable || group.title !== "Goodz Reference").map((group) => {
           const visibleItems = group.items.filter((id) => {
             const section = SECTION_MAP.get(id);
             if (!section) return false;
@@ -877,10 +881,12 @@ function Sidebar({
           <span className="font-semibold text-zinc-700">Workspace</span>
           <span className="font-mono text-[11px]">Operations DB</span>
         </div>
-        <div className="mt-1 flex items-center justify-between gap-3">
-          <span className="font-semibold text-zinc-500">Goodz Reference</span>
-          <span className="font-mono text-[11px]">Git documents</span>
-        </div>
+        {referenceAvailable ? (
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <span className="font-semibold text-zinc-500">Goodz Internal</span>
+            <span className="font-mono text-[11px]">Reference only</span>
+          </div>
+        ) : null}
       </div>
     </aside>
   );
@@ -3766,6 +3772,7 @@ export default function App() {
   const [metricSnapshots, setMetricSnapshots] = useState<ProcessMetricSnapshot[]>([]);
   const [operations, setOperations] = useState<ProcessOperationsOverview | null>(null);
   const [workspace, setWorkspace] = useState<ProcessWorkspaceOverview | null>(null);
+  const [reference, setReference] = useState<ProcessReferenceCapability | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<SectionId>("workspace");
@@ -3773,13 +3780,16 @@ export default function App() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const [data, snapshots, operationsData, workspaceData] = await Promise.all([
-        fetchProcessStatus(),
-        fetchProcessMetricSnapshots(),
+      const [referenceData, operationsData, workspaceData] = await Promise.all([
+        fetchProcessReference(),
         fetchProcessOperations(),
         fetchProcessWorkspace(),
       ]);
-      setStatus(data);
+      const [statusData, snapshots] = referenceData.available
+        ? await Promise.all([fetchProcessStatus(), fetchProcessMetricSnapshots()])
+        : [null, { snapshots: [] }];
+      setReference(referenceData);
+      setStatus(statusData);
       setMetricSnapshots(snapshots.snapshots);
       setOperations(operationsData);
       setWorkspace(workspaceData);
@@ -3803,6 +3813,12 @@ export default function App() {
     const timer = setInterval(() => void load(), 30_000);
     return () => clearInterval(timer);
   }, [load]);
+
+  useEffect(() => {
+    if (reference?.available === false && REFERENCE_SECTIONS.has(activeSection)) {
+      setActiveSection("workspace");
+    }
+  }, [activeSection, reference?.available]);
 
   const queue = useMemo(
     () => (status ? buildQueue(status.phases) : []),
@@ -3834,7 +3850,7 @@ export default function App() {
     );
   }
 
-  if (error || !status || !workspace) {
+  if (error || !reference || !operations || !workspace) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6">
         <p className="text-rose-600">API 오류: {error ?? "no data"}</p>
@@ -3852,12 +3868,14 @@ export default function App() {
     );
   }
 
-  const overallProgress = Math.round(
-    status.phases.reduce((sum, p) => sum + p.progress, 0) /
-      status.phases.length,
-  );
+  const overallProgress = status && status.phases.length > 0
+    ? Math.round(
+        status.phases.reduce((sum, p) => sum + p.progress, 0) /
+          status.phases.length,
+      )
+    : 0;
   const active = SECTION_MAP.get(activeSection);
-  const isReferenceSection = REFERENCE_SECTIONS.has(activeSection);
+  const isReferenceSection = reference.available && REFERENCE_SECTIONS.has(activeSection);
   const activeRunCount = workspace.runs.filter((run) => run.status === "active").length;
 
   return (
@@ -3866,6 +3884,7 @@ export default function App() {
         activeSection={activeSection}
         onSelect={setActiveSection}
         workspace={workspace}
+        referenceAvailable={reference.available}
       />
 
       <main className="min-w-0 flex-1 px-5 py-6 lg:px-8">
@@ -3906,7 +3925,7 @@ export default function App() {
               </button>
             </div>
           </div>
-          {isReferenceSection ? (
+          {isReferenceSection && status ? (
             <div className="mt-4 grid gap-4 border-t border-zinc-100 pt-4 text-xs md:grid-cols-[1.1fr_1fr_1.2fr_auto] md:items-end">
               <div className="border-l-2 border-amber-500 pl-3">
                 <p className="font-semibold uppercase tracking-wider text-zinc-400">Goodz Sprint</p>
@@ -3951,7 +3970,7 @@ export default function App() {
           <ReferenceScopeNotice onOpenWorkspace={() => setActiveSection("workspace")} />
         ) : null}
 
-        {activeSection === "overview" && (
+        {status && activeSection === "overview" && (
           <OverviewSection
             status={status}
             overallProgress={overallProgress}
@@ -3967,15 +3986,15 @@ export default function App() {
           <WorkspaceSection workspace={workspace} onRefresh={refreshWorkspace} />
         )}
 
-        {activeSection === "intakes" && (
+        {status && activeSection === "intakes" && (
           <IntakesSection intakes={status.intakes} />
         )}
 
-        {activeSection === "changes" && (
+        {status && activeSection === "changes" && (
           <PlanningChangesSection changes={status.planningChanges} />
         )}
 
-        {activeSection === "design" && (
+        {status && activeSection === "design" && (
           <DesignSection
             references={status.designReferences}
             wireframes={status.wireframes}
@@ -3985,11 +4004,11 @@ export default function App() {
 
         {activeSection === "guide" && <GuideSection />}
 
-        {activeSection === "deliverables" && (
+        {status && activeSection === "deliverables" && (
           <DeliverablesSection deliverables={status.deliverables} />
         )}
 
-        {activeSection === "approvals" && (
+        {status && activeSection === "approvals" && (
           <ApprovalsSection approvals={status.approvals} />
         )}
 
@@ -4004,14 +4023,14 @@ export default function App() {
           />
         )}
 
-        {activeSection === "traceability" && (
+        {status && activeSection === "traceability" && (
           <TraceabilitySection
             traces={status.traceLinks}
             evidenceIssues={evidenceIssues}
           />
         )}
 
-        {activeSection === "phases" && (
+        {status && activeSection === "phases" && (
           <section className="grid gap-4 xl:grid-cols-2">
             {status.phases.map((phase) => (
               <PhasePanel key={phase.id} phase={phase} />
@@ -4021,7 +4040,7 @@ export default function App() {
 
         {activeSection === "queue" && <QueueSection queue={queue} />}
 
-        {activeSection === "features" && (
+        {status && activeSection === "features" && (
           <FeaturesSection features={status.features} />
         )}
 
@@ -4032,7 +4051,7 @@ export default function App() {
           />
         )}
 
-        {activeSection === "apps" && <AppsSection apps={status.apps} />}
+        {status && activeSection === "apps" && <AppsSection apps={status.apps} />}
       </main>
     </div>
   );

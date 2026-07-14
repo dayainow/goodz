@@ -1,7 +1,7 @@
 # Goodz 산출물 레지스트리
 
 Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배포 산출물이 남는 풀프로세스**를 제품으로 봅니다.  
-이 문서는 `docs/00-process/status.json`의 `deliverables`와 연결되는 사람용 인덱스입니다.
+이 문서는 `references/goodz-internal/status.json`의 `deliverables`와 연결되는 사람용 인덱스입니다.
 
 ## 산출물 맵
 
@@ -49,7 +49,7 @@ Goodz는 쇼핑몰 코드보다 **기획 → 디자인 → 개발 → QA → 배
 ## 운영 규칙
 
 1. 새 요청은 먼저 `docs/01-planning/intake/`에 기록합니다.
-2. 산출물이 생기면 `docs/00-process/status.json`의 `deliverables`에 등록합니다.
+2. 산출물이 생기면 `references/goodz-internal/status.json`의 `deliverables`에 등록합니다.
 3. 대시보드 `산출물` 메뉴에서 phase, owner, 상태를 확인합니다.
 4. Phase Gate를 넘길 때 해당 phase의 필수 산출물이 모두 `done`인지 확인합니다.
 5. 승인 시 `APPROVALS.md`와 `traceLinks`에 DACI 역할과 결정 기준을 연결합니다.

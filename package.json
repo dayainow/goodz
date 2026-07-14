@@ -15,6 +15,7 @@
     "check:workspace": "manypkg check",
     "check:deps": "node scripts/check-phantom-deps.mjs",
     "check:process": "node scripts/validate-process.mjs",
+    "check:workspace-boundary": "node scripts/validate-workspace-boundary.mjs && pnpm --filter @goodz/api-server check:workspace-boundary",
     "check:template": "node scripts/validate-template.mjs",
     "check:portability": "node scripts/validate-portability.mjs && pnpm --filter @goodz/internal-service-api check",
     "check:sqlite": "pnpm --filter @goodz/api-server check:sqlite",
@@ -28,7 +29,7 @@
     "smoke:staging": "node scripts/smoke-staging.mjs",
     "smoke:process-os": "node scripts/smoke-process-os.mjs",
     "smoke:render-preview": "node scripts/smoke-render-preview.mjs",
-    "verify": "pnpm check:workspace && pnpm check:deps && pnpm check:process && pnpm check:template && pnpm check:portability && pnpm check:sqlite && pnpm check:cli && pnpm check:clean-clone && turbo build && turbo lint"
+    "verify": "pnpm check:workspace && pnpm check:deps && pnpm check:process && pnpm check:workspace-boundary && pnpm check:template && pnpm check:portability && pnpm check:sqlite && pnpm check:cli && pnpm check:clean-clone && turbo build && turbo lint"
   },
   "devDependencies": {
     "@manypkg/cli": "^0.25.1",

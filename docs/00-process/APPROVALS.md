@@ -1,7 +1,7 @@
 # 승인 로그 — DACI Governance
 
 Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입니다.  
-기계 판독 상태는 `docs/00-process/status.json`의 `approvals` 필드를 SSOT로 사용합니다.
+기계 판독 상태는 `references/goodz-internal/status.json`의 `approvals` 필드를 SSOT로 사용합니다.
 
 ## DACI 역할
 

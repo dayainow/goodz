@@ -1,6 +1,6 @@
 {
   "name": "@goodz/process",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Goodz domain-neutral Process Control Plane contract",
   "license": "MIT",
   "main": "./dist/index.js",

@@ -38,6 +38,7 @@
 | **v0.28** | Immutable Template Migration: 새 version 생성 + 기존 Run 고정 | ✅ |
 | **v0.29** | Git Connector: approved export branch + commit + push + pull request | ✅ |
 | **v1.0** | 설치 가능한 Goodz Core: adopt + Template/config migration + clean-clone 도입 | ✅ |
+| **v1.1** | Installable Empty Workspace: 사용자 런타임·Goodz 내부 이력·독립 DB/file scaffold 분리 | 🚧 |
 
 ## 전체 타임라인
 
@@ -45,7 +46,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt    S30 ✅ Template Migration    S31 ✅ Git Connector    S32 ✅ Core v1.0 Gate
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt    S30 ✅ Template Migration    S31 ✅ Git Connector    S32 ✅ Core v1.0 Gate    S33 ✅ UI Boundary    S34 🚧 Empty Workspace
 ```
 
 ---
@@ -202,7 +203,7 @@ Week 1
 ### Sprint S11 — Metrics Snapshots
 
 - `pnpm snapshot:metrics`로 Delivery Metrics 기준점 저장
-- `docs/00-process/metrics-snapshots.json` snapshot SSOT 추가
+- `references/goodz-internal/metrics-snapshots.json` snapshot SSOT 추가
 - process-dashboard `지표` 메뉴에서 snapshot trend 그래프 표시
 - 다음 단계의 incident/MTTR 기록과 PR review lead time 기반 마련
 
@@ -460,7 +461,8 @@ flowchart LR
 33. ✅ v0.28: immutable Template version migration + 기존 Run 고정
 34. ✅ v0.29: 승인 산출물 Git branch/commit/push/PR Connector
 35. ✅ v1.0 Gate: config migration + clean-clone CI
-36. ⚪ v1.x 후보: PostgreSQL/Worker → SSO/RBAC/감사 로그
+36. 🚧 v1.1: 빈 Workspace scaffold + 선택적 Goodz Internal Reference
+37. ⚪ v1.x 후보: Guided Flow → PostgreSQL/Worker → SSO/RBAC/감사 로그
 
 ---
 
@@ -496,3 +498,4 @@ flowchart LR
 | 2026-07-14 | v0.28 — immutable Template migration과 Run version 고정 |
 | 2026-07-14 | v0.29 — 승인 산출물 Git branch/commit/push/PR Connector |
 | 2026-07-14 | v1.0 — config migration·clean-clone Gate와 설치 가능한 Core/CLI |
+| 2026-07-14 | v1.1 — 사용자 빈 Workspace와 Goodz 내부 개발 이력의 물리·런타임 분리 |

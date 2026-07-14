@@ -45,7 +45,7 @@ pnpm snapshot:metrics
 생성 파일:
 
 ```text
-docs/00-process/metrics-snapshots.json
+references/goodz-internal/metrics-snapshots.json
 ```
 
 검증:

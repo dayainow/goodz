@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S33 Workspace / Goodz Reference Boundary** 🚧
+## 현재 스프린트: **S34 Installable Empty Workspace** 🚧
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -36,6 +36,7 @@
 | **Design Job Connector** | ✅ prompt snapshot·작업 상태·결과 제출·수정 요청·승인·portable export |
 | **Goodz Core/CLI v1.0** | ✅ init·adopt·config/template migrate·project·export·Git publish·clean-clone verify |
 | **Workspace Boundary** | 🚧 사용자 프로젝트 기본 진입·Library 분리·Goodz 개발 기록 Reference 격리 · 육안 QA 대기 |
+| **Installable Workspace** | 🚧 빈 Workspace scaffold·독립 DB 경로·선택적 내부 Reference·런타임 무결합 검증 |
 
 ## 현재 단계
 
@@ -148,6 +149,11 @@
 - [x] S33: 사용자 프로젝트를 Dashboard 기본 진입점으로 전환
 - [x] S33: Goodz IN·CR·DR·TL·Sprint 기록을 Reference 관리자 영역으로 격리
 - [x] S33: Handoff command 후 Design 탭·스크롤 맥락 유지
+- [x] S34: Goodz 자체 status·metrics를 `references/goodz-internal`로 물리 분리
+- [x] S34: 신규 `goodz init`을 Reference 0개·독립 `.goodz/workspace.json`으로 전환
+- [x] S34: Reference capability API와 Reference 없는 Dashboard 시작 경로 구현
+- [x] S34: clean-clone·빈 Workspace HTTP smoke
+- [ ] S34: Reference 없는 Dashboard 로컬 육안 QA
 
 ## 풀 프로세스
 

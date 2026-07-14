@@ -10,8 +10,8 @@ Phase Gate·Sprint·기획 입력·산출물·기능 백로그·개발 증거를
 ## 아키텍처
 
 ```text
-docs/00-process/status.json              ← SSOT (수동·에이전트 갱신)
-docs/00-process/metrics-snapshots.json   ← Metrics trend snapshot
+references/goodz-internal/status.json              ← SSOT (수동·에이전트 갱신)
+references/goodz-internal/metrics-snapshots.json   ← Metrics trend snapshot
 SQLite schema v5                         ← Project·PRD·Design Pack·Design Job·Run·Stage·Task·Deliverable·Evidence·Gate·Audit SSOT
         │
         ▼ GET /api/process/status
@@ -25,12 +25,12 @@ process-dashboard (:5180)       ← Projection + Command UI
 
 | 레이어 | 역할 |
 |--------|------|
-| `status.json` | Phase·Sprint·기획 입력·기획 변경·산출물·DACI 승인·추적 링크·기능·앱 목록의 기계 판독 가능 상태 |
+| `status.json` | Goodz 제품 자체의 Phase·Sprint·IN·CR·TL을 보관하는 선택적 내부 Reference |
 | `metrics-snapshots.json` | Delivery Metrics 추세를 위한 저장 시점별 기준점 |
 | SQLite | 프로젝트 실행 상태, Gate 결정, Incident와 감사 이력 |
 | `@goodz/process` | `ProcessStatus` 타입 SSOT |
 | `api-server` | 문서 projection 조회와 Process command API 제공 |
-| `process-dashboard` | 프로젝트 생성·단계·작업·Gate command와 기존 문서·증거 projection |
+| `process-dashboard` | 내부 Reference 없이도 시작 가능한 사용자 Workspace와 선택적 Goodz 개발 projection |
 
 ## 접속
 
@@ -43,6 +43,7 @@ API 단독 확인:
 
 ```bash
 curl http://localhost:4000/api/process/status
+curl http://localhost:4000/api/process/reference
 curl http://localhost:4000/api/process/metrics-snapshots
 curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUAL.md"
 ```
@@ -51,7 +52,7 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 
 작업 완료 시 **함께 갱신**:
 
-1. `docs/00-process/status.json` — 해당 항목 `status` · `progress`
+1. `references/goodz-internal/status.json` — 해당 항목 `status` · `progress`
 2. `PHASE_GATES.md` / `PROJECT.md` / `ROADMAP.md` — 사람이 읽는 문서
 3. 대시보드에서 반영 확인 (새로고침 또는 30초 대기)
 
@@ -227,7 +228,9 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - **Default entry**: Dashboard의 초기 섹션은 시스템 개요가 아니라 사용자 `프로젝트`입니다.
 - **Workspace**: SQLite/PostgreSQL에 저장되는 사용자 Project·PRD·Design Pack·Run·Task·Deliverable·Evidence·Gate를 포함합니다.
 - **Library**: 프로젝트 공용 매뉴얼과 운영 기준만 제공합니다.
-- **Goodz Reference**: `status.json`과 Git 문서에서 읽은 IN·CR·DR·TL·Sprint·Metrics를 접힌 관리자 영역으로 격리합니다.
+- **Empty bootstrap**: `goodz init`은 Reference와 Project가 없는 `.goodz/workspace.json`에서 시작합니다.
+- **Goodz Reference**: `goodz.config.json`의 `platform.internalReference`가 있을 때만 `references/goodz-internal`의 IN·CR·DR·TL·Sprint·Metrics를 메뉴에 추가합니다.
+- **Runtime independence**: Reference가 비활성화된 API의 `/process/status`는 404지만 Workspace·Template·Project command는 정상 동작합니다.
 - **Scope cue**: Reference 화면은 사용자 프로젝트 데이터가 아니라는 경고와 프로젝트 복귀 동선을 항상 표시합니다.
 - **Header metadata**: Workspace에서는 Goodz Sprint 대신 프로젝트·활성 Run·Operations DB 범위를 표시합니다.
 - **Workbench continuity**: PRD/Design command 갱신은 같은 프로젝트 Workbench를 재마운트하지 않아 활성 탭과 스크롤 맥락을 유지합니다.

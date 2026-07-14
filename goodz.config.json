@@ -10,7 +10,13 @@
     "modelPackage": "@goodz/process",
     "consoleApp": "apps/process-dashboard",
     "apiPrefix": "/api/process",
-    "sourceOfTruth": "docs/00-process/status.json"
+    "sourceOfTruth": "operations-db",
+    "internalReference": {
+      "id": "goodz-development",
+      "name": "Goodz Product Development",
+      "statusPath": "references/goodz-internal/status.json",
+      "metricsPath": "references/goodz-internal/metrics-snapshots.json"
+    }
   },
   "references": [
     {
@@ -38,9 +44,9 @@
   "portability": {
     "coreChangesAllowedForNewReference": false,
     "coreContract": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "path": "packages/process/src/index.ts",
-      "sha256": "ab57654b042d87645fa5d44ca3db214cd3645ee7ea24550f7cd69cc54c3f15db"
+      "sha256": "d0c413e97a85c2d9c7aa6cf96570ecda74372fc4467d124e12bec792c752faa0"
     },
     "requiredCommands": [
       "pnpm check:template",

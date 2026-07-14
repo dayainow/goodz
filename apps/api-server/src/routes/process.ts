@@ -42,6 +42,7 @@ import {
 import {
   loadProcessDocument,
   loadProcessMetricSnapshots,
+  loadProcessReferenceCapability,
   loadProcessStatus,
 } from "../data/processStatus.js";
 
@@ -54,8 +55,21 @@ const evidenceTypes = new Set(["document", "issue", "pr", "commit", "ci", "relea
 
 export const processRouter: ExpressRouter = Router();
 
+processRouter.get("/process/reference", (_req, res) => {
+  try {
+    res.json(loadProcessReferenceCapability());
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to load Reference capability";
+    res.status(500).json({ message });
+  }
+});
+
 processRouter.get("/process/status", (_req, res) => {
   try {
+    if (!loadProcessReferenceCapability().available) {
+      res.status(404).json({ message: "Internal Goodz Reference is not enabled for this Workspace" });
+      return;
+    }
     res.json(loadProcessStatus());
   } catch (error) {
     const message =

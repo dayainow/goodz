@@ -7,7 +7,7 @@ Goodz Core가 Commerce 도메인에 결합되지 않았음을 비커머스 Refer
 | 항목 | 값 |
 |---|---|
 | 기준 커밋 | `aa6c1a9` — Goodz Core와 레퍼런스 경계 분리 |
-| Core 패키지 | `@goodz/process` v1.0.0 |
+| Core 패키지 | `@goodz/process` v1.1.0 |
 | 계약 파일 | `packages/process/src/index.ts` |
 | SHA-256 | `fbf74907c7b08ce1d757604421ed20df44fdde18c2f99f35bbe45727361b13ff` |
 | 비커머스 증거 | `references/internal-service` |
@@ -16,7 +16,7 @@ Goodz Core가 Commerce 도메인에 결합되지 않았음을 비커머스 Refer
 
 Core 0.7.0은 immutable Template version migration 계약을 추가한다. 기존 `ProcessRun.templateVersion`과 v1 Template 데이터는 변경하지 않고 새 프로젝트만 새 version ID를 선택하므로 기존 Reference 실행과 호환된다.
 
-Core 1.0.0은 config v2 migration과 clean-clone Gate를 통과한 배포 계약이다. 0.7.0의 Process API 타입을 깨지 않고 패키지 publish metadata와 설치 검증을 확정한다.
+Core 1.1.0은 config v2 migration과 clean-clone Gate에 더해 사용자 Workspace와 선택적 내부 Reference capability를 분리한 배포 계약이다. 1.0.0의 Process API 타입을 깨지 않고 설치·운영 데이터 경계를 확장한다.
 
 ## 검증 명령
 
@@ -37,7 +37,7 @@ pnpm check:portability
 ## 이식성 결과
 
 ```text
-Goodz Core v1.0.0       기준선 일치
+Goodz Core v1.1.0       기준선 일치
 Internal Service 타입   신규 독립 패키지
 Internal Service API    신규 독립 앱
 P0–P4 산출물            5종 완료
