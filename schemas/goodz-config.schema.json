@@ -7,7 +7,7 @@
   "required": ["version", "product", "platform", "references", "portability"],
   "properties": {
     "$schema": { "type": "string" },
-    "version": { "type": "integer", "minimum": 1 },
+    "version": { "enum": [1, 2] },
     "product": {
       "type": "object",
       "additionalProperties": false,
@@ -72,6 +72,31 @@
           "items": { "type": "string", "minLength": 1 }
         }
       }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exportRoot", "manifestRoot", "git"],
+      "properties": {
+        "exportRoot": { "const": "docs/projects" },
+        "manifestRoot": { "const": ".goodz/exports" },
+        "git": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["remote", "base", "branchPrefix"],
+          "properties": {
+            "remote": { "type": "string", "minLength": 1 },
+            "base": { "type": "string", "minLength": 1 },
+            "branchPrefix": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "version": { "const": 2 } } },
+      "then": { "required": ["delivery"] }
+    }
+  ]
 }

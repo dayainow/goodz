@@ -36,6 +36,17 @@ pnpm goodz -- adopt --root /path/to/existing-repository --apply
 - 기존 설정은 보호하며 `--force`를 함께 지정한 경우에만 교체합니다.
 - 앱 코드, 의존성, workspace 설정은 자동 변경하지 않습니다.
 
+### `goodz config migrate`
+
+```bash
+pnpm goodz -- config migrate --root /path/to/repository --dry-run
+pnpm goodz -- config migrate --root /path/to/repository
+```
+
+- config v1을 v2로 원자적으로 올립니다.
+- v2는 Markdown export root, manifest root, Git remote/base/branch prefix를 명시합니다.
+- dry-run은 파일을 바꾸지 않으며 이미 v2이면 성공 상태로 종료하는 멱등 명령입니다.
+
 ### `goodz project create`
 
 ```bash

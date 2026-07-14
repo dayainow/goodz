@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.29",
+  "systemVersion": "v1.0",
   "sprint": {
-    "id": "S31",
-    "name": "시스템 v0.29 — Git Branch/Commit/PR Connector",
+    "id": "S32",
+    "name": "시스템 v1.0 — Installable Goodz Core",
     "status": "done",
-    "goal": "승인 산출물을 제한된 Git branch·commit·push·Pull Request 흐름으로 전달"
+    "goal": "기존 config 업그레이드와 clean-clone 설치를 보장하는 재현 가능한 Core/CLI 배포 계약 확정"
   },
   "phases": [
     {
@@ -540,6 +540,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-git-publish-connector-v029.md",
       "nextAction": "config migration, clean-clone과 persistent deployment 검증"
+    },
+    {
+      "id": "IN-029",
+      "title": "Installable Goodz Core v1.0",
+      "source": "사용자 요청 · 완료까지 단계별 배포",
+      "status": "done",
+      "phase": "P4",
+      "doc": "docs/01-planning/intake/2026-07-14-installable-core-v1.md",
+      "nextAction": "Cloud PostgreSQL/Worker와 Enterprise SSO/RBAC Gate"
     }
   ],
   "deliverables": [
@@ -1032,6 +1041,16 @@
       "doc": "docs/03-engineering/ADR/012-git-publish-connector.md",
       "owner": "Platform/Engineering",
       "summary": "승인 export allowlist 기반 branch·commit·push·GitHub PR"
+    },
+    {
+      "id": "D-50",
+      "title": "Installable Goodz Core v1.0",
+      "type": "release",
+      "phase": "P4",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/013-installable-core-v1.md",
+      "owner": "Platform/Engineering/DevOps",
+      "summary": "config v2 migration·clean-clone Gate·Core/CLI publish metadata"
     }
   ],
   "approvals": [
@@ -1791,6 +1810,28 @@
       "summary": "승인 산출물의 안전한 Git 전달 Connector 승인",
       "doc": "docs/03-engineering/ADR/012-git-publish-connector.md",
       "traceLinkIds": ["TL-028"]
+    },
+    {
+      "id": "AP-029",
+      "target": "S32 Installable Goodz Core v1.0",
+      "type": "release",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Platform", "Engineering", "QA", "DevOps"],
+      "informed": ["Goodz adopters"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "config migration과 clean-clone Gate를 Goodz Core v1.0 설치 계약으로 확정",
+      "criteria": [
+        "config v1→v2 dry-run·apply·멱등 migration이 동작함",
+        "clean-clone frozen install과 핵심 계약 검증이 통과함",
+        "Core와 CLI v1.0 publish metadata가 준비됨",
+        "전체 pnpm verify와 원격 CI가 통과함"
+      ],
+      "summary": "설치 가능한 Goodz Core v1.0 release Gate 승인",
+      "doc": "docs/03-engineering/ADR/013-installable-core-v1.md",
+      "traceLinkIds": ["TL-029"]
     }
   ],
   "planningChanges": [
@@ -2259,6 +2300,23 @@
       "doc": "docs/01-planning/changes/2026-07-14-git-publish-connector-v029.md",
       "summary": "clean tree·allowlist 기반 Git publish와 GitHub PR 추가",
       "decision": "API 서버에는 Git 권한을 주지 않고 CLI 실행 환경에만 Connector 권한 부여"
+    },
+    {
+      "id": "CR-029",
+      "title": "config migration과 clean-clone을 Core v1.0 Gate로 확정",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/CLI.md",
+        "docs/00-process/ONBOARDING.md",
+        "docs/00-process/PHASE_GATES.md",
+        "docs/00-process/CICD.md",
+        "docs/03-engineering/ADR/013-installable-core-v1.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-installable-core-v1.md",
+      "summary": "config v2 migration·clean-clone Gate·Core/CLI v1.0 metadata 추가",
+      "decision": "v1.0을 Enterprise 완성이 아닌 설치·업그레이드·이식성 안정 계약으로 정의"
     }
   ],
   "designReferences": [
@@ -3489,6 +3547,33 @@
       },
       "summary": "승인 bundle을 안전한 Git review flow로 전달",
       "nextAction": "config migration, clean-clone과 persistent deployment 검증"
+    },
+    {
+      "id": "TL-029",
+      "title": "Installable Goodz Core v1.0",
+      "status": "partial",
+      "sourceIds": ["IN-029"],
+      "changeIds": ["CR-029"],
+      "deliverableIds": ["D-50"],
+      "approvalIds": ["AP-029"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "not_required" },
+      "commits": [],
+      "ciRuns": [],
+      "release": {
+        "label": "Core tag v1.0.0",
+        "status": "linked",
+        "url": "https://github.com/dayainow/goodz/tree/v1.0.0",
+        "publishedAt": "2026-07-14T23:30:00Z"
+      },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:clean-clone && pnpm verify",
+        "checkedAt": "2026-07-14T23:30:00Z",
+        "summary": "config migration 12개 CLI test와 clean-clone frozen install·핵심 Gate 통과"
+      },
+      "summary": "Goodz Core 설치·업그레이드·이식성 v1.0 계약",
+      "nextAction": "Cloud PostgreSQL/Worker와 Enterprise SSO/RBAC Gate"
     }
   ],
   "features": [

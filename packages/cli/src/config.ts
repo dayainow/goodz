@@ -20,6 +20,11 @@ interface GoodzConfig {
     coreContract: { version: string; path: string; sha256: string };
     requiredCommands: string[];
   };
+  delivery?: {
+    exportRoot: "docs/projects";
+    manifestRoot: ".goodz/exports";
+    git: { remote: string; base: string; branchPrefix: string };
+  };
 }
 
 interface PackageMetadata {
@@ -92,7 +97,7 @@ async function collectPackageMetadata(root: string, directory: string, depth = 0
 
 function buildConfig(projectName: string, references: GoodzConfig["references"]): GoodzConfig {
   return {
-    version: 1,
+    version: 2,
     product: {
       name: "Goodz",
       edition: "core",
@@ -113,6 +118,11 @@ function buildConfig(projectName: string, references: GoodzConfig["references"])
         sha256: CORE_SHA256,
       },
       requiredCommands: ["pnpm goodz -- verify", "pnpm verify"],
+    },
+    delivery: {
+      exportRoot: "docs/projects",
+      manifestRoot: ".goodz/exports",
+      git: { remote: "origin", base: "main", branchPrefix: "goodz/" },
     },
   };
 }
@@ -214,11 +224,37 @@ export async function adoptGoodz(root: string, requestedName?: string, apply = f
 function assertConfig(value: unknown): asserts value is GoodzConfig {
   if (!value || typeof value !== "object") throw new Error("goodz.config.json must contain an object");
   const config = value as Partial<GoodzConfig>;
-  if (config.version !== 1 || config.product?.name !== "Goodz") throw new Error("Unsupported Goodz config version or product");
+  if ((config.version !== 1 && config.version !== 2) || config.product?.name !== "Goodz") throw new Error("Unsupported Goodz config version or product");
   if (config.platform?.modelPackage !== "@goodz/process" || config.platform.apiPrefix !== "/api/process") throw new Error("Invalid Goodz platform contract");
   if (!Array.isArray(config.references) || config.references.length === 0) throw new Error("At least one Reference is required");
   if (config.portability?.coreChangesAllowedForNewReference !== false) throw new Error("Core changes must be disabled for new References");
   if (!/^[a-f0-9]{64}$/.test(config.portability.coreContract.sha256)) throw new Error("Invalid Core contract hash");
+  if (config.version === 2 && (
+    config.delivery?.exportRoot !== "docs/projects" ||
+    config.delivery.manifestRoot !== ".goodz/exports" ||
+    !config.delivery.git?.remote ||
+    !config.delivery.git.base ||
+    !config.delivery.git.branchPrefix
+  )) throw new Error("Invalid Goodz delivery configuration");
+}
+
+export async function migrateGoodzConfig(root: string, dryRun = false) {
+  const absoluteRoot = path.resolve(root);
+  const configPath = path.join(absoluteRoot, "goodz.config.json");
+  const config = JSON.parse(await readFile(configPath, "utf8")) as unknown;
+  assertConfig(config);
+  if (config.version === 2) return { configPath, from: 2, to: 2, changed: false, dryRun };
+  const migrated: GoodzConfig = {
+    ...config,
+    version: 2,
+    delivery: {
+      exportRoot: "docs/projects",
+      manifestRoot: ".goodz/exports",
+      git: { remote: "origin", base: "main", branchPrefix: "goodz/" },
+    },
+  };
+  if (!dryRun) await atomicJson(configPath, migrated);
+  return { configPath, from: 1, to: 2, changed: true, dryRun };
 }
 
 export async function verifyGoodzWorkspace(root: string) {
@@ -227,6 +263,7 @@ export async function verifyGoodzWorkspace(root: string) {
   const config = JSON.parse(await readFile(configPath, "utf8")) as unknown;
   assertConfig(config);
   const warnings: string[] = [];
+  if (config.version === 1) warnings.push("Goodz config v1 is supported but should be upgraded with goodz config migrate.");
   const corePath = path.resolve(absoluteRoot, config.portability.coreContract.path);
   try {
     const core = await readFile(corePath);

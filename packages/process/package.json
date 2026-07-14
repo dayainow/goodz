@@ -1,7 +1,7 @@
 {
   "name": "@goodz/process",
-  "version": "0.7.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Goodz domain-neutral Process Control Plane contract",
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,6 +11,9 @@
       "default": "./dist/index.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
@@ -20,5 +23,8 @@
   "devDependencies": {
     "@goodz/tsconfig": "workspace:*",
     "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=22.13"
   }
 }

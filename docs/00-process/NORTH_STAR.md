@@ -82,7 +82,7 @@
 | **v0.1** ✅ | 모노레포 + MVP Reference + P0 Gate + CI |
 | **v0.2** ✅ | P1 디자인 파이프라인(Claude Design) + 확장 화면 스펙 |
 | **v0.3** ✅ | Process OS: 기획 입력 + 산출물 레지스트리 + 대시보드 추적 |
-| **v1.0** ⚪ | “템플릿으로 fork 가능” — 온보딩 가이드 + 시스템 패키지화 |
+| **v1.0** ✅ | “템플릿으로 fork 가능” — adopt·migration·clean-clone + Core/CLI 패키지화 |
 
 상세: [ROADMAP.md](../01-planning/ROADMAP.md)
 

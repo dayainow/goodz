@@ -1,6 +1,6 @@
 {
   "$schema": "./schemas/goodz-config.schema.json",
-  "version": 1,
+  "version": 2,
   "product": {
     "name": "Goodz",
     "edition": "core",
@@ -38,7 +38,7 @@
   "portability": {
     "coreChangesAllowedForNewReference": false,
     "coreContract": {
-      "version": "0.7.0",
+      "version": "1.0.0",
       "path": "packages/process/src/index.ts",
       "sha256": "ab57654b042d87645fa5d44ca3db214cd3645ee7ea24550f7cd69cc54c3f15db"
     },
@@ -47,5 +47,14 @@
       "pnpm check:portability",
       "pnpm verify"
     ]
+  },
+  "delivery": {
+    "exportRoot": "docs/projects",
+    "manifestRoot": ".goodz/exports",
+    "git": {
+      "remote": "origin",
+      "base": "main",
+      "branchPrefix": "goodz/"
+    }
   }
 }

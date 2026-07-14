@@ -17,6 +17,7 @@ pnpm verify
 | Workspace | `pnpm check:workspace` | pnpm workspace 구조 검증 |
 | Dependencies | `pnpm check:deps` | 유령 의존성 검증 |
 | Process OS | `pnpm check:process` | `status.json`, 산출물 경로, trace link 검증 |
+| Clean clone | `pnpm check:clean-clone` | 생성물 없는 복제본의 frozen install·CLI·Template·Portability 검증 |
 | Build | `turbo build` | 패키지와 앱 빌드 |
 | Lint | `turbo lint` | TypeScript noEmit 기준 린트 |
 

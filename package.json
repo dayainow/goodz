@@ -19,6 +19,7 @@
     "check:portability": "node scripts/validate-portability.mjs && pnpm --filter @goodz/internal-service-api check",
     "check:sqlite": "pnpm --filter @goodz/api-server check:sqlite",
     "check:cli": "pnpm --filter @goodz/process build && pnpm --filter @goodz/cli check",
+    "check:clean-clone": "node scripts/validate-clean-clone.mjs",
     "goodz": "pnpm --filter @goodz/cli start",
     "sync:github-trace": "node scripts/sync-github-trace.mjs",
     "sync:github-trace:check": "node scripts/sync-github-trace.mjs --check",
@@ -26,7 +27,7 @@
     "snapshot:metrics:check": "node scripts/snapshot-metrics.mjs --check",
     "smoke:staging": "node scripts/smoke-staging.mjs",
     "smoke:process-os": "node scripts/smoke-process-os.mjs",
-    "verify": "pnpm check:workspace && pnpm check:deps && pnpm check:process && pnpm check:template && pnpm check:portability && pnpm check:sqlite && pnpm check:cli && turbo build && turbo lint"
+    "verify": "pnpm check:workspace && pnpm check:deps && pnpm check:process && pnpm check:template && pnpm check:portability && pnpm check:sqlite && pnpm check:cli && pnpm check:clean-clone && turbo build && turbo lint"
   },
   "devDependencies": {
     "@manypkg/cli": "^0.25.1",

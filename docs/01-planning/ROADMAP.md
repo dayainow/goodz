@@ -37,7 +37,7 @@
 | **v0.27** | Existing Repository Adopt: 구조 탐지 + read-only plan + explicit apply | ✅ |
 | **v0.28** | Immutable Template Migration: 새 version 생성 + 기존 Run 고정 | ✅ |
 | **v0.29** | Git Connector: approved export branch + commit + push + pull request | ✅ |
-| **v1.0** | 설치 가능한 Goodz Core: adopt + Template/config migration + clean-clone 도입 | ⚪ |
+| **v1.0** | 설치 가능한 Goodz Core: adopt + Template/config migration + clean-clone 도입 | ✅ |
 
 ## 전체 타임라인
 
@@ -45,7 +45,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt    S30 ✅ Template Migration    S31 ✅ Git Connector
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt    S30 ✅ Template Migration    S31 ✅ Git Connector    S32 ✅ Core v1.0 Gate
 ```
 
 ---
@@ -393,6 +393,15 @@ Week 1
 - 임시 bare remote에서 실제 branch·commit·push smoke
 - 다음 Gate: config migration, clean-clone CI와 원격 persistent deployment 검증
 
+### Sprint S32 — Installable Goodz Core v1.0
+
+- `goodz config migrate` v1→v2 dry-run·원자적·멱등 migration
+- config v2에 export/manifest 경계와 Git 기본 정책 선언
+- `pnpm check:clean-clone` offline frozen install과 핵심 계약 검증
+- clean checkout에서 `@goodz/process` 선행 build 후 CLI test 보장
+- `@goodz/process`와 `@goodz/cli` v1.0 publish metadata
+- Portability Gate 완료, Enterprise Gate는 별도 로드맵으로 유지
+
 ---
 
 ## 의존성 그래프
@@ -450,7 +459,7 @@ flowchart LR
 32. ✅ v0.27: 기존 저장소 read-only adopt plan + explicit apply
 33. ✅ v0.28: immutable Template version migration + 기존 Run 고정
 34. ✅ v0.29: 승인 산출물 Git branch/commit/push/PR Connector
-35. ⚪ v1.0 Gate: config migration + clean-clone CI
+35. ✅ v1.0 Gate: config migration + clean-clone CI
 36. ⚪ v1.x 후보: PostgreSQL/Worker → SSO/RBAC/감사 로그
 
 ---
@@ -486,3 +495,4 @@ flowchart LR
 | 2026-07-14 | v0.27 — 기존 저장소 구조 탐지와 명시적 adopt 적용 |
 | 2026-07-14 | v0.28 — immutable Template migration과 Run version 고정 |
 | 2026-07-14 | v0.29 — 승인 산출물 Git branch/commit/push/PR Connector |
+| 2026-07-14 | v1.0 — config migration·clean-clone Gate와 설치 가능한 Core/CLI |

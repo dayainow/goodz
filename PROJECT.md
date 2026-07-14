@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S31 Git Branch/Commit/PR Connector v0.29** ✅
+## 현재 스프린트: **S32 Installable Goodz Core v1.0** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -34,7 +34,7 @@
 | **Visual Template Builder** | ✅ 기존 Template 복제·Stage 정렬·Task/산출물 편집·Live Blueprint·저장 검증 |
 | **PRD & Design Workbench** | ✅ 질문형 PRD·Markdown·승인·화면·스토리보드·콘셉트·Claude Design handoff |
 | **Design Job Connector** | ✅ prompt snapshot·작업 상태·결과 제출·수정 요청·승인·portable export |
-| **Goodz CLI** | ✅ init·adopt·template migrate·project create·export·Git publish·verify |
+| **Goodz Core/CLI v1.0** | ✅ init·adopt·config/template migrate·project·export·Git publish·clean-clone verify |
 
 ## 현재 단계
 
@@ -141,6 +141,9 @@
 - [x] S30: 기존 Run version 고정과 신규 Run의 새 version 선택 검증
 - [x] S31: 승인 bundle 전용 branch·commit·push Connector
 - [x] S31: GitHub Pull Request API와 clean tree·허용 파일 보안 Gate
+- [x] S32: config v1→v2 dry-run·원자적·멱등 migration
+- [x] S32: 생성물 없는 clean-clone frozen install·CLI·Template·Portability Gate
+- [x] S32: `@goodz/process`, `@goodz/cli` v1.0 publish metadata
 
 ## 풀 프로세스
 

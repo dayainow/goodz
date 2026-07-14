@@ -3,15 +3,16 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 import { GoodzClient } from "./client.js";
-import { adoptGoodz, initializeGoodz, verifyGoodzWorkspace } from "./config.js";
+import { adoptGoodz, initializeGoodz, migrateGoodzConfig, verifyGoodzWorkspace } from "./config.js";
 import { assertGitWorkspaceClean, publishGitChanges } from "./git.js";
 import { materializeProjectBundle } from "./materializer.js";
 
-const HELP = `Goodz CLI v0.4
+const HELP = `Goodz CLI v1.0
 
 Usage:
   goodz init --name <project> [--root <path>] [--force]
   goodz adopt [--name <project>] [--root <path>] [--apply] [--force]
+  goodz config migrate [--root <path>] [--dry-run]
   goodz project create --name <name> --summary <text> --owner <owner> [--template <id>] [--api <url>]
   goodz template migrate --from <template-id> [--name <name>] [--summary <text>] [--api <url>]
   goodz export --project <id> [--root <path>] [--api <url>] [--dry-run] [--force]
@@ -81,6 +82,12 @@ async function main() {
     plan.warnings.forEach((warning) => console.warn(`warning: ${warning}`));
     if (!plan.applied) console.log("No files changed. Re-run with --apply to write goodz.config.json.");
     else console.log(`Config: ${plan.configPath}`);
+    return;
+  }
+  if (command === "config" && args[1] === "migrate") {
+    const result = await migrateGoodzConfig(workspaceRoot(args), has(args, "--dry-run"));
+    if (!result.changed) console.log(`Goodz config is already v${result.to}: ${result.configPath}`);
+    else console.log(`${result.dryRun ? "Planned" : "Migrated"}: config v${result.from} → v${result.to}`);
     return;
   }
   if (command === "project" && args[1] === "create") {

@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "template": "goodz-core",
   "packageManager": "pnpm",
   "requiredScripts": [
@@ -10,6 +10,7 @@
     "check:portability",
     "check:sqlite",
     "check:cli",
+    "check:clean-clone",
     "goodz",
     "verify"
   ],
@@ -45,6 +46,7 @@
     "packages/cli/package.json",
     "packages/types/package.json",
     "packages/ui/package.json",
+    "scripts/validate-clean-clone.mjs",
     "render.yaml"
   ],
   "envExamples": [

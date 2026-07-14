@@ -44,6 +44,13 @@ pnpm goodz -- verify --root /path/to/existing-repository
 
 첫 명령은 읽기 전용 계획이며 두 번째 명령에서만 설정을 생성합니다. 자동 탐지 결과는 도입 초안이므로 `goodz.config.json`의 Reference 경계를 검토한 뒤 커밋합니다.
 
+기존 Goodz config v1 저장소는 적용 전에 migration 계획을 확인합니다.
+
+```bash
+pnpm goodz -- config migrate --root . --dry-run
+pnpm goodz -- config migrate --root .
+```
+
 ## 3. 조직·프로젝트 설정
 
 Goodz 브랜드와 `@goodz/process` 계약은 유지하고 도입 조직의 정보와 Reference를 설정합니다.
@@ -149,6 +156,7 @@ GOODZ_GITHUB_REPO=<owner>/<repository> pnpm sync:github-trace
 
 - [ ] `pnpm install --frozen-lockfile` 성공
 - [ ] `pnpm verify` 성공
+- [ ] `pnpm check:clean-clone`에서 생성물 없는 복제 설치·CLI·Template·Portability 검증 성공
 - [ ] `pnpm goodz -- verify --root .` 성공
 - [ ] 기존 저장소라면 `goodz adopt` 계획 검토 후 `--apply` 결과가 의도한 Reference와 일치
 - [ ] 4앱 로컬 기동과 기본 URL 확인

@@ -40,3 +40,14 @@
 - [x] GitHub trace sync 명령 문서화 (`pnpm sync:github-trace`)
 - [ ] `/api/process/operations`의 durability `persistent` 확인
 - [ ] incident 재배포 보존 smoke와 외부 release URL 기록
+
+## Core v1.0 배포
+
+- [x] config v1→v2 migration test
+- [x] clean-clone frozen install·CLI·Template·Portability Gate
+- [x] Core/CLI v1.0 package build
+- [x] local production API·Dashboard smoke
+- [x] `main` 단계별 push와 `v1.0.0` Git tag 계획
+- [ ] Render 서비스 provisioning·유료 persistent disk 승인·외부 URL smoke
+
+Render 외부 배포는 `render.yaml` Blueprint까지 준비되어 있으나 현재 실행 환경에는 Render API key/deploy hook과 생성된 서비스 URL이 없다. 따라서 Core v1.0 코드·태그 배포와 외부 호스팅 provisioning을 구분해 기록한다.

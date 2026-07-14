@@ -1,6 +1,6 @@
 {
   "name": "@goodz/cli",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Goodz Process Control Plane CLI",
   "type": "module",
   "license": "MIT",
@@ -10,7 +10,16 @@
   "main": "./dist/cli.js",
   "types": "./dist/cli.d.ts",
   "files": [
-    "dist"
+    "dist/cli.js",
+    "dist/cli.d.ts",
+    "dist/client.js",
+    "dist/client.d.ts",
+    "dist/config.js",
+    "dist/config.d.ts",
+    "dist/git.js",
+    "dist/git.d.ts",
+    "dist/materializer.js",
+    "dist/materializer.d.ts"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -31,7 +40,7 @@
     "node": ">=22.13"
   },
   "goodzCoreContract": {
-    "version": "0.7.0",
+    "version": "1.0.0",
     "sha256": "ab57654b042d87645fa5d44ca3db214cd3645ee7ea24550f7cd69cc54c3f15db"
   }
 }

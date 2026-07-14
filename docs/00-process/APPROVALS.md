@@ -44,6 +44,7 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-026 | S29 Existing Repository Adopt v0.27 | Codex | 사용자 | approved | TL-026 |
 | AP-027 | S30 Immutable Template Migration v0.28 | Codex | 사용자 | approved | TL-027 |
 | AP-028 | S31 Git Branch/Commit/PR Connector v0.29 | Codex | 사용자 | approved | TL-028 |
+| AP-029 | S32 Installable Goodz Core v1.0 | Codex | 사용자 | approved | TL-029 |
 
 ## 승인 기준
 

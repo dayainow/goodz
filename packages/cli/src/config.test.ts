@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { adoptGoodz, initializeGoodz, verifyGoodzWorkspace } from "./config.js";
+import { adoptGoodz, initializeGoodz, migrateGoodzConfig, verifyGoodzWorkspace } from "./config.js";
 
 test("initializes and verifies Goodz metadata in an existing repository", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "goodz-init-"));
@@ -15,11 +15,38 @@ test("initializes and verifies Goodz metadata in an existing repository", async 
     };
     assert.equal(config.references[0]?.id, "acme-portal-reference");
     const verified = await verifyGoodzWorkspace(root);
-    assert.equal(verified.configVersion, 1);
+    assert.equal(verified.configVersion, 2);
     assert.equal(verified.references, 1);
     assert.equal(verified.exports.manifests, 0);
     assert.equal(verified.warnings.length, 1);
     await assert.rejects(initializeGoodz(root, "Acme Portal"), /already exists/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("migrates config v1 to v2 with dry-run and idempotency", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "goodz-config-migrate-"));
+  try {
+    await initializeGoodz(root, "Legacy");
+    const configPath = path.join(root, "goodz.config.json");
+    const current = JSON.parse(await readFile(configPath, "utf8")) as Record<string, unknown>;
+    const { delivery: _delivery, ...legacy } = current;
+    await writeFile(configPath, `${JSON.stringify({ ...legacy, version: 1 }, null, 2)}\n`);
+
+    const planned = await migrateGoodzConfig(root, true);
+    assert.equal(planned.changed, true);
+    assert.equal((JSON.parse(await readFile(configPath, "utf8")) as { version: number }).version, 1);
+
+    const migrated = await migrateGoodzConfig(root);
+    assert.equal(migrated.from, 1);
+    const next = JSON.parse(await readFile(configPath, "utf8")) as {
+      version: number;
+      delivery: { git: { branchPrefix: string } };
+    };
+    assert.equal(next.version, 2);
+    assert.equal(next.delivery.git.branchPrefix, "goodz/");
+    assert.equal((await migrateGoodzConfig(root)).changed, false);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
