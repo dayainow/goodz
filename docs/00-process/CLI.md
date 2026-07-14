@@ -23,6 +23,19 @@ pnpm goodz -- init --name "Acme Portal" --root /path/to/repository
 - 이미 설정이 있으면 중단하며 명시적인 `--force`만 덮어씁니다.
 - 애플리케이션 코드를 복사하는 scaffold 명령은 아직 아닙니다.
 
+### `goodz adopt`
+
+```bash
+pnpm goodz -- adopt --root /path/to/existing-repository
+pnpm goodz -- adopt --root /path/to/existing-repository --apply
+```
+
+- 기존 `package.json`, `apps/`, `packages/`, `references/`를 읽어 Reference와 타입 패키지 후보를 탐지합니다.
+- 기본 실행은 계획만 출력하며 파일을 변경하지 않습니다.
+- `--apply`를 지정해야 `goodz.config.json`, `docs/projects/`, `.goodz/exports/`를 생성합니다.
+- 기존 설정은 보호하며 `--force`를 함께 지정한 경우에만 교체합니다.
+- 앱 코드, 의존성, workspace 설정은 자동 변경하지 않습니다.
+
 ### `goodz project create`
 
 ```bash
@@ -83,4 +96,4 @@ GOODZ_BASIC_AUTH_PASSWORD=secret
 
 ## Git 경계
 
-v0.26은 Git에 넣을 파일을 안전하게 생성하지만 `git add`, `commit`, `push`는 자동 실행하지 않습니다. 사용자가 diff를 검토한 뒤 기존 승인·CI 정책으로 커밋합니다. 자동 branch/commit/PR 생성은 후속 Git Connector 범위입니다.
+v0.27은 기존 저장소 분석과 적용까지 지원하고 Git에 넣을 파일을 안전하게 생성하지만 `git add`, `commit`, `push`는 자동 실행하지 않습니다. 사용자가 diff를 검토한 뒤 기존 승인·CI 정책으로 커밋합니다. 자동 branch/commit/PR 생성은 후속 Git Connector 범위입니다.

@@ -3,13 +3,14 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 import { GoodzClient } from "./client.js";
-import { initializeGoodz, verifyGoodzWorkspace } from "./config.js";
+import { adoptGoodz, initializeGoodz, verifyGoodzWorkspace } from "./config.js";
 import { materializeProjectBundle } from "./materializer.js";
 
-const HELP = `Goodz CLI v0.1
+const HELP = `Goodz CLI v0.2
 
 Usage:
   goodz init --name <project> [--root <path>] [--force]
+  goodz adopt [--name <project>] [--root <path>] [--apply] [--force]
   goodz project create --name <name> --summary <text> --owner <owner> [--template <id>] [--api <url>]
   goodz export --project <id> [--root <path>] [--api <url>] [--dry-run] [--force]
   goodz verify [--root <path>] [--full]
@@ -60,6 +61,23 @@ async function main() {
   if (command === "init") {
     const initialized = await initializeGoodz(workspaceRoot(args), required(args, "--name"), has(args, "--force"));
     console.log(`Goodz initialized: ${initialized.configPath}`);
+    return;
+  }
+  if (command === "adopt") {
+    const plan = await adoptGoodz(
+      workspaceRoot(args),
+      option(args, "--name"),
+      has(args, "--apply"),
+      has(args, "--force"),
+    );
+    console.log(`${plan.applied ? "Adopted" : "Adoption plan"}: ${plan.projectName}`);
+    console.log(`Package manager: ${plan.packageManager}`);
+    for (const reference of plan.references) {
+      console.log(`Reference: ${reference.name} (${reference.apps.join(", ")})`);
+    }
+    plan.warnings.forEach((warning) => console.warn(`warning: ${warning}`));
+    if (!plan.applied) console.log("No files changed. Re-run with --apply to write goodz.config.json.");
+    else console.log(`Config: ${plan.configPath}`);
     return;
   }
   if (command === "project" && args[1] === "create") {

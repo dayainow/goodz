@@ -41,6 +41,7 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-023 | S26 PRD & Design Workbench v0.24 | Codex | 사용자 | approved | TL-023 |
 | AP-024 | S27 Design Job Connector & Export v0.25 | Codex | 사용자 | approved | TL-024 |
 | AP-025 | S28 Git Materializer & Goodz CLI v0.26 | Codex | 사용자 | approved | TL-025 |
+| AP-026 | S29 Existing Repository Adopt v0.27 | Codex | 사용자 | approved | TL-026 |
 
 ## 승인 기준
 

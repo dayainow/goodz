@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { initializeGoodz, verifyGoodzWorkspace } from "./config.js";
+import { adoptGoodz, initializeGoodz, verifyGoodzWorkspace } from "./config.js";
 
 test("initializes and verifies Goodz metadata in an existing repository", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "goodz-init-"));
@@ -20,6 +20,52 @@ test("initializes and verifies Goodz metadata in an existing repository", async 
     assert.equal(verified.exports.manifests, 0);
     assert.equal(verified.warnings.length, 1);
     await assert.rejects(initializeGoodz(root, "Acme Portal"), /already exists/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("plans and applies adoption without changing an existing repository by default", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "goodz-adopt-"));
+  try {
+    await mkdir(path.join(root, "apps/portal"), { recursive: true });
+    await mkdir(path.join(root, "packages/types"), { recursive: true });
+    await writeFile(path.join(root, "package.json"), JSON.stringify({ name: "acme-workspace", packageManager: "pnpm@10.0.0" }));
+    await writeFile(path.join(root, "apps/portal/package.json"), JSON.stringify({ name: "@acme/portal" }));
+    await writeFile(path.join(root, "packages/types/package.json"), JSON.stringify({ name: "@acme/types" }));
+
+    const plan = await adoptGoodz(root);
+    assert.equal(plan.applied, false);
+    assert.equal(plan.projectName, "Acme Workspace");
+    assert.equal(plan.packageManager, "pnpm");
+    assert.deepEqual(plan.references[0]?.apps, ["apps/portal"]);
+    assert.equal(plan.references[0]?.typePackage, "@acme/types");
+    await assert.rejects(readFile(path.join(root, "goodz.config.json")), /ENOENT/);
+
+    const applied = await adoptGoodz(root, undefined, true);
+    assert.equal(applied.applied, true);
+    const config = JSON.parse(await readFile(path.join(root, "goodz.config.json"), "utf8")) as {
+      references: Array<{ typePackage: string }>;
+    };
+    assert.equal(config.references[0]?.typePackage, "@acme/types");
+    await assert.rejects(adoptGoodz(root, undefined, true), /already exists/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("adoption detects separately nested reference applications", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "goodz-adopt-reference-"));
+  try {
+    await mkdir(path.join(root, "references/content/apps/api"), { recursive: true });
+    await mkdir(path.join(root, "references/content/packages/types"), { recursive: true });
+    await writeFile(path.join(root, "package.json"), JSON.stringify({ name: "platform" }));
+    await writeFile(path.join(root, "references/content/apps/api/package.json"), JSON.stringify({ name: "@content/api" }));
+    await writeFile(path.join(root, "references/content/packages/types/package.json"), JSON.stringify({ name: "@content/types" }));
+    const plan = await adoptGoodz(root);
+    assert.equal(plan.references[0]?.id, "content");
+    assert.equal(plan.references[0]?.typePackage, "@content/types");
+    assert.deepEqual(plan.references[0]?.apps, ["references/content/apps/api"]);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

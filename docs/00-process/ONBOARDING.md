@@ -2,7 +2,7 @@
 
 Goodz Core를 새 제품 팀에 도입할 때 사용하는 시작 런북입니다. 목표는 **30분 안에 조직·프로젝트 설정을 입력하고, Process Dashboard를 기동하고, 첫 P0 입력을 등록하는 것**입니다. Goodz는 제품명이며 Commerce 앱은 교체 가능한 Reference다.
 
-v0.26은 `goodz init`, `goodz project create`, `goodz export`, `goodz verify`를 제공한다. 전체 모노레포 scaffold는 Goodz 저장소 Template을 사용하고, 기존 코드베이스에는 CLI로 운영 메타데이터를 초기화한다. 자동 분석·이관을 수행하는 `goodz adopt`는 후속 단계다.
+v0.27은 `goodz init`, `goodz adopt`, `goodz project create`, `goodz export`, `goodz verify`를 제공한다. 전체 모노레포 scaffold는 Goodz 저장소 Template을 사용하고, 기존 코드베이스에는 CLI가 구조를 분석한 뒤 운영 메타데이터를 명시적으로 적용한다.
 
 ## 준비 조건
 
@@ -33,6 +33,16 @@ pnpm goodz -- verify --root /path/to/existing-repository
 ```
 
 `init`은 `goodz.config.json`과 materialization 경계를 만들지만 앱 코드를 복사하지 않습니다. 이미 Goodz Template을 clone했다면 설정이 존재하므로 이 명령을 생략합니다. `--force`는 기존 설정을 덮어쓰므로 diff와 백업 없이 사용하지 않습니다.
+
+기존 모노레포의 앱과 타입 패키지를 먼저 분석하려면 `adopt`를 사용합니다.
+
+```bash
+pnpm goodz -- adopt --root /path/to/existing-repository
+pnpm goodz -- adopt --root /path/to/existing-repository --apply
+pnpm goodz -- verify --root /path/to/existing-repository
+```
+
+첫 명령은 읽기 전용 계획이며 두 번째 명령에서만 설정을 생성합니다. 자동 탐지 결과는 도입 초안이므로 `goodz.config.json`의 Reference 경계를 검토한 뒤 커밋합니다.
 
 ## 3. 조직·프로젝트 설정
 
@@ -120,6 +130,7 @@ GOODZ_GITHUB_REPO=<owner>/<repository> pnpm sync:github-trace
 - [ ] `pnpm install --frozen-lockfile` 성공
 - [ ] `pnpm verify` 성공
 - [ ] `pnpm goodz -- verify --root .` 성공
+- [ ] 기존 저장소라면 `goodz adopt` 계획 검토 후 `--apply` 결과가 의도한 Reference와 일치
 - [ ] 4앱 로컬 기동과 기본 URL 확인
 - [ ] North Star와 PRD가 새 제품 기준으로 변경됨
 - [ ] 첫 intake와 DACI 승인 요청이 `status.json`에 연결됨

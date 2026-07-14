@@ -34,6 +34,7 @@
 | **v0.24** | PRD & Design Workbench: guided PRD + MVP design pack + Claude handoff | ✅ |
 | **v0.25** | Design Job Connector & Export: 상태 추적 + prompt snapshot + portable bundle | ✅ |
 | **v0.26** | Git Materializer & Goodz CLI: init + project create + safe export + verify | ✅ |
+| **v0.27** | Existing Repository Adopt: 구조 탐지 + read-only plan + explicit apply | ✅ |
 | **v1.0** | 설치 가능한 Goodz Core: adopt + Template/config migration + clean-clone 도입 | ⚪ |
 
 ## 전체 타임라인
@@ -42,7 +43,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt
 ```
 
 ---
@@ -363,6 +364,14 @@ Week 1
 - CLI 단위 테스트와 실제 Process API project/export smoke
 - 다음 Gate: `goodz adopt`, Template migration, 자동 Git branch/commit/PR Connector
 
+### Sprint S29 — Existing Repository Adopt
+
+- `package.json`, `apps/`, `packages/`, `references/` 기반 기존 모노레포 탐지
+- top-level 앱과 중첩 Reference 앱·타입 패키지 후보 분리
+- 기본 실행은 read-only 계획, `--apply`에서만 설정과 materialization 경계 생성
+- 기존 `goodz.config.json` 보호와 명시적 `--force`
+- 다음 Gate: Template/config migration과 clean-clone 검증
+
 ---
 
 ## 의존성 그래프
@@ -417,8 +426,9 @@ flowchart LR
 29. ✅ v0.24: Guided PRD + MVP Design Pack + Claude Design handoff
 30. ✅ v0.25: Design Job Connector + prompt snapshot + portable export
 31. ✅ v0.26: Git Materializer + Goodz CLI init/project/export/verify
-32. ⚪ v1.0 Gate: `goodz adopt` + Template/config migration + clean-clone CI
-33. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
+32. ✅ v0.27: 기존 저장소 read-only adopt plan + explicit apply
+33. ⚪ v1.0 Gate: Template/config migration + clean-clone CI
+34. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
 
 ---
 
@@ -450,3 +460,4 @@ flowchart LR
 | 2026-07-14 | v0.24 — 질문형 PRD와 Claude Design handoff Workbench |
 | 2026-07-14 | v0.25 — Claude Design Job 상태 관리와 portable Markdown export |
 | 2026-07-14 | v0.26 — 안전한 Git Materializer와 Goodz CLI 기본 명령 |
+| 2026-07-14 | v0.27 — 기존 저장소 구조 탐지와 명시적 adopt 적용 |

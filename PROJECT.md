@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S28 Git Materializer & Goodz CLI v0.26** ✅
+## 현재 스프린트: **S29 Existing Repository Adopt v0.27** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -34,7 +34,7 @@
 | **Visual Template Builder** | ✅ 기존 Template 복제·Stage 정렬·Task/산출물 편집·Live Blueprint·저장 검증 |
 | **PRD & Design Workbench** | ✅ 질문형 PRD·Markdown·승인·화면·스토리보드·콘셉트·Claude Design handoff |
 | **Design Job Connector** | ✅ prompt snapshot·작업 상태·결과 제출·수정 요청·승인·portable export |
-| **Goodz CLI** | ✅ init·project create·export·verify·hash manifest·충돌 보호 materializer |
+| **Goodz CLI** | ✅ init·adopt plan/apply·project create·export·verify·hash manifest·충돌 보호 materializer |
 
 ## 현재 단계
 
@@ -135,6 +135,8 @@
 - [x] S28: `@goodz/cli` init·project create·export·verify 기본 명령
 - [x] S28: Markdown 원자적 materialize와 `.goodz/exports` hash manifest
 - [x] S28: 로컬 수정·경로 탈출·symlink 차단과 CLI/API smoke
+- [x] S29: 기존 모노레포 앱·타입 패키지·중첩 Reference 탐지
+- [x] S29: 읽기 전용 adopt plan과 명시적 `--apply`·기존 설정 보호
 
 ## 풀 프로세스
 
