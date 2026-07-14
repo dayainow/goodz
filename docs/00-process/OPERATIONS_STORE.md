@@ -1,6 +1,6 @@
 # Goodz Operations Store
 
-Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다. 문서 SSOT에서 파생되는 검색 인덱스와 반복적으로 갱신되는 운영 사건을 SQLite에 저장하는 실행 계층이다.
+Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다. 문서 SSOT에서 파생되는 검색 인덱스와 반복적으로 갱신되는 운영 사건·프로젝트 실행 상태를 SQLite에 저장하는 실행 계층이다.
 
 ## 책임 경계
 
@@ -8,6 +8,9 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 |---|---|---|
 | Phase, 승인, 산출물, 추적 링크 | Git으로 버전 관리되는 문서와 `status.json` | 읽기 모델과 문서 인덱스 |
 | 운영 사건 | SQLite | 생성·종료·MTTR 계산의 기준 저장소 |
+| 프로세스 템플릿 | SQLite | 버전이 고정된 단계·작업 정의 |
+| 프로젝트 실행 | SQLite | Project, Run, Stage, Task, Gate 상태의 기준 저장소 |
+| 실행 감사 이력 | SQLite | command마다 append-only event 기록 |
 | 문서 본문 | `docs/**/*.md` | 경로·제목·수정 시각 인덱스 |
 
 ## 로컬 실행
@@ -18,7 +21,18 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 - 내구성 표기: `GOODZ_DB_DURABILITY=local|persistent`
 - 외부 접근 보호: `GOODZ_BASIC_AUTH_USER`, `GOODZ_BASIC_AUTH_PASSWORD`
 
-서버 시작 시 schema migration과 문서 인덱스 동기화를 자동 수행한다. DB 파일과 WAL 파일은 Git에 포함하지 않는다.
+서버 시작 시 schema migration, 기본 P0–P4 Template seed와 문서 인덱스 동기화를 자동 수행한다. DB 파일과 WAL 파일은 Git에 포함하지 않는다.
+
+## Schema v2 실행 규칙
+
+- 프로젝트 생성 시 선택한 Template version을 독립적인 Process Run으로 복제한다.
+- 첫 단계만 `in_progress`, 나머지는 `pending`으로 시작한다.
+- 현재 Stage가 아닌 단계의 Task·Stage·Gate 변경은 거부한다.
+- Task는 `pending`, `in_progress`, `blocked`, `done` 상태와 담당자를 가진다.
+- GO는 현재 단계의 모든 Task가 `done`일 때만 가능하다.
+- GO는 현재 단계를 닫고 다음 단계를 자동 시작한다. 마지막 Gate의 GO는 Run을 완료한다.
+- HOLD는 Stage와 Run을 차단하고 KILL은 Run을 종료한다.
+- 모든 command는 `process_audit_events`에 시간과 근거를 기록한다.
 
 ## 배포
 

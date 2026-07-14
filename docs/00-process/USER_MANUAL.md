@@ -2,6 +2,18 @@
 
 Goodz Process Dashboard는 쇼핑몰 데모를 관리하는 도구가 아니라, **기획 → 디자인 → 개발 → QA → 배포** 과정을 한 곳에서 확인하는 운영 화면입니다.
 
+Dashboard는 원본 문서 편집기나 Jira/GitHub의 대체물이 아닙니다. Git 문서와 외부 증거를 보여주는 **운영 projection**이면서, 프로젝트·단계·작업·Gate를 변경하는 **Process Control Plane command UI**입니다.
+
+## 프로젝트 프로세스 관리
+
+1. **프로젝트**에서 이름, 목표, Owner와 Template을 선택해 Process Run을 만듭니다.
+2. 현재 Stage의 Task 상태와 담당자를 저장합니다.
+3. 모든 Task를 완료한 뒤 결정 근거를 입력합니다.
+4. **GO**는 다음 Stage를 자동 시작하고, **HOLD**는 차단하며, **KILL**은 Run을 종료합니다.
+5. 최근 실행 이력에서 프로젝트 생성, 작업 변경과 Gate 결정을 확인합니다.
+
+GO는 현재 Stage의 모든 Task가 `done`이어야 합니다. HOLD와 KILL은 반드시 근거를 입력합니다. 실행 상태와 감사 이력은 SQLite에 저장되고, 장문 산출물과 외부 증거는 Git/GitHub 원본을 유지합니다.
+
 ## 접속
 
 ```bash
@@ -22,14 +34,23 @@ pnpm dev
 ## 기본 사용 순서
 
 1. **개요**에서 현재 스프린트, 오늘 볼 신호, 권장 액션을 확인합니다.
-2. **가이드**에서 이 매뉴얼과 운영 문서를 읽습니다.
-3. **기획**과 **변경**에서 요청과 수정 내역을 확인합니다.
-4. **디자인**에서 레퍼런스, 와이어프레임, 스토리보드를 확인합니다.
-5. **산출물**에서 PRD, API, QA, 릴리스 문서를 바로 열어봅니다.
-6. **승인**에서 DACI 역할과 승인 기준을 확인합니다.
-7. **증거**에서 Issue, PR, commit, CI, release, smoke 누락을 확인합니다.
-8. **지표**에서 Delivery Metrics와 snapshot trend를 확인합니다.
-9. **추적**에서 기획부터 CI 증거까지 연결됐는지 확인합니다.
+2. **프로젝트**에서 Process Run을 만들거나 현재 Stage를 운영합니다.
+3. **가이드**에서 이 매뉴얼과 운영 문서를 읽습니다.
+4. **기획**과 **변경**에서 요청과 수정 내역을 확인합니다.
+5. **디자인**에서 레퍼런스, 와이어프레임, 스토리보드를 확인합니다.
+6. **산출물**에서 PRD, API, QA, 릴리스 문서를 바로 열어봅니다.
+7. **승인**에서 DACI 역할과 승인 기준을 확인합니다.
+8. **증거**에서 Issue, PR, commit, CI, release, smoke 누락을 확인합니다.
+9. **지표**와 **추적**에서 흐름과 Delivery health를 확인합니다.
+
+## 매일 운영하는 순서
+
+1. **개요**의 Next signal과 우선 처리 작업을 확인합니다.
+2. 작업 후 intake, change, deliverable과 approval 원본을 갱신합니다.
+3. `pnpm sync:github-trace`로 Commit/CI 증거를 보강합니다.
+4. **증거**에서 누락된 Issue, PR, CI, Release, Smoke를 확인합니다.
+5. **지표**와 **추적**에서 흐름이 연결됐는지 확인합니다.
+6. `pnpm verify` 통과 후 해당 Phase Gate를 판정합니다.
 
 ## 사이드 메뉴 구조
 
@@ -37,7 +58,7 @@ pnpm dev
 
 | 그룹 | 메뉴 | 용도 |
 |------|------|------|
-| Start | 개요, 가이드 | 처음 들어왔을 때 상태와 사용법 확인 |
+| Start | 개요, 프로젝트, 가이드 | 상태 확인, Process Run 시작과 사용법 확인 |
 | Plan | 기획, 변경, 디자인, 산출물 | 요청, 설계, 문서 원문 확인 |
 | Control | 승인, 증거, 지표, 추적 | 운영 통제와 품질 신호 확인 |
 | System | Phase Gate, 작업 큐, 기능, 앱 | 실행 상태와 로컬 서비스 확인 |
@@ -45,7 +66,7 @@ pnpm dev
 ### 메뉴를 빠르게 찾는 법
 
 - 상단 **메뉴 검색**에 `증거`, `Metrics`, `앱`처럼 메뉴명이나 설명 키워드를 입력합니다.
-- **Quick jump**는 매일 가장 자주 쓰는 개요, 디자인, 가이드, 지표로 바로 이동합니다.
+- **Quick jump**는 매일 가장 자주 쓰는 개요, 프로젝트, 가이드, 지표로 바로 이동합니다.
 - 잘 쓰지 않는 그룹은 접어두고, 현재 보고 있는 메뉴가 포함된 그룹은 자동으로 펼쳐진 상태를 유지합니다.
 
 ## 디자인 메뉴 읽는 법
@@ -79,6 +100,7 @@ pnpm dev
 | 명령 | 용도 |
 |------|------|
 | `pnpm check:process` | status, 산출물, trace, snapshot 정합성 검증 |
+| `pnpm check:portability` | Core 계약과 비커머스 Reference 독립성 검증 |
 | `pnpm sync:github-trace` | commit 기준 GitHub CI/PR/Issue/Release 증거 보강 |
 | `pnpm snapshot:metrics` | 현재 Delivery Metrics 기준점 저장 |
 | `pnpm verify` | 워크스페이스, 의존성, 프로세스, 빌드, 린트 전체 검증 |

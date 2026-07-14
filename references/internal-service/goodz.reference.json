@@ -3,7 +3,7 @@
   "id": "internal-service",
   "name": "Goodz Internal Service Reference",
   "domain": "internal-platform",
-  "compatibleCore": "0.1.0",
+  "compatibleCore": "0.2.0",
   "coreChangesRequired": false,
   "typePackage": "@goodz/internal-service-types",
   "apps": [

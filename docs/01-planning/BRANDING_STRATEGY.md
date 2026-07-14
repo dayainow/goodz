@@ -113,9 +113,11 @@ Goodz
 **제공:**
 
 - Process 모델과 버전 설정 스키마
+- Template 기반 Project Run과 Stage·Task·Gate 실행 엔진
 - CLI의 `init`, `adopt`, `verify`
 - Phase Gate 엔진과 기본 템플릿
 - Process Dashboard 기본판
+- 프로젝트 생성, 작업 상태, GO/HOLD/KILL와 감사 이력
 - GitHub 기반 증거 연결 예제
 - Goodz Commerce Reference
 

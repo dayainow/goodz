@@ -19,25 +19,33 @@ import type {
   ProcessIntake,
   ProcessIncidentSeverity,
   ProcessItemStatus,
+  ProcessGateDecision,
   ProcessMetricSnapshot,
   ProcessOperationsOverview,
   ProcessPhase,
   ProcessPlanningChange,
   ProcessPlanningChangeStatus,
+  ProcessRun,
   ProcessStatus,
   ProcessTraceLink,
   ProcessTraceReferenceStatus,
   ProcessTraceStatus,
   ProcessWireframe,
+  ProcessWorkspaceOverview,
   ProcessStoryboard,
 } from "@goodz/process";
 import {
+  createProcessProject,
   createProcessIncident,
+  decideProcessGate,
   fetchProcessDocument,
   fetchProcessMetricSnapshots,
   fetchProcessOperations,
   fetchProcessStatus,
+  fetchProcessWorkspace,
   resolveProcessIncident,
+  updateProcessStage,
+  updateProcessTask,
 } from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
 import { ProgressBar, StatusBadge } from "./components/StatusBadge";
@@ -46,6 +54,7 @@ const MarkdownDocument = lazy(() => import("./components/MarkdownDocument"));
 
 type SectionId =
   | "overview"
+  | "workspace"
   | "intakes"
   | "changes"
   | "design"
@@ -63,6 +72,7 @@ type SectionId =
 
 const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
   { id: "overview", label: "개요", eyebrow: "Overview" },
+  { id: "workspace", label: "프로젝트", eyebrow: "Control Plane" },
   { id: "intakes", label: "기획", eyebrow: "Intake" },
   { id: "changes", label: "변경", eyebrow: "Change" },
   { id: "design", label: "디자인", eyebrow: "Design" },
@@ -83,6 +93,7 @@ const SECTION_MAP = new Map(SECTIONS.map((section) => [section.id, section]));
 
 const SECTION_COPY: Record<SectionId, string> = {
   overview: "현재 상태와 오늘 볼 신호",
+  workspace: "프로젝트 생성과 프로세스 실행",
   intakes: "요청과 아이디어 입력",
   changes: "기획 수정과 의사결정",
   design: "레퍼런스와 와이어프레임",
@@ -107,7 +118,7 @@ const MENU_GROUPS: Array<{
   {
     title: "Start",
     summary: "처음 보는 화면",
-    items: ["overview", "guide"],
+    items: ["overview", "workspace", "guide"],
   },
   {
     title: "Plan",
@@ -132,7 +143,7 @@ const SECTION_GROUP = new Map<SectionId, string>(
   ),
 );
 
-const QUICK_SECTIONS: SectionId[] = ["overview", "design", "guide", "metrics"];
+const QUICK_SECTIONS: SectionId[] = ["overview", "workspace", "guide", "metrics"];
 
 const GUIDE_DOCS = [
   {
@@ -827,7 +838,7 @@ function Sidebar({
 
       <div className="mt-3 hidden shrink-0 border-t border-zinc-200 bg-[#F7F7F7] pt-4 text-xs text-zinc-500 lg:block">
         <p className="font-semibold text-zinc-600">SSOT</p>
-        <p className="mt-1 font-mono">docs/00-process/status.json</p>
+        <p className="mt-1 font-mono">Git documents + Operations DB</p>
       </div>
     </aside>
   );
@@ -2658,6 +2669,384 @@ function DesignSection({
   );
 }
 
+const PROCESS_RUN_LABEL: Record<ProcessRun["status"], string> = {
+  active: "진행 중",
+  blocked: "차단",
+  completed: "완료",
+  cancelled: "종료",
+};
+
+const PROCESS_GATE_LABEL: Record<ProcessGateDecision, string> = {
+  pending: "결정 대기",
+  go: "GO",
+  hold: "HOLD",
+  kill: "KILL",
+};
+
+const PROCESS_GATE_CLASS: Record<ProcessGateDecision, string> = {
+  pending: "border-zinc-200 bg-zinc-50 text-zinc-600",
+  go: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  hold: "border-amber-200 bg-amber-50 text-amber-700",
+  kill: "border-rose-200 bg-rose-50 text-rose-700",
+};
+
+function WorkspaceTaskRow({
+  run,
+  stageId,
+  task,
+  disabled,
+  onSaved,
+}: {
+  run: ProcessRun;
+  stageId: string;
+  task: ProcessRun["stages"][number]["tasks"][number];
+  disabled: boolean;
+  onSaved: (message: string) => Promise<void>;
+}) {
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setSaving(true);
+    setError(null);
+    try {
+      await updateProcessTask(run.id, stageId, task.id, {
+        status: String(form.get("status")) as ProcessItemStatus,
+        assignee: String(form.get("assignee") ?? ""),
+      });
+      await onSaved(`${task.title} 작업이 갱신되었습니다.`);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "작업 저장 실패");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={(event) => void handleSubmit(event)}
+      className="grid gap-3 border-b border-zinc-100 px-4 py-4 last:border-b-0 lg:grid-cols-[minmax(0,1fr)_150px_160px_auto] lg:items-center"
+    >
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          <StatusBadge status={task.status} />
+          <span className="font-mono text-[11px] text-zinc-400">{task.id}</span>
+        </div>
+        <h4 className="mt-2 font-bold text-zinc-950">{task.title}</h4>
+        <p className="mt-1 text-sm leading-6 text-zinc-500">{task.summary}</p>
+      </div>
+      <select
+        name="status"
+        defaultValue={task.status}
+        disabled={disabled || saving}
+        aria-label={`${task.title} 상태`}
+        className="h-10 rounded-xl border border-zinc-200 bg-white px-3 text-sm text-zinc-700 disabled:bg-zinc-100 disabled:text-zinc-400"
+      >
+        {STATUS_ORDER.map((status) => (
+          <option key={status} value={status}>{STATUS_TITLE[status]}</option>
+        ))}
+      </select>
+      <input
+        name="assignee"
+        defaultValue={task.assignee}
+        disabled={disabled || saving}
+        aria-label={`${task.title} 담당자`}
+        placeholder="담당자"
+        className="h-10 rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-700 placeholder:text-zinc-400 disabled:text-zinc-400"
+      />
+      <button
+        type="submit"
+        disabled={disabled || saving}
+        className={["h-10 rounded-xl border px-4 text-xs font-bold disabled:cursor-not-allowed disabled:opacity-40", QUIET_ACTION].join(" ")}
+      >
+        {saving ? "저장 중" : "저장"}
+      </button>
+      {error ? <p className="text-xs text-rose-600 lg:col-span-4">{error}</p> : null}
+    </form>
+  );
+}
+
+function WorkspaceSection({
+  workspace,
+  onRefresh,
+}: {
+  workspace: ProcessWorkspaceOverview;
+  onRefresh: () => Promise<void>;
+}) {
+  const [selectedRunId, setSelectedRunId] = useState("");
+  const [selectedStageId, setSelectedStageId] = useState("");
+  const [gateNote, setGateNote] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const projectsById = useMemo(
+    () => new Map(workspace.projects.map((project) => [project.id, project])),
+    [workspace.projects],
+  );
+  const selectedRun =
+    workspace.runs.find((run) => run.id === selectedRunId) ?? workspace.runs[0] ?? null;
+  const selectedProject = selectedRun ? projectsById.get(selectedRun.projectId) : null;
+  const selectedStage = selectedRun
+    ? selectedRun.stages.find((stage) => stage.id === selectedStageId) ??
+      selectedRun.stages.find((stage) => stage.id === selectedRun.currentStageId) ??
+      selectedRun.stages[0]
+    : null;
+  const runIsTerminal = selectedRun
+    ? selectedRun.status === "completed" || selectedRun.status === "cancelled"
+    : false;
+
+  const refreshWithMessage = async (nextMessage: string) => {
+    await onRefresh();
+    setMessage(nextMessage);
+  };
+
+  const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
+    setSubmitting(true);
+    setMessage(null);
+    try {
+      const created = await createProcessProject({
+        name: String(form.get("name") ?? ""),
+        summary: String(form.get("summary") ?? ""),
+        owner: String(form.get("owner") ?? ""),
+        templateId: String(form.get("templateId") ?? ""),
+      });
+      setSelectedRunId(created.run.id);
+      setSelectedStageId(created.run.currentStageId ?? "");
+      formElement.reset();
+      await refreshWithMessage(`${created.project.name} 프로젝트가 시작되었습니다.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "프로젝트 생성 실패");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleStageStatus = async (status: "in_progress" | "blocked") => {
+    if (!selectedRun || !selectedStage) return;
+    setSubmitting(true);
+    setMessage(null);
+    try {
+      await updateProcessStage(selectedRun.id, selectedStage.id, { status });
+      await refreshWithMessage(
+        status === "blocked" ? `${selectedStage.name} 단계를 차단했습니다.` : `${selectedStage.name} 단계를 시작했습니다.`,
+      );
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "단계 변경 실패");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGateDecision = async (decision: "go" | "hold" | "kill") => {
+    if (!selectedRun || !selectedStage) return;
+    setSubmitting(true);
+    setMessage(null);
+    try {
+      const run = await decideProcessGate(selectedRun.id, selectedStage.id, {
+        decision,
+        note: gateNote,
+      });
+      setSelectedStageId(run.currentStageId ?? selectedStage.id);
+      setGateNote("");
+      await refreshWithMessage(`${selectedStage.name} Gate가 ${decision.toUpperCase()}로 기록되었습니다.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Gate 결정 실패");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const completedTasks = selectedRun
+    ? selectedRun.stages.flatMap((stage) => stage.tasks).filter((task) => task.status === "done").length
+    : 0;
+  const totalTasks = selectedRun
+    ? selectedRun.stages.reduce((sum, stage) => sum + stage.tasks.length, 0)
+    : 0;
+  const allStageTasksDone = selectedStage?.tasks.every((task) => task.status === "done") ?? false;
+
+  return (
+    <div className="space-y-6">
+      <section className="grid gap-4 md:grid-cols-3">
+        <Metric label="Projects" value={workspace.projects.length} tone="violet" />
+        <Metric label="Active runs" value={workspace.runs.filter((run) => run.status === "active").length} tone="green" />
+        <Metric label="Decision queue" value={workspace.runs.flatMap((run) => run.stages).filter((stage) => stage.status === "in_progress" && stage.gate.decision === "pending").length} tone="amber" />
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+        <div className="space-y-4">
+          <form onSubmit={(event) => void handleCreate(event)} className={["p-5", CARD_SURFACE].join(" ")}>
+            <p className={META_LABEL}>New process run</p>
+            <h3 className="mt-2 text-lg font-bold text-zinc-950">프로젝트 시작</h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-500">템플릿을 선택하면 단계와 작업이 실행 가능한 상태로 복제됩니다.</p>
+            <label className="mt-4 block text-xs font-semibold text-zinc-600" htmlFor="project-name">프로젝트명</label>
+            <input id="project-name" name="name" required className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" placeholder="예: 신규 B2B 포털" />
+            <label className="mt-3 block text-xs font-semibold text-zinc-600" htmlFor="project-summary">목표</label>
+            <textarea id="project-summary" name="summary" required rows={3} className="mt-2 w-full resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm leading-6" placeholder="해결할 문제와 기대 결과" />
+            <label className="mt-3 block text-xs font-semibold text-zinc-600" htmlFor="project-owner">Owner</label>
+            <input id="project-owner" name="owner" required className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" placeholder="팀 또는 담당자" />
+            <label className="mt-3 block text-xs font-semibold text-zinc-600" htmlFor="process-template">프로세스 템플릿</label>
+            <select id="process-template" name="templateId" required className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm">
+              {workspace.templates.map((template) => (
+                <option key={template.id} value={template.id}>{template.name} · v{template.version}</option>
+              ))}
+            </select>
+            <button type="submit" disabled={submitting || workspace.templates.length === 0} className="mt-4 w-full rounded-xl bg-zinc-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-zinc-800 disabled:opacity-40">
+              {submitting ? "처리 중…" : "프로젝트 시작"}
+            </button>
+          </form>
+
+          <div className={CARD_SURFACE}>
+            <div className="border-b border-zinc-100 px-4 py-3">
+              <p className={META_LABEL}>Project portfolio</p>
+              <h3 className="mt-1 font-bold text-zinc-950">실행 목록</h3>
+            </div>
+            {workspace.runs.length ? (
+              <div className="p-2">
+                {workspace.runs.map((run) => {
+                  const project = projectsById.get(run.projectId);
+                  const isActive = run.id === selectedRun?.id;
+                  return (
+                    <button
+                      key={run.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedRunId(run.id);
+                        setSelectedStageId(run.currentStageId ?? run.stages[0]?.id ?? "");
+                      }}
+                      className={["mb-2 w-full rounded-xl border px-3 py-3 text-left last:mb-0", isActive ? "border-violet-300 bg-violet-50/50" : "border-transparent hover:bg-zinc-100"].join(" ")}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-bold text-zinc-950">{project?.name}</span>
+                        <span className="text-xs font-semibold text-zinc-500">{PROCESS_RUN_LABEL[run.status]}</span>
+                      </div>
+                      <p className="mt-1 truncate text-xs text-zinc-500">{project?.owner} · {run.stages.find((stage) => stage.id === run.currentStageId)?.name ?? "종료"}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="px-4 py-8 text-center text-sm text-zinc-500">첫 프로젝트를 시작하세요.</p>
+            )}
+          </div>
+        </div>
+
+        {selectedRun && selectedProject && selectedStage ? (
+          <div className="space-y-4">
+            <section className={["p-5", CARD_SURFACE].join(" ")}>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="font-mono text-xs font-semibold text-violet-700">{selectedRun.id}</p>
+                  <h3 className="mt-1 text-2xl font-bold tracking-tight text-zinc-950">{selectedProject.name}</h3>
+                  <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-500">{selectedProject.summary}</p>
+                </div>
+                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-bold text-zinc-700">{PROCESS_RUN_LABEL[selectedRun.status]}</span>
+              </div>
+              <div className="mt-5 grid gap-2 md:grid-cols-5">
+                {selectedRun.stages.map((stage, index) => (
+                  <button
+                    key={stage.id}
+                    type="button"
+                    onClick={() => setSelectedStageId(stage.id)}
+                    className={["rounded-xl border px-3 py-3 text-left transition", stage.id === selectedStage.id ? "border-violet-400 bg-white shadow-sm" : stage.status === "done" ? "border-emerald-200 bg-emerald-50" : "border-zinc-200 bg-zinc-50 hover:bg-zinc-100"].join(" ")}
+                  >
+                    <span className="font-mono text-[11px] font-bold text-zinc-400">P{index}</span>
+                    <span className="mt-1 block text-sm font-bold text-zinc-900">{stage.name}</span>
+                    <span className="mt-1 block text-[11px] text-zinc-500">{STATUS_TITLE[stage.status]}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-100 pt-4 text-xs text-zinc-500">
+                <span>Owner · <strong className="text-zinc-800">{selectedProject.owner}</strong></span>
+                <span>Task progress · <strong className="text-zinc-800">{completedTasks}/{totalTasks}</strong></span>
+              </div>
+            </section>
+
+            <section className={CARD_SURFACE}>
+              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-zinc-100 px-5 py-4">
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StatusBadge status={selectedStage.status} />
+                    <span className={["rounded-full border px-2.5 py-0.5 text-xs font-semibold", PROCESS_GATE_CLASS[selectedStage.gate.decision]].join(" ")}>{PROCESS_GATE_LABEL[selectedStage.gate.decision]}</span>
+                  </div>
+                  <h3 className="mt-2 text-xl font-bold text-zinc-950">{selectedStage.name}</h3>
+                  <p className="mt-1 text-sm leading-6 text-zinc-500">{selectedStage.summary}</p>
+                </div>
+                {!runIsTerminal && selectedStage.status !== "done" ? (
+                  <div className="flex gap-2">
+                    <button type="button" disabled={submitting} onClick={() => void handleStageStatus("in_progress")} className={["rounded-lg border px-3 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>단계 시작</button>
+                    <button type="button" disabled={submitting} onClick={() => void handleStageStatus("blocked")} className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-700 hover:bg-amber-100">차단</button>
+                  </div>
+                ) : null}
+              </div>
+              <div>
+                {selectedStage.tasks.map((task) => (
+                  <WorkspaceTaskRow
+                    key={`${task.id}-${task.updatedAt}`}
+                    run={selectedRun}
+                    stageId={selectedStage.id}
+                    task={task}
+                    disabled={runIsTerminal || selectedStage.status === "done"}
+                    onSaved={refreshWithMessage}
+                  />
+                ))}
+              </div>
+            </section>
+
+            <section className={["p-5", CARD_SURFACE].join(" ")}>
+              <p className={META_LABEL}>Decision gate</p>
+              <div className="mt-2 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+                <div>
+                  <h3 className="text-lg font-bold text-zinc-950">GO / HOLD / KILL</h3>
+                  <p className="mt-1 text-sm leading-6 text-zinc-500">GO는 모든 작업이 완료되어야 하며 다음 단계를 자동으로 시작합니다. HOLD와 KILL은 사유가 필요합니다.</p>
+                  <textarea value={gateNote} onChange={(event) => setGateNote(event.target.value)} disabled={runIsTerminal || selectedStage.status === "done"} rows={2} className="mt-3 w-full resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm leading-6" placeholder="결정 근거 또는 보완 조건" />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" disabled={submitting || runIsTerminal || selectedStage.status === "done" || !allStageTasksDone} onClick={() => void handleGateDecision("go")} className="rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-35">GO</button>
+                  <button type="button" disabled={submitting || runIsTerminal || selectedStage.status === "done"} onClick={() => void handleGateDecision("hold")} className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700 hover:bg-amber-100 disabled:opacity-35">HOLD</button>
+                  <button type="button" disabled={submitting || runIsTerminal || selectedStage.status === "done"} onClick={() => void handleGateDecision("kill")} className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-bold text-rose-700 hover:bg-rose-100 disabled:opacity-35">KILL</button>
+                </div>
+              </div>
+              {message ? <p className="mt-3 rounded-lg bg-zinc-100 px-3 py-2 text-xs leading-5 text-zinc-700">{message}</p> : null}
+            </section>
+          </div>
+        ) : (
+          <section className={["flex min-h-[420px] items-center justify-center p-8 text-center", CARD_SURFACE].join(" ")}>
+            <div>
+              <p className="text-lg font-bold text-zinc-900">실행 중인 프로젝트가 없습니다.</p>
+              <p className="mt-2 text-sm text-zinc-500">왼쪽에서 템플릿을 선택해 첫 프로세스를 시작하세요.</p>
+            </div>
+          </section>
+        )}
+      </section>
+
+      {workspace.auditEvents.length ? (
+        <section className={CARD_SURFACE}>
+          <div className="border-b border-zinc-100 px-5 py-4">
+            <p className={META_LABEL}>Append-only activity</p>
+            <h3 className="mt-1 font-bold text-zinc-950">최근 실행 이력</h3>
+          </div>
+          <ul className="grid gap-px bg-zinc-100 md:grid-cols-2">
+            {workspace.auditEvents.slice(0, 8).map((event) => (
+              <li key={event.id} className="bg-white px-5 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-violet-700">{event.entityType} · {event.action}</span>
+                  <span className="font-mono text-[11px] text-zinc-400">{formatTimestamp(event.createdAt)}</span>
+                </div>
+                <p className="mt-2 text-sm text-zinc-700">{event.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
 const INCIDENT_SEVERITY_LABEL: Record<ProcessIncidentSeverity, string> = {
   low: "낮음",
   medium: "보통",
@@ -2886,6 +3275,7 @@ export default function App() {
   const [status, setStatus] = useState<ProcessStatus | null>(null);
   const [metricSnapshots, setMetricSnapshots] = useState<ProcessMetricSnapshot[]>([]);
   const [operations, setOperations] = useState<ProcessOperationsOverview | null>(null);
+  const [workspace, setWorkspace] = useState<ProcessWorkspaceOverview | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<SectionId>("overview");
@@ -2893,14 +3283,16 @@ export default function App() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const [data, snapshots, operationsData] = await Promise.all([
+      const [data, snapshots, operationsData, workspaceData] = await Promise.all([
         fetchProcessStatus(),
         fetchProcessMetricSnapshots(),
         fetchProcessOperations(),
+        fetchProcessWorkspace(),
       ]);
       setStatus(data);
       setMetricSnapshots(snapshots.snapshots);
       setOperations(operationsData);
+      setWorkspace(workspaceData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
@@ -2910,6 +3302,10 @@ export default function App() {
 
   const refreshOperations = useCallback(async () => {
     setOperations(await fetchProcessOperations());
+  }, []);
+
+  const refreshWorkspace = useCallback(async () => {
+    setWorkspace(await fetchProcessWorkspace());
   }, []);
 
   useEffect(() => {
@@ -2948,7 +3344,7 @@ export default function App() {
     );
   }
 
-  if (error || !status) {
+  if (error || !status || !workspace) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6">
         <p className="text-rose-600">API 오류: {error ?? "no data"}</p>
@@ -3049,6 +3445,10 @@ export default function App() {
             metricSnapshots={metricSnapshots}
             onSelect={setActiveSection}
           />
+        )}
+
+        {activeSection === "workspace" && (
+          <WorkspaceSection workspace={workspace} onRefresh={refreshWorkspace} />
         )}
 
         {activeSection === "intakes" && (

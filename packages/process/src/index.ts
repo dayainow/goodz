@@ -265,6 +265,128 @@ export interface CreateProcessIncidentRequest {
   occurredAt?: string;
 }
 
+export type ProcessProjectStatus = "active" | "archived";
+export type ProcessRunStatus = "active" | "blocked" | "completed" | "cancelled";
+export type ProcessGateDecision = "pending" | "go" | "hold" | "kill";
+
+export interface ProcessTaskTemplate {
+  id: string;
+  title: string;
+  summary: string;
+}
+
+export interface ProcessStageTemplate {
+  id: string;
+  name: string;
+  summary: string;
+  position: number;
+  tasks: ProcessTaskTemplate[];
+}
+
+export interface ProcessTemplate {
+  id: string;
+  name: string;
+  version: number;
+  summary: string;
+  createdAt: string;
+  stages: ProcessStageTemplate[];
+}
+
+export interface ProcessProject {
+  id: string;
+  name: string;
+  summary: string;
+  owner: string;
+  status: ProcessProjectStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProcessTaskRun {
+  id: string;
+  templateTaskId: string;
+  title: string;
+  summary: string;
+  status: ProcessItemStatus;
+  assignee: string;
+  position: number;
+  updatedAt: string;
+}
+
+export interface ProcessGateRun {
+  id: string;
+  decision: ProcessGateDecision;
+  note: string;
+  decidedAt?: string;
+  updatedAt: string;
+}
+
+export interface ProcessStageRun {
+  id: string;
+  templateStageId: string;
+  name: string;
+  summary: string;
+  status: ProcessItemStatus;
+  position: number;
+  tasks: ProcessTaskRun[];
+  gate: ProcessGateRun;
+  updatedAt: string;
+}
+
+export interface ProcessRun {
+  id: string;
+  projectId: string;
+  templateId: string;
+  templateVersion: number;
+  status: ProcessRunStatus;
+  currentStageId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  stages: ProcessStageRun[];
+}
+
+export interface ProcessAuditEvent {
+  id: string;
+  entityType: "project" | "run" | "stage" | "task" | "gate";
+  entityId: string;
+  action: string;
+  detail: string;
+  createdAt: string;
+}
+
+export interface ProcessWorkspaceOverview {
+  templates: ProcessTemplate[];
+  projects: ProcessProject[];
+  runs: ProcessRun[];
+  auditEvents: ProcessAuditEvent[];
+}
+
+export interface CreateProcessProjectRequest {
+  name: string;
+  summary: string;
+  owner: string;
+  templateId: string;
+}
+
+export interface CreateProcessProjectResponse {
+  project: ProcessProject;
+  run: ProcessRun;
+}
+
+export interface UpdateProcessTaskRequest {
+  status: ProcessItemStatus;
+  assignee?: string;
+}
+
+export interface UpdateProcessStageRequest {
+  status: "in_progress" | "blocked";
+}
+
+export interface DecideProcessGateRequest {
+  decision: Exclude<ProcessGateDecision, "pending">;
+  note: string;
+}
+
 export interface ProcessOperationsOverview {
   storage: {
     engine: "sqlite";

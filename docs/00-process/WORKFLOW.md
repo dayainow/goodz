@@ -5,6 +5,18 @@
 
 실제 제품팀이 쓰는 **기획 → 디자인 → 개발 → QA → 배포** 흐름을 Goodz에 맞게 정의합니다.
 
+## Dashboard 실행 루프
+
+v0.21부터 이 문서의 P0–P4 정의는 Dashboard에서 실행 가능한 기본 Template로 제공됩니다.
+
+1. **프로젝트** 메뉴에서 이름, 목표, Owner와 Template을 선택합니다.
+2. 현재 Stage의 Task 상태와 담당자를 갱신합니다.
+3. 모든 필수 Task를 완료한 뒤 Gate 근거를 입력합니다.
+4. GO는 다음 Stage를 시작하고, HOLD는 차단하며, KILL은 Run을 종료합니다.
+5. 실행 command는 SQLite에, 장문 산출물과 외부 증거는 Git/GitHub에 남깁니다.
+
+Dashboard의 Process Run은 이 문서의 운영 실행 상태이며, `status.json`은 Goodz 자체 개발 현황과 기존 Trace projection으로 유지합니다.
+
 ## 역할
 
 | 역할 | 담당 산출물 | 도구 |

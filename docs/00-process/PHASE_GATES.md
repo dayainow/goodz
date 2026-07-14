@@ -33,6 +33,10 @@
 - [x] GA compliance (해당 시)
 - [x] `STAGING_RUNBOOK.md` + `pnpm smoke:staging` 준비
 - [x] SQLite migration·seed·incident lifecycle 로컬 검증
+- [x] Writable Process project/task/GO lifecycle 로컬 검증
+- [x] 미완료 Task가 있는 Stage의 GO 차단 검증
+- [x] Gate GO 이후 다음 Stage 자동 시작과 audit event 검증
+- [x] 현재 Stage가 아닌 단계의 시작·변경 차단 검증
 - [x] Process OS 영구 디스크 배포 구성 문서화
 - [ ] 외부 URL에서 durability `persistent`와 재배포 보존 확인
 

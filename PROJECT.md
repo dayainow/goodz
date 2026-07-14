@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S22 Portability Proof v0.20** ✅
+## 현재 스프린트: **S23 Writable Process MVP v0.21** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -29,6 +29,7 @@
 | **SQLite Operations** | ✅ 문서 인덱스·incident/MTTR·Render 영구 디스크 배포 구성 |
 | **Platform Boundary** | ✅ `@goodz/process` Core 계약·Commerce Reference·API 라우터 경계·설정 스키마 |
 | **Portability Proof** | ✅ Internal Service Reference·Core SHA-256 기준선·`check:portability` |
+| **Writable Process** | ✅ Project·Run·Stage·Task·Gate command·SQLite audit |
 
 ## 현재 단계
 
@@ -111,6 +112,9 @@
 - [x] S21: `goodz.config.json` + JSON Schema + ADR-003
 - [x] S22: Internal Service Reference 자체 타입·API·P0–P4 산출물
 - [x] S22: Core 무변경 SHA-256 + Commerce 의존 0건 자동 검증
+- [x] S23: 프로젝트 생성과 P0–P4 Template 실행
+- [x] S23: Task 담당자·상태와 Stage 시작·차단 command
+- [x] S23: GO/HOLD/KILL Gate guard·자동 진행·감사 이력
 
 ## 풀 프로세스
 

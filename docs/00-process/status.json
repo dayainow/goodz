@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.20",
+  "systemVersion": "v0.21",
   "sprint": {
-    "id": "S22",
-    "name": "시스템 v0.20 — Portability Proof",
+    "id": "S23",
+    "name": "시스템 v0.21 — Writable Process MVP",
     "status": "done",
-    "goal": "비커머스 Internal Service Reference를 Core 수정 없이 추가하고 이식성을 자동 검증"
+    "goal": "사용자가 프로젝트·단계·작업·Gate를 Dashboard에서 직접 관리하는 실행 루프 제공"
   },
   "phases": [
     {
@@ -115,6 +115,12 @@
           "label": "프로세스 대시보드",
           "status": "done",
           "doc": "docs/00-process/PROCESS_DASHBOARD.md"
+        },
+        {
+          "id": "p2-writable-process",
+          "label": "Writable Process command UI",
+          "status": "done",
+          "doc": "docs/03-engineering/ADR/004-writable-process-control-plane.md"
         },
         {
           "id": "p2-traceability",
@@ -453,6 +459,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-portability-proof-v020.md",
       "nextAction": "goodz init/adopt/verify CLI와 clean-clone 도입 검증"
+    },
+    {
+      "id": "IN-020",
+      "title": "Writable Process MVP v0.21",
+      "source": "사용자 요청 · Dashboard를 프로세스 관리 제품으로 확장",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-writable-process-v021.md",
+      "nextAction": "Phase 0-8 Template과 산출물·증거 command 추가"
     }
   ],
   "deliverables": [
@@ -855,6 +870,16 @@
       "doc": "docs/00-process/PORTABILITY.md",
       "owner": "Engineering/QA",
       "summary": "Core hash, Commerce 의존 0건, P0-P4 산출물과 runtime fixture 자동 검증"
+    },
+    {
+      "id": "D-41",
+      "title": "Writable Process Control Plane",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/004-writable-process-control-plane.md",
+      "owner": "Product/Engineering",
+      "summary": "Template 기반 Project Run, Task command, GO/HOLD/KILL와 audit 실행 모델"
     }
   ],
   "approvals": [
@@ -1409,6 +1434,29 @@
       "summary": "Core 무변경 비커머스 이식성 증거 승인",
       "doc": "docs/00-process/PORTABILITY.md",
       "traceLinkIds": ["TL-019"]
+    },
+    {
+      "id": "AP-020",
+      "target": "S23 Writable Process MVP v0.21",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Product", "Engineering", "QA"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "Dashboard를 Process Run의 command UI로 확장",
+      "criteria": [
+        "프로젝트가 Template에서 실행됨",
+        "Task 상태와 담당자를 변경할 수 있음",
+        "미완료 Task가 있으면 GO가 차단됨",
+        "GO가 다음 Stage를 자동 시작함",
+        "HOLD/KILL 근거와 audit event가 기록됨"
+      ],
+      "summary": "Writable Process 최소 실행 루프 승인",
+      "doc": "docs/03-engineering/ADR/004-writable-process-control-plane.md",
+      "traceLinkIds": ["TL-020"]
     }
   ],
   "planningChanges": [
@@ -1731,6 +1779,22 @@
       "doc": "docs/01-planning/changes/2026-07-14-portability-proof-v020.md",
       "summary": "Internal Service Reference와 Core hash 기반 이식성 검사를 전체 verify에 추가",
       "decision": "비커머스 Reference 성공 후 v1.0 차단 조건을 CLI와 clean-clone으로 이동"
+    },
+    {
+      "id": "CR-020",
+      "title": "Dashboard Writable Process 전환",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/OPERATIONS_STORE.md",
+        "docs/03-engineering/API.md",
+        "docs/03-engineering/ADR/004-writable-process-control-plane.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-writable-process-v021.md",
+      "summary": "Project, Run, Stage, Task와 Gate를 SQLite command model로 추가",
+      "decision": "문서 projection은 유지하고 가변 실행 상태만 DB command로 관리"
     }
   ],
   "designReferences": [
@@ -2763,6 +2827,28 @@
       },
       "summary": "Internal Service Reference로 Core 수정 0건과 Commerce 의존 0건을 증명",
       "nextAction": "goodz init/adopt/verify CLI와 clean-clone CI 증거 연결"
+    },
+    {
+      "id": "TL-020",
+      "title": "Writable Process MVP v0.21",
+      "status": "partial",
+      "sourceIds": ["IN-020"],
+      "changeIds": ["CR-020"],
+      "deliverableIds": ["D-41"],
+      "approvalIds": ["AP-020"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "not_required" },
+      "commits": [],
+      "ciRuns": [],
+      "release": { "label": "Release", "status": "pending" },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:sqlite && pnpm verify",
+        "checkedAt": "2026-07-14T10:00:00Z",
+        "summary": "Project 생성, Task 완료, GO와 다음 Stage 자동 시작 lifecycle 통과"
+      },
+      "summary": "Dashboard에서 Process Run을 생성하고 Task·Gate를 관리하는 command loop",
+      "nextAction": "Phase 0-8 Template과 Deliverable/Evidence command 추가"
     }
   ],
   "features": [

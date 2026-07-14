@@ -6,7 +6,7 @@ Base URL: `http://localhost:4000` (개발)
 
 | 컨텍스트 | 타입 SSOT | 주요 타입 |
 |---|---|---|
-| Goodz Core | `@goodz/process` | `ProcessStatus`, `ProcessOperationsOverview`, `ProcessIncident` |
+| Goodz Core | `@goodz/process` | `ProcessStatus`, `ProcessWorkspaceOverview`, `ProcessRun`, `ProcessOperationsOverview` |
 | Goodz Commerce Reference | `@goodz/types` | `Product`, `CartView`, `CheckoutResult` |
 
 현재 두 컨텍스트는 같은 Express 런타임을 사용하지만 `routes/process.ts`와 `routes/commerce.ts`로 분리되어 있다.
@@ -147,6 +147,57 @@ Delivery Metrics 추세용 snapshot — `docs/00-process/metrics-snapshots.json`
 
 SQLite 저장 엔진·내구성·schema version, 문서 인덱스 수, incident/MTTR 요약과 최근 사건을 반환합니다.
 
+### `GET /api/process/workspace`
+
+**Response:** `ProcessWorkspaceOverview`
+
+사용 가능한 Template, Project, Process Run과 최근 audit event를 반환합니다.
+
+### `POST /api/process/projects`
+
+**Body:** `CreateProcessProjectRequest`
+
+```json
+{
+  "name": "신규 B2B 포털",
+  "summary": "파트너 주문 업무를 한 흐름으로 통합",
+  "owner": "Platform Team",
+  "templateId": "TPL-GOODZ-P0-P4-V1"
+}
+```
+
+**Response:** `201` + `{ project: ProcessProject, run: ProcessRun }`
+
+Template version의 Stage, Task와 Gate를 새 실행 인스턴스로 복제하고 첫 Stage를 시작합니다.
+
+### `PATCH /api/process/runs/:runId/stages/:stageId`
+
+**Body:** `{ "status": "in_progress" | "blocked" }`
+
+Stage와 Run 상태를 함께 갱신하고 audit event를 기록합니다.
+
+### `PATCH /api/process/runs/:runId/stages/:stageId/tasks/:taskId`
+
+**Body:** `UpdateProcessTaskRequest`
+
+```json
+{ "status": "done", "assignee": "PM" }
+```
+
+Task 상태와 담당자를 변경합니다. `blocked` Task는 Stage와 Run도 차단합니다.
+
+### `POST /api/process/runs/:runId/stages/:stageId/gate-decisions`
+
+**Body:** `DecideProcessGateRequest`
+
+```json
+{ "decision": "go", "note": "PRD와 성공 기준 승인" }
+```
+
+- `go`: 모든 Task가 완료된 경우 현재 Stage를 완료하고 다음 Stage를 시작합니다.
+- `hold`: 근거를 기록하고 현재 Run을 차단합니다.
+- `kill`: 근거를 기록하고 현재 Run을 종료합니다.
+
 ### `GET /api/process/incidents`
 
 **Response:** `ProcessIncident[]`
@@ -183,7 +234,7 @@ SQLite 저장 엔진·내구성·schema version, 문서 인덱스 수, incident/
 | `GOODZ_BASIC_AUTH_USER` | 없음 | 외부 Process OS 보호 계정 |
 | `GOODZ_BASIC_AUTH_PASSWORD` | 없음 | 외부 Process OS 보호 비밀번호 |
 
-API 시작 시 schema migration과 `docs/**/*.md` 문서 인덱스 동기화를 수행합니다.
+API 시작 시 schema migration, 기본 P0–P4 Template seed와 `docs/**/*.md` 문서 인덱스 동기화를 수행합니다.
 Basic Auth 값은 둘 다 있을 때 전체 서비스에 적용되고, 하나만 있으면 설정 오류로 503을 반환합니다.
 
 ## 변경 절차

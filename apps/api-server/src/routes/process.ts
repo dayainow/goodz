@@ -1,11 +1,22 @@
 import { Router } from "express";
 import type { Router as ExpressRouter } from "express";
-import type { CreateProcessIncidentRequest } from "@goodz/process";
+import type {
+  CreateProcessIncidentRequest,
+  CreateProcessProjectRequest,
+  DecideProcessGateRequest,
+  UpdateProcessStageRequest,
+  UpdateProcessTaskRequest,
+} from "@goodz/process";
 import {
+  createProcessProject,
   createIncident,
+  decideProcessGate,
   listIncidents,
   loadOperationsOverview,
+  loadProcessWorkspace,
   resolveIncident,
+  updateProcessStage,
+  updateProcessTask,
 } from "../data/operationsStore.js";
 import {
   loadProcessDocument,
@@ -14,6 +25,9 @@ import {
 } from "../data/processStatus.js";
 
 const incidentSeverities = new Set(["low", "medium", "high", "critical"]);
+const taskStatuses = new Set(["done", "in_progress", "pending", "blocked"]);
+const stageStatuses = new Set(["in_progress", "blocked"]);
+const gateDecisions = new Set(["go", "hold", "kill"]);
 
 export const processRouter: ExpressRouter = Router();
 
@@ -40,6 +54,84 @@ processRouter.get("/process/metrics-snapshots", (_req, res) => {
 processRouter.get("/process/operations", (_req, res) => {
   res.json(loadOperationsOverview());
 });
+
+processRouter.get("/process/workspace", (_req, res) => {
+  res.json(loadProcessWorkspace());
+});
+
+processRouter.post("/process/projects", (req, res) => {
+  const body = req.body as CreateProcessProjectRequest;
+  if (
+    !body?.name?.trim() ||
+    !body?.summary?.trim() ||
+    !body?.owner?.trim() ||
+    !body?.templateId?.trim()
+  ) {
+    res.status(400).json({ message: "name, summary, owner, and templateId are required" });
+    return;
+  }
+  try {
+    res.status(201).json(createProcessProject(body));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to create process project";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.patch("/process/runs/:runId/stages/:stageId", (req, res) => {
+  const body = req.body as UpdateProcessStageRequest;
+  if (!body || !stageStatuses.has(body.status)) {
+    res.status(400).json({ message: "valid stage status is required" });
+    return;
+  }
+  try {
+    res.json(updateProcessStage(req.params.runId, req.params.stageId, body));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to update process stage";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.patch(
+  "/process/runs/:runId/stages/:stageId/tasks/:taskId",
+  (req, res) => {
+    const body = req.body as UpdateProcessTaskRequest;
+    if (!body || !taskStatuses.has(body.status)) {
+      res.status(400).json({ message: "valid task status is required" });
+      return;
+    }
+    try {
+      res.json(
+        updateProcessTask(
+          req.params.runId,
+          req.params.stageId,
+          req.params.taskId,
+          body,
+        ),
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to update process task";
+      res.status(400).json({ message });
+    }
+  },
+);
+
+processRouter.post(
+  "/process/runs/:runId/stages/:stageId/gate-decisions",
+  (req, res) => {
+    const body = req.body as DecideProcessGateRequest;
+    if (!body || !gateDecisions.has(body.decision) || typeof body.note !== "string") {
+      res.status(400).json({ message: "valid decision and note are required" });
+      return;
+    }
+    try {
+      res.json(decideProcessGate(req.params.runId, req.params.stageId, body));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to decide process gate";
+      res.status(400).json({ message });
+    }
+  },
+);
 
 processRouter.get("/process/incidents", (_req, res) => {
   res.json({ incidents: listIncidents() });

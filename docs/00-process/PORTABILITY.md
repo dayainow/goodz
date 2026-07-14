@@ -7,7 +7,7 @@ Goodz Core가 Commerce 도메인에 결합되지 않았음을 비커머스 Refer
 | 항목 | 값 |
 |---|---|
 | 기준 커밋 | `aa6c1a9` — Goodz Core와 레퍼런스 경계 분리 |
-| Core 패키지 | `@goodz/process` v0.1.0 |
+| Core 패키지 | `@goodz/process` v0.2.0 |
 | 계약 파일 | `packages/process/src/index.ts` |
 | SHA-256 | `64560929bcc553c66dcf39299c604c95a25f784ad9454fc8167f71940f82aa28` |
 | 비커머스 증거 | `references/internal-service` |
@@ -32,7 +32,7 @@ pnpm check:portability
 ## 이식성 결과
 
 ```text
-Goodz Core v0.1.0       변경 0건
+Goodz Core v0.2.0       기준선 일치
 Internal Service 타입   신규 독립 패키지
 Internal Service API    신규 독립 앱
 P0–P4 산출물            5종 완료

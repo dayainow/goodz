@@ -335,3 +335,23 @@ Phase·승인·산출물은 Git 기반 문서가 추적에 유리하지만, inci
 - 화이트 테마의 색 온도가 일관되고 CTA 위계는 indicator와 shadow로 유지됩니다.
 - 상태 의미를 잃지 않으면서 장식용 pastel 반복을 제거합니다.
 - PRD의 상위 디자인 원칙과 화면별 구현 지시가 같은 기준을 사용합니다.
+
+## DEC-020 — Writable Process Command Model
+
+### 배경
+
+문서와 `status.json` projection만으로는 사용자가 Dashboard에서 프로젝트를 시작하거나 Task와 Gate를 관리할 수 없습니다. 반대로 모든 Markdown을 DB로 옮기면 Git 기반 추적성과 기존 산출물 계약을 잃습니다.
+
+### 결정
+
+- 장문 문서, 승인·산출물과 외부 증거는 기존 Git SSOT를 유지합니다.
+- 프로젝트 실행의 Project, Run, Stage, Task, Gate와 audit event는 SQLite를 기준 저장소로 사용합니다.
+- Dashboard는 Process API에 command를 보내고 상태 전이 검증은 서버가 수행합니다.
+- GO는 모든 Task 완료를 요구하며 다음 Stage를 자동 시작합니다.
+- 새로운 산업별 프로세스는 Core 분기가 아니라 Template version으로 추가합니다.
+
+### 영향
+
+- Process Dashboard가 관찰 화면에서 실제 Process Control Plane으로 확장됩니다.
+- 로컬 Core는 단일 SQLite 인스턴스를 유지하고 Cloud는 PostgreSQL/Worker로 같은 계약을 확장할 수 있습니다.
+- Template Builder, Deliverable/Evidence command와 RBAC가 다음 제품 단계가 됩니다.

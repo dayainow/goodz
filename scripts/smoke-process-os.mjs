@@ -40,6 +40,15 @@ async function main() {
     }
   });
 
+  await getJson("/api/process/workspace", (data) => {
+    if (!Array.isArray(data?.templates) || data.templates.length === 0) {
+      throw new Error("process workspace has no templates");
+    }
+    if (!Array.isArray(data?.projects) || !Array.isArray(data?.runs)) {
+      throw new Error("process workspace projection is invalid");
+    }
+  });
+
   const page = await request();
   const html = await page.text();
   if (!page.ok || !html.includes("Process Dashboard")) {

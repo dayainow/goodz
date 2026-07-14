@@ -28,6 +28,7 @@
 | **v0.18** | SQLite Operations: 문서 인덱스 + incident/MTTR + 영구 디스크 배포 | ✅ |
 | **v0.19** | Platform Boundary: Core 모델 + Commerce Reference + API 모듈 경계 | ✅ |
 | **v0.20** | Portability Proof: 비커머스 Internal Service Reference + Core 무변경 검증 | ✅ |
+| **v0.21** | Writable Process MVP: Project·Run·Task·Gate command + audit | ✅ |
 | **v1.0** | 설치 가능한 Goodz Core: CLI + config migration + clean-clone 도입 | ⚪ |
 
 ## 전체 타임라인
@@ -36,7 +37,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process
 ```
 
 ---
@@ -300,6 +301,17 @@ Week 1
 
 ---
 
+### Sprint S23 — Writable Process MVP
+
+- `@goodz/process`에 Template, Project, Run, Stage, Task, Gate, Audit 계약 추가
+- SQLite schema v2와 기본 P0–P4 Template seed
+- 프로젝트 생성, 단계·작업 변경, GO/HOLD/KILL command API
+- Process Dashboard 프로젝트 관리 화면과 append-only 실행 이력
+- `pnpm check:sqlite`에서 작업 완료 → GO → 다음 단계 시작 lifecycle 검증
+- 다음 Gate: Phase 0–8 사용자 Template과 산출물·증거 command 추가
+
+---
+
 ## 의존성 그래프
 
 ```mermaid
@@ -346,8 +358,9 @@ flowchart LR
 23. ✅ v0.18: SQLite Operations
 24. ✅ v0.19: Goodz Core / Commerce Reference 경계 추출
 25. ✅ v0.20: Internal Service Reference + Core 무변경 이식성 증거
-26. ⚪ v1.0 Gate: `goodz init/adopt/verify` + config migration + clean-clone CI
-27. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
+26. ✅ v0.21: Writable Process Project/Task/Gate lifecycle
+27. ⚪ v1.0 Gate: `goodz init/adopt/verify` + config migration + clean-clone CI
+28. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
 
 ---
 
@@ -373,3 +386,4 @@ flowchart LR
 | 2026-07-13 | v0.18 — SQLite Operations + persistent deployment blueprint |
 | 2026-07-13 | v0.19 — Goodz Core 모델과 Commerce Reference/API 경계 분리 |
 | 2026-07-14 | v0.20 — 비커머스 Internal Service Reference와 Core 무변경 이식성 검증 |
+| 2026-07-14 | v0.21 — 프로젝트·작업·Gate를 관리하는 Writable Process MVP |
