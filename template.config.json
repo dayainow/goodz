@@ -7,6 +7,7 @@
     "build",
     "check:process",
     "check:template",
+    "check:portability",
     "check:sqlite",
     "verify"
   ],
@@ -17,11 +18,21 @@
     "docs/00-process/ONBOARDING.md",
     "docs/00-process/PHASE_GATES.md",
     "docs/00-process/OPERATIONS_STORE.md",
+    "docs/00-process/PORTABILITY.md",
     "docs/00-process/status.json",
     "docs/01-planning/ROADMAP.md",
     "docs/03-engineering/ADR/003-platform-commerce-boundary.md",
     "goodz.config.json",
     "schemas/goodz-config.schema.json",
+    "references/README.md",
+    "references/internal-service/goodz.reference.json",
+    "references/internal-service/apps/api/package.json",
+    "references/internal-service/packages/types/package.json",
+    "references/internal-service/docs/PRD.md",
+    "references/internal-service/docs/SERVICE_CONTRACT.md",
+    "references/internal-service/docs/API.md",
+    "references/internal-service/docs/TEST_PLAN.md",
+    "references/internal-service/docs/RELEASE_CHECKLIST.md",
     "apps/landing/package.json",
     "apps/api-server/package.json",
     "apps/web-shop/package.json",
@@ -72,7 +83,9 @@
       "packages/types",
       "apps/web-shop",
       "apps/admin-dashboard",
-      "apps/api-server/src/routes/commerce.ts"
+      "apps/api-server/src/routes/commerce.ts",
+      "references/internal-service/packages/types",
+      "references/internal-service/apps/api"
     ]
   },
   "externalIntegrations": [

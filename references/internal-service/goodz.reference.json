@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "id": "internal-service",
+  "name": "Goodz Internal Service Reference",
+  "domain": "internal-platform",
+  "compatibleCore": "0.1.0",
+  "coreChangesRequired": false,
+  "typePackage": "@goodz/internal-service-types",
+  "apps": [
+    "references/internal-service/apps/api"
+  ],
+  "apiPrefix": "/api/services",
+  "phases": [
+    {
+      "id": "P0",
+      "status": "done",
+      "artifacts": ["references/internal-service/docs/PRD.md"]
+    },
+    {
+      "id": "P1",
+      "status": "done",
+      "artifacts": ["references/internal-service/docs/SERVICE_CONTRACT.md"]
+    },
+    {
+      "id": "P2",
+      "status": "done",
+      "artifacts": ["references/internal-service/docs/API.md"]
+    },
+    {
+      "id": "P3",
+      "status": "done",
+      "artifacts": ["references/internal-service/docs/TEST_PLAN.md"]
+    },
+    {
+      "id": "P4",
+      "status": "done",
+      "artifacts": ["references/internal-service/docs/RELEASE_CHECKLIST.md"]
+    }
+  ]
+}

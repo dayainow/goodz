@@ -1,3 +1,5 @@
 packages:
   - apps/*
   - packages/*
+  - references/*/apps/*
+  - references/*/packages/*

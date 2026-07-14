@@ -24,6 +24,7 @@ Claude Code 전용: [CLAUDE.md](./CLAUDE.md)
 | `packages/process` | Goodz Core Process OS 타입 | — |
 | `packages/types` | Goodz Commerce Reference 타입 | — |
 | `packages/ui` | 공통 UI + Tailwind preset | — |
+| `references/internal-service` | 비커머스 이식성 Reference | 4200 |
 
 ## 절대 규칙
 
@@ -39,6 +40,7 @@ Claude Code 전용: [CLAUDE.md](./CLAUDE.md)
 ```text
 packages/process → process route/data → process-dashboard
 packages/types   → commerce route/data → web-shop / admin-dashboard
+references/*     → 자체 types → 자체 apps (Core 수정 금지)
 ```
 
 - mock: `apps/api-server/src/data/`

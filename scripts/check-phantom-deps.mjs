@@ -4,24 +4,32 @@
  * pnpm isolated linker와 함께 CI에서 실행합니다.
  */
 import { execSync } from "node:child_process";
-import { readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
 const ignores =
   "@goodz/*,@types/*,eslint*,typescript,tailwindcss,postcss,autoprefixer,vitest,@testing-library/*,jsdom,msw,@vitejs/*,tsx,ga-analytics-harness,next,react,react-dom";
 
-const workspaceRoots = ["apps", "packages"];
 const packages = [];
 
-for (const dir of workspaceRoots) {
-  const base = join(root, dir);
+function collectPackages(base) {
+  if (existsSync(join(base, "package.json"))) {
+    packages.push(base);
+    return;
+  }
+
   for (const name of readdirSync(base)) {
-    const pkgDir = join(base, name);
-    if (statSync(pkgDir).isDirectory() && !name.startsWith(".")) {
-      packages.push(pkgDir);
+    if (name.startsWith(".") || name === "node_modules" || name === "dist") continue;
+    const child = join(base, name);
+    if (statSync(child).isDirectory()) {
+      collectPackages(child);
     }
   }
+}
+
+for (const dir of ["apps", "packages", "references"]) {
+  collectPackages(join(root, dir));
 }
 
 let failed = false;

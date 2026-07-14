@@ -260,6 +260,34 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  references/internal-service/apps/api:
+    dependencies:
+      '@goodz/internal-service-types':
+        specifier: workspace:*
+        version: link:../../packages/types
+    devDependencies:
+      '@goodz/tsconfig':
+        specifier: workspace:*
+        version: link:../../../../packages/tsconfig
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.20.0
+      tsx:
+        specifier: ^4.19.0
+        version: 4.23.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
+  references/internal-service/packages/types:
+    devDependencies:
+      '@goodz/tsconfig':
+        specifier: workspace:*
+        version: link:../../../../packages/tsconfig
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
 packages:
 
   '@alloc/quick-lru@5.2.0':

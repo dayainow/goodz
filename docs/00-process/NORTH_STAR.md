@@ -40,6 +40,7 @@
 | `apps/process-dashboard` | **풀 프로세스 진행도 모니터링** (시스템 제품 UI) |
 | `packages/process` | **Goodz Core**의 도메인 중립 Process OS 계약 |
 | `packages/types` | **Goodz Commerce Reference**의 커머스 타입 SSOT 패턴 시연 |
+| `references/internal-service` | Core 수정 없이 추가한 **비커머스 이식성 증거** |
 
 제품명은 **Goodz**다. 배포·판매 단위는 `Goodz Core`, `Goodz Cloud`, `Goodz Enterprise`로 구분하고, 쇼핑몰 예제는 **Goodz Commerce Reference**로 표기한다.
 

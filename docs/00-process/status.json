@@ -1,12 +1,12 @@
 {
   "version": 4,
-  "updatedAt": "2026-07-13",
-  "systemVersion": "v0.19",
+  "updatedAt": "2026-07-14",
+  "systemVersion": "v0.20",
   "sprint": {
-    "id": "S21",
-    "name": "시스템 v0.19 — Platform Boundary",
+    "id": "S22",
+    "name": "시스템 v0.20 — Portability Proof",
     "status": "done",
-    "goal": "Goodz Core와 Commerce Reference의 타입·API·설정 경계를 분리해 비커머스 이식성 기반 확보"
+    "goal": "비커머스 Internal Service Reference를 Core 수정 없이 추가하고 이식성을 자동 검증"
   },
   "phases": [
     {
@@ -444,6 +444,15 @@
       "phase": "P1",
       "doc": "docs/01-planning/intake/2026-07-13-process-dashboard-redesign-prd.md",
       "nextAction": "인앱 브라우저 세션에서 Sidebar, Hero, Phase 스크린샷과 Lighthouse 기록"
+    },
+    {
+      "id": "IN-019",
+      "title": "Portability Proof v0.20",
+      "source": "사용자 요청 · 비커머스 Reference를 Core 수정 없이 추가",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-portability-proof-v020.md",
+      "nextAction": "goodz init/adopt/verify CLI와 clean-clone 도입 검증"
     }
   ],
   "deliverables": [
@@ -826,6 +835,26 @@
       "doc": "docs/01-planning/PRD-PROCESS-DASHBOARD-REDESIGN.md",
       "owner": "Product/Design/Engineering",
       "summary": "Hero, Sidebar, Phase flow, Metrics와 micro detail의 승인된 디자인 리셋 기준"
+    },
+    {
+      "id": "D-39",
+      "title": "Internal Service Reference",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "references/internal-service/README.md",
+      "owner": "Product/Engineering",
+      "summary": "자체 타입과 Node API로 구현한 비커머스 서비스 카탈로그 Reference"
+    },
+    {
+      "id": "D-40",
+      "title": "Core Portability Validator",
+      "type": "qa",
+      "phase": "P3",
+      "status": "done",
+      "doc": "docs/00-process/PORTABILITY.md",
+      "owner": "Engineering/QA",
+      "summary": "Core hash, Commerce 의존 0건, P0-P4 산출물과 runtime fixture 자동 검증"
     }
   ],
   "approvals": [
@@ -1357,6 +1386,29 @@
       "summary": "Process Dashboard Redesign PRD 승인과 핵심 AC 반영",
       "doc": "docs/00-process/APPROVALS.md",
       "traceLinkIds": ["TL-018"]
+    },
+    {
+      "id": "AP-019",
+      "target": "S22 Portability Proof v0.20",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Product", "Engineering", "QA"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "Internal Service Reference로 Goodz Core의 비커머스 이식성을 검증",
+      "criteria": [
+        "packages/process 기준선 diff가 0건임",
+        "Reference가 자체 타입 패키지를 사용함",
+        "Commerce 타입 의존성이 없음",
+        "P0-P4 산출물과 manifest가 연결됨",
+        "전체 pnpm verify와 runtime smoke가 통과함"
+      ],
+      "summary": "Core 무변경 비커머스 이식성 증거 승인",
+      "doc": "docs/00-process/PORTABILITY.md",
+      "traceLinkIds": ["TL-019"]
     }
   ],
   "planningChanges": [
@@ -1661,6 +1713,24 @@
       "doc": "docs/01-planning/changes/2026-07-13-process-dashboard-redesign-prd.md",
       "summary": "Hero, Sidebar, Phase flow, Metrics, focus와 motion 기준을 PRD에 맞게 정리",
       "decision": "일반 surface는 white/zinc, 상태 색은 badge와 active/current indicator에만 사용"
+    },
+    {
+      "id": "CR-019",
+      "title": "비커머스 Portability Proof 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/PORTABILITY.md",
+        "docs/00-process/PHASE_GATES.md",
+        "docs/03-engineering/ARCHITECTURE.md",
+        "docs/01-planning/ROADMAP.md",
+        "references/internal-service/goodz.reference.json",
+        "goodz.config.json"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-portability-proof-v020.md",
+      "summary": "Internal Service Reference와 Core hash 기반 이식성 검사를 전체 verify에 추가",
+      "decision": "비커머스 Reference 성공 후 v1.0 차단 조건을 CLI와 clean-clone으로 이동"
     }
   ],
   "designReferences": [
@@ -2655,6 +2725,44 @@
       },
       "summary": "리디자인 PRD 정합성 수정과 Hero, Sidebar, Phase, Metrics 핵심 AC 구현",
       "nextAction": "commit/CI 증거 연결 후 인앱 브라우저 세션에서 디자인 QA"
+    },
+    {
+      "id": "TL-019",
+      "title": "Portability Proof v0.20",
+      "status": "partial",
+      "sourceIds": ["IN-019"],
+      "changeIds": ["CR-019"],
+      "deliverableIds": ["D-39", "D-40"],
+      "approvalIds": ["AP-019"],
+      "issue": {
+        "label": "GitHub Issue",
+        "status": "pending"
+      },
+      "pr": {
+        "label": "Pull Request",
+        "status": "not_required"
+      },
+      "commits": [
+        {
+          "sha": "aa6c1a9",
+          "message": "feat: Goodz Core와 레퍼런스 경계 분리",
+          "url": "https://github.com/dayainow/goodz/commit/aa6c1a9",
+          "committedAt": "2026-07-14T00:00:00Z"
+        }
+      ],
+      "ciRuns": [],
+      "release": {
+        "label": "Release",
+        "status": "not_required"
+      },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:portability && pnpm verify + internal API runtime smoke",
+        "checkedAt": "2026-07-14T00:16:00Z",
+        "summary": "Core hash 불변, 독립 타입/API, health/list/404와 전체 workspace 검증 통과"
+      },
+      "summary": "Internal Service Reference로 Core 수정 0건과 Commerce 의존 0건을 증명",
+      "nextAction": "goodz init/adopt/verify CLI와 clean-clone CI 증거 연결"
     }
   ],
   "features": [

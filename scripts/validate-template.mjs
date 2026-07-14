@@ -63,7 +63,9 @@ const packagePaths = [
   "packages/process/package.json",
   "packages/types/package.json",
   "packages/ui/package.json",
-  "packages/tsconfig/package.json"
+  "packages/tsconfig/package.json",
+  "references/internal-service/apps/api/package.json",
+  "references/internal-service/packages/types/package.json",
 ];
 
 for (const path of packagePaths) {

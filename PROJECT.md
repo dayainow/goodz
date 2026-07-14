@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S21 Platform Boundary v0.19** ✅
+## 현재 스프린트: **S22 Portability Proof v0.20** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -28,6 +28,7 @@
 | **Sidebar Comfort** | ✅ active disclosure·20px padding·fixed footer·custom scrollbar |
 | **SQLite Operations** | ✅ 문서 인덱스·incident/MTTR·Render 영구 디스크 배포 구성 |
 | **Platform Boundary** | ✅ `@goodz/process` Core 계약·Commerce Reference·API 라우터 경계·설정 스키마 |
+| **Portability Proof** | ✅ Internal Service Reference·Core SHA-256 기준선·`check:portability` |
 
 ## 현재 단계
 
@@ -46,6 +47,7 @@
 | web-shop | B2C 퍼널 데모 |
 | admin-dashboard | 운영 UI 데모 |
 | api-server | 현재 process/commerce 모듈을 함께 제공하는 전환 런타임 |
+| internal-service | 비커머스 서비스 카탈로그 API와 독립 타입 패턴 |
 
 ## S2 체크리스트
 
@@ -107,6 +109,8 @@
 - [x] S20: Process OS 단일 서비스 Render Blueprint와 영구 디스크 런북
 - [x] S21: Goodz Core와 Commerce Reference 타입/API 경계 분리
 - [x] S21: `goodz.config.json` + JSON Schema + ADR-003
+- [x] S22: Internal Service Reference 자체 타입·API·P0–P4 산출물
+- [x] S22: Core 무변경 SHA-256 + Commerce 의존 0건 자동 검증
 
 ## 풀 프로세스
 

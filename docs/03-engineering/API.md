@@ -11,6 +11,8 @@ Base URL: `http://localhost:4000` (개발)
 
 현재 두 컨텍스트는 같은 Express 런타임을 사용하지만 `routes/process.ts`와 `routes/commerce.ts`로 분리되어 있다.
 
+비커머스 이식성 예제는 별도 런타임과 타입 계약을 사용한다. 명세: `references/internal-service/docs/API.md`.
+
 ## Endpoints
 
 ### `GET /health`

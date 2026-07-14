@@ -27,7 +27,8 @@
 | **v0.17** | Sidebar Comfort: active disclosure + spacing + fixed footer + scrollbar | ✅ |
 | **v0.18** | SQLite Operations: 문서 인덱스 + incident/MTTR + 영구 디스크 배포 | ✅ |
 | **v0.19** | Platform Boundary: Core 모델 + Commerce Reference + API 모듈 경계 | ✅ |
-| **v1.0** | 설치 가능한 Goodz Core: CLI + config migration + 비커머스 이식성 검증 | ⚪ |
+| **v0.20** | Portability Proof: 비커머스 Internal Service Reference + Core 무변경 검증 | ✅ |
+| **v1.0** | 설치 가능한 Goodz Core: CLI + config migration + clean-clone 도입 | ⚪ |
 
 ## 전체 타임라인
 
@@ -35,7 +36,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof
 ```
 
 ---
@@ -288,6 +289,17 @@ Week 1
 
 ---
 
+### Sprint S22 — Portability Proof
+
+- `references/internal-service`에 비커머스 서비스 카탈로그 Reference 추가
+- 자체 `@goodz/internal-service-types`와 Node API로 도메인 계약 격리
+- Reference 전용 P0–P4 산출물과 manifest 작성
+- `goodz.config.json`에 Core v0.1.0 SHA-256 기준선 기록
+- `pnpm check:portability`로 Core 무변경·Commerce 의존 0건·산출물 완결성 검증
+- 다음 Gate: `goodz init/adopt/verify` CLI와 clean-clone 도입 검증
+
+---
+
 ## 의존성 그래프
 
 ```mermaid
@@ -333,8 +345,9 @@ flowchart LR
 22. ✅ v0.17: Sidebar Comfort
 23. ✅ v0.18: SQLite Operations
 24. ✅ v0.19: Goodz Core / Commerce Reference 경계 추출
-25. ⚪ v1.0 Gate: 비커머스 Reference + `goodz init/adopt/verify` + clean-clone CI
-26. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
+25. ✅ v0.20: Internal Service Reference + Core 무변경 이식성 증거
+26. ⚪ v1.0 Gate: `goodz init/adopt/verify` + config migration + clean-clone CI
+27. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
 
 ---
 
@@ -359,3 +372,4 @@ flowchart LR
 | 2026-07-13 | v0.17 — Sidebar Comfort |
 | 2026-07-13 | v0.18 — SQLite Operations + persistent deployment blueprint |
 | 2026-07-13 | v0.19 — Goodz Core 모델과 Commerce Reference/API 경계 분리 |
+| 2026-07-14 | v0.20 — 비커머스 Internal Service Reference와 Core 무변경 이식성 검증 |
