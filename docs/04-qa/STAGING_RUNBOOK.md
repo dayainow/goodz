@@ -56,6 +56,8 @@ pnpm smoke:process-os
 
 무료 프리뷰의 `GOODZ_DB_PATH`는 `/tmp/goodz.db`, `GOODZ_DB_DURABILITY`는 `local`입니다. Dashboard·API·SQLite schema·Template/Project 화면은 확인할 수 있지만, 인스턴스 절전·재시작·재배포 후 데이터 보존은 합격 기준에서 제외합니다. 최초 요청은 인스턴스 기동 때문에 늦을 수 있습니다.
 
+Render Node runtime이 제공하는 `pnpm`을 그대로 사용합니다. build command에 `corepack enable`을 추가하면 읽기 전용 `/usr/bin/pnpm`을 교체하려다 `EROFS`로 실패할 수 있습니다.
+
 ## 배포 순서
 
 1. `api-server`를 먼저 배포하고 `/health`가 `{ "ok": true }`를 반환하는지 확인합니다.

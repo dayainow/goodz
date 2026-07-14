@@ -5,7 +5,7 @@ services:
     plan: starter
     region: singapore
     autoDeployTrigger: checksPass
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm turbo build --filter=@goodz/process-dashboard --filter=@goodz/api-server
+    buildCommand: pnpm install --frozen-lockfile && pnpm turbo build --filter=@goodz/process-dashboard --filter=@goodz/api-server
     startCommand: pnpm --filter @goodz/api-server start
     healthCheckPath: /health
     envVars:
