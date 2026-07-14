@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S30 Immutable Template Migration v0.28** ✅
+## 현재 스프린트: **S31 Git Branch/Commit/PR Connector v0.29** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -34,7 +34,7 @@
 | **Visual Template Builder** | ✅ 기존 Template 복제·Stage 정렬·Task/산출물 편집·Live Blueprint·저장 검증 |
 | **PRD & Design Workbench** | ✅ 질문형 PRD·Markdown·승인·화면·스토리보드·콘셉트·Claude Design handoff |
 | **Design Job Connector** | ✅ prompt snapshot·작업 상태·결과 제출·수정 요청·승인·portable export |
-| **Goodz CLI** | ✅ init·adopt·template migrate·project create·export·verify·hash manifest·충돌 보호 materializer |
+| **Goodz CLI** | ✅ init·adopt·template migrate·project create·export·Git publish·verify |
 
 ## 현재 단계
 
@@ -139,6 +139,8 @@
 - [x] S29: 읽기 전용 adopt plan과 명시적 `--apply`·기존 설정 보호
 - [x] S30: Template v1→v2 immutable migration API·CLI
 - [x] S30: 기존 Run version 고정과 신규 Run의 새 version 선택 검증
+- [x] S31: 승인 bundle 전용 branch·commit·push Connector
+- [x] S31: GitHub Pull Request API와 clean tree·허용 파일 보안 Gate
 
 ## 풀 프로세스
 

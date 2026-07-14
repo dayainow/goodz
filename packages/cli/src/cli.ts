@@ -4,9 +4,10 @@ import path from "node:path";
 import process from "node:process";
 import { GoodzClient } from "./client.js";
 import { adoptGoodz, initializeGoodz, verifyGoodzWorkspace } from "./config.js";
+import { assertGitWorkspaceClean, publishGitChanges } from "./git.js";
 import { materializeProjectBundle } from "./materializer.js";
 
-const HELP = `Goodz CLI v0.3
+const HELP = `Goodz CLI v0.4
 
 Usage:
   goodz init --name <project> [--root <path>] [--force]
@@ -14,6 +15,7 @@ Usage:
   goodz project create --name <name> --summary <text> --owner <owner> [--template <id>] [--api <url>]
   goodz template migrate --from <template-id> [--name <name>] [--summary <text>] [--api <url>]
   goodz export --project <id> [--root <path>] [--api <url>] [--dry-run] [--force]
+  goodz git publish --project <id> [--root <path>] [--api <url>] [--branch <name>] [--base <name>] [--remote <name>] [--dry-run] [--no-push --no-pr]
   goodz verify [--root <path>] [--full]
 
 Environment:
@@ -115,6 +117,39 @@ async function main() {
     });
     console.log(`${result.dryRun ? "Planned" : "Materialized"}: ${result.written.length} file(s), ${result.skipped.length} unchanged`);
     console.log(`Manifest: ${result.manifestPath}`);
+    return;
+  }
+  if (command === "git" && args[1] === "publish") {
+    const projectId = required(args, "--project");
+    const root = workspaceRoot(args);
+    assertGitWorkspaceClean(root);
+    const bundle = await client(args).exportProject(projectId);
+    const dryRun = has(args, "--dry-run");
+    const materialized = await materializeProjectBundle(bundle, { root, dryRun });
+    const branch = option(args, "--branch") ?? `goodz/${projectId.toLowerCase()}`;
+    const message = option(args, "--message") ?? `docs: ${bundle.projectName} 승인 산출물 반영`;
+    if (dryRun) {
+      console.log(`Git publish plan: ${branch}`);
+      console.log(`Files: ${materialized.written.length}, message: ${message}`);
+      console.log("No files, branches, commits, pushes, or pull requests were changed.");
+      return;
+    }
+    const result = await publishGitChanges({
+      root,
+      projectId,
+      projectName: bundle.projectName,
+      paths: [...bundle.files.map((file) => file.path), materialized.manifestPath],
+      branch,
+      message,
+      remote: option(args, "--remote") ?? "origin",
+      base: option(args, "--base") ?? "main",
+      noPush: has(args, "--no-push"),
+      noPr: has(args, "--no-pr"),
+      token: process.env.GOODZ_GITHUB_TOKEN ?? process.env.GITHUB_TOKEN,
+    });
+    console.log(`Git commit: ${result.commit}`);
+    console.log(`Branch: ${result.branch}${result.pushed ? " (pushed)" : " (local)"}`);
+    if (result.pullRequestUrl) console.log(`Pull request: ${result.pullRequestUrl}`);
     return;
   }
   if (command === "verify") {

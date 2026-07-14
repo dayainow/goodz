@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.28",
+  "systemVersion": "v0.29",
   "sprint": {
-    "id": "S30",
-    "name": "시스템 v0.28 — Immutable Template Migration",
+    "id": "S31",
+    "name": "시스템 v0.29 — Git Branch/Commit/PR Connector",
     "status": "done",
-    "goal": "Template 변경을 새 version으로 만들고 기존 Run의 실행 정의를 보존"
+    "goal": "승인 산출물을 제한된 Git branch·commit·push·Pull Request 흐름으로 전달"
   },
   "phases": [
     {
@@ -531,6 +531,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-immutable-template-migration-v028.md",
       "nextAction": "config migration, clean-clone과 Git Connector"
+    },
+    {
+      "id": "IN-028",
+      "title": "Git Publish Connector v0.29",
+      "source": "사용자 요청 · 단계별 구현·배포",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-git-publish-connector-v029.md",
+      "nextAction": "config migration, clean-clone과 persistent deployment 검증"
     }
   ],
   "deliverables": [
@@ -1013,6 +1022,16 @@
       "doc": "docs/03-engineering/ADR/011-immutable-template-migration.md",
       "owner": "Platform/Engineering",
       "summary": "Template 새 version 생성과 기존 Run version 고정"
+    },
+    {
+      "id": "D-49",
+      "title": "Git Publish Connector",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/012-git-publish-connector.md",
+      "owner": "Platform/Engineering",
+      "summary": "승인 export allowlist 기반 branch·commit·push·GitHub PR"
     }
   ],
   "approvals": [
@@ -1749,6 +1768,29 @@
       "summary": "재현 가능한 Template version migration 승인",
       "doc": "docs/03-engineering/ADR/011-immutable-template-migration.md",
       "traceLinkIds": ["TL-027"]
+    },
+    {
+      "id": "AP-028",
+      "target": "S31 Git Branch/Commit/PR Connector v0.29",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Platform", "Engineering", "QA", "DevOps"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "Git 자동화는 CLI 권한으로 승인 export allowlist만 처리",
+      "criteria": [
+        "clean tree와 unrelated change 차단이 동작함",
+        "승인 파일만 branch와 commit에 포함됨",
+        "bare remote push smoke가 통과함",
+        "GitHub Pull Request API 계약이 검증됨",
+        "전체 pnpm verify가 통과함"
+      ],
+      "summary": "승인 산출물의 안전한 Git 전달 Connector 승인",
+      "doc": "docs/03-engineering/ADR/012-git-publish-connector.md",
+      "traceLinkIds": ["TL-028"]
     }
   ],
   "planningChanges": [
@@ -2201,6 +2243,22 @@
       "doc": "docs/01-planning/changes/2026-07-14-immutable-template-migration-v028.md",
       "summary": "Template v1→v2 생성 API·CLI와 Run version 고정 추가",
       "decision": "실행 중 프로세스는 소급 변경하지 않고 새 프로젝트만 새 version 선택"
+    },
+    {
+      "id": "CR-028",
+      "title": "승인 export를 Git branch·commit·push·PR로 전달",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/CLI.md",
+        "docs/00-process/ONBOARDING.md",
+        "docs/00-process/PHASE_GATES.md",
+        "docs/03-engineering/ADR/012-git-publish-connector.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-git-publish-connector-v029.md",
+      "summary": "clean tree·allowlist 기반 Git publish와 GitHub PR 추가",
+      "decision": "API 서버에는 Git 권한을 주지 않고 CLI 실행 환경에만 Connector 권한 부여"
     }
   ],
   "designReferences": [
@@ -3409,6 +3467,28 @@
       },
       "summary": "프로세스 변경을 immutable Template version으로 관리",
       "nextAction": "config migration, clean-clone과 Git branch/commit/PR Connector"
+    },
+    {
+      "id": "TL-028",
+      "title": "Git Publish Connector v0.29",
+      "status": "partial",
+      "sourceIds": ["IN-028"],
+      "changeIds": ["CR-028"],
+      "deliverableIds": ["D-49"],
+      "approvalIds": ["AP-028"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "pending" },
+      "commits": [],
+      "ciRuns": [],
+      "release": { "label": "Release", "status": "pending" },
+      "smoke": {
+        "status": "passed",
+        "command": "goodz git publish --no-pr && pnpm verify",
+        "checkedAt": "2026-07-14T23:00:00Z",
+        "summary": "allowlist branch·commit·bare remote push와 GitHub PR API contract 통과"
+      },
+      "summary": "승인 bundle을 안전한 Git review flow로 전달",
+      "nextAction": "config migration, clean-clone과 persistent deployment 검증"
     }
   ],
   "features": [

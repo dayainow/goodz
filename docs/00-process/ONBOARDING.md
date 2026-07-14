@@ -126,6 +126,15 @@ pnpm goodz -- template migrate \
 
 기존 프로젝트는 v1 실행 정의를 유지하고 이후 프로젝트부터 반환된 v2 ID를 선택합니다.
 
+승인 문서를 검토 가능한 GitHub Pull Request로 전달할 때는 먼저 dry-run을 확인합니다.
+
+```bash
+pnpm goodz -- git publish --project PRJ-XXXXXXXX --root . --dry-run
+GOODZ_GITHUB_TOKEN=<token> pnpm goodz -- git publish --project PRJ-XXXXXXXX --root .
+```
+
+이 명령은 깨끗한 작업 트리에서 승인 export 파일만 별도 branch에 commit한다. 다른 로컬 변경이 있으면 먼저 별도 커밋하거나 보관해야 한다.
+
 ## 7. 외부 연동
 
 `ga-analytics-harness`는 기본 web-shop에 포함된 GA4 레퍼런스 연동이며 GitHub commit에 고정됩니다. 저장소 밖의 형제 폴더를 요구하지 않으므로 clean clone에서도 설치할 수 있습니다. 이 연동이 필요 없는 제품은 web-shop의 분석 코드와 dependency를 함께 제거합니다. 네트워크가 제한된 환경에서는 조직 내부 registry mirror로 바꾼 뒤 lockfile을 갱신합니다.

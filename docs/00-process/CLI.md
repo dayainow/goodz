@@ -96,6 +96,27 @@ pnpm goodz -- verify --root . --full
 
 기본 검증은 `goodz.config.json`, Core hash와 materialized export manifest를 확인합니다. `--full`은 이어서 저장소의 `pnpm verify`를 실행합니다.
 
+### `goodz git publish`
+
+```bash
+GOODZ_GITHUB_TOKEN=<token> pnpm goodz -- git publish \
+  --project PRJ-XXXXXXXX \
+  --root /path/to/repository \
+  --api http://localhost:4000 \
+  --base main
+```
+
+승인 bundle을 materialize한 뒤 `goodz/<project-id>` 브랜치, 제한된 파일 commit, remote push와 GitHub Pull Request를 순서대로 생성합니다.
+
+- 시작 전 작업 트리가 깨끗해야 합니다.
+- 승인 bundle의 Markdown과 해당 hash manifest 외 변경이 발견되면 중단합니다.
+- Git 명령은 shell 문자열이 아니라 고정 인자 배열로 실행합니다.
+- `--dry-run`은 파일·브랜치·commit·push·PR을 모두 변경하지 않습니다.
+- `--no-pr`은 branch와 push까지만 수행합니다.
+- `--no-push --no-pr`은 로컬 branch와 commit만 만듭니다.
+- `--branch`, `--message`, `--remote`, `--base`로 기본값을 바꿀 수 있습니다.
+- push 또는 PR 실패 시 생성된 로컬 branch와 파일은 삭제하지 않아 운영자가 원인을 확인하고 재개할 수 있습니다.
+
 ## 인증과 API
 
 기본 API는 `http://localhost:4000`이며 다음 환경 변수로 바꿀 수 있습니다.
@@ -104,10 +125,11 @@ pnpm goodz -- verify --root . --full
 GOODZ_API_URL=https://goodz.example.com
 GOODZ_BASIC_AUTH_USER=operator
 GOODZ_BASIC_AUTH_PASSWORD=secret
+GOODZ_GITHUB_TOKEN=github_token_for_pull_request
 ```
 
 사용자와 비밀번호는 반드시 함께 설정합니다.
 
 ## Git 경계
 
-v0.27은 기존 저장소 분석과 적용까지 지원하고 Git에 넣을 파일을 안전하게 생성하지만 `git add`, `commit`, `push`는 자동 실행하지 않습니다. 사용자가 diff를 검토한 뒤 기존 승인·CI 정책으로 커밋합니다. 자동 branch/commit/PR 생성은 후속 Git Connector 범위입니다.
+v0.29는 기존 저장소 분석·Template migration·안전한 파일 생성에 이어 선택한 승인 bundle만 branch/commit/push/PR로 전달합니다. 기본 `goodz export`는 여전히 Git을 변경하지 않으며 자동 흐름은 명시적인 `goodz git publish`에서만 실행됩니다.

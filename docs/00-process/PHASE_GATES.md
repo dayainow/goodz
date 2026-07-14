@@ -53,6 +53,7 @@
 - [x] CLI Markdown materialize·hash manifest·dry-run·정상 재-export 검증
 - [x] 로컬 수정 충돌과 경로 탈출·symbolic link write 차단 검증
 - [x] 실제 Process API에서 CLI project create·export·verify smoke 통과
+- [x] Git Connector의 clean tree·허용 파일 제한·branch/commit/push·PR 계약 검증
 - [x] 승인 PRD 변경 시 downstream Design 승인 무효화 검증
 - [x] Process OS 영구 디스크 배포 구성 문서화
 - [ ] 외부 URL에서 durability `persistent`와 재배포 보존 확인

@@ -43,6 +43,7 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-025 | S28 Git Materializer & Goodz CLI v0.26 | Codex | 사용자 | approved | TL-025 |
 | AP-026 | S29 Existing Repository Adopt v0.27 | Codex | 사용자 | approved | TL-026 |
 | AP-027 | S30 Immutable Template Migration v0.28 | Codex | 사용자 | approved | TL-027 |
+| AP-028 | S31 Git Branch/Commit/PR Connector v0.29 | Codex | 사용자 | approved | TL-028 |
 
 ## 승인 기준
 

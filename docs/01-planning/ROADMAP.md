@@ -36,6 +36,7 @@
 | **v0.26** | Git Materializer & Goodz CLI: init + project create + safe export + verify | ✅ |
 | **v0.27** | Existing Repository Adopt: 구조 탐지 + read-only plan + explicit apply | ✅ |
 | **v0.28** | Immutable Template Migration: 새 version 생성 + 기존 Run 고정 | ✅ |
+| **v0.29** | Git Connector: approved export branch + commit + push + pull request | ✅ |
 | **v1.0** | 설치 가능한 Goodz Core: adopt + Template/config migration + clean-clone 도입 | ⚪ |
 
 ## 전체 타임라인
@@ -44,7 +45,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt    S30 ✅ Template Migration
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI    S29 ✅ Repository Adopt    S30 ✅ Template Migration    S31 ✅ Git Connector
 ```
 
 ---
@@ -382,6 +383,16 @@ Week 1
 - Core 0.7.0 계약 갱신
 - 다음 Gate: config migration, clean-clone과 Git branch/commit/PR Connector
 
+### Sprint S31 — Git Branch/Commit/PR Connector
+
+- `goodz git publish`로 승인 export와 Git 전달 흐름 결합
+- clean working tree와 승인 파일 allowlist 검증
+- 별도 branch와 Conventional Commit 생성
+- remote push와 token 기반 GitHub Pull Request API
+- dry-run, local-only, push-only 운영 모드
+- 임시 bare remote에서 실제 branch·commit·push smoke
+- 다음 Gate: config migration, clean-clone CI와 원격 persistent deployment 검증
+
 ---
 
 ## 의존성 그래프
@@ -438,8 +449,9 @@ flowchart LR
 31. ✅ v0.26: Git Materializer + Goodz CLI init/project/export/verify
 32. ✅ v0.27: 기존 저장소 read-only adopt plan + explicit apply
 33. ✅ v0.28: immutable Template version migration + 기존 Run 고정
-34. ⚪ v1.0 Gate: config migration + clean-clone CI
-35. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
+34. ✅ v0.29: 승인 산출물 Git branch/commit/push/PR Connector
+35. ⚪ v1.0 Gate: config migration + clean-clone CI
+36. ⚪ v1.x 후보: PostgreSQL/Worker → SSO/RBAC/감사 로그
 
 ---
 
@@ -473,3 +485,4 @@ flowchart LR
 | 2026-07-14 | v0.26 — 안전한 Git Materializer와 Goodz CLI 기본 명령 |
 | 2026-07-14 | v0.27 — 기존 저장소 구조 탐지와 명시적 adopt 적용 |
 | 2026-07-14 | v0.28 — immutable Template migration과 Run version 고정 |
+| 2026-07-14 | v0.29 — 승인 산출물 Git branch/commit/push/PR Connector |
