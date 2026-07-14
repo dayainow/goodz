@@ -3141,6 +3141,9 @@ function WorkspaceSection({
   const selectedDesignPack = selectedProject
     ? workspace.designPacks.find((designPack) => designPack.projectId === selectedProject.id) ?? null
     : null;
+  const selectedDesignJobs = selectedProject
+    ? workspace.designJobs.filter((job) => job.projectId === selectedProject.id)
+    : [];
   const selectedStage = selectedRun
     ? selectedRun.stages.find((stage) => stage.id === selectedStageId) ??
       selectedRun.stages.find((stage) => stage.id === selectedRun.currentStageId) ??
@@ -3348,10 +3351,11 @@ function WorkspaceSection({
             </section>
 
             <ProjectWorkbench
-              key={`${selectedProject.id}-${selectedBrief.updatedAt}-${selectedDesignPack.updatedAt}`}
+              key={`${selectedProject.id}-${selectedBrief.updatedAt}-${selectedDesignPack.updatedAt}-${selectedDesignJobs[0]?.updatedAt ?? "no-job"}`}
               project={selectedProject}
               brief={selectedBrief}
               designPack={selectedDesignPack}
+              designJobs={selectedDesignJobs}
               onRefresh={onRefresh}
             />
 

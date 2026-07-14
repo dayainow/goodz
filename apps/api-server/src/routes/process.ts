@@ -10,6 +10,8 @@ import type {
   UpdateProcessDeliverableRequest,
   UpdateProcessDesignPackRequest,
   UpdateProcessProjectBriefRequest,
+  SubmitProcessDesignJobRequest,
+  RequestProcessDesignChangesRequest,
   UpdateProcessTaskRequest,
 } from "@goodz/process";
 import {
@@ -29,6 +31,11 @@ import {
   updateProcessProjectBrief,
   approveProcessDesignPack,
   approveProcessProjectBrief,
+  createProcessDesignJob,
+  startProcessDesignJob,
+  submitProcessDesignJob,
+  requestProcessDesignChanges,
+  exportProcessProject,
 } from "../data/operationsStore.js";
 import {
   loadProcessDocument,
@@ -138,6 +145,61 @@ processRouter.post("/process/projects/:projectId/design-pack/approve", (req, res
     res.json(approveProcessDesignPack(req.params.projectId));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to approve design pack";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.post("/process/projects/:projectId/design-jobs", (req, res) => {
+  try {
+    res.status(201).json(createProcessDesignJob(req.params.projectId));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to create Design Job";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.post("/process/projects/:projectId/design-jobs/:jobId/start", (req, res) => {
+  try {
+    res.json(startProcessDesignJob(req.params.projectId, req.params.jobId));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to start Design Job";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.post("/process/projects/:projectId/design-jobs/:jobId/submit", (req, res) => {
+  const body = req.body as SubmitProcessDesignJobRequest;
+  if (!body?.resultUrl?.trim()) {
+    res.status(400).json({ message: "resultUrl is required" });
+    return;
+  }
+  try {
+    res.json(submitProcessDesignJob(req.params.projectId, req.params.jobId, body));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to submit Design Job";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.post("/process/projects/:projectId/design-jobs/:jobId/changes", (req, res) => {
+  const body = req.body as RequestProcessDesignChangesRequest;
+  if (!body?.note?.trim()) {
+    res.status(400).json({ message: "note is required" });
+    return;
+  }
+  try {
+    res.json(requestProcessDesignChanges(req.params.projectId, req.params.jobId, body));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to request Design Job changes";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.get("/process/projects/:projectId/export", (req, res) => {
+  try {
+    res.json(exportProcessProject(req.params.projectId));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to export project";
     res.status(400).json({ message });
   }
 });

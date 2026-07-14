@@ -28,7 +28,7 @@ curl http://localhost:4200/api/services
 
 `pnpm check:portability`는 다음을 검사합니다.
 
-- Goodz Core v0.5.0 계약 해시가 기준선과 같은가
+- Goodz Core v0.6.0 계약 해시가 기준선과 같은가
 - Reference가 `goodz.config.json`에 등록됐는가
 - 자체 타입과 앱이 Commerce 타입에 의존하지 않는가
 - P0–P4 문서가 모두 존재하고 완료 상태인가

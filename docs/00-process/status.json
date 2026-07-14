@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.24",
+  "systemVersion": "v0.25",
   "sprint": {
-    "id": "S26",
-    "name": "시스템 v0.24 — PRD & Design Workbench",
+    "id": "S27",
+    "name": "시스템 v0.25 — Design Job Connector & Export",
     "status": "done",
-    "goal": "아이디어를 승인 PRD와 MVP Design Pack으로 만들고 Claude Design 결과까지 연결"
+    "goal": "Claude Design 제작을 상태 있는 Job으로 추적하고 승인 산출물을 이식 가능한 bundle로 내보내기"
   },
   "phases": [
     {
@@ -495,6 +495,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-prd-design-workbench-v024.md",
       "nextAction": "승인 PRD Git export와 Claude Design Connector 설계"
+    },
+    {
+      "id": "IN-024",
+      "title": "Design Job Connector & Export v0.25",
+      "source": "사용자 요청 · 다음 단계 진행",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-design-job-connector-v025.md",
+      "nextAction": "Git materializer와 인증 기반 Claude MCP/API adapter"
     }
   ],
   "deliverables": [
@@ -937,6 +946,16 @@
       "doc": "docs/03-engineering/ADR/007-prd-design-workbench.md",
       "owner": "Product/Design/Engineering",
       "summary": "질문형 PRD, MVP 화면·스토리보드·콘셉트와 Claude Design handoff"
+    },
+    {
+      "id": "D-45",
+      "title": "Design Job Connector & Portable Export",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/008-design-job-connector-export.md",
+      "owner": "Product/Design/Engineering",
+      "summary": "Claude Design prompt snapshot, 작업 상태와 승인 Markdown bundle"
     }
   ],
   "approvals": [
@@ -1583,6 +1602,29 @@
       "summary": "PRD 작성과 Claude Design handoff 실행 흐름 승인",
       "doc": "docs/03-engineering/ADR/007-prd-design-workbench.md",
       "traceLinkIds": ["TL-023"]
+    },
+    {
+      "id": "AP-024",
+      "target": "S27 Design Job Connector & Export v0.25",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Product", "Design", "Engineering", "QA"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "Claude Design 실행을 상태 있는 Job으로 추적하고 수동 Connector를 교체 가능한 기본값으로 제공",
+      "criteria": [
+        "승인 PRD와 Design Pack으로 prompt snapshot을 생성함",
+        "Job 생성·시작·결과 제출·수정 요청·승인 상태를 검증함",
+        "변경된 입력이 열려 있는 Job을 무효화함",
+        "승인 결과를 portable Markdown bundle로 내보냄",
+        "전체 pnpm verify가 통과함"
+      ],
+      "summary": "Claude Design 작업 실행과 산출물 export 흐름 승인",
+      "doc": "docs/03-engineering/ADR/008-design-job-connector-export.md",
+      "traceLinkIds": ["TL-024"]
     }
   ],
   "planningChanges": [
@@ -1969,6 +2011,23 @@
       "doc": "docs/01-planning/changes/2026-07-14-prd-design-workbench-v024.md",
       "summary": "질문형 PRD와 MVP Design Pack을 프로젝트 command model에 추가",
       "decision": "Goodz 준비·검증과 Claude Design 상세 제작의 책임을 분리"
+    },
+    {
+      "id": "CR-024",
+      "title": "Claude Design handoff를 상태 있는 Job과 export로 확장",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/USER_MANUAL.md",
+        "docs/02-design/CLAUDE_DESIGN.md",
+        "docs/03-engineering/API.md",
+        "docs/03-engineering/ADR/008-design-job-connector-export.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-design-job-connector-v025.md",
+      "summary": "prompt snapshot과 Design Job 상태, 결과 제출, portable export 추가",
+      "decision": "Core는 수동 Connector로 계약을 증명하고 외부 자동 호출은 adapter로 분리"
     }
   ],
   "designReferences": [
@@ -3089,6 +3148,28 @@
       },
       "summary": "아이디어를 PRD와 MVP Design Pack으로 만들고 Claude Design 결과까지 연결",
       "nextAction": "Git export, Claude Connector와 Template version migration"
+    },
+    {
+      "id": "TL-024",
+      "title": "Design Job Connector & Export v0.25",
+      "status": "partial",
+      "sourceIds": ["IN-024"],
+      "changeIds": ["CR-024"],
+      "deliverableIds": ["D-45"],
+      "approvalIds": ["AP-024"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "not_required" },
+      "commits": [],
+      "ciRuns": [],
+      "release": { "label": "Release", "status": "pending" },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:sqlite && pnpm verify",
+        "checkedAt": "2026-07-14T18:00:00Z",
+        "summary": "Design Job 상태·stale guard·Claude URL·portable export lifecycle 통과"
+      },
+      "summary": "Claude Design 제작을 prompt snapshot과 상태로 추적하고 승인 문서를 이식 가능하게 export",
+      "nextAction": "Git materializer, Claude MCP/API adapter와 Template version migration"
     }
   ],
   "features": [

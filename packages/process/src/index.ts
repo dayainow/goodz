@@ -359,6 +359,43 @@ export interface ProcessDesignPack {
   updatedAt: string;
 }
 
+export type ProcessDesignConnector = "manual_claude_design";
+export type ProcessDesignJobStatus =
+  | "queued"
+  | "in_progress"
+  | "submitted"
+  | "changes_requested"
+  | "approved";
+
+export interface ProcessDesignJob {
+  id: string;
+  projectId: string;
+  connector: ProcessDesignConnector;
+  status: ProcessDesignJobStatus;
+  promptSnapshot: string;
+  resultUrl: string;
+  note: string;
+  createdAt: string;
+  startedAt?: string;
+  submittedAt?: string;
+  approvedAt?: string;
+  updatedAt: string;
+}
+
+export interface ProcessExportFile {
+  path: string;
+  mediaType: "text/markdown";
+  content: string;
+}
+
+export interface ProcessProjectExportBundle {
+  schemaVersion: 1;
+  projectId: string;
+  projectName: string;
+  generatedAt: string;
+  files: ProcessExportFile[];
+}
+
 export interface ProcessTaskRun {
   id: string;
   templateTaskId: string;
@@ -444,7 +481,7 @@ export interface ProcessRun {
 
 export interface ProcessAuditEvent {
   id: string;
-  entityType: "project" | "run" | "stage" | "task" | "gate" | "template" | "deliverable" | "evidence";
+  entityType: "project" | "run" | "stage" | "task" | "gate" | "template" | "deliverable" | "evidence" | "design_job";
   entityId: string;
   action: string;
   detail: string;
@@ -457,6 +494,7 @@ export interface ProcessWorkspaceOverview {
   runs: ProcessRun[];
   briefs: ProcessProjectBrief[];
   designPacks: ProcessDesignPack[];
+  designJobs: ProcessDesignJob[];
   auditEvents: ProcessAuditEvent[];
 }
 
@@ -506,6 +544,15 @@ export interface UpdateProcessDesignPackRequest {
   screens: Array<Omit<ProcessDesignScreen, "id">>;
   storyboard: Array<Omit<ProcessStoryboardStep, "id">>;
   handoffUrl: string;
+}
+
+export interface SubmitProcessDesignJobRequest {
+  resultUrl: string;
+  note: string;
+}
+
+export interface RequestProcessDesignChangesRequest {
+  note: string;
 }
 
 export interface UpdateProcessTaskRequest {

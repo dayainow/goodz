@@ -35,7 +35,7 @@ async function main() {
     if (data?.storage?.engine !== "sqlite") {
       throw new Error("operations storage is not sqlite");
     }
-    if (!Number.isInteger(data?.storage?.schemaVersion) || data.storage.schemaVersion < 4) {
+    if (!Number.isInteger(data?.storage?.schemaVersion) || data.storage.schemaVersion < 5) {
       throw new Error("operations schema is not migrated");
     }
   });
@@ -48,7 +48,8 @@ async function main() {
       !Array.isArray(data?.projects) ||
       !Array.isArray(data?.runs) ||
       !Array.isArray(data?.briefs) ||
-      !Array.isArray(data?.designPacks)
+      !Array.isArray(data?.designPacks) ||
+      !Array.isArray(data?.designJobs)
     ) {
       throw new Error("process workspace projection is invalid");
     }

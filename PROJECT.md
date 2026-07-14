@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S26 PRD & Design Workbench v0.24** ✅
+## 현재 스프린트: **S27 Design Job Connector & Export v0.25** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -33,6 +33,7 @@
 | **Process Template Catalog** | ✅ 파일 기반 P0–P4·Phase 0–8·Template Builder·산출물/증거 command |
 | **Visual Template Builder** | ✅ 기존 Template 복제·Stage 정렬·Task/산출물 편집·Live Blueprint·저장 검증 |
 | **PRD & Design Workbench** | ✅ 질문형 PRD·Markdown·승인·화면·스토리보드·콘셉트·Claude Design handoff |
+| **Design Job Connector** | ✅ prompt snapshot·작업 상태·결과 제출·수정 요청·승인·portable export |
 
 ## 현재 단계
 
@@ -127,6 +128,9 @@
 - [x] S26: 프로젝트별 질문형 PRD Wizard와 Markdown 생성·승인
 - [x] S26: MVP 화면·스토리보드·디자인 콘셉트 Workbench
 - [x] S26: Claude Design handoff prompt·결과 URL·승인 lifecycle
+- [x] S27: Claude Design Job 생성·시작·결과 제출·수정 요청 lifecycle
+- [x] S27: 승인 PRD·Design Pack·handoff Markdown portable export
+- [x] S27: SQLite schema v5와 Core 0.6.0 Connector 계약
 
 ## 풀 프로세스
 

@@ -2,7 +2,7 @@
 
 Goodz Core를 새 제품 팀에 도입할 때 사용하는 시작 런북입니다. 목표는 **30분 안에 조직·프로젝트 설정을 입력하고, Process Dashboard를 기동하고, 첫 P0 입력을 등록하는 것**입니다. Goodz는 제품명이며 Commerce 앱은 교체 가능한 Reference다.
 
-현재 v0.24는 `goodz init/adopt/verify` CLI 구현 전 단계다. 따라서 신규 프로젝트는 저장소를 복제한 뒤 아래 설정 파일과 문서를 직접 변경한다.
+현재 v0.25는 `goodz init/adopt/verify` CLI 구현 전 단계다. 따라서 신규 프로젝트는 저장소를 복제한 뒤 아래 설정 파일과 문서를 직접 변경한다.
 
 ## 준비 조건
 

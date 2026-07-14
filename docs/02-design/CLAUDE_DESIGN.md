@@ -128,6 +128,19 @@ claude
 
 ## 4. 구현 handoff (P1 → P2)
 
+### Process Dashboard Design Job
+
+신규 프로젝트는 문서에 URL을 바로 입력하지 않고 Process Dashboard에서 다음 순서로 관리합니다.
+
+1. 승인 PRD를 기반으로 Design Pack을 저장합니다.
+2. `Handoff 작업 생성`으로 prompt snapshot을 고정합니다.
+3. `작업 시작` 후 prompt를 Claude Design에 전달합니다.
+4. 완성된 `https://claude.ai/design/...` URL과 검토 메모를 제출합니다.
+5. 수정 요청 또는 Design 승인을 기록합니다.
+6. 승인 후 PRD·Design Pack·handoff Markdown bundle을 다운로드합니다.
+
+현재 `manual_claude_design` Connector는 Claude Design UI에서 실행합니다. 인증 기반 MCP/API 자동 실행은 후속 adapter이며 동일한 Design Job 상태 계약을 사용합니다.
+
 디자인 확정 후 Claude Code:
 
 ```text

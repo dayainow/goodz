@@ -48,6 +48,8 @@
 - [x] PRD 승인 전 Design Pack 승인 차단 검증
 - [x] 화면·스토리보드·콘셉트 기반 Claude Design handoff prompt 검증
 - [x] Claude Design 결과 URL 포함 Design Pack 승인 lifecycle 검증
+- [x] Design Job 생성·시작·제출·수정 필요·승인 상태와 prompt snapshot 검증
+- [x] 승인 PRD·Design Pack·handoff portable export 검증
 - [x] 승인 PRD 변경 시 downstream Design 승인 무효화 검증
 - [x] Process OS 영구 디스크 배포 구성 문서화
 - [ ] 외부 URL에서 durability `persistent`와 재배포 보존 확인

@@ -7,9 +7,9 @@ Goodz Core가 Commerce 도메인에 결합되지 않았음을 비커머스 Refer
 | 항목 | 값 |
 |---|---|
 | 기준 커밋 | `aa6c1a9` — Goodz Core와 레퍼런스 경계 분리 |
-| Core 패키지 | `@goodz/process` v0.5.0 |
+| Core 패키지 | `@goodz/process` v0.6.0 |
 | 계약 파일 | `packages/process/src/index.ts` |
-| SHA-256 | `2322955b9e59137e1f40d2e1af708ce14742c4d4190940f0beaad9557f439539` |
+| SHA-256 | `fbf74907c7b08ce1d757604421ed20df44fdde18c2f99f35bbe45727361b13ff` |
 | 비커머스 증거 | `references/internal-service` |
 
 기준선 값의 SSOT는 `goodz.config.json`의 `portability.coreContract`다. Core를 의도적으로 변경할 때는 버전, hash, 호환성 검토와 migration 문서를 함께 갱신해야 한다.
@@ -32,7 +32,7 @@ pnpm check:portability
 ## 이식성 결과
 
 ```text
-Goodz Core v0.5.0       기준선 일치
+Goodz Core v0.6.0       기준선 일치
 Internal Service 타입   신규 독립 패키지
 Internal Service API    신규 독립 앱
 P0–P4 산출물            5종 완료

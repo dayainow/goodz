@@ -6,6 +6,11 @@ import {
   approveProcessProjectBrief,
   updateProcessDesignPack,
   approveProcessDesignPack,
+  createProcessDesignJob,
+  startProcessDesignJob,
+  submitProcessDesignJob,
+  requestProcessDesignChanges,
+  exportProcessProject,
   createIncident,
   decideProcessGate,
   loadOperationsOverview,
@@ -17,7 +22,7 @@ import {
 } from "../data/operationsStore.js";
 
 const before = loadOperationsOverview();
-if (before.storage.engine !== "sqlite" || before.storage.schemaVersion !== 4) {
+if (before.storage.engine !== "sqlite" || before.storage.schemaVersion !== 5) {
   throw new Error("SQLite schema is not ready");
 }
 if (before.documents.indexed === 0) {
@@ -128,13 +133,46 @@ const designPack = updateProcessDesignPack(createdProject.project.id, {
   typography: "Noto Sans KR",
   screens: [{ name: "Project", purpose: "Manage delivery", sections: "PRD, design, stage", primaryAction: "Approve PRD" }],
   storyboard: [{ actor: "PM", action: "approves the PRD", screen: "Project", outcome: "Design work starts" }],
-  handoffUrl: "https://claude.ai/design/example",
+  handoffUrl: "",
 });
 if (!designPack.handoffPrompt.includes("Claude Design") || designPack.screens.length !== 1) {
   throw new Error("Claude Design handoff was not generated");
 }
+const designJob = createProcessDesignJob(createdProject.project.id);
+if (designJob.status !== "queued" || !designJob.promptSnapshot.includes("Claude Design")) {
+  throw new Error("Claude Design Job was not queued with a prompt snapshot");
+}
+const startedDesignJob = startProcessDesignJob(createdProject.project.id, designJob.id);
+if (startedDesignJob.status !== "in_progress") throw new Error("Claude Design Job did not start");
+let invalidResultRejected = false;
+try {
+  submitProcessDesignJob(createdProject.project.id, designJob.id, { resultUrl: "https://example.com/design", note: "invalid provider" });
+} catch {
+  invalidResultRejected = true;
+}
+if (!invalidResultRejected) throw new Error("Non-Claude Design result URL was accepted");
+const submittedDesignJob = submitProcessDesignJob(createdProject.project.id, designJob.id, {
+  resultUrl: "https://claude.ai/design/example",
+  note: "validation result",
+});
+if (submittedDesignJob.status !== "submitted") throw new Error("Claude Design result was not submitted");
+const changesRequestedJob = requestProcessDesignChanges(createdProject.project.id, designJob.id, {
+  note: "increase contrast before approval",
+});
+if (changesRequestedJob.status !== "changes_requested") throw new Error("Claude Design change request failed");
+const revisedDesignJob = createProcessDesignJob(createdProject.project.id);
+startProcessDesignJob(createdProject.project.id, revisedDesignJob.id);
+submitProcessDesignJob(createdProject.project.id, revisedDesignJob.id, {
+  resultUrl: "https://claude.ai/design/revised-example",
+  note: "contrast revision complete",
+});
 const approvedDesign = approveProcessDesignPack(createdProject.project.id);
 if (approvedDesign.status !== "approved") throw new Error("Design Pack approval failed");
+const exportBundle = exportProcessProject(createdProject.project.id);
+if (exportBundle.files.length !== 3 || !exportBundle.files.some((file) => file.path.endsWith("PRD.md"))) {
+  throw new Error("Approved project export bundle was not generated");
+}
+const invalidatedJob = createProcessDesignJob(createdProject.project.id);
 updateProcessProjectBrief(createdProject.project.id, {
   problem: brief.problem,
   targetUsers: brief.targetUsers,
@@ -148,7 +186,23 @@ const invalidatedWorkspace = loadProcessWorkspace();
 if (invalidatedWorkspace.designPacks[0]?.status !== "draft") {
   throw new Error("PRD change did not invalidate Design Pack approval");
 }
+if (invalidatedWorkspace.designJobs.find((job) => job.id === invalidatedJob.id)?.status !== "changes_requested") {
+  throw new Error("PRD change did not invalidate the open Design Job");
+}
 approveProcessProjectBrief(createdProject.project.id);
+let staleDesignApprovalRejected = false;
+try {
+  approveProcessDesignPack(createdProject.project.id);
+} catch {
+  staleDesignApprovalRejected = true;
+}
+if (!staleDesignApprovalRejected) throw new Error("A stale Claude Design result was approved");
+const refreshedJob = createProcessDesignJob(createdProject.project.id);
+startProcessDesignJob(createdProject.project.id, refreshedJob.id);
+submitProcessDesignJob(createdProject.project.id, refreshedJob.id, {
+  resultUrl: "https://claude.ai/design/refreshed-example",
+  note: "updated after PRD change",
+});
 approveProcessDesignPack(createdProject.project.id);
 
 let phaseSkipRejected = false;
@@ -217,9 +271,10 @@ if (
   validatedWorkspace.templates.length !== 3 ||
   validatedWorkspace.briefs[0]?.status !== "approved" ||
   validatedWorkspace.designPacks[0]?.status !== "approved" ||
+  validatedWorkspace.designJobs[0]?.status !== "approved" ||
   validatedWorkspace.auditEvents.length < 11
 ) {
   throw new Error("Writable process audit validation failed");
 }
 
-console.log("sqlite template, PRD, design handoff, deliverable, evidence, and gate lifecycle ok");
+console.log("sqlite template, PRD, Design Job, export, deliverable, evidence, and gate lifecycle ok");

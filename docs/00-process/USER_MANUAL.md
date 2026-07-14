@@ -26,10 +26,13 @@ GO는 현재 Stage의 모든 Task가 `done`이고 필수 산출물이 `approved`
 3. **Design Workbench**에서 디자인 방향·무드·팔레트·타이포그래피를 정합니다.
 4. 화면별 목적·영역·주요 행동을 입력해 MVP 와이어프레임 명세를 만듭니다.
 5. Actor·Action·Screen·Outcome으로 스토리보드를 작성합니다.
-6. Design Pack을 저장해 Claude Design handoff prompt를 생성하고 복사합니다.
-7. Claude Design에서 세부 UI를 만든 뒤 프로젝트 URL을 입력하고 Design을 승인합니다.
+6. Design Pack을 저장하고 `Handoff 작업 생성`을 눌러 prompt snapshot을 고정합니다.
+7. `작업 시작` 후 prompt를 Claude Design에 전달해 high-fidelity UI를 제작합니다.
+8. 완성된 `https://claude.ai/...` URL과 검토 메모를 제출합니다.
+9. 결과가 부족하면 `수정 요청`, 충분하면 `Design 승인`을 선택합니다.
+10. 승인 후 `산출물 번들 다운로드`로 PRD·Design Pack·handoff Markdown을 내보냅니다.
 
-PRD나 Design Pack을 승인한 뒤 내용을 수정하면 다시 Draft가 됩니다. Goodz는 high-fidelity UI를 직접 그리는 대신 Claude Design이 작업할 입력 패키지와 결과 검증 상태를 관리합니다.
+PRD나 Design Pack을 승인한 뒤 내용을 수정하면 다시 Draft가 되고, 열려 있는 Design Job은 수정 필요 상태가 됩니다. Goodz는 high-fidelity UI를 직접 그리는 대신 Claude Design이 작업할 입력 패키지, prompt snapshot, 결과 검증 상태를 관리합니다.
 
 ## 접속
 

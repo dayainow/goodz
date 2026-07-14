@@ -38,9 +38,9 @@
   "portability": {
     "coreChangesAllowedForNewReference": false,
     "coreContract": {
-      "version": "0.5.0",
+      "version": "0.6.0",
       "path": "packages/process/src/index.ts",
-      "sha256": "2322955b9e59137e1f40d2e1af708ce14742c4d4190940f0beaad9557f439539"
+      "sha256": "fbf74907c7b08ce1d757604421ed20df44fdde18c2f99f35bbe45727361b13ff"
     },
     "requiredCommands": [
       "pnpm check:template",

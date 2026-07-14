@@ -32,6 +32,7 @@
 | **v0.22** | Process Template Catalog: Phase 0–8 + Deliverable/Evidence command + Builder | ✅ |
 | **v0.23** | Visual Template Builder: clone + structured editing + live validation | ✅ |
 | **v0.24** | PRD & Design Workbench: guided PRD + MVP design pack + Claude handoff | ✅ |
+| **v0.25** | Design Job Connector & Export: 상태 추적 + prompt snapshot + portable bundle | ✅ |
 | **v1.0** | 설치 가능한 Goodz Core: CLI + config migration + clean-clone 도입 | ⚪ |
 
 ## 전체 타임라인
@@ -40,7 +41,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export
 ```
 
 ---
@@ -342,6 +343,15 @@ Week 1
 - SQLite schema v4와 기존 Project Workbench backfill
 - 다음 Gate: 승인 PRD Git export, Claude Connector, Template version migration
 
+### Sprint S27 — Design Job Connector & Export
+
+- Core `ProcessDesignJob` 계약과 SQLite schema v5
+- `manual_claude_design` Connector의 생성·시작·제출·수정 요청·승인 command
+- Job 생성 시 PRD와 Design Pack handoff prompt snapshot 고정
+- PRD/Design 변경 시 열려 있는 Job 자동 무효화
+- 승인 PRD·Design Pack·Claude handoff Markdown 3건 portable export
+- 다음 Gate: Git materializer, 인증 기반 Claude MCP/API adapter, Template version migration
+
 ---
 
 ## 의존성 그래프
@@ -394,8 +404,9 @@ flowchart LR
 27. ✅ v0.22: 파일 기반 Process Template Catalog + Deliverable/Evidence command
 28. ✅ v0.23: Visual Template Builder + clone + live validation
 29. ✅ v0.24: Guided PRD + MVP Design Pack + Claude Design handoff
-30. ⚪ v1.0 Gate: `goodz init/adopt/verify` + config migration + clean-clone CI
-31. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
+30. ✅ v0.25: Design Job Connector + prompt snapshot + portable export
+31. ⚪ v1.0 Gate: `goodz init/adopt/verify` + config migration + clean-clone CI
+32. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
 
 ---
 
@@ -425,3 +436,4 @@ flowchart LR
 | 2026-07-14 | v0.22 — Phase 0–8 Template Catalog와 산출물·증거 관리 |
 | 2026-07-14 | v0.23 — JSON 없는 Visual Template Builder와 복제 편집 |
 | 2026-07-14 | v0.24 — 질문형 PRD와 Claude Design handoff Workbench |
+| 2026-07-14 | v0.25 — Claude Design Job 상태 관리와 portable Markdown export |

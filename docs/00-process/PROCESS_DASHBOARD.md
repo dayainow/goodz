@@ -12,7 +12,7 @@ Phase Gate·Sprint·기획 입력·산출물·기능 백로그·개발 증거를
 ```text
 docs/00-process/status.json              ← SSOT (수동·에이전트 갱신)
 docs/00-process/metrics-snapshots.json   ← Metrics trend snapshot
-SQLite schema v4                         ← Project·PRD·Design Pack·Run·Stage·Task·Deliverable·Evidence·Gate·Audit SSOT
+SQLite schema v5                         ← Project·PRD·Design Pack·Design Job·Run·Stage·Task·Deliverable·Evidence·Gate·Audit SSOT
         │
         ▼ GET /api/process/status
         ▼ GET /api/process/metrics-snapshots
@@ -204,6 +204,15 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - **Concept**: 디자인 방향, 무드, 팔레트와 타이포그래피를 잠급니다.
 - **Claude handoff**: PRD와 Design Pack을 하나의 Claude Design prompt로 합성하고 결과 URL을 연결합니다.
 - **Design guard**: PRD 승인 전 또는 화면·스토리보드·콘셉트·결과 URL 누락 시 Design 승인을 거부합니다.
+
+## v0.25 Design Job Connector & Export
+
+- **Stateful handoff**: handoff를 `queued → in_progress → submitted → approved` Job으로 관리합니다.
+- **Prompt snapshot**: Job 생성 시점의 승인 PRD와 Design Pack prompt를 고정합니다.
+- **Review loop**: 제출 결과에 수정 요청을 남기고 새 Job으로 재작업할 수 있습니다.
+- **Stale guard**: PRD나 Design Pack 변경 시 열려 있는 Job은 자동으로 `changes_requested`가 됩니다.
+- **Portable export**: 최종 승인 후 PRD, Design Pack, Claude handoff Markdown 3건을 JSON bundle로 내려받습니다.
+- **Connector boundary**: v0.25 기본값은 수동 Claude Design 어댑터이며, 자동 MCP/API 어댑터는 같은 Job 계약을 사용합니다.
 
 ## Redesign PRD v1.0
 

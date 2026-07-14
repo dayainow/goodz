@@ -20,6 +20,8 @@
 6. PRD 수정 시 PRD와 downstream Design 승인을 함께 Draft로 되돌리고, Design Pack 수정 시 Design 승인만 되돌린다.
 7. 승인 전 초안은 SQLite, 승인된 원본의 Git/Notion export는 후속 Connector 범위로 둔다.
 
+Design Job 상태와 portable export는 후속 [ADR-008](./008-design-job-connector-export.md)에서 구현한다.
+
 ## 결과
 
 - 사용자는 빈 PRD 문서 대신 질문에 답해 P0 초안을 완성한다.

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import type {
   ProcessDesignPack,
+  ProcessDesignJob,
   ProcessDesignScreen,
   ProcessProject,
   ProcessProjectBrief,
@@ -11,6 +12,11 @@ import type {
 import {
   approveDesignPack,
   approveProjectBrief,
+  createDesignJob,
+  fetchProjectExport,
+  requestDesignChanges,
+  startDesignJob,
+  submitDesignJob,
   updateDesignPack,
   updateProjectBrief,
 } from "../api/process";
@@ -18,6 +24,13 @@ import {
 const SURFACE = "overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]";
 const META = "text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500";
 const INPUT = "mt-2 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm leading-6 text-zinc-800";
+const DESIGN_JOB_LABEL: Record<ProcessDesignJob["status"], string> = {
+  queued: "전달 대기",
+  in_progress: "Claude Design 작업 중",
+  submitted: "결과 검토",
+  changes_requested: "수정 필요",
+  approved: "승인 완료",
+};
 
 function StatusPill({ status }: { status: "draft" | "approved" }) {
   return <span className={[
@@ -46,11 +59,13 @@ export function ProjectWorkbench({
   project,
   brief,
   designPack,
+  designJobs,
   onRefresh,
 }: {
   project: ProcessProject;
   brief: ProcessProjectBrief;
   designPack: ProcessDesignPack;
+  designJobs: ProcessDesignJob[];
   onRefresh: () => Promise<void>;
 }) {
   const [activeTab, setActiveTab] = useState<"prd" | "design">("prd");
@@ -58,7 +73,10 @@ export function ProjectWorkbench({
   const [designDraft, setDesignDraft] = useState(designPack);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [resultUrl, setResultUrl] = useState(designJobs[0]?.resultUrl ?? "");
+  const [jobNote, setJobNote] = useState(designJobs[0]?.note ?? "");
   const briefPreview = buildBriefPreview(project, briefDraft);
+  const activeJob = designJobs[0] ?? null;
 
   const runCommand = async (command: () => Promise<unknown>, success: string) => {
     setSaving(true);
@@ -107,6 +125,25 @@ export function ProjectWorkbench({
 
   const updateStory = (id: string, change: Partial<ProcessStoryboardStep>) => {
     setDesignDraft((current) => ({ ...current, storyboard: current.storyboard.map((step) => step.id === id ? { ...step, ...change } : step) }));
+  };
+
+  const handleExport = async () => {
+    setSaving(true);
+    setMessage(null);
+    try {
+      const bundle = await fetchProjectExport(project.id);
+      const url = URL.createObjectURL(new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${project.id.toLowerCase()}-goodz-export.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      setMessage(`PRD와 Design Pack Markdown ${bundle.files.length}건을 내보냈습니다.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Project export failed");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -161,8 +198,35 @@ export function ProjectWorkbench({
             </div>
           </section>
 
-          <section className="mt-5 grid gap-4 rounded-2xl bg-zinc-950 p-5 text-white xl:grid-cols-[1fr_1.2fr]"><div><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-violet-300">Claude Design result</p><label className="mt-3 block text-xs font-bold text-zinc-300">프로젝트 URL<input value={designDraft.handoffUrl} onChange={(event) => setDesignDraft((current) => ({ ...current, handoffUrl: event.target.value }))} placeholder="https://claude.ai/..." className="mt-2 h-10 w-full rounded-xl border border-white/15 bg-white/10 px-3 text-sm text-white placeholder:text-zinc-600" /></label><p className="mt-3 text-xs leading-5 text-zinc-400">프롬프트를 Claude Design에 전달한 뒤 완성된 프로젝트 URL을 연결합니다.</p></div><div><div className="flex items-center justify-between gap-3"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-violet-300">Generated handoff prompt</p><button type="button" onClick={() => void navigator.clipboard.writeText(designPack.handoffPrompt)} className="rounded-lg border border-white/15 px-2.5 py-1.5 text-[10px] font-bold text-zinc-300 hover:bg-white/10">복사</button></div><pre className="mt-3 max-h-52 overflow-auto whitespace-pre-wrap font-mono text-[11px] leading-5 text-zinc-400">{designPack.handoffPrompt}</pre></div></section>
-          <div className="mt-5 flex flex-wrap justify-end gap-2"><button type="submit" disabled={saving} className="rounded-xl border border-zinc-300 bg-white px-4 py-3 text-xs font-bold text-zinc-800 hover:bg-zinc-100 disabled:opacity-40">Design Pack 저장</button><button type="button" disabled={saving || designPack.status === "approved" || brief.status !== "approved"} onClick={() => void runCommand(() => approveDesignPack(project.id), "Design Pack과 Claude Design 결과를 승인했습니다.")} className="rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-35">Design 승인</button></div>
+          <section className="mt-5 overflow-hidden rounded-2xl bg-zinc-950 text-white">
+            <div className="grid gap-5 p-5 xl:grid-cols-[1fr_1.2fr]">
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-violet-300">Claude Design connector</p>
+                  <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-bold text-zinc-200">{activeJob ? DESIGN_JOB_LABEL[activeJob.status] : "작업 없음"}</span>
+                </div>
+                <p className="mt-3 text-sm font-bold">수동 Claude Design 어댑터</p>
+                <p className="mt-1 text-xs leading-5 text-zinc-400">Goodz가 prompt snapshot과 작업 상태를 관리합니다. Claude Design에서 제작한 뒤 결과 URL을 제출하세요.</p>
+                {activeJob?.status === "in_progress" ? <input value={resultUrl} onChange={(event) => setResultUrl(event.target.value)} placeholder="https://claude.ai/design/..." className="mt-4 h-10 w-full rounded-xl border border-white/15 bg-white/10 px-3 text-sm text-white placeholder:text-zinc-600" /> : null}
+                {activeJob?.status === "in_progress" || activeJob?.status === "submitted" ? <textarea value={jobNote} onChange={(event) => setJobNote(event.target.value)} rows={3} placeholder={activeJob.status === "submitted" ? "수정이 필요하면 구체적인 요청을 입력하세요." : "검토할 화면과 주요 변경 사항"} className="mt-3 w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs leading-5 text-white placeholder:text-zinc-600" /> : null}
+                {activeJob?.resultUrl ? <a href={activeJob.resultUrl} target="_blank" rel="noreferrer" className="mt-4 block truncate text-xs font-bold text-violet-300 hover:text-violet-200">{activeJob.resultUrl}</a> : null}
+                {activeJob?.note && activeJob.status !== "in_progress" && activeJob.status !== "submitted" ? <p className="mt-2 rounded-xl bg-white/5 p-3 text-xs leading-5 text-zinc-300">{activeJob.note}</p> : null}
+              </div>
+              <div>
+                <div className="flex items-center justify-between gap-3"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-violet-300">Generated handoff prompt</p><button type="button" onClick={() => void navigator.clipboard.writeText(activeJob?.promptSnapshot ?? designPack.handoffPrompt)} className="rounded-lg border border-white/15 px-2.5 py-1.5 text-[10px] font-bold text-zinc-300 hover:bg-white/10">복사</button></div>
+                <pre className="mt-3 max-h-52 overflow-auto whitespace-pre-wrap font-mono text-[11px] leading-5 text-zinc-400">{activeJob?.promptSnapshot ?? designPack.handoffPrompt}</pre>
+              </div>
+            </div>
+            <div className="flex flex-wrap justify-end gap-2 border-t border-white/10 bg-white/5 px-5 py-4">
+              {!activeJob || activeJob.status === "changes_requested" ? <button type="button" disabled={saving || brief.status !== "approved"} onClick={() => void runCommand(() => createDesignJob(project.id), "Claude Design handoff 작업을 생성했습니다.")} className="rounded-xl bg-violet-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-violet-400 disabled:opacity-35">Handoff 작업 생성</button> : null}
+              {activeJob?.status === "queued" ? <button type="button" disabled={saving} onClick={() => void runCommand(() => startDesignJob(project.id, activeJob.id), "Claude Design 작업을 시작했습니다. 프롬프트를 복사해 제작을 진행하세요.")} className="rounded-xl bg-violet-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-violet-400 disabled:opacity-35">작업 시작</button> : null}
+              {activeJob?.status === "in_progress" ? <button type="button" disabled={saving || !resultUrl.trim()} onClick={() => void runCommand(() => submitDesignJob(project.id, activeJob.id, { resultUrl, note: jobNote }), "Claude Design 결과를 검토 대기 상태로 제출했습니다.")} className="rounded-xl bg-violet-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-violet-400 disabled:opacity-35">결과 제출</button> : null}
+              {activeJob?.status === "submitted" ? <button type="button" disabled={saving || !jobNote.trim()} onClick={() => void runCommand(() => requestDesignChanges(project.id, activeJob.id, { note: jobNote }), "디자인 수정 요청을 기록했습니다.")} className="rounded-xl border border-white/20 px-4 py-2.5 text-xs font-bold text-zinc-200 hover:bg-white/10 disabled:opacity-35">수정 요청</button> : null}
+              {activeJob?.status === "submitted" ? <button type="button" disabled={saving} onClick={() => void runCommand(() => approveDesignPack(project.id), "Design Pack과 Claude Design 결과를 승인했습니다.")} className="rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-400 disabled:opacity-35">Design 승인</button> : null}
+              {activeJob?.status === "approved" ? <button type="button" disabled={saving} onClick={() => void handleExport()} className="rounded-xl bg-white px-4 py-2.5 text-xs font-bold text-zinc-950 hover:bg-zinc-200 disabled:opacity-35">산출물 번들 다운로드</button> : null}
+            </div>
+          </section>
+          <div className="mt-5 flex flex-wrap justify-end gap-2"><button type="submit" disabled={saving} className="rounded-xl border border-zinc-300 bg-white px-4 py-3 text-xs font-bold text-zinc-800 hover:bg-zinc-100 disabled:opacity-40">Design Pack 저장</button></div>
         </form>
       )}
       {message ? <p className="border-t border-zinc-100 bg-zinc-50 px-5 py-3 text-xs text-zinc-700">{message}</p> : null}

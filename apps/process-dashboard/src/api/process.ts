@@ -8,6 +8,8 @@ import type {
   ProcessIncident,
   ProcessProjectBrief,
   ProcessDesignPack,
+  ProcessDesignJob,
+  ProcessProjectExportBundle,
   ProcessDocumentResponse,
   ProcessMetricSnapshotsFile,
   ProcessOperationsOverview,
@@ -20,6 +22,8 @@ import type {
   UpdateProcessDesignPackRequest,
   UpdateProcessProjectBriefRequest,
   UpdateProcessTaskRequest,
+  SubmitProcessDesignJobRequest,
+  RequestProcessDesignChangesRequest,
 } from "@goodz/process";
 
 const API_URL =
@@ -105,6 +109,28 @@ export function updateDesignPack(projectId: string, input: UpdateProcessDesignPa
 
 export function approveDesignPack(projectId: string) {
   return processCommand<ProcessDesignPack>(`/api/process/projects/${encodeURIComponent(projectId)}/design-pack/approve`, "POST");
+}
+
+export function createDesignJob(projectId: string) {
+  return processCommand<ProcessDesignJob>(`/api/process/projects/${encodeURIComponent(projectId)}/design-jobs`, "POST");
+}
+
+export function startDesignJob(projectId: string, jobId: string) {
+  return processCommand<ProcessDesignJob>(`/api/process/projects/${encodeURIComponent(projectId)}/design-jobs/${encodeURIComponent(jobId)}/start`, "POST");
+}
+
+export function submitDesignJob(projectId: string, jobId: string, input: SubmitProcessDesignJobRequest) {
+  return processCommand<ProcessDesignJob>(`/api/process/projects/${encodeURIComponent(projectId)}/design-jobs/${encodeURIComponent(jobId)}/submit`, "POST", input);
+}
+
+export function requestDesignChanges(projectId: string, jobId: string, input: RequestProcessDesignChangesRequest) {
+  return processCommand<ProcessDesignJob>(`/api/process/projects/${encodeURIComponent(projectId)}/design-jobs/${encodeURIComponent(jobId)}/changes`, "POST", input);
+}
+
+export async function fetchProjectExport(projectId: string): Promise<ProcessProjectExportBundle> {
+  const res = await fetch(`${API_URL}/api/process/projects/${encodeURIComponent(projectId)}/export`);
+  if (!res.ok) throw new Error((await res.json() as { message?: string }).message ?? `HTTP ${res.status}`);
+  return res.json() as Promise<ProcessProjectExportBundle>;
 }
 
 export async function updateProcessStage(

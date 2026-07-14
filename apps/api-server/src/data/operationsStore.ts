@@ -18,6 +18,8 @@ import type {
   ProcessOperationsOverview,
   ProcessProjectBrief,
   ProcessDesignPack,
+  ProcessDesignJob,
+  ProcessProjectExportBundle,
   ProcessProject,
   ProcessRun,
   ProcessStageRun,
@@ -28,6 +30,8 @@ import type {
   UpdateProcessDeliverableRequest,
   UpdateProcessDesignPackRequest,
   UpdateProcessProjectBriefRequest,
+  SubmitProcessDesignJobRequest,
+  RequestProcessDesignChangesRequest,
   UpdateProcessTaskRequest,
 } from "@goodz/process";
 
@@ -158,6 +162,21 @@ database.exec(`
     updated_at TEXT NOT NULL
   ) STRICT;
 
+  CREATE TABLE IF NOT EXISTS process_design_jobs (
+    id TEXT PRIMARY KEY,
+    project_id TEXT NOT NULL REFERENCES process_projects(id) ON DELETE CASCADE,
+    connector TEXT NOT NULL CHECK (connector IN ('manual_claude_design')),
+    status TEXT NOT NULL CHECK (status IN ('queued', 'in_progress', 'submitted', 'changes_requested', 'approved')),
+    prompt_snapshot TEXT NOT NULL,
+    result_url TEXT NOT NULL,
+    note TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    started_at TEXT,
+    submitted_at TEXT,
+    approved_at TEXT,
+    updated_at TEXT NOT NULL
+  ) STRICT;
+
   CREATE TABLE IF NOT EXISTS process_runs (
     id TEXT PRIMARY KEY,
     project_id TEXT NOT NULL REFERENCES process_projects(id) ON DELETE CASCADE,
@@ -231,7 +250,7 @@ database.exec(`
 
   CREATE TABLE IF NOT EXISTS process_audit_events (
     id TEXT PRIMARY KEY,
-    entity_type TEXT NOT NULL CHECK (entity_type IN ('project', 'run', 'stage', 'task', 'gate', 'template', 'deliverable', 'evidence')),
+    entity_type TEXT NOT NULL CHECK (entity_type IN ('project', 'run', 'stage', 'task', 'gate', 'template', 'deliverable', 'evidence', 'design_job')),
     entity_id TEXT NOT NULL,
     action TEXT NOT NULL,
     detail TEXT NOT NULL,
@@ -249,18 +268,21 @@ database.exec(`
 
   INSERT OR IGNORE INTO schema_migrations(version, applied_at)
   VALUES (4, datetime('now'));
+
+  INSERT OR IGNORE INTO schema_migrations(version, applied_at)
+  VALUES (5, datetime('now'));
 `);
 
 const auditSchema = database
   .prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'process_audit_events'")
   .get() as unknown as { sql: string };
-if (!auditSchema.sql.includes("'template'")) {
+if (!auditSchema.sql.includes("'design_job'")) {
   database.exec(`
     BEGIN IMMEDIATE;
     ALTER TABLE process_audit_events RENAME TO process_audit_events_v2;
     CREATE TABLE process_audit_events (
       id TEXT PRIMARY KEY,
-      entity_type TEXT NOT NULL CHECK (entity_type IN ('project', 'run', 'stage', 'task', 'gate', 'template', 'deliverable', 'evidence')),
+      entity_type TEXT NOT NULL CHECK (entity_type IN ('project', 'run', 'stage', 'task', 'gate', 'template', 'deliverable', 'evidence', 'design_job')),
       entity_id TEXT NOT NULL,
       action TEXT NOT NULL,
       detail TEXT NOT NULL,
@@ -625,6 +647,21 @@ interface DesignPackRow {
   updated_at: string;
 }
 
+interface DesignJobRow {
+  id: string;
+  project_id: string;
+  connector: ProcessDesignJob["connector"];
+  status: ProcessDesignJob["status"];
+  prompt_snapshot: string;
+  result_url: string;
+  note: string;
+  created_at: string;
+  started_at: string | null;
+  submitted_at: string | null;
+  approved_at: string | null;
+  updated_at: string;
+}
+
 interface RunRow {
   id: string;
   project_id: string;
@@ -834,6 +871,23 @@ function toDesignPack(row: DesignPackRow, project: ProcessProject, brief: Proces
   };
 }
 
+function toDesignJob(row: DesignJobRow): ProcessDesignJob {
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    connector: row.connector,
+    status: row.status,
+    promptSnapshot: row.prompt_snapshot,
+    resultUrl: row.result_url,
+    note: row.note,
+    createdAt: row.created_at,
+    ...(row.started_at ? { startedAt: row.started_at } : {}),
+    ...(row.submitted_at ? { submittedAt: row.submitted_at } : {}),
+    ...(row.approved_at ? { approvedAt: row.approved_at } : {}),
+    updatedAt: row.updated_at,
+  };
+}
+
 function loadProcessRun(row: RunRow): ProcessRun {
   const stageRows = database
     .prepare("SELECT * FROM process_stage_runs WHERE run_id = ? ORDER BY position")
@@ -933,6 +987,7 @@ export function loadProcessWorkspace(): ProcessWorkspaceOverview {
   const projectItems = projects.map(toProject);
   const briefs = database.prepare("SELECT * FROM process_project_briefs ORDER BY updated_at DESC").all() as unknown as BriefRow[];
   const designPacks = database.prepare("SELECT * FROM process_design_packs ORDER BY updated_at DESC").all() as unknown as DesignPackRow[];
+  const designJobs = database.prepare("SELECT * FROM process_design_jobs ORDER BY created_at DESC").all() as unknown as DesignJobRow[];
   const briefItems = briefs.map((brief) => {
     const project = projectItems.find((item) => item.id === brief.project_id);
     if (!project) throw new Error("Brief project not found");
@@ -950,6 +1005,7 @@ export function loadProcessWorkspace(): ProcessWorkspaceOverview {
       if (!project || !brief) throw new Error("Design pack project or brief not found");
       return toDesignPack(designPack, project, brief);
     }),
+    designJobs: designJobs.map(toDesignJob),
     auditEvents: audits.map((audit) => ({
       id: audit.id,
       entityType: audit.entity_type,
@@ -1139,6 +1195,14 @@ function getProject(projectId: string) {
   return toProject(row);
 }
 
+function invalidateOpenDesignJobs(projectId: string, reason: string, updatedAt: string) {
+  database.prepare(`
+    UPDATE process_design_jobs
+    SET status = 'changes_requested', note = ?, updated_at = ?
+    WHERE project_id = ? AND status IN ('queued', 'in_progress', 'submitted')
+  `).run(reason, updatedAt, projectId);
+}
+
 export function updateProcessProjectBrief(
   projectId: string,
   input: UpdateProcessProjectBriefRequest,
@@ -1162,6 +1226,7 @@ export function updateProcessProjectBrief(
       SET status = 'draft', approved_at = NULL, updated_at = ?
       WHERE project_id = ?
     `).run(now, projectId);
+    invalidateOpenDesignJobs(projectId, "PRD가 변경되어 새 handoff가 필요합니다.", now);
     database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, projectId);
     recordAudit("project", projectId, "brief_saved", "PRD Wizard 초안 저장", now);
     database.exec("COMMIT");
@@ -1225,6 +1290,7 @@ export function updateProcessDesignPack(
       input.conceptName.trim(), input.mood.trim(), input.palette.trim(), input.typography.trim(),
       JSON.stringify(screens), JSON.stringify(storyboard), input.handoffUrl.trim(), now, projectId,
     );
+    invalidateOpenDesignJobs(projectId, "Design Pack이 변경되어 새 handoff가 필요합니다.", now);
     database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, projectId);
     recordAudit("project", projectId, "design_pack_saved", "화면·스토리보드·콘셉트와 Claude handoff 저장", now);
     database.exec("COMMIT");
@@ -1236,22 +1302,166 @@ export function updateProcessDesignPack(
   return toDesignPack(designRow, project, toBrief(briefRow, project));
 }
 
+function assertDesignPackReady(designRow: DesignPackRow) {
+  const screens = JSON.parse(designRow.screens_json) as ProcessDesignPack["screens"];
+  const storyboard = JSON.parse(designRow.storyboard_json) as ProcessDesignPack["storyboard"];
+  if (
+    !designRow.concept_name ||
+    !designRow.mood ||
+    !designRow.palette ||
+    !designRow.typography ||
+    screens.length === 0 ||
+    storyboard.length === 0
+  ) {
+    throw new Error("Complete the concept, screens, and storyboard before creating a Design Job");
+  }
+}
+
+function getDesignJob(projectId: string, jobId: string) {
+  const row = database.prepare("SELECT * FROM process_design_jobs WHERE id = ? AND project_id = ?").get(jobId, projectId) as unknown as DesignJobRow | undefined;
+  if (!row) throw new Error("Design Job not found");
+  return row;
+}
+
+export function createProcessDesignJob(projectId: string): ProcessDesignJob {
+  const project = getProject(projectId);
+  const briefRow = database.prepare("SELECT * FROM process_project_briefs WHERE project_id = ?").get(projectId) as unknown as BriefRow | undefined;
+  const designRow = database.prepare("SELECT * FROM process_design_packs WHERE project_id = ?").get(projectId) as unknown as DesignPackRow | undefined;
+  if (!briefRow || !designRow) throw new Error("Project workbench not found");
+  if (briefRow.status !== "approved") throw new Error("Approve the PRD before creating a Design Job");
+  assertDesignPackReady(designRow);
+  const openJob = database.prepare(`
+    SELECT id FROM process_design_jobs
+    WHERE project_id = ? AND status IN ('queued', 'in_progress', 'submitted')
+    LIMIT 1
+  `).get(projectId) as unknown as { id: string } | undefined;
+  if (openJob) throw new Error("Finish or request changes on the current Design Job first");
+
+  const now = new Date().toISOString();
+  const id = `DJOB-${randomUUID().slice(0, 8).toUpperCase()}`;
+  const brief = toBrief(briefRow, project);
+  const prompt = buildHandoffPrompt(project, brief, designRow);
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare(`
+      INSERT INTO process_design_jobs(
+        id, project_id, connector, status, prompt_snapshot, result_url, note,
+        created_at, started_at, submitted_at, approved_at, updated_at
+      ) VALUES (?, ?, 'manual_claude_design', 'queued', ?, '', '', ?, NULL, NULL, NULL, ?)
+    `).run(id, projectId, prompt, now, now);
+    recordAudit("design_job", id, "queued", `${project.name} Claude Design handoff 생성`, now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  return toDesignJob(getDesignJob(projectId, id));
+}
+
+export function startProcessDesignJob(projectId: string, jobId: string): ProcessDesignJob {
+  const job = getDesignJob(projectId, jobId);
+  if (job.status !== "queued") throw new Error("Only a queued Design Job can be started");
+  const now = new Date().toISOString();
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare(`
+      UPDATE process_design_jobs
+      SET status = 'in_progress', started_at = ?, updated_at = ?
+      WHERE id = ?
+    `).run(now, now, jobId);
+    recordAudit("design_job", jobId, "started", "Claude Design 수동 실행 시작", now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  return toDesignJob(getDesignJob(projectId, jobId));
+}
+
+export function submitProcessDesignJob(
+  projectId: string,
+  jobId: string,
+  input: SubmitProcessDesignJobRequest,
+): ProcessDesignJob {
+  const job = getDesignJob(projectId, jobId);
+  if (job.status !== "in_progress") throw new Error("Only an in-progress Design Job can submit a result");
+  const resultUrl = input.resultUrl?.trim();
+  const note = input.note?.trim() ?? "";
+  if (!resultUrl || !resultUrl.startsWith("https://claude.ai/")) {
+    throw new Error("A valid https://claude.ai/ result URL is required");
+  }
+  if (resultUrl.length > 2_000 || note.length > 4_000) throw new Error("Design result URL or note is too long");
+  const now = new Date().toISOString();
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare(`
+      UPDATE process_design_jobs
+      SET status = 'submitted', result_url = ?, note = ?, submitted_at = ?, updated_at = ?
+      WHERE id = ?
+    `).run(resultUrl, note, now, now, jobId);
+    database.prepare(`
+      UPDATE process_design_packs
+      SET status = 'draft', handoff_url = ?, approved_at = NULL, updated_at = ?
+      WHERE project_id = ?
+    `).run(resultUrl, now, projectId);
+    database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, projectId);
+    recordAudit("design_job", jobId, "submitted", "Claude Design 결과 URL 제출", now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  return toDesignJob(getDesignJob(projectId, jobId));
+}
+
+export function requestProcessDesignChanges(
+  projectId: string,
+  jobId: string,
+  input: RequestProcessDesignChangesRequest,
+): ProcessDesignJob {
+  const job = getDesignJob(projectId, jobId);
+  if (job.status !== "submitted") throw new Error("Only a submitted Design Job can request changes");
+  const note = input.note?.trim();
+  if (!note) throw new Error("A change request note is required");
+  if (note.length > 4_000) throw new Error("Change request note is too long");
+  const now = new Date().toISOString();
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare(`
+      UPDATE process_design_jobs
+      SET status = 'changes_requested', note = ?, updated_at = ?
+      WHERE id = ?
+    `).run(note, now, jobId);
+    database.prepare("UPDATE process_design_packs SET status = 'draft', approved_at = NULL, updated_at = ? WHERE project_id = ?").run(now, projectId);
+    recordAudit("design_job", jobId, "changes_requested", note, now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  return toDesignJob(getDesignJob(projectId, jobId));
+}
+
 export function approveProcessDesignPack(projectId: string): ProcessDesignPack {
   const project = getProject(projectId);
   const briefRow = database.prepare("SELECT * FROM process_project_briefs WHERE project_id = ?").get(projectId) as unknown as BriefRow | undefined;
   const designRow = database.prepare("SELECT * FROM process_design_packs WHERE project_id = ?").get(projectId) as unknown as DesignPackRow | undefined;
   if (!briefRow || !designRow) throw new Error("Project workbench not found");
   if (briefRow.status !== "approved") throw new Error("Approve the PRD before the Design Pack");
-  const screens = JSON.parse(designRow.screens_json) as ProcessDesignPack["screens"];
-  const storyboard = JSON.parse(designRow.storyboard_json) as ProcessDesignPack["storyboard"];
-  if (!designRow.concept_name || !designRow.mood || !designRow.palette || !designRow.typography || !designRow.handoff_url || screens.length === 0 || storyboard.length === 0) {
-    throw new Error("Complete the concept, screens, storyboard, and Claude Design URL before approval");
-  }
+  assertDesignPackReady(designRow);
+  const submittedJob = database.prepare(`
+    SELECT * FROM process_design_jobs
+    WHERE project_id = ? AND status = 'submitted'
+    ORDER BY submitted_at DESC LIMIT 1
+  `).get(projectId) as unknown as DesignJobRow | undefined;
+  if (!submittedJob || !submittedJob.result_url) throw new Error("Submit a Claude Design Job result before approval");
   const now = new Date().toISOString();
   database.exec("BEGIN IMMEDIATE");
   try {
-    database.prepare("UPDATE process_design_packs SET status = 'approved', approved_at = ?, updated_at = ? WHERE project_id = ?").run(now, now, projectId);
+    database.prepare("UPDATE process_design_packs SET status = 'approved', handoff_url = ?, approved_at = ?, updated_at = ? WHERE project_id = ?").run(submittedJob.result_url, now, now, projectId);
+    database.prepare("UPDATE process_design_jobs SET status = 'approved', approved_at = ?, updated_at = ? WHERE id = ?").run(now, now, submittedJob.id);
     database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, projectId);
+    recordAudit("design_job", submittedJob.id, "approved", "Claude Design 결과 승인", now);
     recordAudit("project", projectId, "design_pack_approved", "Claude Design 결과와 handoff 승인", now);
     database.exec("COMMIT");
   } catch (error) {
@@ -1260,6 +1470,39 @@ export function approveProcessDesignPack(projectId: string): ProcessDesignPack {
   }
   const approved = database.prepare("SELECT * FROM process_design_packs WHERE project_id = ?").get(projectId) as unknown as DesignPackRow;
   return toDesignPack(approved, project, toBrief(briefRow, project));
+}
+
+export function exportProcessProject(projectId: string): ProcessProjectExportBundle {
+  const project = getProject(projectId);
+  const briefRow = database.prepare("SELECT * FROM process_project_briefs WHERE project_id = ?").get(projectId) as unknown as BriefRow | undefined;
+  const designRow = database.prepare("SELECT * FROM process_design_packs WHERE project_id = ?").get(projectId) as unknown as DesignPackRow | undefined;
+  const approvedJob = database.prepare(`
+    SELECT * FROM process_design_jobs
+    WHERE project_id = ? AND status = 'approved'
+    ORDER BY approved_at DESC LIMIT 1
+  `).get(projectId) as unknown as DesignJobRow | undefined;
+  if (!briefRow || !designRow) throw new Error("Project workbench not found");
+  if (briefRow.status !== "approved" || designRow.status !== "approved" || !approvedJob) {
+    throw new Error("Approve the PRD and Claude Design result before export");
+  }
+  const brief = toBrief(briefRow, project);
+  const design = toDesignPack(designRow, project, brief);
+  const root = `docs/projects/${project.id.toLowerCase()}`;
+  const screenRows = design.screens.map((screen, index) => `| S${index + 1} | ${screen.name} | ${screen.purpose} | ${screen.sections} | ${screen.primaryAction} |`).join("\n");
+  const storyRows = design.storyboard.map((step, index) => `${index + 1}. **${step.actor}** · ${step.screen}에서 ${step.action} → ${step.outcome}`).join("\n");
+  const designMarkdown = `# ${project.name} Design Pack\n\n## 콘셉트\n\n- 방향: ${design.conceptName}\n- 무드: ${design.mood}\n- 팔레트: ${design.palette}\n- 타이포그래피: ${design.typography}\n\n## 화면\n\n| ID | 화면 | 목적 | 섹션 | 주요 행동 |\n|---|---|---|---|---|\n${screenRows}\n\n## 스토리보드\n\n${storyRows}\n\n## Claude Design 결과\n\n${approvedJob.result_url}\n`;
+  const handoffMarkdown = `# Claude Design Handoff\n\n## 상태\n\n- Connector: manual_claude_design\n- Job: ${approvedJob.id}\n- Result: ${approvedJob.result_url}\n- Approved: ${approvedJob.approved_at ?? ""}\n\n## Prompt snapshot\n\n\`\`\`text\n${approvedJob.prompt_snapshot}\n\`\`\`\n`;
+  return {
+    schemaVersion: 1,
+    projectId,
+    projectName: project.name,
+    generatedAt: new Date().toISOString(),
+    files: [
+      { path: `${root}/PRD.md`, mediaType: "text/markdown", content: brief.markdown },
+      { path: `${root}/DESIGN_PACK.md`, mediaType: "text/markdown", content: designMarkdown },
+      { path: `${root}/CLAUDE_DESIGN_HANDOFF.md`, mediaType: "text/markdown", content: handoffMarkdown },
+    ],
+  };
 }
 
 export function updateProcessTask(
@@ -1553,7 +1796,7 @@ export function loadOperationsOverview(): ProcessOperationsOverview {
     storage: {
       engine: "sqlite",
       durability,
-      schemaVersion: 4,
+      schemaVersion: 5,
     },
     documents: {
       indexed: documentCount.count,
