@@ -10,6 +10,7 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 | 운영 사건 | SQLite | 생성·종료·MTTR 계산의 기준 저장소 |
 | 기본 프로세스 템플릿 | `templates/process/*.json` | 시작 시 검증·seed |
 | 사용자 프로세스 템플릿 | SQLite | Builder로 생성한 버전 고정 단계·작업·산출물 정의 |
+| PRD/Design 초안 | SQLite | 질문형 입력, 승인 상태, 화면·스토리보드·Claude handoff 실행 상태 |
 | 프로젝트 실행 | SQLite | Project, Run, Stage, Task, Deliverable, Evidence, Gate 상태의 기준 저장소 |
 | 실행 감사 이력 | SQLite | command마다 append-only event 기록 |
 | 문서 본문 | `docs/**/*.md` | 경로·제목·수정 시각 인덱스 |
@@ -24,7 +25,7 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 
 서버 시작 시 schema migration, P0–P4·Phase 0–8 Template seed와 문서 인덱스 동기화를 자동 수행한다. DB 파일과 WAL 파일은 Git에 포함하지 않는다.
 
-## Schema v3 실행 규칙
+## Schema v4 실행 규칙
 
 - 프로젝트 생성 시 선택한 Template version을 독립적인 Process Run으로 복제한다.
 - 첫 단계만 `in_progress`, 나머지는 `pending`으로 시작한다.
@@ -36,6 +37,9 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 - GO는 현재 단계를 닫고 다음 단계를 자동 시작한다. 마지막 Gate의 GO는 Run을 완료한다.
 - HOLD는 Stage와 Run을 차단하고 KILL은 Run을 종료한다.
 - 모든 command는 `process_audit_events`에 시간과 근거를 기록한다.
+- 프로젝트 생성 시 빈 PRD Brief와 Design Pack을 함께 만든다.
+- PRD 수정은 PRD와 downstream Design 승인을 `draft`로 되돌리고, Design 수정은 Design 승인만 되돌린다.
+- Design Pack 승인은 승인된 PRD와 콘셉트·화면·스토리보드·Claude Design URL을 요구한다.
 
 ## 배포
 

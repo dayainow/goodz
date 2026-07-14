@@ -16,6 +16,8 @@ import type {
   ProcessGateDecision,
   ProcessIncident,
   ProcessOperationsOverview,
+  ProcessProjectBrief,
+  ProcessDesignPack,
   ProcessProject,
   ProcessRun,
   ProcessStageRun,
@@ -24,6 +26,8 @@ import type {
   ProcessWorkspaceOverview,
   UpdateProcessStageRequest,
   UpdateProcessDeliverableRequest,
+  UpdateProcessDesignPackRequest,
+  UpdateProcessProjectBriefRequest,
   UpdateProcessTaskRequest,
 } from "@goodz/process";
 
@@ -126,6 +130,34 @@ database.exec(`
     updated_at TEXT NOT NULL
   ) STRICT;
 
+  CREATE TABLE IF NOT EXISTS process_project_briefs (
+    project_id TEXT PRIMARY KEY REFERENCES process_projects(id) ON DELETE CASCADE,
+    status TEXT NOT NULL CHECK (status IN ('draft', 'approved')),
+    problem TEXT NOT NULL,
+    target_users TEXT NOT NULL,
+    value_proposition TEXT NOT NULL,
+    mvp_scope TEXT NOT NULL,
+    out_of_scope TEXT NOT NULL,
+    success_metrics TEXT NOT NULL,
+    constraints TEXT NOT NULL,
+    approved_at TEXT,
+    updated_at TEXT NOT NULL
+  ) STRICT;
+
+  CREATE TABLE IF NOT EXISTS process_design_packs (
+    project_id TEXT PRIMARY KEY REFERENCES process_projects(id) ON DELETE CASCADE,
+    status TEXT NOT NULL CHECK (status IN ('draft', 'approved')),
+    concept_name TEXT NOT NULL,
+    mood TEXT NOT NULL,
+    palette TEXT NOT NULL,
+    typography TEXT NOT NULL,
+    screens_json TEXT NOT NULL,
+    storyboard_json TEXT NOT NULL,
+    handoff_url TEXT NOT NULL,
+    approved_at TEXT,
+    updated_at TEXT NOT NULL
+  ) STRICT;
+
   CREATE TABLE IF NOT EXISTS process_runs (
     id TEXT PRIMARY KEY,
     project_id TEXT NOT NULL REFERENCES process_projects(id) ON DELETE CASCADE,
@@ -214,6 +246,9 @@ database.exec(`
 
   INSERT OR IGNORE INTO schema_migrations(version, applied_at)
   VALUES (3, datetime('now'));
+
+  INSERT OR IGNORE INTO schema_migrations(version, applied_at)
+  VALUES (4, datetime('now'));
 `);
 
 const auditSchema = database
@@ -352,6 +387,31 @@ function backfillProcessDeliverables() {
         now,
       );
     }
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+}
+
+function backfillProjectWorkbenches() {
+  const now = new Date().toISOString();
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare(`
+      INSERT OR IGNORE INTO process_project_briefs(
+        project_id, status, problem, target_users, value_proposition,
+        mvp_scope, out_of_scope, success_metrics, constraints, approved_at, updated_at
+      )
+      SELECT id, 'draft', '', '', '', '', '', '', '', NULL, ? FROM process_projects
+    `).run(now);
+    database.prepare(`
+      INSERT OR IGNORE INTO process_design_packs(
+        project_id, status, concept_name, mood, palette, typography,
+        screens_json, storyboard_json, handoff_url, approved_at, updated_at
+      )
+      SELECT id, 'draft', '', '', '', '', '[]', '[]', '', NULL, ? FROM process_projects
+    `).run(now);
     database.exec("COMMIT");
   } catch (error) {
     database.exec("ROLLBACK");
@@ -537,6 +597,34 @@ interface ProjectRow {
   updated_at: string;
 }
 
+interface BriefRow {
+  project_id: string;
+  status: ProcessProjectBrief["status"];
+  problem: string;
+  target_users: string;
+  value_proposition: string;
+  mvp_scope: string;
+  out_of_scope: string;
+  success_metrics: string;
+  constraints: string;
+  approved_at: string | null;
+  updated_at: string;
+}
+
+interface DesignPackRow {
+  project_id: string;
+  status: ProcessDesignPack["status"];
+  concept_name: string;
+  mood: string;
+  palette: string;
+  typography: string;
+  screens_json: string;
+  storyboard_json: string;
+  handoff_url: string;
+  approved_at: string | null;
+  updated_at: string;
+}
+
 interface RunRow {
   id: string;
   project_id: string;
@@ -696,6 +784,56 @@ function toProject(row: ProjectRow): ProcessProject {
   };
 }
 
+function markdownList(value: string) {
+  return value.split("\n").map((line) => line.trim()).filter(Boolean).map((line) => `- ${line}`).join("\n");
+}
+
+function buildBriefMarkdown(project: ProcessProject, row: BriefRow) {
+  return `# ${project.name} PRD\n\n> ${project.summary}\n\n## 문제 정의\n\n${row.problem}\n\n## 타깃 사용자\n\n${row.target_users}\n\n## 핵심 가치\n\n${row.value_proposition}\n\n## MVP 범위\n\n${markdownList(row.mvp_scope)}\n\n## 비목표\n\n${markdownList(row.out_of_scope)}\n\n## 성공 지표\n\n${markdownList(row.success_metrics)}\n\n## 제약과 가정\n\n${markdownList(row.constraints)}\n`;
+}
+
+function toBrief(row: BriefRow, project: ProcessProject): ProcessProjectBrief {
+  return {
+    projectId: row.project_id,
+    status: row.status,
+    problem: row.problem,
+    targetUsers: row.target_users,
+    valueProposition: row.value_proposition,
+    mvpScope: row.mvp_scope,
+    outOfScope: row.out_of_scope,
+    successMetrics: row.success_metrics,
+    constraints: row.constraints,
+    markdown: buildBriefMarkdown(project, row),
+    ...(row.approved_at ? { approvedAt: row.approved_at } : {}),
+    updatedAt: row.updated_at,
+  };
+}
+
+function buildHandoffPrompt(project: ProcessProject, brief: ProcessProjectBrief, row: DesignPackRow) {
+  const screens = JSON.parse(row.screens_json) as ProcessDesignPack["screens"];
+  const storyboard = JSON.parse(row.storyboard_json) as ProcessDesignPack["storyboard"];
+  const screenText = screens.map((screen, index) => `${index + 1}. ${screen.name}\n   목적: ${screen.purpose}\n   섹션: ${screen.sections}\n   주요 행동: ${screen.primaryAction}`).join("\n");
+  const storyText = storyboard.map((step, index) => `${index + 1}. ${step.actor}가 ${step.screen}에서 ${step.action}하여 ${step.outcome}`).join("\n");
+  return `Claude Design에서 ${project.name}의 high-fidelity MVP를 제작하세요.\n\n[제품]\n${project.summary}\n\n[문제]\n${brief.problem}\n\n[사용자]\n${brief.targetUsers}\n\n[핵심 가치]\n${brief.valueProposition}\n\n[디자인 콘셉트]\n- 방향: ${row.concept_name}\n- 무드: ${row.mood}\n- 팔레트: ${row.palette}\n- 타이포그래피: ${row.typography}\n\n[화면 명세]\n${screenText}\n\n[스토리보드]\n${storyText}\n\n각 화면에 loading, empty, error, success 상태를 포함하고 재사용 가능한 컴포넌트와 반응형 규칙을 명시하세요.`;
+}
+
+function toDesignPack(row: DesignPackRow, project: ProcessProject, brief: ProcessProjectBrief): ProcessDesignPack {
+  return {
+    projectId: row.project_id,
+    status: row.status,
+    conceptName: row.concept_name,
+    mood: row.mood,
+    palette: row.palette,
+    typography: row.typography,
+    screens: JSON.parse(row.screens_json) as ProcessDesignPack["screens"],
+    storyboard: JSON.parse(row.storyboard_json) as ProcessDesignPack["storyboard"],
+    handoffPrompt: buildHandoffPrompt(project, brief, row),
+    handoffUrl: row.handoff_url,
+    ...(row.approved_at ? { approvedAt: row.approved_at } : {}),
+    updatedAt: row.updated_at,
+  };
+}
+
 function loadProcessRun(row: RunRow): ProcessRun {
   const stageRows = database
     .prepare("SELECT * FROM process_stage_runs WHERE run_id = ? ORDER BY position")
@@ -792,11 +930,26 @@ export function loadProcessWorkspace(): ProcessWorkspaceOverview {
   const audits = database
     .prepare("SELECT * FROM process_audit_events ORDER BY created_at DESC LIMIT 30")
     .all() as unknown as AuditRow[];
+  const projectItems = projects.map(toProject);
+  const briefs = database.prepare("SELECT * FROM process_project_briefs ORDER BY updated_at DESC").all() as unknown as BriefRow[];
+  const designPacks = database.prepare("SELECT * FROM process_design_packs ORDER BY updated_at DESC").all() as unknown as DesignPackRow[];
+  const briefItems = briefs.map((brief) => {
+    const project = projectItems.find((item) => item.id === brief.project_id);
+    if (!project) throw new Error("Brief project not found");
+    return toBrief(brief, project);
+  });
 
   return {
     templates: listProcessTemplates(),
-    projects: projects.map(toProject),
+    projects: projectItems,
     runs: runs.map(loadProcessRun),
+    briefs: briefItems,
+    designPacks: designPacks.map((designPack) => {
+      const project = projectItems.find((item) => item.id === designPack.project_id);
+      const brief = briefItems.find((item) => item.projectId === designPack.project_id);
+      if (!project || !brief) throw new Error("Design pack project or brief not found");
+      return toDesignPack(designPack, project, brief);
+    }),
     auditEvents: audits.map((audit) => ({
       id: audit.id,
       entityType: audit.entity_type,
@@ -877,6 +1030,18 @@ export function createProcessProject(
         ) VALUES (?, ?, ?, ?, 'active', ?, ?)
       `)
       .run(projectId, input.name.trim(), input.summary.trim(), input.owner.trim(), now, now);
+    database.prepare(`
+      INSERT INTO process_project_briefs(
+        project_id, status, problem, target_users, value_proposition,
+        mvp_scope, out_of_scope, success_metrics, constraints, approved_at, updated_at
+      ) VALUES (?, 'draft', '', '', '', '', '', '', '', NULL, ?)
+    `).run(projectId, now);
+    database.prepare(`
+      INSERT INTO process_design_packs(
+        project_id, status, concept_name, mood, palette, typography,
+        screens_json, storyboard_json, handoff_url, approved_at, updated_at
+      ) VALUES (?, 'draft', '', '', '', '', '[]', '[]', '', NULL, ?)
+    `).run(projectId, now);
     database
       .prepare(`
         INSERT INTO process_runs(
@@ -966,6 +1131,135 @@ export function createProcessProject(
     .prepare("SELECT * FROM process_projects WHERE id = ?")
     .get(projectId) as unknown as ProjectRow;
   return { project: toProject(projectRow), run: loadProcessRun(getRunRow(runId)) };
+}
+
+function getProject(projectId: string) {
+  const row = database.prepare("SELECT * FROM process_projects WHERE id = ?").get(projectId) as unknown as ProjectRow | undefined;
+  if (!row) throw new Error("Process project not found");
+  return toProject(row);
+}
+
+export function updateProcessProjectBrief(
+  projectId: string,
+  input: UpdateProcessProjectBriefRequest,
+): ProcessProjectBrief {
+  const project = getProject(projectId);
+  const values = [input.problem, input.targetUsers, input.valueProposition, input.mvpScope, input.outOfScope, input.successMetrics, input.constraints];
+  if (values.some((value) => typeof value !== "string")) throw new Error("All PRD fields must be strings");
+  if (values.some((value) => value.trim().length > 4_000)) throw new Error("A PRD field can contain up to 4,000 characters");
+  const now = new Date().toISOString();
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare(`
+      UPDATE process_project_briefs SET
+        status = 'draft', problem = ?, target_users = ?, value_proposition = ?,
+        mvp_scope = ?, out_of_scope = ?, success_metrics = ?, constraints = ?,
+        approved_at = NULL, updated_at = ?
+      WHERE project_id = ?
+    `).run(...values.map((value) => value.trim()), now, projectId);
+    database.prepare(`
+      UPDATE process_design_packs
+      SET status = 'draft', approved_at = NULL, updated_at = ?
+      WHERE project_id = ?
+    `).run(now, projectId);
+    database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, projectId);
+    recordAudit("project", projectId, "brief_saved", "PRD Wizard 초안 저장", now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  const row = database.prepare("SELECT * FROM process_project_briefs WHERE project_id = ?").get(projectId) as unknown as BriefRow;
+  return toBrief(row, project);
+}
+
+export function approveProcessProjectBrief(projectId: string): ProcessProjectBrief {
+  const project = getProject(projectId);
+  const row = database.prepare("SELECT * FROM process_project_briefs WHERE project_id = ?").get(projectId) as unknown as BriefRow | undefined;
+  if (!row) throw new Error("Project brief not found");
+  const required = [row.problem, row.target_users, row.value_proposition, row.mvp_scope, row.out_of_scope, row.success_metrics, row.constraints];
+  if (required.some((value) => !value.trim())) throw new Error("Complete every PRD field before approval");
+  const now = new Date().toISOString();
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare("UPDATE process_project_briefs SET status = 'approved', approved_at = ?, updated_at = ? WHERE project_id = ?").run(now, now, projectId);
+    database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, projectId);
+    recordAudit("project", projectId, "brief_approved", "PRD 승인 및 Design Workbench 준비", now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  const approved = database.prepare("SELECT * FROM process_project_briefs WHERE project_id = ?").get(projectId) as unknown as BriefRow;
+  return toBrief(approved, project);
+}
+
+export function updateProcessDesignPack(
+  projectId: string,
+  input: UpdateProcessDesignPackRequest,
+): ProcessDesignPack {
+  const project = getProject(projectId);
+  const briefRow = database.prepare("SELECT * FROM process_project_briefs WHERE project_id = ?").get(projectId) as unknown as BriefRow | undefined;
+  if (!briefRow) throw new Error("Project brief not found");
+  if (!Array.isArray(input.screens) || !Array.isArray(input.storyboard)) throw new Error("Screens and storyboard must be arrays");
+  if (input.screens.length > 30 || input.storyboard.length > 50) throw new Error("Design Pack supports up to 30 screens and 50 storyboard steps");
+  const textValues = [input.conceptName, input.mood, input.palette, input.typography, input.handoffUrl];
+  if (textValues.some((value) => typeof value !== "string" || value.trim().length > 2_000)) throw new Error("Invalid Design Pack text field");
+  if (input.screens.some((screen) => !screen.name?.trim() || !screen.purpose?.trim() || !screen.sections?.trim() || !screen.primaryAction?.trim())) throw new Error("Every screen field is required");
+  if (input.storyboard.some((step) => !step.actor?.trim() || !step.action?.trim() || !step.screen?.trim() || !step.outcome?.trim())) throw new Error("Every storyboard field is required");
+  if (
+    input.screens.some((screen) => Object.values(screen).some((value) => value.trim().length > 1_000)) ||
+    input.storyboard.some((step) => Object.values(step).some((value) => value.trim().length > 1_000))
+  ) throw new Error("A screen or storyboard field can contain up to 1,000 characters");
+  const screens: ProcessDesignPack["screens"] = input.screens.map((screen) => ({ ...screen, id: `SCR-${randomUUID().slice(0, 8).toUpperCase()}` }));
+  const storyboard: ProcessDesignPack["storyboard"] = input.storyboard.map((step) => ({ ...step, id: `STORY-${randomUUID().slice(0, 8).toUpperCase()}` }));
+  const now = new Date().toISOString();
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare(`
+      UPDATE process_design_packs SET
+        status = 'draft', concept_name = ?, mood = ?, palette = ?, typography = ?,
+        screens_json = ?, storyboard_json = ?, handoff_url = ?, approved_at = NULL, updated_at = ?
+      WHERE project_id = ?
+    `).run(
+      input.conceptName.trim(), input.mood.trim(), input.palette.trim(), input.typography.trim(),
+      JSON.stringify(screens), JSON.stringify(storyboard), input.handoffUrl.trim(), now, projectId,
+    );
+    database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, projectId);
+    recordAudit("project", projectId, "design_pack_saved", "화면·스토리보드·콘셉트와 Claude handoff 저장", now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  const designRow = database.prepare("SELECT * FROM process_design_packs WHERE project_id = ?").get(projectId) as unknown as DesignPackRow;
+  return toDesignPack(designRow, project, toBrief(briefRow, project));
+}
+
+export function approveProcessDesignPack(projectId: string): ProcessDesignPack {
+  const project = getProject(projectId);
+  const briefRow = database.prepare("SELECT * FROM process_project_briefs WHERE project_id = ?").get(projectId) as unknown as BriefRow | undefined;
+  const designRow = database.prepare("SELECT * FROM process_design_packs WHERE project_id = ?").get(projectId) as unknown as DesignPackRow | undefined;
+  if (!briefRow || !designRow) throw new Error("Project workbench not found");
+  if (briefRow.status !== "approved") throw new Error("Approve the PRD before the Design Pack");
+  const screens = JSON.parse(designRow.screens_json) as ProcessDesignPack["screens"];
+  const storyboard = JSON.parse(designRow.storyboard_json) as ProcessDesignPack["storyboard"];
+  if (!designRow.concept_name || !designRow.mood || !designRow.palette || !designRow.typography || !designRow.handoff_url || screens.length === 0 || storyboard.length === 0) {
+    throw new Error("Complete the concept, screens, storyboard, and Claude Design URL before approval");
+  }
+  const now = new Date().toISOString();
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.prepare("UPDATE process_design_packs SET status = 'approved', approved_at = ?, updated_at = ? WHERE project_id = ?").run(now, now, projectId);
+    database.prepare("UPDATE process_projects SET updated_at = ? WHERE id = ?").run(now, projectId);
+    recordAudit("project", projectId, "design_pack_approved", "Claude Design 결과와 handoff 승인", now);
+    database.exec("COMMIT");
+  } catch (error) {
+    database.exec("ROLLBACK");
+    throw error;
+  }
+  const approved = database.prepare("SELECT * FROM process_design_packs WHERE project_id = ?").get(projectId) as unknown as DesignPackRow;
+  return toDesignPack(approved, project, toBrief(briefRow, project));
 }
 
 export function updateProcessTask(
@@ -1259,7 +1553,7 @@ export function loadOperationsOverview(): ProcessOperationsOverview {
     storage: {
       engine: "sqlite",
       durability,
-      schemaVersion: 3,
+      schemaVersion: 4,
     },
     documents: {
       indexed: documentCount.count,
@@ -1276,4 +1570,5 @@ export function loadOperationsOverview(): ProcessOperationsOverview {
 
 seedProcessTemplates();
 backfillProcessDeliverables();
+backfillProjectWorkbenches();
 syncDocumentIndex();

@@ -12,7 +12,7 @@ Phase Gate·Sprint·기획 입력·산출물·기능 백로그·개발 증거를
 ```text
 docs/00-process/status.json              ← SSOT (수동·에이전트 갱신)
 docs/00-process/metrics-snapshots.json   ← Metrics trend snapshot
-SQLite schema v3                         ← Project·Run·Stage·Task·Deliverable·Evidence·Gate·Audit SSOT
+SQLite schema v4                         ← Project·PRD·Design Pack·Run·Stage·Task·Deliverable·Evidence·Gate·Audit SSOT
         │
         ▼ GET /api/process/status
         ▼ GET /api/process/metrics-snapshots
@@ -193,6 +193,17 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - **Live Blueprint**: Stage, Task, 필수 산출물 수와 단계 흐름을 편집 중 즉시 확인합니다.
 - **Inline validation**: 중복/잘못된 Stage code, 누락 필드와 빈 Task를 저장 전에 안내합니다.
 - **API guard**: 최대 20 Stage, Stage당 50 Task·20 Deliverable과 필드 길이를 서버에서도 검증합니다.
+
+## v0.24 PRD & Design Workbench
+
+- **Guided PRD**: 문제, 사용자, 핵심 가치, MVP, 비목표, 성공 지표와 제약을 질문형으로 작성합니다.
+- **Markdown projection**: 입력을 검토 가능한 PRD Markdown으로 즉시 합성합니다.
+- **Approval reset**: 승인된 PRD나 Design Pack을 수정하면 Draft로 돌아가 재승인을 요구합니다.
+- **Wireframe spec**: 화면마다 목적, 주요 영역과 primary action을 정의합니다.
+- **Storyboard**: Actor, Action, Screen, Outcome을 순서대로 기록합니다.
+- **Concept**: 디자인 방향, 무드, 팔레트와 타이포그래피를 잠급니다.
+- **Claude handoff**: PRD와 Design Pack을 하나의 Claude Design prompt로 합성하고 결과 URL을 연결합니다.
+- **Design guard**: PRD 승인 전 또는 화면·스토리보드·콘셉트·결과 URL 누락 시 Design 승인을 거부합니다.
 
 ## Redesign PRD v1.0
 

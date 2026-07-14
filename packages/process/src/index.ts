@@ -311,6 +311,54 @@ export interface ProcessProject {
   updatedAt: string;
 }
 
+export type ProcessWorkbenchStatus = "draft" | "approved";
+
+export interface ProcessProjectBrief {
+  projectId: string;
+  status: ProcessWorkbenchStatus;
+  problem: string;
+  targetUsers: string;
+  valueProposition: string;
+  mvpScope: string;
+  outOfScope: string;
+  successMetrics: string;
+  constraints: string;
+  markdown: string;
+  approvedAt?: string;
+  updatedAt: string;
+}
+
+export interface ProcessDesignScreen {
+  id: string;
+  name: string;
+  purpose: string;
+  sections: string;
+  primaryAction: string;
+}
+
+export interface ProcessStoryboardStep {
+  id: string;
+  actor: string;
+  action: string;
+  screen: string;
+  outcome: string;
+}
+
+export interface ProcessDesignPack {
+  projectId: string;
+  status: ProcessWorkbenchStatus;
+  conceptName: string;
+  mood: string;
+  palette: string;
+  typography: string;
+  screens: ProcessDesignScreen[];
+  storyboard: ProcessStoryboardStep[];
+  handoffPrompt: string;
+  handoffUrl: string;
+  approvedAt?: string;
+  updatedAt: string;
+}
+
 export interface ProcessTaskRun {
   id: string;
   templateTaskId: string;
@@ -407,6 +455,8 @@ export interface ProcessWorkspaceOverview {
   templates: ProcessTemplate[];
   projects: ProcessProject[];
   runs: ProcessRun[];
+  briefs: ProcessProjectBrief[];
+  designPacks: ProcessDesignPack[];
   auditEvents: ProcessAuditEvent[];
 }
 
@@ -436,6 +486,26 @@ export interface CreateProcessTemplateRequest {
 export interface CreateProcessProjectResponse {
   project: ProcessProject;
   run: ProcessRun;
+}
+
+export interface UpdateProcessProjectBriefRequest {
+  problem: string;
+  targetUsers: string;
+  valueProposition: string;
+  mvpScope: string;
+  outOfScope: string;
+  successMetrics: string;
+  constraints: string;
+}
+
+export interface UpdateProcessDesignPackRequest {
+  conceptName: string;
+  mood: string;
+  palette: string;
+  typography: string;
+  screens: Array<Omit<ProcessDesignScreen, "id">>;
+  storyboard: Array<Omit<ProcessStoryboardStep, "id">>;
+  handoffUrl: string;
 }
 
 export interface UpdateProcessTaskRequest {

@@ -8,6 +8,8 @@ import type {
   DecideProcessGateRequest,
   UpdateProcessStageRequest,
   UpdateProcessDeliverableRequest,
+  UpdateProcessDesignPackRequest,
+  UpdateProcessProjectBriefRequest,
   UpdateProcessTaskRequest,
 } from "@goodz/process";
 import {
@@ -23,6 +25,10 @@ import {
   updateProcessStage,
   updateProcessDeliverable,
   updateProcessTask,
+  updateProcessDesignPack,
+  updateProcessProjectBrief,
+  approveProcessDesignPack,
+  approveProcessProjectBrief,
 } from "../data/operationsStore.js";
 import {
   loadProcessDocument,
@@ -96,6 +102,42 @@ processRouter.post("/process/projects", (req, res) => {
     res.status(201).json(createProcessProject(body));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to create process project";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.patch("/process/projects/:projectId/brief", (req, res) => {
+  try {
+    res.json(updateProcessProjectBrief(req.params.projectId, req.body as UpdateProcessProjectBriefRequest));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to update project brief";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.post("/process/projects/:projectId/brief/approve", (req, res) => {
+  try {
+    res.json(approveProcessProjectBrief(req.params.projectId));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to approve project brief";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.patch("/process/projects/:projectId/design-pack", (req, res) => {
+  try {
+    res.json(updateProcessDesignPack(req.params.projectId, req.body as UpdateProcessDesignPackRequest));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to update design pack";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.post("/process/projects/:projectId/design-pack/approve", (req, res) => {
+  try {
+    res.json(approveProcessDesignPack(req.params.projectId));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to approve design pack";
     res.status(400).json({ message });
   }
 });

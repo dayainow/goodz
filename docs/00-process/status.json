@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.23",
+  "systemVersion": "v0.24",
   "sprint": {
-    "id": "S25",
-    "name": "시스템 v0.23 — Visual Template Builder",
+    "id": "S26",
+    "name": "시스템 v0.24 — PRD & Design Workbench",
     "status": "done",
-    "goal": "JSON 없이 조직의 Stage·Task·산출물 Template을 구성·복제·검증하는 관리 UX 제공"
+    "goal": "아이디어를 승인 PRD와 MVP Design Pack으로 만들고 Claude Design 결과까지 연결"
   },
   "phases": [
     {
@@ -486,6 +486,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-visual-template-builder-v023.md",
       "nextAction": "Template version migration과 Draft 저장 설계"
+    },
+    {
+      "id": "IN-023",
+      "title": "PRD & Design Workbench v0.24",
+      "source": "사용자 요청 · PRD 가이드와 Claude Design 제작 경계 구현",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-prd-design-workbench-v024.md",
+      "nextAction": "승인 PRD Git export와 Claude Design Connector 설계"
     }
   ],
   "deliverables": [
@@ -918,6 +927,16 @@
       "doc": "docs/03-engineering/ADR/006-visual-template-builder.md",
       "owner": "Product/Engineering",
       "summary": "Template 복제, Stage 정렬, Task/산출물 구조화 편집과 Live Blueprint"
+    },
+    {
+      "id": "D-44",
+      "title": "PRD & Design Workbench",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/007-prd-design-workbench.md",
+      "owner": "Product/Design/Engineering",
+      "summary": "질문형 PRD, MVP 화면·스토리보드·콘셉트와 Claude Design handoff"
     }
   ],
   "approvals": [
@@ -1541,6 +1560,29 @@
       "summary": "Visual Template Builder 운영 UX 승인",
       "doc": "docs/03-engineering/ADR/006-visual-template-builder.md",
       "traceLinkIds": ["TL-022"]
+    },
+    {
+      "id": "AP-023",
+      "target": "S26 PRD & Design Workbench v0.24",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Product", "Design", "Engineering", "QA"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "Goodz는 PRD와 MVP 디자인 준비·검증을, Claude Design은 high-fidelity 제작을 담당",
+      "criteria": [
+        "질문 답변으로 Markdown PRD를 만들고 승인할 수 있음",
+        "화면과 스토리보드, 디자인 콘셉트를 저장할 수 있음",
+        "PRD 기반 Claude Design handoff prompt가 생성됨",
+        "PRD 선행 조건과 Design 결과 URL을 검증함",
+        "전체 pnpm verify가 통과함"
+      ],
+      "summary": "PRD 작성과 Claude Design handoff 실행 흐름 승인",
+      "doc": "docs/03-engineering/ADR/007-prd-design-workbench.md",
+      "traceLinkIds": ["TL-023"]
     }
   ],
   "planningChanges": [
@@ -1911,6 +1953,22 @@
       "doc": "docs/01-planning/changes/2026-07-14-visual-template-builder-v023.md",
       "summary": "Template 생성과 복제를 구조화된 카드·폼·미리보기 UX로 변경",
       "decision": "기존 Template은 불변으로 두고 변경안을 새 Copy로 저장"
+    },
+    {
+      "id": "CR-023",
+      "title": "PRD와 Claude Design handoff Workbench 추가",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/PROCESS_DASHBOARD.md",
+        "docs/00-process/USER_MANUAL.md",
+        "docs/03-engineering/API.md",
+        "docs/03-engineering/ADR/007-prd-design-workbench.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-prd-design-workbench-v024.md",
+      "summary": "질문형 PRD와 MVP Design Pack을 프로젝트 command model에 추가",
+      "decision": "Goodz 준비·검증과 Claude Design 상세 제작의 책임을 분리"
     }
   ],
   "designReferences": [
@@ -3009,6 +3067,28 @@
       },
       "summary": "JSON 없이 Process Template을 구성·복제·검증하는 관리 UI",
       "nextAction": "Template version migration, Draft 저장과 goodz CLI"
+    },
+    {
+      "id": "TL-023",
+      "title": "PRD & Design Workbench v0.24",
+      "status": "partial",
+      "sourceIds": ["IN-023"],
+      "changeIds": ["CR-023"],
+      "deliverableIds": ["D-44"],
+      "approvalIds": ["AP-023"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "not_required" },
+      "commits": [],
+      "ciRuns": [],
+      "release": { "label": "Release", "status": "pending" },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:sqlite && pnpm verify",
+        "checkedAt": "2026-07-14T16:00:00Z",
+        "summary": "PRD Markdown·승인, Design 선행 guard, Claude handoff·결과 승인 lifecycle 통과"
+      },
+      "summary": "아이디어를 PRD와 MVP Design Pack으로 만들고 Claude Design 결과까지 연결",
+      "nextAction": "Git export, Claude Connector와 Template version migration"
     }
   ],
   "features": [

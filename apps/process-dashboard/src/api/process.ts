@@ -6,6 +6,8 @@ import type {
   CreateProcessTemplateRequest,
   DecideProcessGateRequest,
   ProcessIncident,
+  ProcessProjectBrief,
+  ProcessDesignPack,
   ProcessDocumentResponse,
   ProcessMetricSnapshotsFile,
   ProcessOperationsOverview,
@@ -15,6 +17,8 @@ import type {
   ProcessWorkspaceOverview,
   UpdateProcessStageRequest,
   UpdateProcessDeliverableRequest,
+  UpdateProcessDesignPackRequest,
+  UpdateProcessProjectBriefRequest,
   UpdateProcessTaskRequest,
 } from "@goodz/process";
 
@@ -75,6 +79,32 @@ export async function createProcessTemplate(
   });
   if (!res.ok) throw new Error((await res.json() as { message?: string }).message ?? `HTTP ${res.status}`);
   return res.json() as Promise<ProcessTemplate>;
+}
+
+async function processCommand<T>(path: string, method: "PATCH" | "POST", input?: unknown): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    method,
+    headers: { "content-type": "application/json" },
+    ...(input === undefined ? {} : { body: JSON.stringify(input) }),
+  });
+  if (!res.ok) throw new Error((await res.json() as { message?: string }).message ?? `HTTP ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
+export function updateProjectBrief(projectId: string, input: UpdateProcessProjectBriefRequest) {
+  return processCommand<ProcessProjectBrief>(`/api/process/projects/${encodeURIComponent(projectId)}/brief`, "PATCH", input);
+}
+
+export function approveProjectBrief(projectId: string) {
+  return processCommand<ProcessProjectBrief>(`/api/process/projects/${encodeURIComponent(projectId)}/brief/approve`, "POST");
+}
+
+export function updateDesignPack(projectId: string, input: UpdateProcessDesignPackRequest) {
+  return processCommand<ProcessDesignPack>(`/api/process/projects/${encodeURIComponent(projectId)}/design-pack`, "PATCH", input);
+}
+
+export function approveDesignPack(projectId: string) {
+  return processCommand<ProcessDesignPack>(`/api/process/projects/${encodeURIComponent(projectId)}/design-pack/approve`, "POST");
 }
 
 export async function updateProcessStage(

@@ -17,6 +17,20 @@ Dashboard는 원본 문서 편집기나 Jira/GitHub의 대체물이 아닙니다
 
 GO는 현재 Stage의 모든 Task가 `done`이고 필수 산출물이 `approved`여야 합니다. HOLD와 KILL은 반드시 근거를 입력합니다. 실행 상태와 감사 이력은 SQLite에 저장되고, 장문 산출물과 외부 증거는 Git/GitHub 원본을 유지합니다.
 
+## PRD와 디자인 준비
+
+프로젝트를 선택하면 상단 Project Workbench에서 다음 흐름을 진행합니다.
+
+1. **PRD Wizard**에서 문제, 타깃 사용자, 핵심 가치, MVP 범위, 비목표, 성공 지표와 제약을 입력합니다.
+2. 오른쪽 `Generated PRD.md`를 검토하고 초안을 저장한 뒤 승인합니다.
+3. **Design Workbench**에서 디자인 방향·무드·팔레트·타이포그래피를 정합니다.
+4. 화면별 목적·영역·주요 행동을 입력해 MVP 와이어프레임 명세를 만듭니다.
+5. Actor·Action·Screen·Outcome으로 스토리보드를 작성합니다.
+6. Design Pack을 저장해 Claude Design handoff prompt를 생성하고 복사합니다.
+7. Claude Design에서 세부 UI를 만든 뒤 프로젝트 URL을 입력하고 Design을 승인합니다.
+
+PRD나 Design Pack을 승인한 뒤 내용을 수정하면 다시 Draft가 됩니다. Goodz는 high-fidelity UI를 직접 그리는 대신 Claude Design이 작업할 입력 패키지와 결과 검증 상태를 관리합니다.
+
 ## 접속
 
 ```bash

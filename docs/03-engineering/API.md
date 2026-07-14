@@ -178,6 +178,28 @@ Template 조회 응답의 각 Stage는 Visual Builder 복제를 위한 `code`를
 
 Template version의 Stage, Task와 Gate를 새 실행 인스턴스로 복제하고 첫 Stage를 시작합니다.
 
+프로젝트 생성 시 빈 `ProcessProjectBrief`와 `ProcessDesignPack`도 함께 생성합니다.
+
+### `PATCH /api/process/projects/:projectId/brief`
+
+**Body:** `UpdateProcessProjectBriefRequest`
+
+문제, 사용자, 가치, MVP 범위, 비목표, 성공 지표와 제약을 저장하고 Markdown PRD projection을 반환합니다. 기존 승인은 Draft로 초기화됩니다.
+
+### `POST /api/process/projects/:projectId/brief/approve`
+
+모든 PRD 필드가 작성된 경우 Brief를 승인합니다. 빈 필드가 있으면 `400`을 반환합니다.
+
+### `PATCH /api/process/projects/:projectId/design-pack`
+
+**Body:** `UpdateProcessDesignPackRequest`
+
+디자인 콘셉트, 화면 명세, 스토리보드와 Claude Design 결과 URL을 저장합니다. 응답의 `handoffPrompt`는 현재 승인 PRD와 Design Pack을 합성합니다.
+
+### `POST /api/process/projects/:projectId/design-pack/approve`
+
+승인된 PRD, 완성된 콘셉트, 1개 이상의 화면·스토리보드와 Claude Design URL이 있을 때 Design Pack을 승인합니다.
+
 ### `PATCH /api/process/runs/:runId/stages/:stageId`
 
 **Body:** `{ "status": "in_progress" | "blocked" }`

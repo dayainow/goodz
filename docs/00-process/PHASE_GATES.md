@@ -44,6 +44,11 @@
 - [x] Template Stage code가 Catalog 응답에 보존되는지 검증
 - [x] 중복 Stage code Template 생성 차단 검증
 - [x] Visual Builder 필수 필드·개수·길이 제한의 client/server 이중 검증
+- [x] 빈 PRD 승인 차단과 완성 PRD Markdown 생성·승인 검증
+- [x] PRD 승인 전 Design Pack 승인 차단 검증
+- [x] 화면·스토리보드·콘셉트 기반 Claude Design handoff prompt 검증
+- [x] Claude Design 결과 URL 포함 Design Pack 승인 lifecycle 검증
+- [x] 승인 PRD 변경 시 downstream Design 승인 무효화 검증
 - [x] Process OS 영구 디스크 배포 구성 문서화
 - [ ] 외부 URL에서 durability `persistent`와 재배포 보존 확인
 

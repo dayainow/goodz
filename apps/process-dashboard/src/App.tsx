@@ -54,6 +54,7 @@ import {
   updateProcessTask,
 } from "./api/process";
 import { PhasePanel } from "./components/PhasePanel";
+import { ProjectWorkbench } from "./components/ProjectWorkbench";
 import { ProgressBar, StatusBadge } from "./components/StatusBadge";
 
 const MarkdownDocument = lazy(() => import("./components/MarkdownDocument"));
@@ -3134,6 +3135,12 @@ function WorkspaceSection({
   const selectedRun =
     workspace.runs.find((run) => run.id === selectedRunId) ?? workspace.runs[0] ?? null;
   const selectedProject = selectedRun ? projectsById.get(selectedRun.projectId) : null;
+  const selectedBrief = selectedProject
+    ? workspace.briefs.find((brief) => brief.projectId === selectedProject.id) ?? null
+    : null;
+  const selectedDesignPack = selectedProject
+    ? workspace.designPacks.find((designPack) => designPack.projectId === selectedProject.id) ?? null
+    : null;
   const selectedStage = selectedRun
     ? selectedRun.stages.find((stage) => stage.id === selectedStageId) ??
       selectedRun.stages.find((stage) => stage.id === selectedRun.currentStageId) ??
@@ -3309,7 +3316,7 @@ function WorkspaceSection({
           </div>
         </div>
 
-        {selectedRun && selectedProject && selectedStage ? (
+        {selectedRun && selectedProject && selectedStage && selectedBrief && selectedDesignPack ? (
           <div className="space-y-4">
             <section className={["p-5", CARD_SURFACE].join(" ")}>
               <div className="flex flex-wrap items-start justify-between gap-4">
@@ -3339,6 +3346,14 @@ function WorkspaceSection({
                 <span>Task progress · <strong className="text-zinc-800">{completedTasks}/{totalTasks}</strong></span>
               </div>
             </section>
+
+            <ProjectWorkbench
+              key={`${selectedProject.id}-${selectedBrief.updatedAt}-${selectedDesignPack.updatedAt}`}
+              project={selectedProject}
+              brief={selectedBrief}
+              designPack={selectedDesignPack}
+              onRefresh={onRefresh}
+            />
 
             <section className={CARD_SURFACE}>
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-zinc-100 px-5 py-4">

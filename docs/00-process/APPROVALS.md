@@ -38,6 +38,7 @@ Goodz Process OS의 Phase Gate와 주요 스프린트 산출물 승인 기록입
 | AP-020 | S23 Writable Process MVP v0.21 | Codex | 사용자 | approved | TL-020 |
 | AP-021 | S24 Process Template Catalog v0.22 | Codex | 사용자 | approved | TL-021 |
 | AP-022 | S25 Visual Template Builder v0.23 | Codex | 사용자 | approved | TL-022 |
+| AP-023 | S26 PRD & Design Workbench v0.24 | Codex | 사용자 | approved | TL-023 |
 
 ## 승인 기준
 

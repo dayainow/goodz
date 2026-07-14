@@ -2,6 +2,10 @@ import {
   createProcessProject,
   createProcessEvidence,
   createProcessTemplate,
+  updateProcessProjectBrief,
+  approveProcessProjectBrief,
+  updateProcessDesignPack,
+  approveProcessDesignPack,
   createIncident,
   decideProcessGate,
   loadOperationsOverview,
@@ -13,7 +17,7 @@ import {
 } from "../data/operationsStore.js";
 
 const before = loadOperationsOverview();
-if (before.storage.engine !== "sqlite" || before.storage.schemaVersion !== 3) {
+if (before.storage.engine !== "sqlite" || before.storage.schemaVersion !== 4) {
   throw new Error("SQLite schema is not ready");
 }
 if (before.documents.indexed === 0) {
@@ -88,6 +92,65 @@ if (!firstStage || firstStage.status !== "in_progress") {
   throw new Error("First process stage did not start");
 }
 
+let briefApprovalRejected = false;
+try {
+  approveProcessProjectBrief(createdProject.project.id);
+} catch {
+  briefApprovalRejected = true;
+}
+if (!briefApprovalRejected) throw new Error("Empty PRD was approved");
+
+const brief = updateProcessProjectBrief(createdProject.project.id, {
+  problem: "Teams lose product context between planning and delivery.",
+  targetUsers: "Small product teams using AI design and development tools.",
+  valueProposition: "One governed flow from decision to release evidence.",
+  mvpScope: "PRD Wizard\nDesign Workbench\nClaude handoff",
+  outOfScope: "Automatic Claude invocation\nRBAC",
+  successMetrics: "PRD approval completed\nDesign handoff linked",
+  constraints: "Single-user SQLite MVP\nGit remains document SSOT",
+});
+if (!brief.markdown.includes("## MVP 범위")) throw new Error("PRD Markdown was not generated");
+const approvedBrief = approveProcessProjectBrief(createdProject.project.id);
+if (approvedBrief.status !== "approved") throw new Error("PRD approval failed");
+
+let designApprovalRejected = false;
+try {
+  approveProcessDesignPack(createdProject.project.id);
+} catch {
+  designApprovalRejected = true;
+}
+if (!designApprovalRejected) throw new Error("Empty Design Pack was approved");
+
+const designPack = updateProcessDesignPack(createdProject.project.id, {
+  conceptName: "Operational clarity",
+  mood: "calm, precise, premium",
+  palette: "zinc, white, violet accent",
+  typography: "Noto Sans KR",
+  screens: [{ name: "Project", purpose: "Manage delivery", sections: "PRD, design, stage", primaryAction: "Approve PRD" }],
+  storyboard: [{ actor: "PM", action: "approves the PRD", screen: "Project", outcome: "Design work starts" }],
+  handoffUrl: "https://claude.ai/design/example",
+});
+if (!designPack.handoffPrompt.includes("Claude Design") || designPack.screens.length !== 1) {
+  throw new Error("Claude Design handoff was not generated");
+}
+const approvedDesign = approveProcessDesignPack(createdProject.project.id);
+if (approvedDesign.status !== "approved") throw new Error("Design Pack approval failed");
+updateProcessProjectBrief(createdProject.project.id, {
+  problem: brief.problem,
+  targetUsers: brief.targetUsers,
+  valueProposition: brief.valueProposition,
+  mvpScope: brief.mvpScope,
+  outOfScope: brief.outOfScope,
+  successMetrics: brief.successMetrics,
+  constraints: `${brief.constraints}\nApproved PRD changes invalidate design approval`,
+});
+const invalidatedWorkspace = loadProcessWorkspace();
+if (invalidatedWorkspace.designPacks[0]?.status !== "draft") {
+  throw new Error("PRD change did not invalidate Design Pack approval");
+}
+approveProcessProjectBrief(createdProject.project.id);
+approveProcessDesignPack(createdProject.project.id);
+
 let phaseSkipRejected = false;
 try {
   updateProcessStage(createdProject.run.id, createdProject.run.stages[1]!.id, {
@@ -149,8 +212,14 @@ if (
 }
 
 const validatedWorkspace = loadProcessWorkspace();
-if (validatedWorkspace.projects.length !== 1 || validatedWorkspace.templates.length !== 3 || validatedWorkspace.auditEvents.length < 7) {
+if (
+  validatedWorkspace.projects.length !== 1 ||
+  validatedWorkspace.templates.length !== 3 ||
+  validatedWorkspace.briefs[0]?.status !== "approved" ||
+  validatedWorkspace.designPacks[0]?.status !== "approved" ||
+  validatedWorkspace.auditEvents.length < 11
+) {
   throw new Error("Writable process audit validation failed");
 }
 
-console.log("sqlite template catalog, deliverable, evidence, and gate lifecycle ok");
+console.log("sqlite template, PRD, design handoff, deliverable, evidence, and gate lifecycle ok");
