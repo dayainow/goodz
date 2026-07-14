@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "template": "goodz-core",
   "packageManager": "pnpm",
   "requiredScripts": [
@@ -9,6 +9,8 @@
     "check:template",
     "check:portability",
     "check:sqlite",
+    "check:cli",
+    "goodz",
     "verify"
   ],
   "requiredPaths": [
@@ -19,6 +21,7 @@
     "docs/00-process/PHASE_GATES.md",
     "docs/00-process/OPERATIONS_STORE.md",
     "docs/00-process/PORTABILITY.md",
+    "docs/00-process/CLI.md",
     "docs/00-process/status.json",
     "docs/01-planning/ROADMAP.md",
     "docs/03-engineering/ADR/003-platform-commerce-boundary.md",
@@ -39,6 +42,7 @@
     "apps/admin-dashboard/package.json",
     "apps/process-dashboard/package.json",
     "packages/process/package.json",
+    "packages/cli/package.json",
     "packages/types/package.json",
     "packages/ui/package.json",
     "render.yaml"
@@ -76,6 +80,7 @@
   "boundaries": {
     "platform": [
       "packages/process",
+      "packages/cli",
       "apps/process-dashboard",
       "apps/api-server/src/routes/process.ts"
     ],

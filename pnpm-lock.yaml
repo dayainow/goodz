@@ -219,6 +219,22 @@ importers:
         specifier: ^3.2.0
         version: 3.2.7(@types/debug@4.1.13)(@types/node@22.20.0)(jiti@1.21.7)(jsdom@26.1.0)(msw@2.15.0(@types/node@22.20.0)(typescript@5.9.3))(tsx@4.23.0)(yaml@2.9.0)
 
+  packages/cli:
+    dependencies:
+      '@goodz/process':
+        specifier: workspace:*
+        version: link:../process
+    devDependencies:
+      '@goodz/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.20.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   packages/process:
     devDependencies:
       '@goodz/tsconfig':

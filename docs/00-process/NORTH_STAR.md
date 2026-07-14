@@ -23,6 +23,7 @@
 | **엔지니어링 표준** | 아키텍처, API SSOT, ADR | `docs/03-engineering/` |
 | **품질 게이트** | TEST_PLAN, RELEASE_CHECKLIST, `pnpm verify`, CI | `docs/04-qa/`, `.github/` |
 | **모노레포 뼈대** | Turborepo + pnpm, bounded-context 타입 SSOT, **4앱** 구조 | `apps/`, `packages/`, `turbo.json` |
+| **설치·산출물 CLI** | init, 프로젝트 생성, Git-ready export, 무결성 검증 | `packages/cli/`, `docs/00-process/CLI.md` |
 | **AI 협업 키트** | Phase별 스킬, `AGENTS.md`, 에이전트 역할 분리 | `skills/`, `AGENTS.md` |
 | **연동 패턴** | GA harness, (선택) Figma publish | 외부 repo + 문서 |
 
@@ -38,6 +39,7 @@
 | `apps/admin-dashboard` | 운영자 상품 관리 흐름 검증 |
 | `apps/process-dashboard` | **풀 프로세스 진행도 모니터링** (시스템 제품 UI) |
 | `packages/process` | **Goodz Core**의 도메인 중립 Process OS 계약 |
+| `packages/cli` | Core API를 저장소 초기화·산출물 materialize와 연결하는 설치 경계 |
 | `packages/types` | **Goodz Commerce Reference**의 커머스 타입 SSOT 패턴 시연 |
 | `references/internal-service` | Core 수정 없이 추가한 **비커머스 이식성 증거** |
 

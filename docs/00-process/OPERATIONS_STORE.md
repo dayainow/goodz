@@ -13,6 +13,7 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 | PRD/Design 초안·Job | SQLite | 질문형 입력, 승인 상태, 화면·스토리보드·prompt snapshot·Claude handoff 실행 상태 |
 | 프로젝트 실행 | SQLite | Project, Run, Stage, Task, Deliverable, Evidence, Gate 상태의 기준 저장소 |
 | 실행 감사 이력 | SQLite | command마다 append-only event 기록 |
+| Materialized 문서 | Git working tree | CLI가 `docs/projects/`에 생성하고 `.goodz/exports` manifest로 무결성 검증 |
 | 문서 본문 | `docs/**/*.md` | 경로·제목·수정 시각 인덱스 |
 
 ## 로컬 실행
@@ -42,6 +43,7 @@ Goodz의 운영 저장소는 Markdown과 `status.json`을 대체하지 않는다
 - Design Job은 `queued`, `in_progress`, `submitted`, `changes_requested`, `approved` 상태와 prompt snapshot·결과 URL을 가진다.
 - Design Pack 승인은 승인된 PRD와 콘셉트·화면·스토리보드, 최신 `submitted` Claude Design Job을 요구한다.
 - 승인 후 export는 SQLite 원본을 변경하지 않고 Markdown 파일 3건이 포함된 portable bundle을 생성한다.
+- API 서버는 저장소에 쓰지 않으며 `goodz export`가 사용자 로컬/CI 권한으로 bundle을 materialize한다.
 
 ## 배포
 

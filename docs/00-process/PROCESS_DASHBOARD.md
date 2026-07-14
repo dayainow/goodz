@@ -214,6 +214,14 @@ v0.13부터 Design 메뉴는 `status.json`의 `designReferences`, `wireframes`, 
 - **Portable export**: 최종 승인 후 PRD, Design Pack, Claude handoff Markdown 3건을 JSON bundle로 내려받습니다.
 - **Connector boundary**: v0.25 기본값은 수동 Claude Design 어댑터이며, 자동 MCP/API 어댑터는 같은 Job 계약을 사용합니다.
 
+## v0.26 Git Materializer & Goodz CLI
+
+- **Local authority**: Dashboard/API는 portable bundle을 제공하고 실제 저장소 쓰기는 사용자 환경의 CLI가 담당합니다.
+- **Safe materialize**: `docs/projects/` Markdown과 `.goodz/exports` hash manifest를 생성합니다.
+- **Conflict guard**: 마지막 export 이후 사용자가 수정한 파일은 기본적으로 덮어쓰지 않습니다.
+- **Path guard**: 절대·상위 경로와 symbolic link write를 거부합니다.
+- **Command loop**: `goodz init`, `project create`, `export`, `verify`로 초기화부터 산출물 검증까지 연결합니다.
+
 ## Redesign PRD v1.0
 
 - Hero는 trace coverage와 전체 진행률을 한 surface에서 비교합니다.

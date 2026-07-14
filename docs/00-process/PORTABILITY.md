@@ -23,11 +23,12 @@ pnpm check:portability
 검증기는 다음을 확인한다.
 
 1. Core 계약 hash가 기준선과 일치한다.
-2. Internal Service Reference가 `goodz.config.json`에 등록돼 있다.
-3. Reference가 자체 타입 패키지를 사용한다.
-4. Reference 코드가 Commerce 타입과 상징에 의존하지 않는다.
-5. P0–P4 산출물이 존재하고 완료 상태다.
-6. Reference fixture의 owner/runbook 계약이 유효하다.
+2. `@goodz/cli`가 같은 Core version과 hash를 내장한다.
+3. Internal Service Reference가 `goodz.config.json`에 등록돼 있다.
+4. Reference가 자체 타입 패키지를 사용한다.
+5. Reference 코드가 Commerce 타입과 상징에 의존하지 않는다.
+6. P0–P4 산출물이 존재하고 완료 상태다.
+7. Reference fixture의 owner/runbook 계약이 유효하다.
 
 ## 이식성 결과
 

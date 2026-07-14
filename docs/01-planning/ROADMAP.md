@@ -33,7 +33,8 @@
 | **v0.23** | Visual Template Builder: clone + structured editing + live validation | ✅ |
 | **v0.24** | PRD & Design Workbench: guided PRD + MVP design pack + Claude handoff | ✅ |
 | **v0.25** | Design Job Connector & Export: 상태 추적 + prompt snapshot + portable bundle | ✅ |
-| **v1.0** | 설치 가능한 Goodz Core: CLI + config migration + clean-clone 도입 | ⚪ |
+| **v0.26** | Git Materializer & Goodz CLI: init + project create + safe export + verify | ✅ |
+| **v1.0** | 설치 가능한 Goodz Core: adopt + Template/config migration + clean-clone 도입 | ⚪ |
 
 ## 전체 타임라인
 
@@ -41,7 +42,7 @@
 S0 ✅ 스캐폴드      S1 ✅ MVP 플로우       S2 ✅ UI/대시보드      S3 ✅ QA/릴리스
 S4 ✅ Process OS    S5 ✅ Traceability     S6 ✅ DACI 승인        S7 ✅ 정합성/Node24
 S8 ✅ Trace Sync    S9 ✅ Delivery Metrics    S10 ✅ Timestamp Metrics    S11 ✅ Metrics Snapshots    S12 ✅ Docs Guide    S13 ✅ Operator UX    S14 ✅ Premium UX    S15 ✅ Design OS    S16 ✅ Premium White UI    S17 ✅ Template Onboarding    S18 ✅ White Premium Detail    S19 ✅ Sidebar Comfort    S20 ✅ SQLite Operations
-S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export
+S21 ✅ Platform Boundary    S22 ✅ Portability Proof    S23 ✅ Writable Process    S24 ✅ Template Catalog    S25 ✅ Visual Builder    S26 ✅ PRD/Design Workbench    S27 ✅ Design Job/Export    S28 ✅ Git Materializer/CLI
 ```
 
 ---
@@ -352,6 +353,16 @@ Week 1
 - 승인 PRD·Design Pack·Claude handoff Markdown 3건 portable export
 - 다음 Gate: Git materializer, 인증 기반 Claude MCP/API adapter, Template version migration
 
+### Sprint S28 — Git Materializer & Goodz CLI
+
+- publish-ready `@goodz/cli` workspace package와 `goodz` binary
+- `goodz init`, `goodz project create`, `goodz export`, `goodz verify`
+- `docs/projects/` Markdown 3건과 `.goodz/exports` hash manifest
+- dry-run, force, 원자적 쓰기와 로컬 수정 충돌 보호
+- 절대/상위 경로와 symbolic link write 차단
+- CLI 단위 테스트와 실제 Process API project/export smoke
+- 다음 Gate: `goodz adopt`, Template migration, 자동 Git branch/commit/PR Connector
+
 ---
 
 ## 의존성 그래프
@@ -405,8 +416,9 @@ flowchart LR
 28. ✅ v0.23: Visual Template Builder + clone + live validation
 29. ✅ v0.24: Guided PRD + MVP Design Pack + Claude Design handoff
 30. ✅ v0.25: Design Job Connector + prompt snapshot + portable export
-31. ⚪ v1.0 Gate: `goodz init/adopt/verify` + config migration + clean-clone CI
-32. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
+31. ✅ v0.26: Git Materializer + Goodz CLI init/project/export/verify
+32. ⚪ v1.0 Gate: `goodz adopt` + Template/config migration + clean-clone CI
+33. ⚪ v1.x 후보: PostgreSQL/Worker/GitHub Connector → SSO/RBAC/감사 로그
 
 ---
 
@@ -437,3 +449,4 @@ flowchart LR
 | 2026-07-14 | v0.23 — JSON 없는 Visual Template Builder와 복제 편집 |
 | 2026-07-14 | v0.24 — 질문형 PRD와 Claude Design handoff Workbench |
 | 2026-07-14 | v0.25 — Claude Design Job 상태 관리와 portable Markdown export |
+| 2026-07-14 | v0.26 — 안전한 Git Materializer와 Goodz CLI 기본 명령 |

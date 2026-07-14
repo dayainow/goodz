@@ -34,6 +34,12 @@ function listFiles(path) {
 const productConfig = readJson("goodz.config.json");
 const coreContract = productConfig.portability?.coreContract;
 assert(coreContract, "Goodz Core portability contract is missing");
+const cliPackage = readJson("packages/cli/package.json");
+assert(
+  cliPackage.goodzCoreContract?.version === coreContract.version &&
+    cliPackage.goodzCoreContract?.sha256 === coreContract.sha256,
+  "Goodz CLI Core contract metadata is not pinned to goodz.config.json",
+);
 
 const coreHash = createHash("sha256")
   .update(readFileSync(resolve(root, coreContract.path)))

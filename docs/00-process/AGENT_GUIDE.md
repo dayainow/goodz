@@ -58,6 +58,7 @@ PRD / USER_STORIES / GA4 → Issue → PHASE_GATES P0 체크
 
 ```text
 플랫폼: @goodz/process → process route/data → process-dashboard
+설치/산출물: @goodz/cli → Process API bundle → docs/projects + hash manifest
 커머스 예제: @goodz/types → commerce route/data → web-shop/admin-dashboard
 공통 UI: @goodz/ui → apps → API.md → pnpm verify
 ```

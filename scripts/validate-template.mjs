@@ -61,6 +61,7 @@ const packagePaths = [
   "apps/admin-dashboard/package.json",
   "apps/process-dashboard/package.json",
   "packages/process/package.json",
+  "packages/cli/package.json",
   "packages/types/package.json",
   "packages/ui/package.json",
   "packages/tsconfig/package.json",

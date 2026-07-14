@@ -5,7 +5,7 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S27 Design Job Connector & Export v0.25** ✅
+## 현재 스프린트: **S28 Git Materializer & Goodz CLI v0.26** ✅
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -34,6 +34,7 @@
 | **Visual Template Builder** | ✅ 기존 Template 복제·Stage 정렬·Task/산출물 편집·Live Blueprint·저장 검증 |
 | **PRD & Design Workbench** | ✅ 질문형 PRD·Markdown·승인·화면·스토리보드·콘셉트·Claude Design handoff |
 | **Design Job Connector** | ✅ prompt snapshot·작업 상태·결과 제출·수정 요청·승인·portable export |
+| **Goodz CLI** | ✅ init·project create·export·verify·hash manifest·충돌 보호 materializer |
 
 ## 현재 단계
 
@@ -131,6 +132,9 @@
 - [x] S27: Claude Design Job 생성·시작·결과 제출·수정 요청 lifecycle
 - [x] S27: 승인 PRD·Design Pack·handoff Markdown portable export
 - [x] S27: SQLite schema v5와 Core 0.6.0 Connector 계약
+- [x] S28: `@goodz/cli` init·project create·export·verify 기본 명령
+- [x] S28: Markdown 원자적 materialize와 `.goodz/exports` hash manifest
+- [x] S28: 로컬 수정·경로 탈출·symlink 차단과 CLI/API smoke
 
 ## 풀 프로세스
 

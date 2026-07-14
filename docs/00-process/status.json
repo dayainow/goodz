@@ -1,12 +1,12 @@
 {
   "version": 4,
   "updatedAt": "2026-07-14",
-  "systemVersion": "v0.25",
+  "systemVersion": "v0.26",
   "sprint": {
-    "id": "S27",
-    "name": "시스템 v0.25 — Design Job Connector & Export",
+    "id": "S28",
+    "name": "시스템 v0.26 — Git Materializer & Goodz CLI",
     "status": "done",
-    "goal": "Claude Design 제작을 상태 있는 Job으로 추적하고 승인 산출물을 이식 가능한 bundle로 내보내기"
+    "goal": "승인 산출물을 충돌 보호된 Git-ready Markdown으로 생성하고 CLI로 초기화·프로젝트·검증 흐름 연결"
   },
   "phases": [
     {
@@ -504,6 +504,15 @@
       "phase": "P2",
       "doc": "docs/01-planning/intake/2026-07-14-design-job-connector-v025.md",
       "nextAction": "Git materializer와 인증 기반 Claude MCP/API adapter"
+    },
+    {
+      "id": "IN-025",
+      "title": "Git Materializer & Goodz CLI v0.26",
+      "source": "사용자 요청 · 다음 단계 진행",
+      "status": "done",
+      "phase": "P2",
+      "doc": "docs/01-planning/intake/2026-07-14-git-materializer-cli-v026.md",
+      "nextAction": "goodz adopt, Template migration과 자동 Git Connector"
     }
   ],
   "deliverables": [
@@ -956,6 +965,16 @@
       "doc": "docs/03-engineering/ADR/008-design-job-connector-export.md",
       "owner": "Product/Design/Engineering",
       "summary": "Claude Design prompt snapshot, 작업 상태와 승인 Markdown bundle"
+    },
+    {
+      "id": "D-46",
+      "title": "Git Materializer & Goodz CLI",
+      "type": "engineering",
+      "phase": "P2",
+      "status": "done",
+      "doc": "docs/03-engineering/ADR/009-git-materializer-cli.md",
+      "owner": "Platform/Engineering",
+      "summary": "init·project create·safe export·verify와 hash manifest 기반 충돌 보호"
     }
   ],
   "approvals": [
@@ -1625,6 +1644,29 @@
       "summary": "Claude Design 작업 실행과 산출물 export 흐름 승인",
       "doc": "docs/03-engineering/ADR/008-design-job-connector-export.md",
       "traceLinkIds": ["TL-024"]
+    },
+    {
+      "id": "AP-025",
+      "target": "S28 Git Materializer & Goodz CLI v0.26",
+      "type": "sprint",
+      "driver": "Codex",
+      "approver": "사용자",
+      "contributors": ["Platform", "Engineering", "QA"],
+      "informed": ["Goodz operators"],
+      "status": "approved",
+      "requestedAt": "2026-07-14",
+      "approvedAt": "2026-07-14",
+      "decision": "승인 bundle은 API 서버가 아닌 CLI가 로컬 권한으로 안전하게 materialize",
+      "criteria": [
+        "init, project create, export, verify 명령이 동작함",
+        "Markdown과 hash manifest가 원자적으로 생성됨",
+        "로컬 수정과 위험 경로가 기본 차단됨",
+        "CLI 테스트와 실제 API smoke가 통과함",
+        "전체 pnpm verify가 통과함"
+      ],
+      "summary": "Goodz 설치·프로젝트·Git-ready export CLI 기반 승인",
+      "doc": "docs/03-engineering/ADR/009-git-materializer-cli.md",
+      "traceLinkIds": ["TL-025"]
     }
   ],
   "planningChanges": [
@@ -2028,6 +2070,23 @@
       "doc": "docs/01-planning/changes/2026-07-14-design-job-connector-v025.md",
       "summary": "prompt snapshot과 Design Job 상태, 결과 제출, portable export 추가",
       "decision": "Core는 수동 Connector로 계약을 증명하고 외부 자동 호출은 adapter로 분리"
+    },
+    {
+      "id": "CR-025",
+      "title": "승인 bundle을 Git Materializer와 Goodz CLI로 연결",
+      "status": "applied",
+      "requestedAt": "2026-07-14",
+      "source": "사용자 요청",
+      "targetDocs": [
+        "docs/00-process/CLI.md",
+        "docs/00-process/ONBOARDING.md",
+        "docs/00-process/USER_MANUAL.md",
+        "docs/03-engineering/API.md",
+        "docs/03-engineering/ADR/009-git-materializer-cli.md"
+      ],
+      "doc": "docs/01-planning/changes/2026-07-14-git-materializer-cli-v026.md",
+      "summary": "init·project create·safe export·verify CLI와 hash manifest 추가",
+      "decision": "파일 쓰기는 API에서 분리하고 Git 조작은 후속 Connector로 유지"
     }
   ],
   "designReferences": [
@@ -3170,6 +3229,28 @@
       },
       "summary": "Claude Design 제작을 prompt snapshot과 상태로 추적하고 승인 문서를 이식 가능하게 export",
       "nextAction": "Git materializer, Claude MCP/API adapter와 Template version migration"
+    },
+    {
+      "id": "TL-025",
+      "title": "Git Materializer & Goodz CLI v0.26",
+      "status": "partial",
+      "sourceIds": ["IN-025"],
+      "changeIds": ["CR-025"],
+      "deliverableIds": ["D-46"],
+      "approvalIds": ["AP-025"],
+      "issue": { "label": "GitHub Issue", "status": "pending" },
+      "pr": { "label": "Pull Request", "status": "not_required" },
+      "commits": [],
+      "ciRuns": [],
+      "release": { "label": "Release", "status": "pending" },
+      "smoke": {
+        "status": "passed",
+        "command": "pnpm check:cli && pnpm verify",
+        "checkedAt": "2026-07-14T20:00:00Z",
+        "summary": "init·project create·dry-run·materialize·verify와 충돌·경로 보안 테스트 통과"
+      },
+      "summary": "승인 bundle을 안전한 Git-ready Markdown과 hash manifest로 materialize",
+      "nextAction": "goodz adopt, Template migration과 자동 Git branch/commit/PR Connector"
     }
   ],
   "features": [

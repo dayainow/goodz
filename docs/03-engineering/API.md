@@ -224,6 +224,8 @@ Claude Design 결과를 `submitted`로 기록하고 Design Pack 결과 URL proje
 
 승인된 PRD, Design Pack, Claude Design handoff prompt snapshot을 3개 Markdown 파일로 구성한 portable JSON bundle을 반환합니다.
 
+`@goodz/cli`의 `goodz export`는 이 응답을 `docs/projects/<project-id>/`에 원자적으로 materialize하고 `.goodz/exports/` hash manifest로 로컬 수정 충돌을 보호합니다. API 서버는 저장소 파일을 직접 쓰지 않습니다.
+
 ### `PATCH /api/process/runs/:runId/stages/:stageId`
 
 **Body:** `{ "status": "in_progress" | "blocked" }`

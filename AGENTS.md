@@ -22,6 +22,7 @@ Claude Code 전용: [CLAUDE.md](./CLAUDE.md)
 | `apps/web-shop` | Next.js 쇼핑몰 | 3000 |
 | `apps/admin-dashboard` | Vite + React 어드민 | 5173 |
 | `packages/process` | Goodz Core Process OS 타입 | — |
+| `packages/cli` | Goodz init·project·export·verify CLI | — |
 | `packages/types` | Goodz Commerce Reference 타입 | — |
 | `packages/ui` | 공통 UI + Tailwind preset | — |
 | `references/internal-service` | 비커머스 이식성 Reference | 4200 |
@@ -39,6 +40,7 @@ Claude Code 전용: [CLAUDE.md](./CLAUDE.md)
 
 ```text
 packages/process → process route/data → process-dashboard
+packages/cli     → process export API → docs/projects + .goodz/exports
 packages/types   → commerce route/data → web-shop / admin-dashboard
 references/*     → 자체 types → 자체 apps (Core 수정 금지)
 ```

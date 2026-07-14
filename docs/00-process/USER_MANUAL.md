@@ -31,8 +31,11 @@ GO는 현재 Stage의 모든 Task가 `done`이고 필수 산출물이 `approved`
 8. 완성된 `https://claude.ai/...` URL과 검토 메모를 제출합니다.
 9. 결과가 부족하면 `수정 요청`, 충분하면 `Design 승인`을 선택합니다.
 10. 승인 후 `산출물 번들 다운로드`로 PRD·Design Pack·handoff Markdown을 내보냅니다.
+11. 저장소에서는 `pnpm goodz -- export --project <Project ID> --root .`로 같은 bundle을 실제 Markdown과 hash manifest로 생성합니다.
 
 PRD나 Design Pack을 승인한 뒤 내용을 수정하면 다시 Draft가 되고, 열려 있는 Design Job은 수정 필요 상태가 됩니다. Goodz는 high-fidelity UI를 직접 그리는 대신 Claude Design이 작업할 입력 패키지, prompt snapshot, 결과 검증 상태를 관리합니다.
+
+CLI export는 기존 파일이 마지막 export 이후 수정되었으면 중단합니다. 먼저 `--dry-run`으로 확인하고, 사용자 변경을 의도적으로 폐기할 때만 `--force`를 사용합니다. 자세한 명령은 [CLI.md](./CLI.md)를 참고합니다.
 
 ## 접속
 
