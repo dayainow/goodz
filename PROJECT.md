@@ -159,7 +159,7 @@
 - [x] S34: 기능 동결·후속 제품 분리 결정과 전환 PRD
 - [x] S34: 후속 제품 코드 이식·제외 매니페스트
 - [x] S34: 최종 `pnpm verify` 통과
-- [ ] S34: Repository Closure Gate (Cursor commit·tag·GitHub Release)
+- [ ] S34: Repository Closure Gate (`v1.1.0` tag·GitHub Release)
 
 ## 풀 프로세스
 

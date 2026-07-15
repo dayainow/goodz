@@ -3,7 +3,7 @@
 | 항목 | 내용 |
 |------|------|
 | 결정일 | 2026-07-15 |
-| 상태 | QA complete — Cursor release 작업 대기 |
+| 상태 | Commit complete — tag·GitHub Release 대기 |
 | 최종 기준선 | Goodz v1.1 Installable Empty Workspace |
 | 종료 태그 후보 | `v1.1.0` |
 | 후속 제품 | Beacon — 별도 저장소 |
@@ -39,7 +39,7 @@ Goodz는 풀프로세스 모노레포 시스템의 가능성을 검증한 제품
 - [x] 최종 `pnpm verify` 통과
 - [x] 기존 미커밋 Dashboard 가독성 변경을 보존하고 build·lint 확인
 - [x] Beacon 공개 빈 저장소 생성과 원격 URL 확인
-- [ ] Cursor가 종료 문서와 코드 변경 commit
+- [x] 사용자 승인 예외로 Codex가 종료 문서와 코드 변경 commit
 - [ ] Cursor가 최종 tag와 GitHub Release 생성
 - [x] README에 후속 저장소 링크 추가
 
@@ -79,9 +79,9 @@ Goodz는 풀프로세스 모노레포 시스템의 가능성을 검증한 제품
 
 현재 기준 브랜치는 `main`, 원격은 `https://github.com/dayainow/goodz.git`, 직전 태그는 `v1.0.0`이다. 종료 릴리스 후보는 `v1.1.0`으로 한다.
 
-1. 기존 사용자 변경인 `apps/process-dashboard/src/App.tsx`의 산출물 가독성 개선을 `fix: 산출물 문서 가독성 개선`으로 분리한다.
-2. 종료·Beacon 인계 문서를 `docs: Goodz v1.1 종료와 Beacon 인계 정리`로 커밋한다.
-3. `pnpm verify`를 다시 통과하고 `main`을 `origin`에 push한다.
+1. [x] 기존 사용자 변경인 `apps/process-dashboard/src/App.tsx`의 산출물 가독성 개선을 `fix: 산출물 문서 가독성 개선`으로 분리한다.
+2. [x] 종료·Beacon 인계 문서를 `docs: Goodz v1.1 종료와 Beacon 인계 정리`로 커밋한다.
+3. [x] `pnpm verify`를 다시 통과한다. `main` push는 다음 종결 작업으로 수행한다.
 4. [x] [dayainow/beacon-project-os](https://github.com/dayainow/beacon-project-os) 공개 빈 저장소를 생성한다. 이 단계에서는 Goodz 소스를 복사하지 않는다.
 5. [x] 확정된 Beacon 원격 URL을 이 문서와 루트 README에 추가한다. 종료 문서 commit과 push는 2–3번에 포함한다.
 6. annotated tag `v1.1.0`을 생성·push하고 GitHub Release를 발행한다.
