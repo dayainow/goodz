@@ -9,6 +9,8 @@ Goodz Process Dashboard는 새로운 제품·서비스 아이디어를 프로젝
 3. 열린 Stage에서 Task 상태를 `done`으로 저장
 4. 필수 산출물에 URI·Owner를 넣고 **승인**
 5. 조건이 채워지면 **GO** (다음 Stage 자동 시작). 막히면 **HOLD**, 종료면 **KILL**
+6. GO/시작 후 `docs/projects/<project-id>/`에 Markdown이 생기는지 확인
+7. 완료(또는 진행 중)면 **Project Book 다운로드**로 여정 기록 받기
 
 이게 Goodz의 목적에 맞는 기본 사용법입니다. PRD Wizard·Design Workbench·템플릿 편집·Goodz Reference 메뉴는 **선택/고급**입니다.
 

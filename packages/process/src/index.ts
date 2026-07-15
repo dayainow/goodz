@@ -396,6 +396,31 @@ export interface ProcessProjectExportBundle {
   files: ProcessExportFile[];
 }
 
+/** Workspace에 쓴(또는 쓸 예정인) Markdown 산출물 경로 */
+export interface ProcessArtifactWriteResult {
+  projectId: string;
+  relativeRoot: string;
+  written: string[];
+  skipped: string[];
+  diskWriteEnabled: boolean;
+}
+
+export interface DecideProcessGateResponse {
+  run: ProcessRun;
+  artifacts: ProcessArtifactWriteResult;
+}
+
+export interface ProcessProjectBook {
+  schemaVersion: 1;
+  projectId: string;
+  projectName: string;
+  runId: string;
+  generatedAt: string;
+  path: string;
+  markdown: string;
+  written: boolean;
+}
+
 export interface ProcessTaskRun {
   id: string;
   templateTaskId: string;
@@ -534,6 +559,7 @@ export interface MigrateProcessTemplateResponse {
 export interface CreateProcessProjectResponse {
   project: ProcessProject;
   run: ProcessRun;
+  artifacts: ProcessArtifactWriteResult;
 }
 
 export interface UpdateProcessProjectBriefRequest {

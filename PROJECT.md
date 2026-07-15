@@ -5,10 +5,10 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S35 Usability Closure** 🟡
+## 현재 스프린트: **S35 Usability Closure** ✅
 
-> Beacon과 무관하게 Goodz를 **쓸 수 있는 풀프로세스 OS**로 맞추고 마무리합니다 ([DEC-033](./docs/00-process/DECISIONS.md)).  
-> 메인 경로: **프로젝트 생성 → Task → 산출물 승인 → GO**. PRD/Design·Template Builder·Goodz Reference는 선택/고급.  
+> Beacon과 무관하게 Goodz를 **쓸 수 있는 풀프로세스 OS**로 맞추고 마무리했습니다 ([DEC-033](./docs/00-process/DECISIONS.md), [DEC-034](./docs/00-process/DECISIONS.md)).  
+> 메인 경로: **프로젝트 생성 → Task → 산출물 승인 → GO** (+ `docs/projects` 스캐폴드 · Project Book).  
 > v1.1.0은 보관 스냅샷으로 유지합니다.
 
 | 시스템 레이어 | 상태 |
@@ -167,6 +167,9 @@
 - [x] S35: Template·PRD/Design을 선택/고급으로 접기
 - [x] S35: USER_MANUAL 10분 사용 경로 갱신
 - [x] S35: `pnpm verify` 통과
+- [x] S35: 프로젝트 시작·Gate GO Markdown 스캐폴드 (`docs/projects/`)
+- [x] S35: Project Book 다운로드 API·UI
+- [x] S35: Usability Closure 마무리 (DEC-034)
 
 ## 풀 프로세스
 

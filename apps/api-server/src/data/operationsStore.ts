@@ -22,6 +22,9 @@ import type {
   ProcessDesignPack,
   ProcessDesignJob,
   ProcessProjectExportBundle,
+  ProcessProjectBook,
+  DecideProcessGateResponse,
+  ProcessArtifactWriteResult,
   ProcessProject,
   ProcessRun,
   ProcessStageRun,
@@ -36,6 +39,11 @@ import type {
   RequestProcessDesignChangesRequest,
   UpdateProcessTaskRequest,
 } from "@goodz/process";
+import {
+  buildAndMaybeWriteProjectBook,
+  scaffoldProjectStart,
+  scaffoldStageGate,
+} from "./projectArtifacts.js";
 
 const sourceRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -1252,7 +1260,15 @@ export function createProcessProject(
   const projectRow = database
     .prepare("SELECT * FROM process_projects WHERE id = ?")
     .get(projectId) as unknown as ProjectRow;
-  return { project: toProject(projectRow), run: loadProcessRun(getRunRow(runId)) };
+  const project = toProject(projectRow);
+  const run = loadProcessRun(getRunRow(runId));
+  const artifacts = scaffoldProjectStart({
+    repoRoot,
+    databasePath,
+    project,
+    run,
+  });
+  return { project, run, artifacts };
 }
 
 function getProject(projectId: string) {
@@ -1744,7 +1760,7 @@ export function decideProcessGate(
   runId: string,
   stageId: string,
   input: DecideProcessGateRequest,
-): ProcessRun {
+): DecideProcessGateResponse {
   const run = getRunRow(runId);
   if (run.status === "completed" || run.status === "cancelled") {
     throw new Error("Completed or cancelled run cannot be changed");
@@ -1833,7 +1849,101 @@ export function decideProcessGate(
     database.exec("ROLLBACK");
     throw error;
   }
-  return loadProcessRun(getRunRow(runId));
+
+  const nextRun = loadProcessRun(getRunRow(runId));
+  const project = getProject(run.project_id);
+  const stageIndex = nextRun.stages.findIndex((item) => item.id === stageId);
+  const decidedStage = nextRun.stages[stageIndex] ?? nextRun.stages.find((item) => item.id === stageId);
+  const audits = listProjectAuditEvents(run.project_id);
+  const emptyArtifacts: ProcessArtifactWriteResult = {
+    projectId: project.id,
+    relativeRoot: `docs/projects/${project.id.toLowerCase()}`,
+    written: [],
+    skipped: [],
+    diskWriteEnabled: databasePath !== ":memory:" && process.env.GOODZ_SKIP_ARTIFACT_WRITE !== "1",
+  };
+  const artifacts = decidedStage
+    ? scaffoldStageGate({
+        repoRoot,
+        databasePath,
+        project,
+        run: nextRun,
+        stage: decidedStage,
+        stageIndex: stageIndex >= 0 ? stageIndex : 0,
+        decision: input.decision,
+        note: input.note,
+        auditEvents: audits,
+      })
+    : emptyArtifacts;
+  return { run: nextRun, artifacts };
+}
+
+function listProjectAuditEvents(projectId: string) {
+  const runs = database
+    .prepare("SELECT id FROM process_runs WHERE project_id = ?")
+    .all(projectId) as unknown as Array<{ id: string }>;
+  const runIds = runs.map((item) => item.id);
+  const relatedIds = new Set<string>([projectId, ...runIds]);
+  if (runIds.length) {
+    const placeholders = runIds.map(() => "?").join(",");
+    const stageIds = (
+      database
+        .prepare(`SELECT id FROM process_stage_runs WHERE run_id IN (${placeholders})`)
+        .all(...runIds) as unknown as Array<{ id: string }>
+    ).map((item) => item.id);
+    for (const id of stageIds) relatedIds.add(id);
+    if (stageIds.length) {
+      const stagePlaceholders = stageIds.map(() => "?").join(",");
+      for (const table of [
+        "process_task_runs",
+        "process_deliverable_runs",
+        "process_evidence",
+        "process_gate_decisions",
+      ] as const) {
+        const idColumn = table === "process_gate_decisions" ? "id" : "id";
+        for (const row of database
+          .prepare(`SELECT ${idColumn} AS id FROM ${table} WHERE stage_run_id IN (${stagePlaceholders})`)
+          .all(...stageIds) as unknown as Array<{ id: string }>) {
+          relatedIds.add(row.id);
+        }
+      }
+    }
+  }
+  for (const row of database
+    .prepare("SELECT id FROM process_design_jobs WHERE project_id = ?")
+    .all(projectId) as unknown as Array<{ id: string }>) {
+    relatedIds.add(row.id);
+  }
+  const audits = database
+    .prepare("SELECT * FROM process_audit_events ORDER BY created_at DESC LIMIT 200")
+    .all() as unknown as AuditRow[];
+  return audits
+    .filter((audit) => relatedIds.has(audit.entity_id))
+    .slice(0, 40)
+    .map((audit) => ({
+      id: audit.id,
+      entityType: audit.entity_type as ProcessAuditEvent["entityType"],
+      entityId: audit.entity_id,
+      action: audit.action,
+      detail: audit.detail,
+      createdAt: audit.created_at,
+    }));
+}
+
+export function exportProcessProjectBook(projectId: string): ProcessProjectBook {
+  const project = getProject(projectId);
+  const runRow = database
+    .prepare("SELECT * FROM process_runs WHERE project_id = ? ORDER BY updated_at DESC LIMIT 1")
+    .get(projectId) as unknown as RunRow | undefined;
+  if (!runRow) throw new Error("Process run not found");
+  const run = loadProcessRun(runRow);
+  return buildAndMaybeWriteProjectBook({
+    repoRoot,
+    databasePath,
+    project,
+    run,
+    auditEvents: listProjectAuditEvents(projectId),
+  });
 }
 
 export function loadOperationsOverview(): ProcessOperationsOverview {

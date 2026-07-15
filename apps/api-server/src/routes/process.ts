@@ -38,6 +38,7 @@ import {
   submitProcessDesignJob,
   requestProcessDesignChanges,
   exportProcessProject,
+  exportProcessProjectBook,
 } from "../data/operationsStore.js";
 import {
   loadProcessDocument,
@@ -228,6 +229,15 @@ processRouter.get("/process/projects/:projectId/export", (req, res) => {
     res.json(exportProcessProject(req.params.projectId));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to export project";
+    res.status(400).json({ message });
+  }
+});
+
+processRouter.get("/process/projects/:projectId/book", (req, res) => {
+  try {
+    res.json(exportProcessProjectBook(req.params.projectId));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to build project book";
     res.status(400).json({ message });
   }
 });

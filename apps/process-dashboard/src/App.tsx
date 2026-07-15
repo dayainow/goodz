@@ -44,6 +44,7 @@ import {
   createProcessTemplate,
   createProcessIncident,
   decideProcessGate,
+  fetchProjectBook,
   fetchProcessDocument,
   fetchProcessMetricSnapshots,
   fetchProcessOperations,
@@ -3237,7 +3238,13 @@ function WorkspaceSection({
       setSelectedRunId(created.run.id);
       setSelectedStageId(created.run.currentStageId ?? "");
       formElement.reset();
-      await refreshWithMessage(`${created.project.name} 프로젝트가 시작되었습니다.`);
+      const written = created.artifacts.written;
+      const artifactNote = written.length
+        ? ` · 파일 생성: ${written.join(", ")}`
+        : created.artifacts.diskWriteEnabled
+          ? " · 스캐폴드 파일이 이미 있거나 생략됨"
+          : " · 스캐폴드 경로 준비됨 (디스크 쓰기 비활성)";
+      await refreshWithMessage(`${created.project.name} 프로젝트가 시작되었습니다.${artifactNote}`);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "프로젝트 생성 실패");
     } finally {
@@ -3266,15 +3273,44 @@ function WorkspaceSection({
     setSubmitting(true);
     setMessage(null);
     try {
-      const run = await decideProcessGate(selectedRun.id, selectedStage.id, {
+      const result = await decideProcessGate(selectedRun.id, selectedStage.id, {
         decision,
         note: gateNote,
       });
-      setSelectedStageId(run.currentStageId ?? selectedStage.id);
+      setSelectedStageId(result.run.currentStageId ?? selectedStage.id);
       setGateNote("");
-      await refreshWithMessage(`${selectedStage.name} Gate가 ${decision.toUpperCase()}로 기록되었습니다.`);
+      const written = result.artifacts.written;
+      const artifactNote = written.length ? ` · 파일: ${written.join(", ")}` : "";
+      await refreshWithMessage(
+        `${selectedStage.name} Gate가 ${decision.toUpperCase()}로 기록되었습니다.${artifactNote}`,
+      );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Gate 결정 실패");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDownloadProjectBook = async () => {
+    if (!selectedProject) return;
+    setSubmitting(true);
+    setMessage(null);
+    try {
+      const book = await fetchProjectBook(selectedProject.id);
+      const blob = new Blob([book.markdown], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${selectedProject.id.toLowerCase()}-project-book.md`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+      await refreshWithMessage(
+        book.written
+          ? `Project Book 저장 · ${book.path}`
+          : `Project Book 다운로드 · ${book.path}`,
+      );
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Project Book 생성 실패");
     } finally {
       setSubmitting(false);
     }
@@ -3322,8 +3358,8 @@ function WorkspaceSection({
           프로젝트 → Task 완료 → 산출물 승인 → GO
         </h3>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-600">
-          Goodz는 코드를 대신 짜거나 디자인을 그리지 않습니다. Stage·Task·Gate로 풀프로세스를 실행하고,
-          PRD·Design·템플릿 편집은 필요할 때만 엽니다.
+          프로젝트 시작과 Stage GO 때 `docs/projects/...`에 Markdown이 쌓이고, 완료 시 Project Book으로 여정을 남깁니다.
+          코딩·디자인은 밖에서, Goodz는 진행과 결과 파일을 남깁니다.
         </p>
         <ol className="mt-4 grid gap-2 text-sm text-zinc-700 sm:grid-cols-2 xl:grid-cols-4">
           <li className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3"><span className="font-mono text-[11px] font-bold text-violet-700">1</span><p className="mt-1 font-bold">프로젝트 시작</p><p className="mt-1 text-xs leading-5 text-zinc-500">이름·목표·템플릿만 입력</p></li>
@@ -3427,7 +3463,19 @@ function WorkspaceSection({
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-100 pt-4 text-xs text-zinc-500">
                 <span>Owner · <strong className="text-zinc-800">{selectedProject.owner}</strong></span>
-                <span>Task progress · <strong className="text-zinc-800">{completedTasks}/{totalTasks}</strong></span>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span>Task progress · <strong className="text-zinc-800">{completedTasks}/{totalTasks}</strong></span>
+                  {selectedProject ? (
+                    <button
+                      type="button"
+                      disabled={submitting}
+                      onClick={() => void handleDownloadProjectBook()}
+                      className="rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-bold text-violet-800 hover:bg-violet-100 disabled:opacity-40"
+                    >
+                      Project Book 다운로드
+                    </button>
+                  ) : null}
+                </div>
               </div>
             </section>
 

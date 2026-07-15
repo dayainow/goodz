@@ -10,6 +10,8 @@ import type {
   ProcessDesignPack,
   ProcessDesignJob,
   ProcessProjectExportBundle,
+  ProcessProjectBook,
+  DecideProcessGateResponse,
   ProcessDocumentResponse,
   ProcessMetricSnapshotsFile,
   ProcessOperationsOverview,
@@ -140,6 +142,12 @@ export async function fetchProjectExport(projectId: string): Promise<ProcessProj
   return res.json() as Promise<ProcessProjectExportBundle>;
 }
 
+export async function fetchProjectBook(projectId: string): Promise<ProcessProjectBook> {
+  const res = await fetch(`${API_URL}/api/process/projects/${encodeURIComponent(projectId)}/book`);
+  if (!res.ok) throw new Error((await res.json() as { message?: string }).message ?? `HTTP ${res.status}`);
+  return res.json() as Promise<ProcessProjectBook>;
+}
+
 export async function updateProcessStage(
   runId: string,
   stageId: string,
@@ -206,7 +214,7 @@ export async function decideProcessGate(
   runId: string,
   stageId: string,
   input: DecideProcessGateRequest,
-): Promise<ProcessRun> {
+): Promise<DecideProcessGateResponse> {
   const res = await fetch(
     `${API_URL}/api/process/runs/${encodeURIComponent(runId)}/stages/${encodeURIComponent(stageId)}/gate-decisions`,
     {
@@ -216,7 +224,7 @@ export async function decideProcessGate(
     },
   );
   if (!res.ok) throw new Error((await res.json() as { message?: string }).message ?? `HTTP ${res.status}`);
-  return res.json() as Promise<ProcessRun>;
+  return res.json() as Promise<DecideProcessGateResponse>;
 }
 
 export async function createProcessIncident(

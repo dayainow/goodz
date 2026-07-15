@@ -12,6 +12,7 @@ import {
   submitProcessDesignJob,
   requestProcessDesignChanges,
   exportProcessProject,
+  exportProcessProjectBook,
   createIncident,
   decideProcessGate,
   loadOperationsOverview,
@@ -96,6 +97,12 @@ const createdProject = createProcessProject({
 const firstStage = createdProject.run.stages[0];
 if (!firstStage || firstStage.status !== "in_progress") {
   throw new Error("First process stage did not start");
+}
+if (!createdProject.artifacts?.relativeRoot.startsWith("docs/projects/")) {
+  throw new Error("Project scaffold artifacts were not returned");
+}
+if (createdProject.artifacts.diskWriteEnabled) {
+  throw new Error("In-memory validation must skip artifact disk writes");
 }
 
 const migratedTemplate = migrateProcessTemplate(template.id, {
@@ -279,13 +286,17 @@ if (run.stages[0]?.evidence.length !== 1) {
 run = decideProcessGate(run.id, firstStage.id, {
   decision: "go",
   note: "P0 validation passed",
-});
+}).run;
 if (
   run.stages[0]?.status !== "done" ||
   run.stages[1]?.status !== "in_progress" ||
   run.currentStageId !== run.stages[1]?.id
 ) {
   throw new Error("GO decision did not advance the process run");
+}
+const projectBook = exportProcessProjectBook(createdProject.project.id);
+if (!projectBook.markdown.includes(createdProject.project.name) || !projectBook.path.endsWith("PROJECT_BOOK.md")) {
+  throw new Error("Project Book was not generated");
 }
 
 const validatedWorkspace = loadProcessWorkspace();
