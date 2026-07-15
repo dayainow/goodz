@@ -103,6 +103,6 @@ Goodz를 v1.1 Reference 기준선으로 종료하고 후속 제품을 별도 저
 - [x] Beacon 공개 빈 저장소와 원격 URL 확인
 - [x] README와 인계 문서에 Beacon 저장소 링크 추가
 - [x] 미커밋 변경을 보존하고 사용자 승인 예외로 Codex가 종료 commit을 생성함
-- [ ] Cursor가 최종 tag와 GitHub Release를 생성함
+- [x] 사용자 승인 예외로 Codex가 최종 tag와 GitHub Release를 생성함
 
-기능·QA·검증 항목 통과 후 Cursor가 종료 commit, tag와 Release를 Gate의 종결 작업으로 수행한다. 모든 체크박스가 완료되기 전에는 Beacon 저장소에 Goodz 소스를 이식하지 않는다. 원격 URL 확보를 위한 빈 저장소 생성은 허용한다.
+기능·QA·검증 항목 통과 후 사용자 승인 예외로 Codex가 종료 commit, tag와 Release를 Gate의 종결 작업으로 수행했다. 모든 체크박스가 완료됐으므로 Beacon 저장소는 `TRANSFER_MANIFEST.md` 승인 단위의 선별 이식을 시작할 수 있다.

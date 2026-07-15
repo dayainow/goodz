@@ -3,9 +3,10 @@
 | 항목 | 내용 |
 |------|------|
 | 결정일 | 2026-07-15 |
-| 상태 | Commit complete — tag·GitHub Release 대기 |
+| 상태 | Archived — Repository Closure Gate 완료 |
 | 최종 기준선 | Goodz v1.1 Installable Empty Workspace |
-| 종료 태그 후보 | `v1.1.0` |
+| 종료 태그 | `v1.1.0` |
+| GitHub Release | [Goodz v1.1.0 — Installable Empty Workspace](https://github.com/dayainow/goodz/releases/tag/v1.1.0) |
 | 후속 제품 | Beacon — 별도 저장소 |
 | 후속 저장소 | [dayainow/beacon-project-os](https://github.com/dayainow/beacon-project-os) |
 | 공개 범위 | Public |
@@ -40,7 +41,7 @@ Goodz는 풀프로세스 모노레포 시스템의 가능성을 검증한 제품
 - [x] 기존 미커밋 Dashboard 가독성 변경을 보존하고 build·lint 확인
 - [x] Beacon 공개 빈 저장소 생성과 원격 URL 확인
 - [x] 사용자 승인 예외로 Codex가 종료 문서와 코드 변경 commit
-- [ ] Cursor가 최종 tag와 GitHub Release 생성
+- [x] 사용자 승인 예외로 Codex가 최종 tag와 GitHub Release 생성
 - [x] README에 후속 저장소 링크 추가
 
 ### 빈 Workspace 육안 QA 기록
@@ -84,7 +85,7 @@ Goodz는 풀프로세스 모노레포 시스템의 가능성을 검증한 제품
 3. [x] `pnpm verify`를 다시 통과한다. `main` push는 다음 종결 작업으로 수행한다.
 4. [x] [dayainow/beacon-project-os](https://github.com/dayainow/beacon-project-os) 공개 빈 저장소를 생성한다. 이 단계에서는 Goodz 소스를 복사하지 않는다.
 5. [x] 확정된 Beacon 원격 URL을 이 문서와 루트 README에 추가한다. 종료 문서 commit과 push는 2–3번에 포함한다.
-6. annotated tag `v1.1.0`을 생성·push하고 GitHub Release를 발행한다.
-7. Release와 README 링크를 확인한 뒤 Repository Closure Gate를 닫는다.
+6. [x] annotated tag `v1.1.0`을 생성·push하고 [GitHub Release](https://github.com/dayainow/goodz/releases/tag/v1.1.0)를 발행한다.
+7. [x] Release와 README 링크를 확인하고 Repository Closure Gate를 닫는다.
 
 Release 제목은 `Goodz v1.1.0 — Installable Empty Workspace`를 사용한다. 본문에는 빈 Workspace, 선택적 Internal Reference, 독립 SQLite, CLI init/adopt, 전체 `pnpm verify`, Beacon 분리 결정을 요약한다.

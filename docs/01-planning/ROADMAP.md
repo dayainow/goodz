@@ -39,7 +39,7 @@
 | **v0.29** | Git Connector: approved export branch + commit + push + pull request | ✅ |
 | **v1.0** | 설치 가능한 Goodz Core: adopt + Template/config migration + clean-clone 도입 | ✅ |
 | **v1.1** | Installable Empty Workspace: 사용자 런타임·Goodz 내부 이력·독립 DB/file scaffold 분리 | ✅ |
-| **Archive** | Goodz 기능 동결·검증 기준선·후속 로컬 Project OS 이식 인계 | 🚧 |
+| **Archive** | Goodz 기능 동결·검증 기준선·후속 로컬 Project OS 이식 인계 | ✅ |
 
 ## 전체 타임라인
 
@@ -463,7 +463,7 @@ flowchart LR
 34. ✅ v0.29: 승인 산출물 Git branch/commit/push/PR Connector
 35. ✅ v1.0 Gate: config migration + clean-clone CI
 36. ✅ v1.1: 빈 Workspace scaffold + 선택적 Goodz Internal Reference 최종 QA
-37. 🚧 Archive: 기능 동결 + Repository Closure Gate + 후속 제품 이식 인계
+37. ✅ Archive: 기능 동결 + Repository Closure Gate + 후속 제품 이식 인계
 38. ↗ Guided Flow·Cloud·RBAC 후보는 자동 승계하지 않고 후속 제품에서 재검토
 
 ---
@@ -502,3 +502,4 @@ flowchart LR
 | 2026-07-14 | v1.0 — config migration·clean-clone Gate와 설치 가능한 Core/CLI |
 | 2026-07-14 | v1.1 — 사용자 빈 Workspace와 Goodz 내부 개발 이력의 물리·런타임 분리 |
 | 2026-07-15 | Archive — Goodz 기능 동결과 후속 로컬 Project OS 별도 저장소 분리 결정 |
+| 2026-07-15 | v1.1.0 Release — Repository Closure Gate 완료와 Beacon 인계 |

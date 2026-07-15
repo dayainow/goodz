@@ -5,9 +5,9 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S34 Closure & Successor Handoff** 🚧
+## 현재 스프린트: **S34 Closure & Successor Handoff** ✅
 
-> 2026-07-15부터 신규 기능을 동결합니다. Goodz는 v1.1 풀프로세스 시스템 Reference로 종료하고, 프로젝트 폴더에 설치되는 후속 로컬 Project OS **[Beacon](https://github.com/dayainow/beacon-project-os)**은 별도 저장소에서 시작합니다. 종료 상태와 이식 기준은 [ARCHIVE_HANDOFF](./docs/00-process/ARCHIVE_HANDOFF.md)와 [TRANSFER_MANIFEST](./docs/00-process/TRANSFER_MANIFEST.md)를 따릅니다.
+> 2026-07-15 Goodz는 [v1.1.0](https://github.com/dayainow/goodz/releases/tag/v1.1.0) 풀프로세스 시스템 Reference로 종료했습니다. 프로젝트 폴더에 설치되는 후속 로컬 Project OS **[Beacon](https://github.com/dayainow/beacon-project-os)**은 별도 저장소에서 시작합니다. 종료 상태와 이식 기준은 [ARCHIVE_HANDOFF](./docs/00-process/ARCHIVE_HANDOFF.md)와 [TRANSFER_MANIFEST](./docs/00-process/TRANSFER_MANIFEST.md)를 따릅니다.
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -159,7 +159,7 @@
 - [x] S34: 기능 동결·후속 제품 분리 결정과 전환 PRD
 - [x] S34: 후속 제품 코드 이식·제외 매니페스트
 - [x] S34: 최종 `pnpm verify` 통과
-- [ ] S34: Repository Closure Gate (`v1.1.0` tag·GitHub Release)
+- [x] S34: Repository Closure Gate (`v1.1.0` tag·GitHub Release)
 
 ## 풀 프로세스
 
