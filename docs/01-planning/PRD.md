@@ -1,5 +1,7 @@
 # Goodz PRD (Product Requirements Document)
 
+> **Reference notice:** 이 문서는 Goodz Commerce Reference의 초기 MVP PRD다. Goodz 플랫폼 또는 후속 로컬 Project OS의 제품 PRD가 아니다. 후속 제품 범위는 [PRD-SUCCESSOR-SPINOUT.md](./PRD-SUCCESSOR-SPINOUT.md)를 따른다.
+
 | 항목 | 내용 |
 |------|------|
 | 제품명 | **Goodz** — 굿즈 전문 이커머스 |

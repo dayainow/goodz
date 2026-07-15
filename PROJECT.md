@@ -5,7 +5,9 @@
 👉 **[North Star](./docs/00-process/NORTH_STAR.md)** — 왜 이 프로젝트가 존재하는가 (필독)  
 👉 [에이전트 가이드](./docs/00-process/AGENT_GUIDE.md) · [ROADMAP](./docs/01-planning/ROADMAP.md)
 
-## 현재 스프린트: **S34 Installable Empty Workspace** 🚧
+## 현재 스프린트: **S34 Closure & Successor Handoff** 🚧
+
+> 2026-07-15부터 신규 기능을 동결합니다. Goodz는 v1.1 풀프로세스 시스템 Reference로 종료하고, 프로젝트 폴더에 설치되는 후속 로컬 Project OS **[Beacon](https://github.com/dayainow/beacon-project-os)**은 별도 저장소에서 시작합니다. 종료 상태와 이식 기준은 [ARCHIVE_HANDOFF](./docs/00-process/ARCHIVE_HANDOFF.md)와 [TRANSFER_MANIFEST](./docs/00-process/TRANSFER_MANIFEST.md)를 따릅니다.
 
 | 시스템 레이어 | 상태 |
 |---------------|------|
@@ -35,8 +37,8 @@
 | **PRD & Design Workbench** | ✅ 질문형 PRD·Markdown·승인·화면·스토리보드·콘셉트·Claude Design handoff |
 | **Design Job Connector** | ✅ prompt snapshot·작업 상태·결과 제출·수정 요청·승인·portable export |
 | **Goodz Core/CLI v1.0** | ✅ init·adopt·config/template migrate·project·export·Git publish·clean-clone verify |
-| **Workspace Boundary** | 🚧 사용자 프로젝트 기본 진입·Library 분리·Goodz 개발 기록 Reference 격리 · 육안 QA 대기 |
-| **Installable Workspace** | 🚧 빈 Workspace scaffold·독립 DB 경로·선택적 내부 Reference·런타임 무결합 검증 |
+| **Workspace Boundary** | ✅ 사용자 프로젝트 기본 진입·Library 분리·Goodz 개발 기록 Reference 격리 · 빈 Workspace 육안 QA |
+| **Installable Workspace** | ✅ 빈 Workspace scaffold·독립 DB 경로·선택적 내부 Reference·런타임 무결합 검증 |
 
 ## 현재 단계
 
@@ -153,7 +155,11 @@
 - [x] S34: 신규 `goodz init`을 Reference 0개·독립 `.goodz/workspace.json`으로 전환
 - [x] S34: Reference capability API와 Reference 없는 Dashboard 시작 경로 구현
 - [x] S34: clean-clone·빈 Workspace HTTP smoke
-- [ ] S34: Reference 없는 Dashboard 로컬 육안 QA
+- [x] S34: Reference 없는 Dashboard 로컬 육안 QA
+- [x] S34: 기능 동결·후속 제품 분리 결정과 전환 PRD
+- [x] S34: 후속 제품 코드 이식·제외 매니페스트
+- [x] S34: 최종 `pnpm verify` 통과
+- [ ] S34: Repository Closure Gate (Cursor commit·tag·GitHub Release)
 
 ## 풀 프로세스
 

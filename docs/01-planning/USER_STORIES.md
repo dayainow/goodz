@@ -69,3 +69,39 @@
 GitHub Issue 생성 시 이 ID를 제목에 포함: `[US-001] 상품 목록`
 
 Sprint 백로그: [ROADMAP.md](./ROADMAP.md)
+
+## Repository Closure — 후속 제품 분리
+
+### US-100 재현 가능한 Goodz 종료 기준선
+
+- **As a** 후속 제품 개발자
+- **I want** Goodz의 최종 상태와 검증 결과를 재현한다
+- **So that** 검증되지 않은 코드나 문서를 새 제품으로 옮기지 않는다
+- **AC**
+  - [x] 기능 동결 결정과 후속 제품 비목표가 문서화된다.
+  - [x] 이식·제외 코드가 경로 단위로 분류된다.
+  - [x] Reference 없는 빈 Workspace Dashboard를 육안 확인한다.
+  - [x] 최종 `pnpm verify`가 통과한다.
+
+### US-101 선택적 코드 이식
+
+- **As a** 후속 제품 개발자
+- **I want** 새 계약에 필요한 Goodz 코드만 선별 이식한다
+- **So that** 현재 저장소의 누적 복잡도를 새 제품에 복사하지 않는다
+- **AC**
+  - [x] 기존 Dashboard 전체 복사가 금지된다.
+  - [x] Commerce와 내부 Reference가 이식 대상에서 제외된다.
+  - [x] 새 제품 첫 세로 흐름이 `beacon init → beacon open → identity`로 고정된다.
+  - [x] 새 제품 이름이 Beacon으로 확정된다.
+  - [x] Beacon 저장소가 생성되고 원격 URL이 확정된다.
+
+### US-102 단일 프로젝트 로컬 실행
+
+- **As a** 프로젝트 팀원
+- **I want** 실제 프로젝트 폴더에서 Dashboard를 연다
+- **So that** 별도 서비스에 프로젝트와 Evidence를 다시 입력하지 않는다
+- **AC**
+  - [ ] 프로젝트 폴더 하나가 프로젝트 하나로 인식된다.
+  - [ ] CLI가 현재 폴더의 로컬 runtime과 Dashboard를 연다.
+  - [ ] 첫 화면에 샘플 데이터 없이 현재 폴더의 정체성이 표시된다.
+  - [ ] 로컬 파일과 Git 탐색 결과에 출처가 표시된다.

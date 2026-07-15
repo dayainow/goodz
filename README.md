@@ -1,5 +1,7 @@
 # Goodz — 풀 프로세스 운영 시스템
 
+> **Lifecycle notice · 2026-07-15:** Goodz는 v1.1 검증 기준선에서 기능 동결하고 Reference 저장소로 마무리 중입니다. 프로젝트 폴더에 설치되는 후속 로컬 Project OS는 **[Beacon](https://github.com/dayainow/beacon-project-os)**이며 별도 저장소에서 시작합니다. 현재 종료 상태는 [ARCHIVE_HANDOFF](./docs/00-process/ARCHIVE_HANDOFF.md), 선별 이식 기준은 [TRANSFER_MANIFEST](./docs/00-process/TRANSFER_MANIFEST.md)를 확인하세요.
+
 [![CI](https://github.com/dayainow/goodz/actions/workflows/ci.yml/badge.svg)](https://github.com/dayainow/goodz/actions/workflows/ci.yml)
 [![pnpm](https://img.shields.io/badge/pnpm-workspace-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Turborepo](https://img.shields.io/badge/Turborepo-monorepo-EF4444?style=flat-square&logo=turborepo&logoColor=white)](https://turbo.build/)
