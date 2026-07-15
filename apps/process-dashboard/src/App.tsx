@@ -1512,18 +1512,18 @@ function DocumentViewer({ docPath }: { docPath: string }) {
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-zinc-100 px-4 py-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-violet">
-            Document
+            산출물 문서
           </p>
-          <h3 className="mt-1 font-bold text-zinc-950">
+          <h3 className="mt-1 text-lg font-bold text-zinc-950 leading-7">
             {document?.title ?? docPath}
           </h3>
-          <p className="mt-1 font-mono text-xs text-zinc-400">{docPath}</p>
+          <p className="mt-1 font-mono text-xs text-zinc-400 break-words">{docPath}</p>
         </div>
-        <span className="rounded-full border border-zinc-200 px-3 py-1 text-xs font-semibold text-zinc-500">
+        <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-semibold text-zinc-500">
           {loading ? "loading" : document ? formatTimestamp(document.updatedAt) : "ready"}
         </span>
       </div>
-      <div className="max-h-[560px] overflow-auto px-5 py-4">
+      <div className="min-h-[520px] max-h-[calc(100vh-220px)] overflow-auto px-5 py-4">
         {error && (
           <p className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
             {error}
@@ -1628,7 +1628,7 @@ function DeliverablesSection({
   }, []);
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(440px,0.85fr)] xl:items-start">
+    <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(500px,0.85fr)] xl:items-start">
       <div className="space-y-4">
         {Object.entries(byPhase).map(([phase, items]) => (
           <section key={phase} className="rounded-2xl border border-zinc-200 bg-white">
@@ -1637,7 +1637,7 @@ function DeliverablesSection({
                 <p className="font-mono text-xs font-semibold text-brand-violet">
                   {phase}
                 </p>
-                <h3 className="font-bold text-zinc-950">산출물</h3>
+                <h3 className="font-bold text-zinc-950">산출물 문서</h3>
               </div>
               <span className="text-sm font-semibold text-zinc-500">
                 {items.filter((item) => item.status === "done").length}/{items.length}
@@ -1650,17 +1650,21 @@ function DeliverablesSection({
                   <li
                     key={item.id}
                     className={[
-                      "grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[72px_1fr_90px_110px_90px] lg:items-center",
+                      "grid gap-3 border-b border-zinc-100 px-4 py-4 text-sm last:border-b-0 lg:grid-cols-[72px_minmax(0,1.2fr)_120px_130px_100px] lg:items-start",
                       isSelected ? "bg-zinc-50" : "",
                     ].join(" ")}
                   >
-                    <span className="font-mono text-xs font-semibold text-zinc-500">
+                    <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
                       {item.id}
                     </span>
                     <div className="min-w-0">
-                      <p className="font-semibold text-zinc-950">{item.title}</p>
-                      <p className="mt-1 text-xs text-zinc-500">{item.summary}</p>
-                      <p className="mt-1 truncate font-mono text-xs text-zinc-400">
+                      <p className="text-base font-semibold text-zinc-950 leading-6">
+                        {item.title}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-zinc-600">
+                        {item.summary}
+                      </p>
+                      <p className="mt-3 break-words font-mono text-xs text-zinc-400">
                         {item.doc}
                       </p>
                       <button
@@ -1668,7 +1672,7 @@ function DeliverablesSection({
                         onClick={() => openDocument(item.doc)}
                         aria-pressed={isSelected}
                         className={[
-                          "mt-2 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-colors duration-150",
+                          "mt-3 inline-flex rounded-lg border px-3 py-2 text-sm font-semibold transition-colors duration-150",
                           isSelected
                             ? "border-zinc-950 bg-zinc-950 text-white hover:bg-zinc-800"
                             : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 hover:text-zinc-950",
@@ -1677,11 +1681,11 @@ function DeliverablesSection({
                         {isSelected ? "열린 문서" : "문서 보기"}
                       </button>
                     </div>
-                    <span className="w-fit rounded-md bg-zinc-100 px-2 py-1 text-xs font-semibold text-zinc-600">
+                    <span className="whitespace-nowrap rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-semibold text-zinc-600">
                       {DELIVERABLE_TYPE_LABEL[item.type]}
                     </span>
                     <span className="text-xs font-medium text-zinc-500">
-                      {item.owner}
+                      {item.owner || "담당자 없음"}
                     </span>
                     <StatusBadge status={item.status} />
                   </li>
