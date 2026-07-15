@@ -28,6 +28,18 @@ select:focus-visible {
   scrollbar-width: thin;
 }
 
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details[open] > summary {
+  border-bottom: 1px solid #f4f4f5;
+}
+
 *::-webkit-scrollbar {
   width: 6px;
   height: 6px;

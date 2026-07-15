@@ -67,9 +67,9 @@ curl "http://localhost:4000/api/process/document?path=docs/00-process/USER_MANUA
 
 ## UI 구성
 
-- **Workspace / 프로젝트** — 사용자 프로젝트·PRD·Design Pack·Run·Task·산출물·Evidence·Gate command
-- **Library / 가이드** — 프로젝트 공용 매뉴얼과 운영 기준
-- **Goodz Reference / 시스템 개요** — Goodz Sprint 목표·오늘 볼 신호·P0-P4 운영 지도
+- **Workspace / 프로젝트 (메인)** — 프로젝트 생성 → Stage Task → 산출물 → Evidence → Gate. PRD/Design·Template Catalog는 접힌 선택/고급
+- **Library / 가이드** — 10분 사용법과 운영 기준
+- **Goodz Reference / …** — Goodz 자체 개발 기록 (관리자 · 평소 접어두기)
 - **Goodz Reference / 기획** — Goodz 자체 입력 요청·출처·다음 액션
 - **변경** — 기획 수정 요청·대상 문서·반영 상태
 - **디자인** — 디자인 시스템, 레퍼런스, 와이어프레임, 스토리보드

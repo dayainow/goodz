@@ -101,12 +101,12 @@ const SECTIONS: Array<{ id: SectionId; label: string; eyebrow: string }> = [
 const SECTION_MAP = new Map(SECTIONS.map((section) => [section.id, section]));
 
 const SECTION_COPY: Record<SectionId, string> = {
-  overview: "현재 상태와 오늘 볼 신호",
-  workspace: "프로젝트 생성과 프로세스 실행",
+  overview: "Goodz 자체 개발 상태와 오늘 볼 신호",
+  workspace: "프로젝트 생성 → Task → 산출물 → GO/HOLD/KILL",
   intakes: "요청과 아이디어 입력",
   changes: "기획 수정과 의사결정",
   design: "레퍼런스와 와이어프레임",
-  guide: "사용법과 운영 기준",
+  guide: "10분 사용법과 운영 기준",
   deliverables: "문서 산출물 원문",
   approvals: "DACI 승인 로그",
   evidence: "누락된 운영 증거",
@@ -116,7 +116,7 @@ const SECTION_COPY: Record<SectionId, string> = {
   queue: "미완료 작업 흐름",
   features: "기능 백로그",
   operations: "Incident와 문서 인덱스",
-  apps: "로컬 서비스 링크",
+  apps: "로컬 서비스 링크 (데모)",
 };
 
 const MENU_GROUPS: Array<{
@@ -126,17 +126,17 @@ const MENU_GROUPS: Array<{
 }> = [
   {
     title: "Workspace",
-    summary: "내 프로젝트 실행",
+    summary: "풀프로세스 실행 (메인)",
     items: ["workspace"],
   },
   {
     title: "Library",
-    summary: "공용 사용법과 기준",
+    summary: "사용법",
     items: ["guide"],
   },
   {
     title: "Goodz Reference",
-    summary: "Goodz 자체 개발 기록",
+    summary: "관리자용 · 평소엔 접어두기",
     items: [
       "overview",
       "intakes",
@@ -714,11 +714,14 @@ function Sidebar({
       <div className="flex shrink-0 items-start justify-between gap-4">
         <div>
           <p className={META_LABEL}>
-            Goodz Workspace
+            Goodz Process OS
           </p>
           <h1 className="mt-1 text-2xl font-bold text-zinc-950">
-            프로젝트 관리
+            풀프로세스 운영
           </h1>
+          <p className="mt-1 text-xs leading-5 text-zinc-500">
+            기획 → 디자인 → 개발 → QA → 배포를 Stage·Gate로 실행
+          </p>
         </div>
         <div className="pt-1">
           <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-bold text-violet-700">
@@ -3004,6 +3007,7 @@ function TemplateCatalog({
   workspace: ProcessWorkspaceOverview;
   onRefresh: () => Promise<void>;
 }) {
+  const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<TemplateDraft>(() => initialTemplateDraft());
   const [saving, setSaving] = useState(false);
@@ -3029,12 +3033,14 @@ function TemplateCatalog({
   const startNew = () => {
     setDraft(initialTemplateDraft());
     setMessage(null);
+    setExpanded(true);
     setOpen(true);
   };
 
   const cloneTemplate = (template: ProcessTemplate) => {
     setDraft(draftFromTemplate(template));
     setMessage(`${template.name}을 복제했습니다. 이름과 단계를 편집해 저장하세요.`);
+    setExpanded(true);
     setOpen(true);
   };
 
@@ -3059,47 +3065,59 @@ function TemplateCatalog({
 
   return (
     <section className={CARD_SURFACE}>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
         <div>
-          <p className={META_LABEL}>Template catalog</p>
-          <h3 className="mt-1 text-lg font-bold text-zinc-950">실행 가능한 프로세스 템플릿</h3>
+          <p className={META_LABEL}>선택 · 고급</p>
+          <h3 className="mt-1 text-lg font-bold text-zinc-950">프로세스 템플릿 관리</h3>
+          <p className="mt-1 text-xs leading-5 text-zinc-500">
+            프로젝트 시작은 아래 폼으로 충분합니다. 팀 전용 Stage를 만들 때만 펼치세요. · {workspace.templates.length}개 사용 가능
+          </p>
         </div>
-        <button type="button" onClick={open ? () => setOpen(false) : startNew} className={["rounded-xl border px-4 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>
-          {open ? "Builder 닫기" : "새 템플릿 만들기"}
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={() => setExpanded((value) => !value)} className={["rounded-xl border px-4 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>
+            {expanded ? "접기" : "템플릿 보기"}
+          </button>
+          <button type="button" onClick={open ? () => setOpen(false) : startNew} className={["rounded-xl border px-4 py-2 text-xs font-bold", QUIET_ACTION].join(" ")}>
+            {open ? "Builder 닫기" : "새 템플릿 만들기"}
+          </button>
+        </div>
       </div>
-      <div className="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
-        {workspace.templates.map((template) => (
-          <article key={template.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-            <div className="flex items-start justify-between gap-3">
-              <h4 className="font-bold text-zinc-950">{template.name}</h4>
-              <span className="whitespace-nowrap font-mono text-[11px] text-violet-700">{template.stages.length} stages</span>
-            </div>
-            <p className="mt-2 text-xs leading-5 text-zinc-500">{template.summary}</p>
-            <div className="mt-3 flex items-center justify-between gap-3"><p className="truncate font-mono text-[10px] text-zinc-400">{template.id}</p><button type="button" onClick={() => cloneTemplate(template)} className="whitespace-nowrap rounded-lg px-2 py-1 text-[11px] font-bold text-violet-700 hover:bg-violet-50">복제 편집</button></div>
-          </article>
-        ))}
-      </div>
-      {open ? (
-        <form onSubmit={(event) => void handleCreate(event)} className="border-t border-zinc-100 bg-zinc-50/70 p-5">
-          <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px]">
-            <div className="space-y-4">
-              <section className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                <p className={META_LABEL}>Template identity</p>
-                <div className="mt-3 grid gap-3 md:grid-cols-2"><label className="text-xs font-bold text-zinc-600">템플릿 이름<input value={draft.name} onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))} maxLength={80} className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" /></label><label className="text-xs font-bold text-zinc-600">템플릿 설명<input value={draft.summary} onChange={(event) => setDraft((current) => ({ ...current, summary: event.target.value }))} maxLength={240} className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" /></label></div>
-              </section>
-              {draft.stages.map((stage, index) => <TemplateStageEditor key={stage.key} stage={stage} position={index} total={draft.stages.length} onChange={(nextStage) => updateStage(stage.key, nextStage)} onMove={(direction) => moveStage(index, direction)} onRemove={() => setDraft((current) => ({ ...current, stages: current.stages.filter((item) => item.key !== stage.key) }))} />)}
-              <button type="button" disabled={draft.stages.length >= 20} onClick={() => setDraft((current) => ({ ...current, stages: [...current.stages, newBuilderStage(current.stages.length)] }))} className="w-full rounded-2xl border border-dashed border-zinc-300 bg-white px-4 py-5 text-sm font-bold text-zinc-700 hover:border-violet-300 hover:text-violet-700 disabled:opacity-40">+ Stage 추가</button>
-            </div>
-            <aside className="h-fit rounded-2xl border border-zinc-200 bg-zinc-950 p-5 text-white xl:sticky xl:top-5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-violet-300">Live blueprint</p><h4 className="mt-2 text-lg font-bold">{draft.name || "새 프로세스"}</h4><p className="mt-2 text-xs leading-5 text-zinc-400">{draft.summary || "템플릿 설명을 입력하세요."}</p>
-              <dl className="mt-5 grid grid-cols-3 gap-2"><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">STAGE</dt><dd className="mt-1 font-mono text-lg font-bold">{draft.stages.length}</dd></div><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">TASK</dt><dd className="mt-1 font-mono text-lg font-bold">{taskCount}</dd></div><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">REQUIRED</dt><dd className="mt-1 font-mono text-lg font-bold">{requiredCount}</dd></div></dl>
-              <ol className="mt-5 space-y-2">{draft.stages.map((stage, index) => <li key={stage.key} className="flex items-center gap-3 rounded-xl border border-white/10 px-3 py-2"><span className="font-mono text-[10px] font-bold text-violet-300">{stage.code || `S${index + 1}`}</span><span className="min-w-0 flex-1 truncate text-xs font-semibold">{stage.name || "이름 없는 Stage"}</span><span className="font-mono text-[10px] text-zinc-500">{stage.tasks.length}T · {stage.deliverables.length}D</span></li>)}</ol>
-              <div className="mt-5 border-t border-white/10 pt-4"><p className={["text-xs leading-5", validationMessage ? "text-amber-300" : "text-emerald-300"].join(" ")}>{validationMessage ?? `${deliverableCount}개 산출물과 ${taskCount}개 Task가 저장 준비되었습니다.`}</p><button type="submit" disabled={saving || Boolean(validationMessage)} className="mt-3 w-full rounded-xl bg-white px-4 py-3 text-xs font-bold text-zinc-950 hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-35">{saving ? "저장 중…" : "Catalog에 저장"}</button><p className="mt-3 text-center text-[10px] leading-4 text-zinc-500">저장 즉시 프로젝트 생성에 사용할 수 있습니다.</p></div>
-            </aside>
+      {expanded ? (
+        <>
+          <div className="grid gap-3 border-t border-zinc-100 p-4 md:grid-cols-2 xl:grid-cols-3">
+            {workspace.templates.map((template) => (
+              <article key={template.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <h4 className="font-bold text-zinc-950">{template.name}</h4>
+                  <span className="whitespace-nowrap font-mono text-[11px] text-violet-700">{template.stages.length} stages</span>
+                </div>
+                <p className="mt-2 text-xs leading-5 text-zinc-500">{template.summary}</p>
+                <div className="mt-3 flex items-center justify-between gap-3"><p className="truncate font-mono text-[10px] text-zinc-400">{template.id}</p><button type="button" onClick={() => cloneTemplate(template)} className="whitespace-nowrap rounded-lg px-2 py-1 text-[11px] font-bold text-violet-700 hover:bg-violet-50">복제 편집</button></div>
+              </article>
+            ))}
           </div>
-          {message ? <p className="mt-3 rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-700">{message}</p> : null}
-        </form>
+          {open ? (
+            <form onSubmit={(event) => void handleCreate(event)} className="border-t border-zinc-100 bg-zinc-50/70 p-5">
+              <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px]">
+                <div className="space-y-4">
+                  <section className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                    <p className={META_LABEL}>Template identity</p>
+                    <div className="mt-3 grid gap-3 md:grid-cols-2"><label className="text-xs font-bold text-zinc-600">템플릿 이름<input value={draft.name} onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))} maxLength={80} className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" /></label><label className="text-xs font-bold text-zinc-600">템플릿 설명<input value={draft.summary} onChange={(event) => setDraft((current) => ({ ...current, summary: event.target.value }))} maxLength={240} className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" /></label></div>
+                  </section>
+                  {draft.stages.map((stage, index) => <TemplateStageEditor key={stage.key} stage={stage} position={index} total={draft.stages.length} onChange={(nextStage) => updateStage(stage.key, nextStage)} onMove={(direction) => moveStage(index, direction)} onRemove={() => setDraft((current) => ({ ...current, stages: current.stages.filter((item) => item.key !== stage.key) }))} />)}
+                  <button type="button" disabled={draft.stages.length >= 20} onClick={() => setDraft((current) => ({ ...current, stages: [...current.stages, newBuilderStage(current.stages.length)] }))} className="w-full rounded-2xl border border-dashed border-zinc-300 bg-white px-4 py-5 text-sm font-bold text-zinc-700 hover:border-violet-300 hover:text-violet-700 disabled:opacity-40">+ Stage 추가</button>
+                </div>
+                <aside className="h-fit rounded-2xl border border-zinc-200 bg-zinc-950 p-5 text-white xl:sticky xl:top-5">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-violet-300">Live blueprint</p><h4 className="mt-2 text-lg font-bold">{draft.name || "새 프로세스"}</h4><p className="mt-2 text-xs leading-5 text-zinc-400">{draft.summary || "템플릿 설명을 입력하세요."}</p>
+                  <dl className="mt-5 grid grid-cols-3 gap-2"><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">STAGE</dt><dd className="mt-1 font-mono text-lg font-bold">{draft.stages.length}</dd></div><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">TASK</dt><dd className="mt-1 font-mono text-lg font-bold">{taskCount}</dd></div><div className="rounded-xl bg-white/10 p-3"><dt className="text-[10px] text-zinc-400">REQUIRED</dt><dd className="mt-1 font-mono text-lg font-bold">{requiredCount}</dd></div></dl>
+                  <ol className="mt-5 space-y-2">{draft.stages.map((stage, index) => <li key={stage.key} className="flex items-center gap-3 rounded-xl border border-white/10 px-3 py-2"><span className="font-mono text-[10px] font-bold text-violet-300">{stage.code || `S${index + 1}`}</span><span className="min-w-0 flex-1 truncate text-xs font-semibold">{stage.name || "이름 없는 Stage"}</span><span className="font-mono text-[10px] text-zinc-500">{stage.tasks.length}T · {stage.deliverables.length}D</span></li>)}</ol>
+                  <div className="mt-5 border-t border-white/10 pt-4"><p className={["text-xs leading-5", validationMessage ? "text-amber-300" : "text-emerald-300"].join(" ")}>{validationMessage ?? `${deliverableCount}개 산출물과 ${taskCount}개 Task가 저장 준비되었습니다.`}</p><button type="submit" disabled={saving || Boolean(validationMessage)} className="mt-3 w-full rounded-xl bg-white px-4 py-3 text-xs font-bold text-zinc-950 hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-35">{saving ? "저장 중…" : "Catalog에 저장"}</button><p className="mt-3 text-center text-[10px] leading-4 text-zinc-500">저장 즉시 프로젝트 생성에 사용할 수 있습니다.</p></div>
+                </aside>
+              </div>
+              {message ? <p className="mt-3 rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-700">{message}</p> : null}
+            </form>
+          ) : null}
+        </>
       ) : null}
     </section>
   );
@@ -3298,7 +3316,22 @@ function WorkspaceSection({
 
   return (
     <div className="space-y-6">
-      <TemplateCatalog workspace={workspace} onRefresh={onRefresh} />
+      <section className={["border-l-4 border-violet-500 p-5", CARD_SURFACE].join(" ")}>
+        <p className={META_LABEL}>오늘 쓸 메인 경로</p>
+        <h3 className="mt-2 text-xl font-bold tracking-tight text-zinc-950">
+          프로젝트 → Task 완료 → 산출물 승인 → GO
+        </h3>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-600">
+          Goodz는 코드를 대신 짜거나 디자인을 그리지 않습니다. Stage·Task·Gate로 풀프로세스를 실행하고,
+          PRD·Design·템플릿 편집은 필요할 때만 엽니다.
+        </p>
+        <ol className="mt-4 grid gap-2 text-sm text-zinc-700 sm:grid-cols-2 xl:grid-cols-4">
+          <li className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3"><span className="font-mono text-[11px] font-bold text-violet-700">1</span><p className="mt-1 font-bold">프로젝트 시작</p><p className="mt-1 text-xs leading-5 text-zinc-500">이름·목표·템플릿만 입력</p></li>
+          <li className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3"><span className="font-mono text-[11px] font-bold text-violet-700">2</span><p className="mt-1 font-bold">Task 완료</p><p className="mt-1 text-xs leading-5 text-zinc-500">현재 Stage 작업을 done</p></li>
+          <li className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3"><span className="font-mono text-[11px] font-bold text-violet-700">3</span><p className="mt-1 font-bold">산출물 승인</p><p className="mt-1 text-xs leading-5 text-zinc-500">필수 항목에 URI·Owner</p></li>
+          <li className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3"><span className="font-mono text-[11px] font-bold text-violet-700">4</span><p className="mt-1 font-bold">Gate GO</p><p className="mt-1 text-xs leading-5 text-zinc-500">다음 Stage 자동 시작</p></li>
+        </ol>
+      </section>
 
       <section className="grid gap-4 md:grid-cols-3">
         <Metric label="Projects" value={workspace.projects.length} tone="violet" />
@@ -3309,9 +3342,9 @@ function WorkspaceSection({
       <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
         <div className="space-y-4">
           <form onSubmit={(event) => void handleCreate(event)} className={["p-5", CARD_SURFACE].join(" ")}>
-            <p className={META_LABEL}>New process run</p>
+            <p className={META_LABEL}>Step 1 · New process run</p>
             <h3 className="mt-2 text-lg font-bold text-zinc-950">프로젝트 시작</h3>
-            <p className="mt-2 text-sm leading-6 text-zinc-500">템플릿을 선택하면 단계와 작업이 실행 가능한 상태로 복제됩니다.</p>
+            <p className="mt-2 text-sm leading-6 text-zinc-500">기본 템플릿을 고르면 Stage와 Task가 바로 실행 상태로 열립니다.</p>
             <label className="mt-4 block text-xs font-semibold text-zinc-600" htmlFor="project-name">프로젝트명</label>
             <input id="project-name" name="name" required className="mt-2 h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm" placeholder="예: 신규 B2B 포털" />
             <label className="mt-3 block text-xs font-semibold text-zinc-600" htmlFor="project-summary">목표</label>
@@ -3327,6 +3360,9 @@ function WorkspaceSection({
             <button type="submit" disabled={submitting || workspace.templates.length === 0} className="mt-4 w-full rounded-xl bg-zinc-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-zinc-800 disabled:opacity-40">
               {submitting ? "처리 중…" : "프로젝트 시작"}
             </button>
+            {workspace.templates.length === 0 ? (
+              <p className="mt-3 text-xs leading-5 text-amber-700">사용 가능한 템플릿이 없습니다. 아래 고급 영역에서 템플릿을 먼저 만드세요.</p>
+            ) : null}
           </form>
 
           <div className={CARD_SURFACE}>
@@ -3359,12 +3395,12 @@ function WorkspaceSection({
                 })}
               </div>
             ) : (
-              <p className="px-4 py-8 text-center text-sm text-zinc-500">첫 프로젝트를 시작하세요.</p>
+              <p className="px-4 py-8 text-center text-sm text-zinc-500">아직 실행이 없습니다. 위 폼에서 첫 프로젝트를 시작하세요.</p>
             )}
           </div>
         </div>
 
-        {selectedRun && selectedProject && selectedStage && selectedBrief && selectedDesignPack ? (
+        {selectedRun && selectedProject && selectedStage ? (
           <div className="space-y-4">
             <section className={["p-5", CARD_SURFACE].join(" ")}>
               <div className="flex flex-wrap items-start justify-between gap-4">
@@ -3394,15 +3430,6 @@ function WorkspaceSection({
                 <span>Task progress · <strong className="text-zinc-800">{completedTasks}/{totalTasks}</strong></span>
               </div>
             </section>
-
-            <ProjectWorkbench
-              key={selectedProject.id}
-              project={selectedProject}
-              brief={selectedBrief}
-              designPack={selectedDesignPack}
-              designJobs={selectedDesignJobs}
-              onRefresh={onRefresh}
-            />
 
             <section className={CARD_SURFACE}>
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-zinc-100 px-5 py-4">
@@ -3479,6 +3506,15 @@ function WorkspaceSection({
                   <h3 className="text-lg font-bold text-zinc-950">GO / HOLD / KILL</h3>
                   <p className="mt-1 text-sm leading-6 text-zinc-500">GO는 모든 작업 완료와 필수 산출물 승인을 확인한 뒤 다음 단계를 자동 시작합니다. HOLD와 KILL은 사유가 필요합니다.</p>
                   <textarea value={gateNote} onChange={(event) => setGateNote(event.target.value)} disabled={runIsTerminal || selectedStage.status === "done"} rows={2} className="mt-3 w-full resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm leading-6" placeholder="결정 근거 또는 보완 조건" />
+                  {!allStageTasksDone || !requiredDeliverablesApproved ? (
+                    <p className="mt-2 text-xs leading-5 text-amber-700">
+                      GO 조건: Task 전부 done
+                      {allStageTasksDone ? " ✓" : " · 미완료"} · 필수 산출물 승인
+                      {requiredDeliverablesApproved ? " ✓" : " · 미완료"}
+                    </p>
+                  ) : (
+                    <p className="mt-2 text-xs leading-5 text-emerald-700">GO 조건이 충족되었습니다.</p>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button type="button" disabled={submitting || runIsTerminal || selectedStage.status === "done" || !allStageTasksDone || !requiredDeliverablesApproved} onClick={() => void handleGateDecision("go")} className="rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-35">GO</button>
@@ -3488,16 +3524,40 @@ function WorkspaceSection({
               </div>
               {message ? <p className="mt-3 rounded-lg bg-zinc-100 px-3 py-2 text-xs leading-5 text-zinc-700">{message}</p> : null}
             </section>
+
+            {selectedBrief && selectedDesignPack ? (
+              <details className={CARD_SURFACE}>
+                <summary className="cursor-pointer list-none px-5 py-4">
+                  <p className={META_LABEL}>선택 · Workbench</p>
+                  <h3 className="mt-1 text-lg font-bold text-zinc-950">PRD · Design 준비</h3>
+                  <p className="mt-1 text-xs leading-5 text-zinc-500">Gate 진행과 별개입니다. 필요할 때만 펼쳐 Markdown PRD와 Claude Design handoff를 준비하세요.</p>
+                </summary>
+                <div className="border-t border-zinc-100 px-5 py-4">
+                  <ProjectWorkbench
+                    key={selectedProject.id}
+                    project={selectedProject}
+                    brief={selectedBrief}
+                    designPack={selectedDesignPack}
+                    designJobs={selectedDesignJobs}
+                    onRefresh={onRefresh}
+                  />
+                </div>
+              </details>
+            ) : null}
           </div>
         ) : (
           <section className={["flex min-h-[420px] items-center justify-center p-8 text-center", CARD_SURFACE].join(" ")}>
             <div>
-              <p className="text-lg font-bold text-zinc-900">실행 중인 프로젝트가 없습니다.</p>
-              <p className="mt-2 text-sm text-zinc-500">왼쪽에서 템플릿을 선택해 첫 프로세스를 시작하세요.</p>
+              <p className="text-lg font-bold text-zinc-900">왼쪽에서 프로젝트를 시작하세요</p>
+              <p className="mt-2 max-w-md text-sm leading-6 text-zinc-500">
+                이름·목표·Owner·템플릿만 넣으면 현재 Stage가 바로 열립니다. PRD와 Design 입력은 선택입니다.
+              </p>
             </div>
           </section>
         )}
       </section>
+
+      <TemplateCatalog workspace={workspace} onRefresh={onRefresh} />
 
       {workspace.auditEvents.length ? (
         <section className={CARD_SURFACE}>
@@ -3520,6 +3580,7 @@ function WorkspaceSection({
       ) : null}
     </div>
   );
+
 }
 
 const INCIDENT_SEVERITY_LABEL: Record<ProcessIncidentSeverity, string> = {

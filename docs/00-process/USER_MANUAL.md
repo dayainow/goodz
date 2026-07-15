@@ -2,6 +2,16 @@
 
 Goodz Process Dashboard는 새로운 제품·서비스 아이디어를 프로젝트로 시작하고, **기획 → 디자인 → 개발 → QA → 배포** 전 과정을 단계별로 실행·관리하는 풀프로세스 운영 화면입니다.
 
+## 10분 안에 쓰기 (메인 경로)
+
+1. `pnpm dev` 후 http://localhost:5180 접속 (기본 화면 = **Workspace → 프로젝트**)
+2. **프로젝트명 · 목표 · Owner · 템플릿**만 입력하고 **프로젝트 시작**
+3. 열린 Stage에서 Task 상태를 `done`으로 저장
+4. 필수 산출물에 URI·Owner를 넣고 **승인**
+5. 조건이 채워지면 **GO** (다음 Stage 자동 시작). 막히면 **HOLD**, 종료면 **KILL**
+
+이게 Goodz의 목적에 맞는 기본 사용법입니다. PRD Wizard·Design Workbench·템플릿 편집·Goodz Reference 메뉴는 **선택/고급**입니다.
+
 아이디어를 PRD로 구체화하고, 디자인 작업을 전달하며, Stage·Task·산출물·Phase Gate를 운영하고, GitHub·CI·배포 증거까지 같은 프로젝트 흐름에서 추적할 수 있습니다. Dashboard는 Git 문서와 외부 증거를 연결하는 **운영 projection**이자 실제 프로세스를 변경하는 **Process Control Plane command UI**입니다.
 
 ## 데이터 범위 구분

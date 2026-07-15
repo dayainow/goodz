@@ -3,7 +3,7 @@
 > **모든 작업·문서·코드는 이 문서를 기준으로 판단합니다.**  
 > Cursor · Claude Code · Hermes — 세션 시작 시 **반드시 읽을 것.**
 
-> **Lifecycle · 2026-07-15:** Goodz는 v1.1 검증 기준선에서 기능 동결하고 후속 제품 **Beacon**으로 분리합니다. 이 저장소는 풀프로세스 모노레포 시스템의 Reference로 유지하며, Beacon의 범위는 [분리 PRD](../01-planning/PRD-SUCCESSOR-SPINOUT.md)를 따릅니다.
+> **Lifecycle · 2026-07-15 (갱신):** Goodz는 Beacon과 무관하게 **쓸 수 있는 풀프로세스 OS**로 이 저장소에서 개편·마무리합니다. v1.1 Archive 동결(DEC-029)은 [DEC-033](./DECISIONS.md)으로 대체하며, 목표 사용 경로는 **프로젝트 → Task → 산출물 → GO**입니다. Beacon은 별도 선택지일 뿐입니다.
 
 ---
 

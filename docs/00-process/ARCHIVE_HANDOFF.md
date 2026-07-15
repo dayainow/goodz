@@ -3,19 +3,21 @@
 | 항목 | 내용 |
 |------|------|
 | 결정일 | 2026-07-15 |
-| 상태 | Archived — Repository Closure Gate 완료 |
-| 최종 기준선 | Goodz v1.1 Installable Empty Workspace |
-| 종료 태그 | `v1.1.0` |
-| GitHub Release | [Goodz v1.1.0 — Installable Empty Workspace](https://github.com/dayainow/goodz/releases/tag/v1.1.0) |
-| 후속 제품 | Beacon — 별도 저장소 |
-| 후속 저장소 | [dayainow/beacon-project-os](https://github.com/dayainow/beacon-project-os) |
+| 상태 | **Superseded (DEC-033)** — Usability Closure로 Goodz 사용성 개편 재개 |
+| v1.1 기준선 | Goodz v1.1 Installable Empty Workspace (`v1.1.0`) — 보관용 스냅샷 |
+| GitHub Release | [Goodz v1.1.0](https://github.com/dayainow/goodz/releases/tag/v1.1.0) |
+| 병행 선택지 | Beacon — [dayainow/beacon-project-os](https://github.com/dayainow/beacon-project-os) (Goodz 마무리와 독립) |
 | 공개 범위 | Public |
 
-## 종료 정의
+## 상태 갱신 (2026-07-15)
 
-Goodz는 풀프로세스 모노레포 시스템의 가능성을 검증한 제품·연구 기준선으로 마무리한다. 종료는 모든 백로그를 구현한다는 의미가 아니라, 현재 산출물이 재현 가능하고 후속 제품이 출처와 한계를 이해한 상태에서 필요한 부분만 이식할 수 있게 고정한다는 의미다.
+[DEC-033](./DECISIONS.md)에 따라 Archive 동결을 해제한다. Goodz는 Beacon 이식과 무관하게 **풀프로세스 OS로 실제 사용 가능한 상태**까지 이 저장소에서 개편·마무리한다. `v1.1.0` 태그는 검증 기준선으로 유지하되, 제품 표면의 기본 경로는 Workspace 메인 흐름으로 재정렬한다.
 
-종료 이후 이 저장소에서는 보안·재현성 결함 외 신규 제품 기능을 추가하지 않는다.
+## 종료 정의 (v1.1 시점 · 역사)
+
+Goodz는 v1.1에서 풀프로세스 모노레포 시스템의 가능성을 검증한 기준선으로 한 번 고정했다. 당시 종료는 모든 백로그를 구현한다는 의미가 아니라, 재현 가능한 스냅샷과 이식 매니페스트를 남긴다는 의미였다.
+
+v1.1 동결 정책(“보안·재현성 외 신규 기능 금지”)은 DEC-033으로 대체된다.
 
 ## 검증된 결과
 
